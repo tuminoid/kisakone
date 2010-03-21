@@ -1,0 +1,73 @@
+8
+
+dir
+474
+https://vicion.tontut.fi/ohjproj_svn/trunk/kisakone/ui/elements/tiny_mce/plugins/searchreplace
+https://vicion.tontut.fi/ohjproj_svn
+
+
+
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+03fd9ca7-773f-4ada-90a9-eb8bb302682e
+
+editor_plugin.js
+file
+
+
+
+
+2010-02-15T13:47:03.000000Z
+c706d5d1d5e6bdb050d5ce93826f3d19
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+langs
+dir
+
+editor_plugin_src.js
+file
+
+
+
+
+2010-02-15T13:47:03.000000Z
+cc7feed42f3e4211d9580f1faced40fc
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+css
+dir
+
+searchreplace.htm
+file
+
+
+
+
+2010-02-15T13:47:03.000000Z
+92873353a2fedeb2eb7847f830d61b9e
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+js
+dir
+

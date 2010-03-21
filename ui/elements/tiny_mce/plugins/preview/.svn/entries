@@ -1,0 +1,79 @@
+8
+
+dir
+474
+https://vicion.tontut.fi/ohjproj_svn/trunk/kisakone/ui/elements/tiny_mce/plugins/preview
+https://vicion.tontut.fi/ohjproj_svn
+
+
+
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+03fd9ca7-773f-4ada-90a9-eb8bb302682e
+
+editor_plugin.js
+file
+
+
+
+
+2010-02-15T13:46:40.000000Z
+925216b63aabd5adc67d642ca2d04b4a
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+jscripts
+dir
+
+preview.html
+file
+
+
+
+
+2010-02-15T13:46:39.000000Z
+bb02414f4cdd28c4a66e7fb5ed820f2d
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+editor_plugin_src.js
+file
+
+
+
+
+2010-02-15T13:46:39.000000Z
+6f9c3234dfdc0f62b713e8771f4ca5dc
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+example.html
+file
+
+
+
+
+2010-02-15T13:46:40.000000Z
+9b9290408ae10fa29ec29db60682be91
+2010-02-01T17:02:42.160523Z
+301
+haka
+

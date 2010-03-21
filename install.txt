@@ -1,0 +1,15 @@
+Step 1: Extract and/or copy the extracted files to a location which is accessible through the web server you intend to use. This should be the final location as well.
+
+For the purposes of this file, we'll assume the installation happens at the directory "." and is accessible through http://example.com/kisakone/ ,
+
+Step 2: You need to make sure config.php in the installation root directory can be written to by the web server.
+
+Step 3: Access the page install.php in the installation root using your browser, in the example that would be http://example.com/kisakone/install.php
+
+Step 4: Enter the requested details and submit the form
+
+Step 5: It is recommended, although not strictly necessary to prevent the web server from writing to config.php again
+
+Step 6: The directory ui/elements/uploaded needs to be made writable by the web server
+
+Step 7: If using mod_rewrite, adjust the RewriteBase setting in .htaccess manually to refer to the installation path (as seen on the web server)

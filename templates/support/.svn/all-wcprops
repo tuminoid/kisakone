@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/ohjproj_svn/!svn/ver/450/trunk/kisakone/templates/support
+END
+eventlockhelper.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ohjproj_svn/!svn/ver/401/trunk/kisakone/templates/support/eventlockhelper.tpl
+END
+eventeditform.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/ohjproj_svn/!svn/ver/450/trunk/kisakone/templates/support/eventeditform.tpl
+END
+roundselection.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/templates/support/roundselection.tpl
+END

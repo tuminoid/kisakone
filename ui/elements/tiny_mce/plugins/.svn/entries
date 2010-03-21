@@ -1,0 +1,130 @@
+8
+
+dir
+474
+https://vicion.tontut.fi/ohjproj_svn/trunk/kisakone/ui/elements/tiny_mce/plugins
+https://vicion.tontut.fi/ohjproj_svn
+
+
+
+2010-02-01T17:02:42.160523Z
+301
+haka
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+03fd9ca7-773f-4ada-90a9-eb8bb302682e
+
+media
+dir
+
+insertdatetime
+dir
+
+pagebreak
+dir
+
+noneditable
+dir
+
+inlinepopups
+dir
+
+autoresize
+dir
+
+example
+dir
+
+emotions
+dir
+
+iespell
+dir
+
+save
+dir
+
+advhr
+dir
+
+tabfocus
+dir
+
+advlist
+dir
+
+layer
+dir
+
+advimage
+dir
+
+preview
+dir
+
+directionality
+dir
+
+wordcount
+dir
+
+visualchars
+dir
+
+autosave
+dir
+
+table
+dir
+
+advlink
+dir
+
+print
+dir
+
+nonbreaking
+dir
+
+fullpage
+dir
+
+style
+dir
+
+searchreplace
+dir
+
+fullscreen
+dir
+
+spellchecker
+dir
+
+contextmenu
+dir
+
+template
+dir
+
+paste
+dir
+
+bbcode
+dir
+
+xhtmlxtras
+dir
+

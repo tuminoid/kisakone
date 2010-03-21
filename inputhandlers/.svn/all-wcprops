@@ -1,0 +1,197 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/ohjproj_svn/!svn/ver/464/trunk/kisakone/inputhandlers
+END
+new_event.php
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/inputhandlers/new_event.php
+END
+add_competitor.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/ohjproj_svn/!svn/ver/464/trunk/kisakone/inputhandlers/add_competitor.php
+END
+start_times.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/401/trunk/kisakone/inputhandlers/start_times.php
+END
+event_classes.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/event_classes.php
+END
+add_admin.php
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/inputhandlers/add_admin.php
+END
+edit_tournament.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ohjproj_svn/!svn/ver/394/trunk/kisakone/inputhandlers/edit_tournament.php
+END
+delete_event.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/ohjproj_svn/!svn/ver/441/trunk/kisakone/inputhandlers/delete_event.php
+END
+login.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/ohjproj_svn/!svn/ver/414/trunk/kisakone/inputhandlers/login.php
+END
+edit_class.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/330/trunk/kisakone/inputhandlers/edit_class.php
+END
+tournament_tie_breakers.php
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/ohjproj_svn/!svn/ver/411/trunk/kisakone/inputhandlers/tournament_tie_breakers.php
+END
+remind.php
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/ohjproj_svn/!svn/ver/421/trunk/kisakone/inputhandlers/remind.php
+END
+manage_rounds.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/manage_rounds.php
+END
+edit_groups.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/401/trunk/kisakone/inputhandlers/edit_groups.php
+END
+recover_password.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/395/trunk/kisakone/inputhandlers/recover_password.php
+END
+edit_ad.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/ohjproj_svn/!svn/ver/426/trunk/kisakone/inputhandlers/edit_ad.php
+END
+manage_fees.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/inputhandlers/manage_fees.php
+END
+manage_courses.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/ohjproj_svn/!svn/ver/427/trunk/kisakone/inputhandlers/manage_courses.php
+END
+action_set_language.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ohjproj_svn/!svn/ver/417/trunk/kisakone/inputhandlers/action_set_language.php
+END
+edit_global_page.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/edit_global_page.php
+END
+sign_up.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/inputhandlers/sign_up.php
+END
+action_logout.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/inputhandlers/action_logout.php
+END
+editmyinfo.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/339/trunk/kisakone/inputhandlers/editmyinfo.php
+END
+changepassword.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/changepassword.php
+END
+split_classes.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/402/trunk/kisakone/inputhandlers/split_classes.php
+END
+manage_access.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/inputhandlers/manage_access.php
+END
+action_enterresult.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ohjproj_svn/!svn/ver/401/trunk/kisakone/inputhandlers/action_enterresult.php
+END
+cancel_signup.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/inputhandlers/cancel_signup.php
+END
+edit_level.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/inputhandlers/edit_level.php
+END
+edit_event_page.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/edit_event_page.php
+END
+event_fees.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/408/trunk/kisakone/inputhandlers/event_fees.php
+END
+register.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/ohjproj_svn/!svn/ver/463/trunk/kisakone/inputhandlers/register.php
+END
+edit_event.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/inputhandlers/edit_event.php
+END

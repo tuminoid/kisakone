@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/ohjproj_svn/!svn/ver/458/trunk/kisakone/templates/include
+END
+loginbox.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/templates/include/loginbox.tpl
+END
+breadcrumb.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/ohjproj_svn/!svn/ver/378/trunk/kisakone/templates/include/breadcrumb.tpl
+END
+submenulevel.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/447/trunk/kisakone/templates/include/submenulevel.tpl
+END
+header.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/458/trunk/kisakone/templates/include/header.tpl
+END
+languagebar.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ohjproj_svn/!svn/ver/417/trunk/kisakone/templates/include/languagebar.tpl
+END
+mainmenu.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/ohjproj_svn/!svn/ver/378/trunk/kisakone/templates/include/mainmenu.tpl
+END
+adbanner.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/ohjproj_svn/!svn/ver/378/trunk/kisakone/templates/include/adbanner.tpl
+END
+footer.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/378/trunk/kisakone/templates/include/footer.tpl
+END
+submenu.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/378/trunk/kisakone/templates/include/submenu.tpl
+END

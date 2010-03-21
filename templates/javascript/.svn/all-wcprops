@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/ohjproj_svn/!svn/ver/418/trunk/kisakone/templates/javascript
+END
+quicksort.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/javascript/quicksort.tpl
+END
+base.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/392/trunk/kisakone/templates/javascript/base.tpl
+END
+tablesearch.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/javascript/tablesearch.tpl
+END
+formvalidation.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/javascript/formvalidation.tpl
+END
+live.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/ohjproj_svn/!svn/ver/418/trunk/kisakone/templates/javascript/live.tpl
+END
+tablesort.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/410/trunk/kisakone/templates/javascript/tablesort.tpl
+END

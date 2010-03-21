@@ -1,0 +1,13 @@
+loginform_title     Kirjaudu sisään
+username            Käyttäjätunnus
+password            Salasana
+new_password        Uusi salasana
+old_password        Nykyinen salasana
+loginbutton         Kirjaudu
+login               Kirjaudu sisään
+forgottenpassword   Unohtuiko salasana?
+register            Rekisteröidy
+loginform_loggedin_title Olet kirjautuneena tunnuksella:
+loginform_loggedin_as {user} ({firstname} {lastname})
+logout              Kirjaudu ulos
+my_info             Omat tiedot

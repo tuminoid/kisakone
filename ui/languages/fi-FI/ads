@@ -1,0 +1,80 @@
+ad_location     Mainospaikka
+ad_type         Mainoksen tyyppi
+ad_preview      Esikatselu
+ad_actions      Toimenpiteet
+
+ad_location_default     Oletusmainos
+ad_location_index       Etusivu
+ad_location_events:currentYear      Kuluvan vuoden kilpailut
+ad_location_eventarchive    Kilpailuarkisto
+ad_location_events:mine Käyttäjän omat kilpailut
+ad_location_events:user Muun käyttäjän kilpailut
+ad_location_user        Käyttäjän tiedot
+ad_location_myinfo      Omat tiedot
+ad_location_editmyinfo  Omien tietojen muokkaus
+ad_location_changepassword  Salasanan vaihto
+ad_location_register    Rekisteröityminen
+ad_location_login       Sisäänkirjautuminen
+ad_location_recoverpassword Unohtuneen salasanan palauttaminen
+ad_location_recover_password_info Unohtuneen salasanan palauttaminen (sähköpostin jälkeen)
+ad_location_tournament  Sarjan tiedot
+ad_location_refer1      (Ylimääräinen viittauskohde 1)
+ad_location_refer2      (Ylimääräinen viittauskohde 2)
+ad_location_refer3      (Ylimääräinen viittauskohde 3)
+ad_location_refer4      (Ylimääräinen viittauskohde 4)
+ad_location_refer5      (Ylimääräinen viittauskohde 5)
+ad_location_tournaments Sarjat
+ad_location_users       Käyttäjät
+
+ad_event_location_default       Kilpailun oletusmainos
+ad_event_location_index         Yleistiedot
+ad_event_location_results       Tulokset
+ad_event_location_competitors   Kilpailijat
+ad_event_location_schedule      Aikataulu
+ad_event_location_signup        Ilmoittautuminen
+ad_event_location_cancelsignup  Ilmoittautumisen peruminen
+ad_event_location_leaderboard   Leaderboard
+
+ad_event_location_erefer1      (Ylimääräinen viittauskohde 1)
+ad_event_location_erefer2      (Ylimääräinen viittauskohde 2)
+ad_event_location_erefer3      (Ylimääräinen viittauskohde 3)
+
+ad_event_location_template1 (Malli 1)
+ad_event_location_template2 (Malli 2)
+ad_event_location_template3 (Malli 3)
+
+ad_type_imageandlink    Kuva ja linkki
+ad_type_html            HTML-koodi
+ad_type_reference            Viittaus toiseen mainokseen
+ad_type_disabled        Poistettu
+ad_type_default         Oletusmainos
+ad_type_eventdefault    Kilpailun oletusmainos
+
+ad_type_heading         Mainoksen tyyppi
+
+ad_details_heading      Mainoksen tiedot
+
+ad_event_location_course        Rata
+ad_event_location_eventdefault  Kilpailun oletusmainos
+ad_event_location_newsarchive   Uutisarkisto
+ad_event_location_liveresults   Live-tulokset
+ad_event_location_signupinfo       Ilmoittautuminen
+ad_event_location_payment        Maksun tiedot
+
+
+
+ad_eventdefault_description  Mainoksena käytetään kilpailulle valittua oletusmainosta.
+ad_default_description  Mainoksena käytetään kisakoneen oletusmainosta.
+ad_disabled_description  Mainosta ei näytetä.
+ad_imageandlink_description  Voit valita tai lähettää mainoskuvan, ja syöttää osoitten, johon sen painaminen vie.
+ad_html_description     Voit syöttää vapaamuotoista XHTML-koodia, joka sijoitetaan mainospalkkielementin sisälle.
+ad_reference_description     Toisaalla valitun mainoksen sisältö näytetään tämän mainoksen paikalla.
+
+save            Tallenna
+
+ad_link         Osoite
+ad_image        Kuva
+ad_upload       Lähetä
+ad_select       Valitse
+
+ad_inline_help Sivun "{adtype}" mainoksen muokkaus

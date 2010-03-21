@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/ohjproj_svn/!svn/ver/418/trunk/kisakone/templates/rss
+END
+event_will_start.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/event_will_start.tpl
+END
+signup.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/signup.tpl
+END
+event_started.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/event_started.tpl
+END
+event_starting_1_week.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/event_starting_1_week.tpl
+END
+news.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/news.tpl
+END
+signupend.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/signupend.tpl
+END
+event_over.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/ohjproj_svn/!svn/ver/418/trunk/kisakone/templates/rss/event_over.tpl
+END
+event_start_today.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/ohjproj_svn/!svn/ver/375/trunk/kisakone/templates/rss/event_start_today.tpl
+END
+groups.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/ohjproj_svn/!svn/ver/418/trunk/kisakone/templates/rss/groups.tpl
+END

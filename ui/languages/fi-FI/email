@@ -1,0 +1,12 @@
+email_token_info   <HTML>Voit lisätä vasemman sarakkeen tekstialkioita aaltosulkujen sisällä sähköpostiin.<br /><br />Täten syötetyt tiedot korvataan sähköpostin luontivaiheessa.
+email_token_event   Kilpailun nimi
+email_token_pdga    Kilpailijan PDGA-numero
+email_token_lastname    Kilpailijan sukunimi
+email_token_firstname   Kilpailijan etunimi
+email_token_admin_lastname    Ylläpitäjän tai TD:n sukunimi
+email_token_admin_firstname   Ylläpitäjän tai TD:n etunimi
+email_token_startdate   Kilpailun alkuajankohta
+email_token_signup_end  Ilmoittautumisen sulkeutumisajankohta
+email_token_link        Linkki
+email_token_username    Käyttäjätunnus
+email_token_token       Salasanan korvike
