@@ -1,7 +1,0 @@
-.jsonly {
-    display: block !important;
-}
-
-.nojs {
-    display: none !important;
-}
