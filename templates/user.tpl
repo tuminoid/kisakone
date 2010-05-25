@@ -38,13 +38,15 @@
          {translate id=$gendertoken}</td>
       </tr>
       <tr>
-         <td >{translate id=user_yearofbirth}: </td>
-         <td>{$player->birthyear|escape}</td>
-      </tr>
-      <tr>
          <td >{translate id=user_pdga_number}: </td>
          <td>{$player->pdga|escape}</td>
       </tr>
+      {if $itsme || $isadmin}
+      <tr>
+         <td >{translate id=user_yearofbirth}: </td>
+         <td>{$player->birthyear|escape}</td>
+      </tr>
+      {/if}
       {else}
          <tr><td colspan="2">
          {translate id=user_not_player}
@@ -59,6 +61,7 @@
 {if ($itsme || $isadmin) && $player }
    <hr />
       <table style="width:300px">
+
          {if $fees}
             <tr>
                <td >{translate id=user_membershipfee}: </td>

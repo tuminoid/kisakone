@@ -193,7 +193,31 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $smarty->assign('rounds', $rounds);
 
          break;
+         case 'leaderboard_cvs':
+         $view = 'leaderboard_cvs';
+         
+      
+         $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
+         
+         $scoresAssigned = null;
+         foreach ($results as $class) {
+            foreach ($class as $item) {
+               $scoresAssigned = $item['TournamentPoints'] != 0;
+               break;
+            }
+            break;
+         }
+         
+         $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
+         $smarty->assign('resultsByClass', $results);
+         $rounds = $event->GetRounds();
+         $smarty->assign('numRounds', count($rounds));
+         $smarty->assign('rounds', $rounds);
+
+         break;
+
       default:
+      
       
          // If we have a numeric view we are to show a custo m content page
          if (is_numeric(@$_GET['view'])) {

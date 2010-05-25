@@ -26,8 +26,7 @@ The functionality is initialized with code such as the following:
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('theTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );   
-    $($(".SortHeading").get(0)).click();
+                );       
     
 });
 *}
@@ -36,7 +35,7 @@ $(document).ready(function(){
 /** This function initializes the table search functionality
  * @param searchField   The INPUT element, which is used for entering the search
  *                      keywords.
- * @param table         The TABLE object which is to be made sortable
+ * @param table         The TABLE object which is to be made
  * @param emptyListMessage  The message that is to be shown, if there are no search results
  */
 function TableSearch(searchField, table, emptyListMessage) {

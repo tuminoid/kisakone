@@ -38,7 +38,6 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
    $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);   
    
-   
    $smarty->assign('users', $users);
             
 }

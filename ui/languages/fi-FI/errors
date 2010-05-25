@@ -57,3 +57,6 @@ error_name_must_be_defined  Nimi täytyy antaa
 cant_delete_this_course     Rataa ei voida poistaa. Se on käytössä jossakin kilpailussa.
 error_expired_login_form    Vanhentunut lomake
 error_expired_login_form_description    Tietoturvasyistä sisäänkirjautuminen täytyy tehdä viiden minuutin kuluessa lomakkeen sisältävän sivun aukaisemisesta. Aikaraja oli mennyt umpeen. Voit nyt kirjautua sisään tältä sivulta.
+
+invalid_class_selection  Virheellinen luokkavalinta
+invalid_class_selection_description Sinun on valittava luokka voidaksesi ilmoittautua.

@@ -140,7 +140,8 @@
     {foreach from=$results item=result}
     {if $result.Total != 'not_used'}
         {counter assign=rowind}
-        {if $rowind % 10 == 0}
+        
+        {if $rowind == 0}
         <tr>
                <td style="height: 8px; background-color: white;"></td>
             </tr>
@@ -176,6 +177,7 @@
                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
+        
 <tr class="resultrow">
 
 <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>

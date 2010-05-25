@@ -112,7 +112,7 @@ $(document).ready(function(){
     CheckedFormField('regform', 'lastname', NonEmptyField, null);
     CheckedFormField('regform', 'firstname', NonEmptyField, null);
     CheckedFormField('regform', 'email', EmailField, null);
-    CheckedFormField('regform', 'pdga', PositiveIntegerField, null);
+//    CheckedFormField('regform', 'pdga', PositiveIntegerField, null);
     CheckedFormField('regform', 'gender', RadioFieldSet, null);
     CheckedFormField('regform', 'dob_Year', NonEmptyField, null);
     $("#cancelButton").click(CancelSubmit);

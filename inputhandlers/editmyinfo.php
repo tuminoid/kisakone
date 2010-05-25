@@ -62,7 +62,11 @@ function processForm() {
        
     
         $pdga = $_POST['pdga'];    
-        if ($pdga == '') $problems['pdga'] = translate('FormError_NotPositiveInteger');
+        if ($pdga == '') $pdga = null;
+	else {
+		$pdga = (int)$pdga;
+		if (!$pdga) $problems['pdga'] = translate('FormError_NotPositiveInteger');
+	}
         
         $gender = @$_POST['gender'];
         if ($gender != 'M' && $gender != 'F') $problems['gender'] = translate('FormError_NotEmpty');

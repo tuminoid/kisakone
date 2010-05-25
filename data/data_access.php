@@ -1009,12 +1009,12 @@ function CreateEvent( $name, $venue, $duration, $contact, $tournament, $level, $
       if ($player) {
       $playerid = $player->id;
 
-         $plr_query = data_query("UPDATE :Player SET sex = %s, pdga = %d,
+         $plr_query = data_query("UPDATE :Player SET sex = %s, pdga = %s,
                                  birthdate = '%s', firstname = %s, lastname = %s,
                                  email = %s
                                     
                                  WHERE player_id = %d",
-                                       strtoupper($gender) == 'M' ? "'male'" : "'female'", (int)$pdga, (int)$dobyear . '-1-1',
+                                       strtoupper($gender) == 'M' ? "'male'" : "'female'", esc_or_null($pdga, 'int'), (int)$dobyear . '-1-1',
                                        esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), esc_or_null($email),
                                        (int)$playerid);
    
@@ -4832,12 +4832,14 @@ function GetGroups($sectid) {
   }
   
   function PlayerParticipating($eventid, $userid) {
-    $query = data_query("SELECT 1 FROM :Participation
+    $query = data_query("SELECT :Participation.id FROM :Participation
                         INNER JOIN :Player ON :Participation.Player = :Player.player_id
                         INNER JOIN :User ON :User.Player = :Player.player_id
                         WHERE :User.id = %d AND :Participation.Event = %d",
                         $userid, $eventid);
     $res = mysql_query($query);
+//if ($userid == 82) print_r(mysql_fetch_assoc($res));
+//echo mysql_num_rows($res) + 1;
     return (mysql_num_rows($res) != 0);
   }
   
@@ -5052,7 +5054,7 @@ function GetGroups($sectid) {
     $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
     if ($onlySome) {
       echo mysql_error();
-        $data = array_slice($data, 0, 8);
+        $data = array_slice($data, 0, 14);
     }
     return $data;
   }

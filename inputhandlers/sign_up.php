@@ -56,8 +56,14 @@ function processForm() {
     
     $player = $user->GetPlayer();
     $class = GetClassDetails(@$_POST['class']);
+
     if (!$player->IsSuitableClass($class)) {
-        return Error::AccessDenied();
+        $error = new Error();
+        $error->title = 'invalid_class_selection';        
+        $error->function = 'InputProcessing:sign_up:processForm';
+        $error->description = translate('invalid_class_selection_description');
+        $error->isMajor= true;        
+        return $error;
     }
     
     $fees = $event->FeesRequired();

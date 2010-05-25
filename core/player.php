@@ -205,7 +205,7 @@ class Player
      * Returns true if class is fine, false otherwise     
      */
     function IsSuitableClass($class) {
-        
+        if (!$class) return false;
         $age = date('Y') - $this->birthyear;
         
         $problems = 0;

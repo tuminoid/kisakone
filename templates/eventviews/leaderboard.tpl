@@ -93,14 +93,16 @@
     {foreach from=$results item=result}
     
         {counter assign=rowind}
-        {if $rowind % 10 == 0}
+        
+        {if $rowind == 0}
         <tr>
                <td style="height: 8px; background-color: white;"></td>
             </tr>
 
             <tr class="thr">
                 <th>{translate id=result_pos}</th>
-                <th>{translate id=result_name}</th>                
+                <th>{translate id=result_name}</th>
+                <th>PDGA</th>
                 {foreach from=$rounds key=index item=round}
                         {math assign=roundNumber equation="x+1" x=$index}
                         <th>{translate id=round_number_short number=$roundNumber}</th>
@@ -117,10 +119,11 @@
                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
+    
         <tr class="resultrow">
             
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
-            <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
+            <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td><td> {$result.PDGANumber|escape} </td>
             {foreach from=$rounds item=round key=index}
                 {assign var=roundid value=$round->id}
                 {assign var=rresult value=$result.Results.$roundid.Total}

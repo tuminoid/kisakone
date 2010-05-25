@@ -3,10 +3,13 @@ body, html {
     margin: 0px;
     padding: 0px;
     font-size: 11pt;
+    
 }
 
 html, body, #contentcontainer, #maintr2 {
     height: 100%;
+    padding:0px;
+    margin:0px;
 }
 
 #headtr {
@@ -18,14 +21,15 @@ h2 {
     background-image: url(h2bg.png);
     background-repeat: repeat-x;
     font-family: verdana;
-    font-weight: normal;
+    font-weight: bold;
     margin-bottom: 1em;
     margin-left: -15px;
     margin-right: -15px;
     padding: 3px 0px 3px 16px;
     font-size: 1em;
-    height: 27px;
+    height: 20px;
     color: #4b4b4b;
+    -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
 
 .hotlinks a {
@@ -63,10 +67,11 @@ th{
     
     font-family: verdana;
     font-size: 24px;
-    font-weight: normal;
+    font-weight: bold;
     margin: 0;
     padding: 0;
     padding-top: 32px;
+    text-shadow: rgba(0,0,0,0.4) 0 2px 2px;
 }
 
 #pagename {
@@ -150,7 +155,9 @@ a {
 .submenu img { border: none; }
 
 #submenucontainer {
-    background-color: #bbd1b6;
+    background-image: url(bar2.png);
+    background-repeat: repeat-x;
+    background-color: #79997e;
 }
 
 .submenu li {    
@@ -210,7 +217,8 @@ a {
 }
 
 #content {
-    padding: 16px;    
+    padding: 16px;
+   
 }
 
 #adbannercontainer {

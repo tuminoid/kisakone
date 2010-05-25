@@ -39,7 +39,7 @@
       {$extrahead}
 </head>
 <body>
-<table id="contentcontainer">
+<table id="contentcontainer" cellpadding="0" cellspacing="0">
       <tr id="headtr">
             <td colspan="3">
             

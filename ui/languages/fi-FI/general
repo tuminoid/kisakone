@@ -158,7 +158,7 @@ email_you_are_td           Kilpailun TD asetettu tai vaihtunut
 email_recover_password      Unohtuneen salasanan palautus
 email_remember_fees         Kilpailumaksuista muistutus
 pagetitle_leaderboard       Leaderboard
-
+pagetitle_leaderboard_cvs   Leaderboard CVS
 tournament_scores_all       Kaikkien kilpailujen pisteet huomioidaan
 tournament_scores_ignoreworst Huonoin tulos jätetään huomioimatta
 event_info_schedule     Etusivun aikataulu
@@ -172,6 +172,7 @@ language-sv             <HTML>Ruotsi<br />Svenska
 course             Kierros
 
 results_available       Tulokset saatavilla
+results_cvs             CVS tulokset
 sign_up_here            Ilmoittaudu
 course_map              Radan kartta
 close                   Sulje

@@ -222,6 +222,7 @@ function page_getSubMenu() {
                     array('title' => translate('edit_groups'), 'link' => array('page' => 'editgroups', 'id' => $id), 'access' => null, 'children' => array()),
                 )),
                 array('title' => translate('enter_results'), 'link' => array('page' => 'enterresults', 'id' => $id), 'access' => null, 'children' => array()),
+                array('title' => translate('results_cvs'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'leaderboard_cvs'), 'access' => null, 'children' => array()),
             ));
             
             // Event management links for officials
