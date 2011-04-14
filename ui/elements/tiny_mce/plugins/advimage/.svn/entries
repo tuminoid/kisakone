@@ -1,76 +1,0 @@
-8
-
-dir
-474
-https://vicion.tontut.fi/ohjproj_svn/trunk/kisakone/ui/elements/tiny_mce/plugins/advimage
-https://vicion.tontut.fi/ohjproj_svn
-
-
-
-2010-02-01T17:02:42.160523Z
-301
-haka
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-03fd9ca7-773f-4ada-90a9-eb8bb302682e
-
-editor_plugin.js
-file
-
-
-
-
-2010-02-15T13:47:01.000000Z
-6634dc710b837855baff6d4d3a4f290e
-2010-02-01T17:02:42.160523Z
-301
-haka
-
-langs
-dir
-
-editor_plugin_src.js
-file
-
-
-
-
-2010-02-15T13:47:01.000000Z
-5134485db327459f7b10de273b50a5e8
-2010-02-01T17:02:42.160523Z
-301
-haka
-
-css
-dir
-
-image.htm
-file
-
-
-
-
-2010-02-15T13:47:01.000000Z
-40dcdfac485df37902c1fc366a81683d
-2010-02-01T17:02:42.160523Z
-301
-haka
-
-img
-dir
-
-js
-dir
-
