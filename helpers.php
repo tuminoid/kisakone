@@ -42,7 +42,10 @@
  * @return string
  */
 function baseURL() {
-    return dirname($_SERVER['SCRIPT_NAME']) . '/';
+    $dir = dirname($_SERVER['SCRIPT_NAME']);
+    if ($dir == "/")
+        return $dir;
+    return $dir . '/';
 }
 
 
