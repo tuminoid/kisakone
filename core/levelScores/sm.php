@@ -34,10 +34,15 @@ class scorecalc_level_sm {
         if (!count($participants)) return;
         
         $className = $participants[0]['Name'];
-        if (stripos($className, 'avoin') !== false) {
-            $scores = array(100,93,87,82,78,75,72,69,66,63,60,57,54,51,48,45,42,39,36,33,30,27,24,21,18,15,12,9,6,3);
-        } else {
+        if (stripos($className, 'naiset') !== false) {
+# Janne muutti, tapani pyyti
+#            $scores = array(100,93,87,82,78,75,72,69,66,63,60,57,54,51,48,45,42,39,36,33,30,27,24,21,18,15,12,9,6,3);
             $scores = array(100,80,65,52,40,30,20,10);
+
+        } else {
+            $scores = array(100,93,87,82,78,75,72,69,66,63,60,57,54,51,48,45,42,39,36,33,30,27,24,21,18,15,12,9,6,3);
+# Janne muutti, tapani pyyti, vain naisill vähän pisteitä, muilla sarjoilla täydet
+#            $scores = array(100,80,65,52,40,30,20,10);
         }
         
         $participantCount = $active;

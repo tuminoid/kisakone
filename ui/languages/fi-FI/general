@@ -139,6 +139,8 @@ dob             Syntymäaika
 firstname       Etunimi
 lastname        Sukunimi
 
+num             #
+
 not_used        Ei käytössä
 
 loginredirect_title     Sisäänkirjautuminen onnistui

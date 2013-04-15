@@ -44,7 +44,7 @@
     <input type="hidden" name="formid" value="event_fees" />
     <table id="userTable" class="hilightrows oddrows">
        <tr>
-        <th>#</th>
+        <th>{sortheading field=1 id=num sortType=integer}</th>
           <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
           <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
           <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
@@ -85,7 +85,7 @@
                 {else}
                 {assign var='not_paid' value=$not_paid+1}   
                 <input type="hidden" value="{$user.signupTimestamp}" />
-                    {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y"}{/capture}
+                    {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y %H:%M"}{/capture}
                     {translate id=signup_date date=$date}
                     
                 {/if}
