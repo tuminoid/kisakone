@@ -2,4 +2,5 @@ ui/elements/uploaded/*
 Smarty/templates_c
 config.php
 .vagrant
-
+temp*.txt
+*.tumi
