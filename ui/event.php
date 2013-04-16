@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * Event main page -- this contains all the other user-visible pages
  * 

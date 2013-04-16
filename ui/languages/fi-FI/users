@@ -18,7 +18,8 @@ user_email  Sähköposti
 user_gender Sukupuoli
 user_yearofbirth  Syntymävuosi
 user_pdga_number  PDGA-numero
-user_licensefee   Lisenssimaksu
+user_alicensefee   A-lisenssimaksu
+user_blicensefee   B-lisenssimaksu
 user_membershipfee Liiton jäsenmaksu
 user_ispaid maksettu
 user_notpaid maksamatta
@@ -43,7 +44,8 @@ email               Sähköposti
 birthyear           Syntymävuosi
 pdga                PDGA-numero
 membership_paid      Jäsenmaksu maksettu
-license_paid      Lisenssimaksu maksettu
+alicense_paid      A-lisenssimaksu maksettu
+blicense_paid      B-lisenssimaksu maksettu
 
 
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * Event edit handler
  * 
@@ -136,9 +136,11 @@ function processForm() {
     
     $td = input_GetUser($_POST['td']);
     
+    $licenseReq = @$_POST['requireFees_license'];
     $requireFees = 0;
-    if (@$_POST['requireFees_member']) $requireFees += 1;
-    if (@$_POST['requireFees_license']) $requireFees += 2;
+    if (@$_POST['requireFees_member']) $requireFees = 1;
+    if ($licenseReq == "requireFees_license_A") $requireFees = 2;
+    if ($licenseReq == "requireFees_license_B") $requireFees = 6;
     
     
     if ($td === null) {

@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * User details page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -70,26 +70,41 @@
                      {if $paid}
                         {$year} {translate id=user_ispaid}
                      {else}
-                        {$year} {translate id=user_notpaid}               
+                        {$year} {translate id=user_notpaid}
                      {/if}
                      <br />
                   {/foreach}
                </td>
             </tr>
             <tr>
-               <td >{translate id=user_licensefee}: </td>
+               <td >{translate id=user_alicensefee}: </td>
                <td>
-                  {foreach from=$fees.license key=year item=paid}
+                  {foreach from=$fees.aLicense key=year item=paid}
                      {if $paid}
                         {$year} {translate id=user_ispaid}
                      {else}
-                        {$year} {translate id=user_notpaid}               
+                        {$year} {translate id=user_notpaid}
                      {/if}
                      <br />
                   {/foreach}
-     
+
                </td>
             </tr>
+            <tr>
+               <td >{translate id=user_blicensefee}: </td>
+               <td>
+                  {foreach from=$fees.bLicense key=year item=paid}
+                     {if $paid}
+                        {$year} {translate id=user_ispaid}
+                     {else}
+                        {$year} {translate id=user_notpaid}
+                     {/if}
+                     <br />
+                  {/foreach}
+
+               </td>
+            </tr>
+{*
          {else}
             <tr>
                <td >{translate id=user_membershipfee}: </td>
@@ -98,7 +113,7 @@
                      {if $paid}
                         {$year} {translate id=user_ispaid}
                      {else}
-                        {$year} {translate id=user_notpaid}               
+                        {$year} {translate id=user_notpaid}
                      {/if}
                      <br />
                   {/foreach}
@@ -111,13 +126,14 @@
                      {if $paid}
                         {$year} {translate id=user_ispaid}
                      {else}
-                        {$year} {translate id=user_notpaid}               
+                        {$year} {translate id=user_notpaid}
                      {/if}
                      <br />
                   {/foreach}
-     
+
                </td>
             </tr>
+*}
          {/if}
 
       </table>

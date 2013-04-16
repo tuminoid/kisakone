@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * This file contains the User class. 
  * 
@@ -355,22 +355,20 @@ class User {
     }
     
     /**
-     * Determines membership and licesnse payments for a given year
-     * Returns true if both fees have been paid
-     * list($licen)
+     * Determines membership and license payments for a given year
+     * Returns true if player's licenses match the requirements
     */
     function FeesPaidForYear($year, $required) {
         if (!$required) return true;
-        if (OVERRIDE_PAYMENTS) {
-            list($license, $membership) = SFL_FeesPaidForYear($this->id, $year, $required);
-        } else {
-            $player = $this->GetPlayer();
-            if (!$player) return array(false, false);
-            list($license, $membership) = GetUserFees($player->id, $year);
-        }
-        
-        if (($required & 1) != 0 && !$membership) return false;
-        if (($required & 2) != 0 && !$license) return false;
+        list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($this->id, $year);
+
+        // If there is any requirements for competition, membership is a must
+        if ($required && !$membership) return false;
+        // If A-license is required, we require that strictly
+        if ($required == 2 && !$aLicense) return false;
+        // If B-license is required, both A- and B-license quality, obviusly
+        if ($required == 6 && !($aLicense || $bLicense)) return false;
+
         return true;
     }
 }

@@ -1,6 +1,6 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * Sign up page
  * 
@@ -36,7 +36,7 @@
         <p>{translate id=fees_necessary_for_signup_1}</p>
     {elseif $feesMissing == 2}
         <p>{translate id=fees_necessary_for_signup_2}</p>
-    {elseif $feesMissing == 3}
+    {elseif $feesMissing == 6}
         <p>{translate id=fees_necessary_for_signup_3}</p>
     {/if}
 {assign var=nosignup value=true}

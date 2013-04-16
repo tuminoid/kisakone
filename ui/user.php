@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * User details page
  * 
@@ -56,11 +56,9 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
    
    $player = $user->GetPlayer();
    
-      
    $smarty->assign('userinfo', $user);
    $smarty->assign('player', $player);
    
-
    $itsme = $user->username == @$_SESSION['user']->username;
    $smarty->assign('itsme', $itsme);
    
@@ -71,25 +69,22 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
    
    if (IsAdmin() || $itsme) {
       if (OVERRIDE_PAYMENTS) {
-         $fees = array('membership' => array(), 'license' => array());
+         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
          
          $currentYear = date('Y');
          $years = array($currentYear, $currentYear + 1);
          foreach ($years as $year) {
-            list($license, $membership) = SFL_FeesPaidForYear($user->id, $year);
-            $fees['license'][$year] = $license;
+            list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($user->id, $year);
+            $fees['aLicense'][$year] = $aLicense;
             $fees['membership'][$year] = $membership;
+            $fees['bLicense'][$year] = $bLicense;
          }
          
          $smarty->assign('fees', $fees);
-         
       }
    }
 
    $smarty->assign('isadmin', @$_SESSION['user']->role == "admin");
-   
 }
-
-
 
 ?>

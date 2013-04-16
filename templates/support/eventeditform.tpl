@@ -1,5 +1,5 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Event creation and editing form
@@ -122,9 +122,12 @@
         <label class="checkboxlabel" for="requireFees_member">{translate id="event_require_member_fee"}</label>
         
         <br />
-        <input id="requireFees_license" type="checkbox" name="requireFees_license" {if $event.requireFees_license} checked="checked" {/if}/>
-        <label class="checkboxlabel" for="requireFees_license">{translate id="event_require_license_fee"}</label>
-
+        <input id="requireFees_license_A" type="radio" name="requireFees_license" value="requireFees_license_A"  {if $event.requireFees_aLicense} checked="checked" {/if}/>
+        <label class="checkboxlabel" for="requireFees_license_A" >{translate id="event_require_alicense_fee"}</label>
+        <br />
+        <input id="requireFees_license_B" type="radio" name="requireFees_license" value="requireFees_license_B"  {if $event.requireFees_bLicense} checked="checked" {/if} /> 
+        <label class="checkboxlabel" for="requireFees_license_B">{translate id="event_require_blicense_fee"}</label>
+        <br />
     </div>
     
     <h2>{translate id='event_classes'}</h2>

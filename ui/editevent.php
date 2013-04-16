@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010,2013 Kisakone projektiryhmä
  *
  * Event editor UI backend
  * 
@@ -56,7 +56,8 @@ function InitializeSmartyVariables(&$smarty, $error) {
         //$e['isactive'] = @$_POST['activate'];
         $e['event_state'] = @$_POST['event_state'];
         
-        $e['requireFees_license'] = @$_POST['requireFees_license'];
+        $e['requireFees_aLicense'] = @$_POST['requireFees_license'] == "requireFees_license_A";
+        $e['requireFees_bLicense'] = @$_POST['requireFees_license'] == "requireFees_license_B";
         $e['requireFees_member'] = @$_POST['requireFees_member'];
         //header("Content-type: text/plain"); print_r($e['classes']); die();
         
@@ -93,9 +94,9 @@ function InitializeSmartyVariables(&$smarty, $error) {
         
         
         $fees = $event->FeesRequired();
-        $e['requireFees_member'] = ($fees & 1) != 0;
-        $e['requireFees_license'] = ($fees & 2) != 0;
-        
+        $e['requireFees_member'] = ($fees >= 1);
+        $e['requireFees_aLicense'] = ($fees == 2);
+        $e['requireFees_bLicense'] = ($fees == 6);
         
         $e['classes'] = array();
         foreach ($event->GetClasses() as $class) {

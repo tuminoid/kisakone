@@ -233,7 +233,8 @@ holeNumber          #
 day_index           Päivä {index}
 
 
-event_require_license_fee  Vaadi lisenssimaksu osallistujilta
+event_require_alicense_fee  Vaadi A-lisenssimaksu osallistujilta
+event_require_blicense_fee  Vaadi B-lisenssimaksu osallistujilta
 event_require_member_fee  Vaadi jäsenmaksu osallistujilta
 event_add_all_classes   Lisää kaikki
 
@@ -295,8 +296,8 @@ remove_player_from_event        Poista kilpailusta
 player_removal_failed           Kilpailijan poisto epäonnistui. Kilpailija on luultavasti jo sijoitettu johonkin lohkoon.
 fees_necessary_for_signup      Tähän kilpailuun ilmoittautuminen vaatii jäsen- ja lisenssimaksujen maksun.
 fees_necessary_for_signup_1    Tähän kilpailuun ilmoittautuminen vaatii jäsenmaksun maksetuksi.
-fees_necessary_for_signup_2     Tähän kilpailuun ilmoittautuminen vaatii lisenssimaksun maksetuksi.
-fees_necessary_for_signup_3      Tähän kilpailuun ilmoittautuminen vaatii jäsen- ja lisenssimaksujen maksun.
+fees_necessary_for_signup_2     Tähän kilpailuun ilmoittautuminen vaatii A-lisenssin.
+fees_necessary_for_signup_3      Tähän kilpailuun ilmoittautuminen vaatii B-lisenssin.
 event_is_locked_cant_edit       Kilpailu on lukittu. Muutokset eivät ole mahdollisia ellei kilpailua avata uudelleen.
 cant_cancel_signup_now      Ilmoittautuminen on sulkeutunut, eikä perumista voi enää tehdä.
 relevant_events        Ajankohtaiset kilpailut
