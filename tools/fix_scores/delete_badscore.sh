@@ -1,0 +1,17 @@
+#!/bin/sh
+
+PLAYERID="$1"
+ROUNDID="$2"
+FILE="/tmp/delete_score.sql"
+
+[ ! $# -eq 2 ] && echo "usage: playerid roundid" && exit 1
+
+cat <<EOF >$FILE
+SELECT * FROM kisakone_HoleResult WHERE player = $PLAYERID AND roundresult IN (SELECT id FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID);
+DELETE FROM kisakone_HoleResult WHERE player = $PLAYERID AND roundresult IN (SELECT id FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID);
+SELECT * FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID;
+DELETE FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID;
+EOF
+
+mysql -v -u root --password=pass fliitto_yleinen <$FILE
+rm $FILE
