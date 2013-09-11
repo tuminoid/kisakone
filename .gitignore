@@ -4,3 +4,5 @@ config.php
 temp*.txt
 *.tumi
 .htaccess
+php5-cgi
+php5-fcgi
