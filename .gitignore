@@ -3,3 +3,4 @@ config.php
 .vagrant
 temp*.txt
 *.tumi
+.htaccess

@@ -3,6 +3,7 @@ RewriteBase /kisakone/
 
 RewriteCond %{REQUEST_FILENAME} !install.php$
 RewriteCond %{REQUEST_FILENAME} !index.php$
+RewriteCond %{REQUEST_FILENAME} !test.php$
 RewriteCond %{REQUEST_FILENAME} !ui/elements/
 RewriteRule (.*) index.php?path=$1&%{QUERY_STRING}
 
