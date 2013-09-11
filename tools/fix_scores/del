@@ -13,5 +13,6 @@ SELECT * FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID
 DELETE FROM kisakone_RoundResult WHERE player = $PLAYERID AND round = $ROUNDID;
 EOF
 
-mysql -v -u root --password=pass fliitto_yleinen <$FILE
+. auth
+_mysql <$FILE
 rm $FILE

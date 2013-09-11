@@ -15,5 +15,6 @@ $SCOREQ;
 $ROUNDQ;
 EOF
 
-mysql -v -u root --password=pass fliitto_yleinen <$FILE
+. auth
+_mysql <$FILE
 rm $FILE
