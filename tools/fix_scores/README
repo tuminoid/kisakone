@@ -1,20 +1,2 @@
 
-How to relatively safely delete bad scores:
--------------------------------------------
-
-1. Use lookup_playerid.sh to find the exact player_id of affected player
-  $ ./lookup_playerid.sh "Tuomo Tanskanen"
-  Make note of the 'player_id' field
-
-2. Use lookup_roundid.sh to find exact round id where the scores are bad
-   (You should know the which round (as in 1,2,3,4) has bad score for these players from Kisakone)
-  $ ./lookup_roundid.sh "Parigolf SM-kilpailu Avoin"
-  Make note of the RIGHT id, named 'Round'
-
-3. Use lookup_badscore.sh to verify results are shady
-  $ ./lookup_badscore.sh player_id round_id
-
-4. Use delete_sadscore.sh to delete the results
-  $ ./delete_badsore.sh player_id round_id
-
-5. Re enter scores in Kisakone
+READ the PDF document and follow it strictly!
