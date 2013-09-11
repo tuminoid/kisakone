@@ -1,0 +1,3 @@
+[submodule "tools/development"]
+	path = tools/development
+	url = git@github.com:tuminoid/kisakone-dev
