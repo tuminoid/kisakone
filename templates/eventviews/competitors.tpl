@@ -37,21 +37,21 @@
 <div class="SearchStatus" />
 <table class="narrow" style="min-width: 400px">
    <tr>
-      <th>{translate id=num}</th>
+      <th>{sortheading field=1 id=num sortType=integer}</th>
       <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
       <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
       <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
       <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
    </tr>
    {foreach from=$participants item=participant name=osallistuja}
-     <tr>
-        <td>{$smarty.foreach.osallistuja.index+1}</td>
-        <td><a href="{url page=user id=$participant.user->username}">{$participant.user->lastname|escape}</a></td>
-        <td><a href="{url page=user id=$participant.user->username}">{$participant.user->firstname|escape}</a></td>
-        <td>{$participant.className|escape}</td>
-        <td>{$participant.player->pdga|escape}</td>
-     </tr>
-   {/foreach}
+   <tr>
+      <td>{$smarty.foreach.osallistuja.index+1}</td>
+      <td><a href="{url page=user id=$participant.user->username}">{$participant.user->lastname|escape}</a></td>
+      <td><a href="{url page=user id=$participant.user->username}">{$participant.user->firstname|escape}</a></td>
+      <td>{$participant.className|escape|truncate:3:""}</td>
+      <td>{$participant.player->pdga|escape}</td>
+   </tr>
+  {/foreach}
 </table>
 
 <div class="SearchStatus" />
