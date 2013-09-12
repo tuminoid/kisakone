@@ -78,14 +78,13 @@
 </p>
 
 <textarea cols=120 rows=140>
-{foreach from=$resultsByClass key=class item=results}
-{$class|escape}{counter assign=rowind start=-1}
-{foreach from=$results item=result}{counter assign=rowind}{if $rowind == 0}{translate id=result_pos},{translate id=result_name},PDGA{foreach from=$rounds key=index item=round}{math assign=roundNumber equation="x+1" x=$index},{translate id=round_number_short number=$roundNumber}{/foreach},{translate id=leaderboard_hole},+/-,{translate id=result_cumulative}{if $includePoints},{translate id=result_tournament}
-{/if}
+{counter assign=rowind start=-1}{foreach from=$resultsByClass key=class item=results}
+{foreach from=$results item=result}{counter assign=rowind}{if $rowind == 0}
+{translate id=result_division}{""|indent:1:"\t"}{translate id=result_place}{""|indent:1:"\t"}{translate id=result_firstname}{""|indent:1:"\t"}{translate id=result_lastname}{""|indent:1:"\t"}PDGA{""|indent:1:"\t"}{foreach from=$rounds key=index item=round}{math assign=roundNumber equation="x+1" x=$index}{translate id=round_number_short number=$roundNumber}{""|indent:1:"\t"}{/foreach}{if $includePoints}{""|indent:1:"\t"}{translate id=result_tournament}{/if}{/if}
 
-{/if}{$result.Standing};{$result.FirstName|escape};{$result.LastName|escape};{$result.PDGANumber|escape}{foreach from=$rounds item=round key=index};{assign var=roundid value=$round->id}{assign var=rresult value=$result.Results.$roundid.Total}{if !$rresult}{assign var=rresult value=0}{/if}{$rresult}{/foreach};{$result.TotalCompleted};{if $result.DidNotFinish}999{else}{$result.TotalPlusminus}{/if};{if $result.DidNotFinish}999{else}{$result.OverallResult}{/if}{if $includePoints}{assign var=tournamentPoints value=$result.TournamentPoints}{if !$tournamentPoints}{assign var=tournamentPoints value=0}{/if}{math equation="x/10" x=$tournamentPoints}{/if}{if $result.Results.$roundid.SuddenDeath};{translate id=result_sd_panel}{/if}
-
+{$class|truncate:3:""}{""|indent:1:"\t"}{$result.Standing}{""|indent:1:"\t"}{$result.FirstName|escape}{""|indent:1:"\t"}{$result.LastName|escape}{""|indent:1:"\t"}{$result.PDGANumber|escape}{""|indent:1:"\t"}{foreach from=$rounds item=round key=index}{assign var=roundid value=$round->id}{assign var=rresult value=$result.Results.$roundid.Total}{assign var=roundresult value=$rresult}{if !$rresult}{assign var=roundresult value=""}{/if}{$roundresult}{""|indent:1:"\t"}{/foreach}{if $includePoints}{assign var=tournamentPoints value=$result.TournamentPoints}{if !$tournamentPoints}{assign var=tournamentPoints value=0}{/if}{math equation="x/10" x=$tournamentPoints}{""|indent:1:"\t"}{/if}
 {/foreach}
-{/foreach}{/if}
+{/foreach}
+{/if}
 </textarea>
 

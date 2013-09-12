@@ -110,6 +110,10 @@ event_payment       Kilpailumaksu
 
 result_group    Ryhmä
 result_name     Nimi
+result_firstname First name
+result_lastname  Last name
+result_division  Division
+result_place     Place
 result_pdga     PDGA
 event_save      Tallennus
 all_ready       Valmis
