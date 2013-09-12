@@ -3,7 +3,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Mark event fees paid, and send reminder emails
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,7 +28,7 @@
 
 <form method="get" class="usersform searcharea" action="{url page=eventfees id=$smarty.get.id}">
     {initializeGetFormFields  search=false }
-    <div class="formelements">        
+    <div class="formelements">
          <p>{translate id=users_searchhint} </p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
@@ -40,22 +40,24 @@
 <div class="SearchStatus" />
 <form method="post">
     <p style="clear: both;"><input type="submit" value="{translate id=form_save}" /></p>
-    <p><input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}</p>
+    <p><input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}<br />
+    <input class="selectall" type="checkbox" id="selectall" name="selectall" /> Valitse kaikki maksetuiksi
+    </p>
     <input type="hidden" name="formid" value="event_fees" />
     <table id="userTable" class="hilightrows oddrows">
        <tr>
-        <th>{sortheading field=1 id=num sortType=integer}</th>
+          <th>{sortheading field=1 id=num sortType=integer}</th>
           <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
           <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
           <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
           <th>{sortheading field=Username id=users_id sortType=alphabetical}</th>
-          
+
           <th>{sortheading field=1 id=users_eventfees sortType=checkboxchecked}</th>
           <th>{sortheading field=1 id=eventfee_remind sortType=checkboxchecked}</th>
-          <th>{sortheading field=1 id=date sortType=date}</th>          
+          <th>{sortheading field=1 id=date sortType=date}</th>
        </tr>
-        
-       {assign var='i' value=1}     
+
+       {assign var='i' value=1}
        {foreach from=$users item=user}
           {assign var=userid value=$user.user->id}
           {assign var=partid value=$user.participationId}
@@ -63,10 +65,15 @@
             <td>{$i++}</td>
             <td><a href="{url page="user" id="$userid"}">{$user.user->lastname|escape}</a></td>
             <td><a href="{url page="user" id="$userid"}">{$user.user->firstname|escape}</a></td>
-            
+
              <td>{$user.player->pdga|escape}</td>
              <td><a href="{url page="user" id="$userid"}">{$user.user->username|escape}</a></td>
-             
+             <td>
+                <input type="hidden" name="oldfee_{$userid}_{$partid}" value="{$user.eventFeePaid}" />
+                <input type="checkbox" class="payment case" name="newfee_{$userid}_{$partid}" {if $user.eventFeePaid !== null}checked="checked"{/if} />
+                {translate id=fee}
+             </td>
+            <td>
              <td>
                 <input type="hidden" name="oldfee_{$userid}_{$partid}" value="{$user.eventFeePaid}" />
                 <input type="checkbox" class="payment" name="newfee_{$userid}_{$partid}" {if $user.eventFeePaid !== null}checked="checked"{/if} />
@@ -78,20 +85,36 @@
             </td>
             <td>
                 {if $user.eventFeePaid !== null}
-                 {assign var='paid' value=$paid+1}   
+                 {assign var='paid' value=$paid+1}
+                    <input type="hidden" value="{$user.eventFeePaid}" />
+                    {capture assign=date}{$user.eventFeePaid|date_format:"%d.%m.%Y - %R"}{/capture}
+                    {translate id=payment_date date=$date}
+                {else}
+                {assign var='not_paid' value=$not_paid+1}
+                <input type="hidden" value="{$user.signupTimestamp}" />
+                    {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y - %R"}{/capture}
+                    {translate id=signup_date date=$date}
+
+                {/if}
                     <input type="hidden" value="{$user.eventFeePaid}" />
                     {capture assign=date}{$user.eventFeePaid|date_format:"%d.%m.%Y"}{/capture}
                     {translate id=payment_date date=$date}
                 {else}
-                {assign var='not_paid' value=$not_paid+1}   
+                {assign var='not_paid' value=$not_paid+1}
                 <input type="hidden" value="{$user.signupTimestamp}" />
                     {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y %H:%M"}{/capture}
                     {translate id=signup_date date=$date}
-                    
+
                 {/if}
              </td>
          </tr>
-       {/foreach}     
+       {/foreach}
+    </table>
+
+    <p style="clear: both;">
+        <input type="submit" value="{translate id=form_save}" />
+        <input name="cancel" type="submit" value="{translate id=form_cancel}" />
+       {/foreach}
     </table>
     <p><input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}</p>
     <p style="clear: both;">
@@ -109,15 +132,15 @@
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('userTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );   
+                );
     $($(".SortHeading").get(0)).click();
     $("#toggle_submenu").click(toggleSubmenu);
-    
+
     SortDoneCallback = attachInputEvents;
     attachInputEvents();
-    
+
     $(".all").click(synchAll)
-    
+
 });
 
 function synchAll() {
@@ -133,7 +156,7 @@ function attachInputEvents() {
 
 function adjustRemind() {
     var remind = $(this).parent().next("td").find(".remind").get(0);
-    
+
     if (this.checked) {
         remind.disabled = true;
         remind.checked = false;
