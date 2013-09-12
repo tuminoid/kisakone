@@ -40,8 +40,9 @@
 <div class="SearchStatus" />
 <form method="post">
     <p style="clear: both;"><input type="submit" value="{translate id=form_save}" /></p>
-    <p><input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}<br />
-    <input class="selectall" type="checkbox" id="selectall" name="selectall" /> Valitse kaikki maksetuiksi
+    <p>
+      <input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}<br />
+      <input class="selectall" type="checkbox" id="selectall" name="selectall" /> {translate id=select_all_as_paid}
     </p>
     <input type="hidden" name="formid" value="event_fees" />
     <table id="userTable" class="hilightrows oddrows">
@@ -52,9 +53,10 @@
           <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
           <th>{sortheading field=Username id=users_id sortType=alphabetical}</th>
 
+          <th>{sortheading field=1 id=signup_date_header sortType=date}</th>
           <th>{sortheading field=1 id=users_eventfees sortType=checkboxchecked}</th>
+          <th>{sortheading field=1 id=payment_date_header sortType=date}</th>
           <th>{sortheading field=1 id=eventfee_remind sortType=checkboxchecked}</th>
-          <th>{sortheading field=1 id=date sortType=date}</th>
        </tr>
 
        {assign var='i' value=1}
@@ -69,53 +71,35 @@
              <td>{$user.player->pdga|escape}</td>
              <td><a href="{url page="user" id="$userid"}">{$user.user->username|escape}</a></td>
              <td>
+                  <input type="hidden" value="{$user.signupTimestamp}" />
+                  {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y - %R"}{/capture}
+                  {translate id=signup_date date=$date}
+             </td>
+             <td>
                 <input type="hidden" name="oldfee_{$userid}_{$partid}" value="{$user.eventFeePaid}" />
                 <input type="checkbox" class="payment case" name="newfee_{$userid}_{$partid}" {if $user.eventFeePaid !== null}checked="checked"{/if} />
                 {translate id=fee}
              </td>
             <td>
-             <td>
-                <input type="hidden" name="oldfee_{$userid}_{$partid}" value="{$user.eventFeePaid}" />
-                <input type="checkbox" class="payment" name="newfee_{$userid}_{$partid}" {if $user.eventFeePaid !== null}checked="checked"{/if} />
-                {translate id=fee}
-             </td>
-            <td>
-                <input type="checkbox" {if $user.eventFeePaid !== null}disabled="disabled"{/if} class="remind" name="remind_{$userid}" />
-                {translate id=remind}
-            </td>
-            <td>
                 {if $user.eventFeePaid !== null}
-                 {assign var='paid' value=$paid+1}
+                    {assign var='paid' value=$paid+1}
                     <input type="hidden" value="{$user.eventFeePaid}" />
                     {capture assign=date}{$user.eventFeePaid|date_format:"%d.%m.%Y - %R"}{/capture}
                     {translate id=payment_date date=$date}
                 {else}
-                {assign var='not_paid' value=$not_paid+1}
-                <input type="hidden" value="{$user.signupTimestamp}" />
-                    {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y - %R"}{/capture}
-                    {translate id=signup_date date=$date}
-
+                    {assign var='not_paid' value=$not_paid+1}
+                    <input type="hidden" value="9998887776" />
+                    {capture assign=date}{/capture}
                 {/if}
-                    <input type="hidden" value="{$user.eventFeePaid}" />
-                    {capture assign=date}{$user.eventFeePaid|date_format:"%d.%m.%Y"}{/capture}
-                    {translate id=payment_date date=$date}
-                {else}
-                {assign var='not_paid' value=$not_paid+1}
-                <input type="hidden" value="{$user.signupTimestamp}" />
-                    {capture assign=date}{$user.signupTimestamp|date_format:"%d.%m.%Y %H:%M"}{/capture}
-                    {translate id=signup_date date=$date}
-
-                {/if}
-             </td>
+              </td>
+            <td>
+                <input type="checkbox" {if $user.eventFeePaid !== null}disabled="disabled"{/if} class="remind" name="remind_{$userid}" />
+                {translate id=remind}
+            </td>
          </tr>
        {/foreach}
     </table>
 
-    <p style="clear: both;">
-        <input type="submit" value="{translate id=form_save}" />
-        <input name="cancel" type="submit" value="{translate id=form_cancel}" />
-       {/foreach}
-    </table>
     <p><input class="all" type="checkbox" name="remind_all" /> {translate id=remind_all}</p>
     <p style="clear: both;">
         <input type="submit" value="{translate id=form_save}" />
@@ -123,7 +107,7 @@
     </p>
 </form>
 <div class="SearchStatus" />
-<p>Maksettu: {$paid} / {$paid+$not_paid}</p>
+<p>{translate id=paid}: {$paid} / {$paid+$not_paid}</p>
 
 
 <script type="text/javascript">

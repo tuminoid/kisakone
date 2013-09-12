@@ -37,7 +37,7 @@
 <div class="SearchStatus" />
 <table class="narrow" style="min-width: 400px">
    <tr>
-      <th>{sortheading field=1 id=num sortType=integer}</th>
+      <th>{translate id=num}</th>
       <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
       <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
       <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>

@@ -184,11 +184,14 @@ month_default   kk
 year_default    vvvv
 
 
-signup_date     {date} (ilmoittautuminen)
-payment_date    {date} (maksu)
+signup_date     {date}
+payment_date    {date}
 date            Ajankohta
+signup_date_header Ilmoittautuminen
+payment_date_header  Maksettu
 
 remind_all      Muistuta kaikkia, jotka eivät ole maksaneet
+select_all_as_paid Valitse kaikki maksetuiksi
 round_number    Kierros {number}
 starttype       Lähtötapa
 group_interval        Ryhmien väli minuuteissa
