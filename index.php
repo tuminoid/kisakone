@@ -1,7 +1,8 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmÃ¤
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file serves as the one and only interface users have for the PHP code. In fact,
  * whenever mod_rewrite is enabled, access to other php files is explicitly made
