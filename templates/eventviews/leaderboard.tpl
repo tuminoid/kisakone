@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Leaderboard
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -20,51 +21,51 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
  {if $mode == "head"}
- 
+
 <style type="text/css">{literal}
     .resultrow td, .resultrow th {
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         text-align: center;
-        
+
         margin: 0;
     }
-    
+
     .results td, .results th {
         background-color: #EEE;
         text-align: center;
         border: 2px solid white;
     }
-    
+
     .round_selection_table .selected {
         background-color: #DDD;
-        
+
     }
-    
+
     .results {
         border-collapse: collapse;
     }
-    
+
     .rightside {
         text-align: right !important;
     }
     .leftside {
         text-align: left !important;
     }
-    
+
     .thr {
-        
+
     }
     .sdtd { background-color: white !important}
-    
+
     .sd {
         background-color: #EEE !important;
         font-weight: bold;
         min-width: 16px;
-        
-        
+
+
     }
-    
+
 {/literal}</style>
 {else}
  <div id="event_content">
@@ -78,8 +79,8 @@
 </p>
 
 
-<table class="results ">       
-    
+<table class="results ">
+
     {foreach from=$resultsByClass key=class item=results}
     <tr style="border: none">
         {math assign=colspan equation="5+x" x=$numRounds}
@@ -87,13 +88,13 @@
             <a name="c{$class}"></a>
             <h3>{$class|escape}</h3>
         </td>
-        
+
     </tr>
     {counter assign=rowind start=-1}
     {foreach from=$results item=result}
-    
+
         {counter assign=rowind}
-        
+
         {if $rowind == 0}
         <tr>
                <td style="height: 8px; background-color: white;"></td>
@@ -106,7 +107,7 @@
                 {foreach from=$rounds key=index item=round}
                         {math assign=roundNumber equation="x+1" x=$index}
                         <th>{translate id=round_number_short number=$roundNumber}</th>
-                        
+
                 {/foreach}
                 <th>{translate id=leaderboard_hole}</th>
                 <th>+/-</th>
@@ -119,46 +120,46 @@
                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
-    
+
         <tr class="resultrow">
-            
+
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
             <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td><td> {$result.PDGANumber|escape} </td>
             {foreach from=$rounds item=round key=index}
                 {assign var=roundid value=$round->id}
                 {assign var=rresult value=$result.Results.$roundid.Total}
-                {if !$rresult}{assign var=rresult value=0}{/if}                
+                {if !$rresult}{assign var=rresult value=0}{/if}
                 <td id="r{$result.PlayerId}_{$hr_id}">{$rresult}</td>
-                
-                
-           
+
+
+
             {/foreach}
- 
+
             <td  id="r{$result.PlayerId}_tc">
                 {$result.TotalCompleted}</td>
-            
+
             <td  id="r{$result.PlayerId}_pm">{if $result.DidNotFinish}DNF{else}
                 {$result.TotalPlusminus}{/if}</td>
             <td id="r{$result.PlayerId}_t">{if $result.DidNotFinish}DNF{else}
                 {$result.OverallResult}{/if}</td>
             {if $includePoints}
             <td id="r{$result.PlayerId}_tp">
-                
+
                 {assign var=tournamentPoints value=$result.TournamentPoints}
                 {if !$tournamentPoints}{assign var=tournamentPoints value=0}{/if}
                 {math equation="x/10" x=$tournamentPoints}
             </td>
             {/if}
             {if $result.Results.$roundid.SuddenDeath}
-            <td id="r{$result.PlayerId}_p" class="sdtd sd">                
+            <td id="r{$result.PlayerId}_p" class="sdtd sd">
                 {translate id=result_sd_panel}
-           
+
             </td>
             {/if}
-            
+
         </tr>
-        
+
     {/foreach}
-    {/foreach}    
+    {/foreach}
 </table>
 {/if}

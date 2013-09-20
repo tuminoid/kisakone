@@ -1,10 +1,11 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Signs user up for an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,65 +28,65 @@
  */
 function processForm() {
     require_once('core/event_management.php');
-    
+
     if (@$_POST['cancel']) {
-        
-    
+
+
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
         die();
     }
     global $user;
     if (!$user) return Error::AccessDenied();
     if ($user->role =='admin') return Error::AccessDenied();
-    
+
     $event = GetEventDetails(@$_GET['id']);
     if (!$event) return Error::NotFound('event');
-    
-    
+
+
     if ($event->approved !== null) {
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
         die();
     }
-    
+
     $nothing = null;
-    
-        
+
+
     if (!$event->signupPossible()) {
         return Error::AccessDenied();
     }
-    
+
     $player = $user->GetPlayer();
     $class = GetClassDetails(@$_POST['class']);
 
     if (!$player->IsSuitableClass($class)) {
         $error = new Error();
-        $error->title = 'invalid_class_selection';        
+        $error->title = 'invalid_class_selection';
         $error->function = 'InputProcessing:sign_up:processForm';
         $error->description = translate('invalid_class_selection_description');
-        $error->isMajor= true;        
+        $error->isMajor= true;
         return $error;
     }
-    
+
     $fees = $event->FeesRequired();
     if ($fees) {
         if (!$user->FeesPaidForYear(date('Y', $event->startdate), $fees)) {
             return Error::AccessDenied();
         }
      }
-    
-    
+
+
     $result = SignupUser($event->id, $user->id, $class->id);
-    
-    
+
+
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
         return $result;
     }
-    
+
     $variableNeededAsItsReference = null;
     header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
-        
-   
+
+
 }
 
 ?>

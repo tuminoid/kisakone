@@ -2,9 +2,10 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
- * Maps forms and actions to their handler units    
- * 
+ * Maps forms and actions to their handler units
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -33,21 +34,21 @@ function gate_ProcessInputData() {
     // If anything sensible was returned, skip form processing entirely
     if ($actionresult) return $actionresult;
     if (count($_POST) == 0) return;
-    
+
     // Verify that a form id is defined, and that it's valid
-    
+
     $formid = @$_POST['formid'];
     if (!$formid) return gate_InvalidForm($formid);
-    
+
     $formid = basename($formid);
     if (!file_exists("inputhandlers/$formid.php")) return gate_InvalidForm($formid);
-    
+
     // Include the form handler, and call it. The function is defined in the
     // included file.
-    
-    include("inputhandlers/$formid.php");    
-    return ProcessForm();                                        
-    
+
+    include("inputhandlers/$formid.php");
+    return ProcessForm();
+
 
 }
 
@@ -57,16 +58,16 @@ function gate_ProcessInputData() {
  */
 function gate_ProcessActionRequest() {
     if (!array_key_exists('action', $_GET)) return;
-    
+
     $action = $_GET['action'];
-    
+
     $action = basename($action);
     if (!file_exists("inputhandlers/action_$action.php")) return gate_InvalidForm($action);
-    
+
     // Include the action handler, and call it. The function is defined in the
     // included file.
-    
-    include("inputhandlers/action_$action.php");    
+
+    include("inputhandlers/action_$action.php");
     return ProcessAction();
 }
 

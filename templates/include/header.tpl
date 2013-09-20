@@ -1,9 +1,10 @@
 {*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmº
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Layout before content
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -19,14 +20,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
-<!DOCTYPE html 
+<!DOCTYPE html
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
       <title>{$title} - {translate id=site_name}</title>
       <link rel="stylesheet" href="{$url_base}ui/elements/style.css" type="text/css" />
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery-1.3.2.min.js"></script>      
+      <script type="text/javascript" src="{$url_base}ui/elements/jquery-1.3.2.min.js"></script>
       <script type="text/javascript" src="{$url_base}javascript/base"></script>
       {if $autocomplete}
       <script type="text/javascript" src="{$url_base}ui/elements/jquery.autocomplete-min.js"></script>
@@ -42,7 +43,7 @@
 <table id="contentcontainer" cellpadding="0" cellspacing="0">
       <tr id="headtr">
             <td colspan="3">
-            
+
       <div id="header">
       {include file="include/loginbox.tpl"}
       {if $smarty.get.languagebar }
@@ -50,7 +51,7 @@
             {include file='include/languagebar.tpl'}
       {/if}
       <img id="sitelogo" src="{$url_base}ui/elements/logo2.png" alt="{translate id=site_name}" />
-      
+
       <h1 id="sitename">{translate id=site_name_long}</h1>
       <div id="pagename">{$title}</div>
       </div>
@@ -59,9 +60,9 @@
     <tr id="maintr2">
         <td id="submenucontainer">        <br />
             {$submenu_content}
-            
+
             {include file="include/submenu.tpl"}
-        </td>        
+        </td>
         <td id="content">
             <ul class="breadcrumb">
                   {if $mainmenuselection != 'unique'}

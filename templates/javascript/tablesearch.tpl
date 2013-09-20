@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Client-side search from HTML tables
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,8 +27,8 @@ The functionality is initialized with code such as the following:
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('theTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );       
-    
+                );
+
 });
 *}
 {literal}
@@ -42,10 +43,10 @@ function TableSearch(searchField, table, emptyListMessage) {
      // If the search has been done manually (as opposed to being dynamic), the dynamic
      // search can not show items that have already been filtered out. In that case the
      // dynamic search is disables.
-     
-     var initialSearch = gup(searchField.name);     
+
+     var initialSearch = gup(searchField.name);
      if (initialSearch != "") {
-        
+
         // No dynamic search; let the user know why.
 	var message = {/literal}"{translate id='Restore_AutoSearch'}"{literal};
 	var form = $(searchField.form);
@@ -53,11 +54,11 @@ function TableSearch(searchField, table, emptyListMessage) {
 	if (statusDiv.length == 0) {
             statusDiv = form.next(".SearchStatus");
 	}
-	 
+
 	statusDiv.text(message);
      } else {
         // The search is to be used.
-          
+
         // Apply event handlers to refresh the list whenever the contents of the
         // search field change.
 	$(searchField).keyup(function(){DoTableSearch(searchField, table, emptyListMessage)});
@@ -65,9 +66,9 @@ function TableSearch(searchField, table, emptyListMessage) {
     }
 }
 
- // If set to true, at least one row is shown, otherwise none.    
+ // If set to true, at least one row is shown, otherwise none.
  var anyRowsShown = false;
- 
+
 /**
  * Performs the actual dynamic search of the table.
  * @param field The input element used for searching
@@ -77,49 +78,49 @@ function TableSearch(searchField, table, emptyListMessage) {
  function DoTableSearch(field, table, message) {
      // Separate all the words within the search query
      var searchWords = field.value.split(" ");
-     
+
      // Assume none are shown; fix later if necessary
      anyRowsShown = false;
-          
+
      $(table).find("tr").each(function(row){
         // Ignore heading row(s)
 	 if ($(this).find("th").length != 0) return;
-         
+
          // Either show or hide the row depending on if it's a match or not
 	 if (searchMatch(this, searchWords))
 	 {
 	     $(this).show(); }
 	 else $(this).hide();
 	 });
-     
+
      // If any where shown, clear the message
      if (anyRowsShown) {
 	 message = "";
      }
-     
+
      // Show the message, if any
      $(table).next(".SearchStatus").text(message);
  }
- 
+
  // See if the given row matches the provided search query
  // @param row   TR object of the row
  // @param words  Array of search queries
  function searchMatch(row, words) {
      var text = $(row).text();
-	 
-     
+
+
      // Make sure all words in the search query are found
-	 
+
      for (var ind = 0; ind < words.length; ++ind) {
 		  var word = words[ind];
-		  
+
 		  if (!text.match(new RegExp(word, "i"))) return false;
      }
-     
+
      // All were found
      anyRowsShown = true;
      return true;
  }
- 
+
 
 {/literal}
