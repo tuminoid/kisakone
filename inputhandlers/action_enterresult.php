@@ -1,10 +1,11 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Stores an entered result
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -23,37 +24,44 @@
 
 function ProcessAction() {
     language_include('events');
+
     $event = GetEventDetails(@$_GET['id']);
-    if ($event->resultsLocked) return Error::AccessDenied();
-    if (!$event) return Error::NotFound('event');
-    
-    if (!IsAdmin() && $event->management == '') return Error::AccessDenied();
-    
+    if (!$event)
+        return Error::NotFound('event');
+    if ($event->resultsLocked)
+        return Error::AccessDenied();
+    if (!IsAdmin() && $event->management == '')
+        return Error::AccessDenied();
+
     $value = @$_GET['value'];
-    
     $round = GetRoundDetails(@$_GET['round']);
-    
-    if (!$round) return Error::NotFound('round');
-    
-    if ($round->eventId != $event->id) return translate('access_denied');
-    
+
+    if (!$round)
+        return Error::NotFound('round');
+    if ($round->eventId != $event->id)
+        return translate('access_denied');
+
     $bits = explode('_', substr(@$_GET['field'], 1));
     $playerid = $bits[0];
-    
-    $holeid = null; $specialid = null;
-    
-    if (is_numeric(@$bits[1])) $holeid = $bits[1];
-    else {
-        if ($bits[1] == 'p') $specialid = 'Penalty';
-        else $specialid = 'Sudden Death';
+    $holeid = $specialid = null;
+
+    if (is_numeric(@$bits[1])) {
+        $holeid = $bits[1];
     }
-    
+    else {
+        if ($bits[1] == 'p') {
+            $specialid = 'Penalty';
+        }
+        else {
+            $specialid = 'Sudden Death';
+        }
+    }
+
     $result = SaveResult($round->id, $playerid, $holeid, $specialid, $value);
-    if (is_a($result, 'Error')) return translate('save_failed');
-    
-    
+    if (is_a($result, 'Error'))
+        return translate('save_failed');
+
     //return translate('saved', array('time' => date('H:i:s')));
     return $playerid;
 }
-
 ?>
