@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Results and live results
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,74 +26,83 @@
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         text-align: center;
-        
+
         margin: 0;
     }
-    
-    
-    
+
+
+
     .results td, .results th {
         background-color: #EEE;
         text-align: center;
         border: 2px solid white;
     }
-    
+
     .penalty_hidden { display: none !important; }
-    
-    
+
+
     .in, .out {
         background-color: #caffca !important;
     }
-    
+
     .round_selection_table .selected {
         background-color: #DDD;
-        
+
     }
-    
+
     .results {
         border-collapse: collapse;
     }
-    
+
     .rightside {
         text-align: right !important;
     }
     .leftside {
         text-align: left !important;
     }
-    
+
     .thr {
-        
+
     }
-    
+
     .plusminus_neg { color: #F00; }
     .plusminus_pos { color: #0000aa; font-weight: bold; }
-    
-    .rm {
+
+    .hio {
+        background-color: Gold !important;
+    }
+
+    .eagle {
+        background-color: Red !important;
+    }
+
+    .birdie /* .rm */ {
         background-color: #f6a690 !important;
     }
-    
-    .rp1 {
-        background-color: #aacfcf !important;
-    }
-    .pr {
+
+    .par /* .pr */ {
         background-color: #f6F6F6 !important;
     }
-    
-    .rp {
+
+    .bogey /* .rp1 */ {
+        background-color: #aacfcf !important;
+    }
+
+    .double /*.rp*/ {
         background-color: #51787e !important;
         color: white;
     }
-    
+
     .penaltytd { background-color: white !important}
-    
+
     .penalty {
         background-color: #EEE !important;
         color: red;
         min-width: 16px;
-        
-        
+
+
     }
-    
+
 {/literal}</style>
 {else}
  <div id="event_content">
@@ -106,14 +116,14 @@
             <th>{$class->name|escape}</th>
         {foreach from=$rounds key=index item=round}
         {math assign=roundnum equation="x+1" x=$index}
-            
+
             {if $round->id == $the_round->id}
                 <td class="selected">
                 <a href="#c{$class->name}">
                 {translate id=round_title number=$roundnum}</a></td>
             {else}
                  <td>
-            
+
                 <a href="{url page=event id=$smarty.get.id view=$smarty.get.view round=$roundnum}#c{$class->name}">
                 {translate id=round_title number=$roundnum}</a>
                 </td>
@@ -125,8 +135,8 @@
 
 
 <table class="results ">
-   
-    
+
+
     {foreach from=$resultsByClass key=class item=results}
     <tr style="border: none" class="class_border">
         {math assign=colspan equation="2+x+2+2" x=$round->NumHoles()}
@@ -134,13 +144,13 @@
             <a name="c{$class}"></a>
             <h3>{$class|escape}</h3>
         </td>
-        
+
     </tr>
     {counter assign=rowind start=-1}
     {foreach from=$results item=result}
     {if $result.Total != 'not_used'}
         {counter assign=rowind}
-        
+
         {if $rowind == 0}
         <tr>
                <td style="height: 8px; background-color: white;"></td>
@@ -150,8 +160,8 @@
                 <th rowspan="2">{translate id=result_name}</th>
                 <th></th>
                 <th colspan="{math equation="x+2" x=$round->NumHoles()}">{translate id=result_score}</th>
-               
-               
+
+
                 <th colspan="2">{translate id=round}</th>
                 <th colspan="2">{translate id=cumulative}</th>
             </tr>
@@ -162,7 +172,7 @@
                 </th>
                 {assign var=parSoFar value=0}
                 {foreach from=$holes key=index item=hole}
-                        {math assign=parSoFar equation="x+y" x=$parSoFar y=$hole->par}                        
+                        {math assign=parSoFar equation="x+y" x=$parSoFar y=$hole->par}
                         <th>{$hole->holeNumber}<br />{$hole->par}</th>
                         {if $hole->holeNumber == $out_hole_index}<th class="out">{translate id=hole_out}<br />{$parSoFar}{assign var=parSoFar value=0}</th>{/if}
                 {/foreach}
@@ -172,12 +182,12 @@
                 <th>+/-</th>
                 <th>{translate id=result}</th>
             </tr>
-            
+
             <tr>
                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
-        
+
 <tr class="resultrow">
 
 <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
@@ -196,11 +206,13 @@
 {if $holeresult >= 99}{assign var=dnfd value=true}{/if}
 
 {math assign=pardiff equation="res-par" res=$holeresult par=$hole->par}
-{if $holeresult == 0}{assign var=holeclass value='rz'}
-{elseif $pardiff == 0}{assign var=holeclass value='pr'}
-{elseif $pardiff < 0}{assign var=holeclass value='rm'}
-{elseif $pardiff  == 1}{assign var=holeclass value='rp1'}
-{elseif $pardiff > 1}{assign var=holeclass value='rp'}
+{if $holeresult == 0}{assign var=holeclass value='noresult'}
+{elseif $holeresult == 1}{assign var=holeclass value='hio'}
+{elseif $pardiff < -1}{assign var=holeclass value='eagle'}
+{elseif $pardiff  == -1}{assign var=holeclass value='birdie'}
+{elseif $pardiff == 0}{assign var=holeclass value='par'}
+{elseif $pardiff  == 1}{assign var=holeclass value='bogey'}
+{elseif $pardiff > 1}{assign var=holeclass value='double'}
 {/if}
 
 <td class="{$holeclass}"  id="r{$result.PlayerId}_{$hr_id}">
@@ -237,15 +249,15 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
 <td id="r{$result.PlayerId}_p" class="penalty_hidden">{$result.Penalty}</td>
 {/if}
 {if $result.Penalty}
-<td id="r{$result.PlayerId}_px" class="penaltytd penalty">                
+<td id="r{$result.PlayerId}_px" class="penaltytd penalty">
 {translate id=result_penalty_panel}
 
 </td>
 { else}
-<td id="r{$result.PlayerId}_px" class="penaltytd">                               
+<td id="r{$result.PlayerId}_px" class="penaltytd">
 </td>
 {/if}
-            
+
         </tr>
         {/if}
     {/foreach}
@@ -256,7 +268,7 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
 
 
     <script type="text/javascript" src="{url page=javascript/live}"></script>
-    
+
     <script type="text/javascript">
     //<![CDATA[
     var holes = new Array();
@@ -265,32 +277,32 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
     {/foreach}
     holes["p"] = 0;
     var eventid = {$eventid};
-    
+
     var roundid = {$roundid};
     var out_hole_index = {$out_hole_index};
     var penaltyText = "{translate id=result_penalty_panel}";
 
     {literal}
-    
-    
-    
+
+
+
     $(document).ready(function(){
         {/literal}{if $live}
         initializeLiveUpdate(15, eventid, roundid, updateField, updateBatchDone);
-        
+
         {/if}{literal}
-        
-        
+
+
         $("#stop").click(function(){ nolive=true; });
-        
+
     });
-    
+
     var anyChanges = false;
     var anySwaps = false;
-    
+
     function updateField(data) {
         if (data.hole == "sd") return;
-        
+
         var fieldid;
         if (data.hole == "p") {
             updatePenaltyField(data);
@@ -298,48 +310,48 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
         } else {
             fieldid = "r" + data.pid + "_" + data.round + "_" + data.holeNum;
         }
-        
-        
-        
-        
+
+
+
+
         var field = document.getElementById(fieldid);
         if (field) {
             var current = parseInt(field.innerText || field.textContent);
             if (isNaN( current )) current = 0;
             var diff = data.value - current;
-            
-            
-            
+
+
+
             if (diff) {
                 if (current == 99 || data.value == 99) {
                     window.location.reload();
                 }
-                
+
                 if (field.firstChild) field.removeChild(field.childNodes[0]);
                 var newTextNode = document.createTextNode(data.value);
                 field.appendChild(newTextNode);
                 $(field).effect("highlight", {color: '#5F5'}, 30000);
-                
+
                 // Round
                 {
                     var totfield = document.getElementById("r" + data.pid + "_rt");
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
                     if (isNaN(ctot)) ctot = 0;
-                    
+
                     if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
-                                    
+
                     var pmfield = document.getElementById("r" + data.pid + "_rpm");
-                    
+
                     var cpm = parseInt(pmfield.innerText || pmfield.textContent);
                     if (isNaN(cpm)) cpm = 0;
-                    
-                    
+
+
                     var par;
                     if (data.hole == "p") par = 0;
                     else par = holes[data.hole];
-                    
+
                     if (data.value == 0) {
                         newpm = cpm - (current - par);
                     } else if (current == 0) {
@@ -347,30 +359,30 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                     } else {
                         newpm = cpm + diff;
                     }
-                    
+
                     if (pmfield.childNodes.length) pmfield.removeChild(pmfield.childNodes[0]);
                     pmfield.appendChild(document.createTextNode(newpm));
                     $(pmfield).effect("highlight", {color: '#55F'}, 30000);
                 }
-                
-                
+
+
                 // Cumulative
                 {
                     var totfield = document.getElementById("r" + data.pid + "_ct");
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
                     if (isNaN(ctot)) ctot = 0;
-                    
+
                     if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
-                                    
+
                     var pmfield = document.getElementById("r" + data.pid + "_cpm");
-                    
+
                     var cpm = parseInt(pmfield.innerText || pmfield.textContent);
                     if (isNaN(cpm)) cpm = 0;
-                    
+
                     var par = holes[data.hole];
-                    
+
                     if (data.value == 0) {
                         newpm = cpm - (current - par);
                     } else if (current == 0) {
@@ -378,12 +390,12 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                     } else {
                         newpm = cpm + diff;
                     }
-                    
+
                     if (pmfield.childNodes.length)pmfield.removeChild(pmfield.childNodes[0]);
                     pmfield.appendChild(document.createTextNode(newpm));
                     $(pmfield).effect("highlight", {color: '#55F'}, 30000);
                 }
-                
+
                 if (data.hole != "sd" && data.hole != "p") {
                     var suffix;
                     if (data.holenum <= out_hole_index) {
@@ -391,26 +403,26 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                     } else {
                         suffix = "in";
                     }
-                    
+
                     var totfield = document.getElementById("r" + data.pid + "_" + suffix);
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
                     if (isNaN(ctot)) ctot = 0;
-                    
+
                     if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
                 }
-                
+
                 if (diff < 0)  {
                     moveUpIfNecessary(field);
                 } else {
                     moveDownIfNecessary(field);
                 }
-                
+
                 if (anySwaps) redoPositions();
-                
+
             }
-            
+
 
         } else {
 //            alert('reloading  ' + fieldid);
@@ -418,15 +430,15 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
         }
         anyChanges = true;
     }
-    
-    function updateBatchDone() {        
+
+    function updateBatchDone() {
         anyChanges = false;
     }
-    
+
     function redoPositions() {
         var last = -9999;
         var lastpos = 0;
-        
+
         $(".tr").each(function() {
             if (tr.className != 'resultrow') {
                if (tr.className = "class_border") {
@@ -437,7 +449,7 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                return;
             }
             var val = parseInt($(this).find(".cpm").text());
-            
+
             if (val == last) {
                 setPosition(this, lastpos);
             } else {
@@ -447,20 +459,20 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
             }
         });
     }
-    
+
     function setPosition(tr, pos) {
         var td = $(tr).find("td").get(0);
-        
+
         $(td).empty();
         td.appendChild(document.createTextNode(pos));
-        
+
     }
-    
+
     function updatePenaltyField(data) {
         var field = $("#r" + data.pid + "_px");
         if (!field.get(0)) return;
         if (!data.value) {
-            field.empty();            
+            field.empty();
             field.get(0).className = "penaltytd";
         } else {
 
@@ -469,105 +481,105 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
             field.get(0).appendChild(document.createTextNode(penaltyText));
         }
     }
-    
+
     function moveDownIfNecessary(field) {
-        
+
         var row = $(field).closest("tr").get(0);
         var nextrow = nextResultRow(row);
-        
+
         if (!nextrow) return;
-        
+
         var c = compareRows(row, nextrow);
-        
+
         if (c == 1) {
             swapRows(row, nextrow);
             anySwaps = true;
             moveDownIfNecessary(field);
         }
-        
+
     }
-    
+
     function moveUpIfNecessary(field) {
         var row = $(field).closest("tr").get(0);
         var nextrow = prevResultRow(row);
-        
+
         if (!nextrow) return;
-        
-        
+
+
         var c = compareRows(row, nextrow);
-        
+
         if (c == -1) {
             swapRows(row, nextrow);
             anySwaps = true;
             moveUpIfNecessary(field);
         }
-        
+
     }
-    
+
     function prevResultRow(row) {
         var r=  row.previousSibling;
-        
+
         while (r) {
             if (r.tagName && r.tagName.match(/tr/i)) {
                 if (r.className == 'resultrow') return r;
                 if (r.className == 'class_border') return null;
             }
-            
+
             r = r.previousSibling;
         }
         return null;
     }
-    
+
     function nextResultRow(row) {
         var r = row.nextSibling;
-        
+
         while (r) {
             if (r.tagName && r.tagName.match(/tr/i)) {
                 if (r.className == 'resultrow') return r;
                 if (r.className == 'class_border') return null;
             }
-            
+
             r = r.nextSibling;
         }
         return null;
     }
-    
+
     function compareRows(a, b) {
-        
+
         var acell = $(a).find(".cpm").get(0);
         var bcell = $(b).find(".cpm").get(0);
-        
+
         if (!acell || !bcell) {
             if (acell == bcell) return 0;
             if (!acell) return 1;
             return -1;
         }
-        
+
         var avalue = parseInt(acell.textContent || acell.innerText);
         var bvalue = parseInt(bcell.textContent || bcell.innerText);
-        
-        
-        
+
+
+
         if (avalue == bvalue) return 0;
         if (avalue < bvalue) return -1;
-        
-        
+
+
         return 1;
-        
+
     }
-    
-    function swapRows(a, b) {       
+
+    function swapRows(a, b) {
         var aa = a.nextSibling;
         var ab = b.nextSibling;
-        
+
         b.parentNode.insertBefore(a, ab);
         a.parentNode.insertBefore(b, aa);
     }
-    
+
     {/literal}
-    
-    
+
+
     //]]>
-    </script>    
+    </script>
 
 {/if}
