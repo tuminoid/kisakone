@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PLAYERID="$1"
 ROUNDID="$2"
