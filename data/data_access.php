@@ -3630,20 +3630,17 @@ function SaveTextContent($page)
       }
       mysql_free_result($res);
       return $out;
-
-
     }
+
 
     function SaveResult($roundid, $playerid, $holeid, $special, $result) {
 
       $dbError = InitializeDatabaseConnection();
       if($dbError)
-      {
          return $dbError;
-      }
       $rrid = GetRoundResult($roundid, $playerid);
-
-      if (is_a($rrid, 'Error')) return $rrid;
+      if (is_a($rrid, 'Error'))
+         return $rrid;
 
       if ($holeid === null) {
          return data_UpdateRoundResult($rrid, $special, $result);
@@ -3651,55 +3648,48 @@ function SaveTextContent($page)
       else {
          return data_UpdateHoleResult($rrid, $playerid, $holeid, $result);
       }
-
     }
 
-    function data_UpdateHoleResult($rrid, $playerid, $holeid, $result) {
-      // TODO: potential race condition, should be fixed
-      $query = data_query(
-        "SELECT id FROM :HoleResult WHERE RoundResult = %d AND Player = %d   AND Hole = %d",
-        $rrid, $playerid, $holeid
 
-      );
+    function data_UpdateHoleResult($rrid, $playerid, $holeid, $result) {
+
+      mysql_query(data_query("LOCK TABLE :HoleResult WRITE"));
+      $query = data_query("SELECT id FROM :HoleResult WHERE RoundResult = %d AND Player = %d AND Hole = %d",
+         $rrid, $playerid, $holeid);
       $dbres = mysql_query($query);
 
-
       if (!mysql_num_rows($dbres)) {
-
-         $query = data_query("INSERT INTO :HoleResult (Hole, RoundResult, Player, Result, DidNotShow, LastUpdated)
-                          VALUES (%d, %d, %d, 0, 0, NOW())",
-                          $holeid, $rrid, $playerid);
+         $query = data_query("INSERT INTO :HoleResult (Hole, RoundResult, Player, Result, DidNotShow, LastUpdated) VALUES (%d, %d, %d, 0, 0, NOW())",
+           $holeid, $rrid, $playerid);
          mysql_query($query);
          echo mysql_error();
       }
 
+      $dns = 0;
       if ($result == 99 || $result == 999) {
          $dns = 1;
          $result = 99;
-      } else {
-         $dns = 0;
       }
 
       $query = data_query("UPDATE :HoleResult SET Result = %d, DidNotShow = %d, LastUpdated = NOW() WHERE RoundResult = %d AND Hole = %d AND Player = %d",
-                     $result,
-                     $dns,
-                     $rrid,
-                     $holeid,
-                     $playerid);
-
+                     $result, $dns, $rrid, $holeid, $playerid);
       mysql_query($query);
       echo mysql_error();
 
-
-
+      mysql_query(data_query("UNLOCK TABLES"));
       return data_UpdateRoundResult($rrid);
     }
 
+
     function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null) {
 
-      $query = data_query("SELECT `Round`, Penalty, SuddenDeath FROM :RoundResult WHERE id = %d", $rrid);
+      $query = data_query("SELECT `Round`, Penalty, SuddenDeath FROM :RoundResult WHERE id = %d",
+         $rrid);
       $result = mysql_query($query);
-      echo mysql_error();
+      if (!$result) {
+         echo mysql_error();
+         return Error::Query($query);
+      }
       $details = mysql_fetch_assoc($result);
 
       $round = GetRoundDetails($details['Round']);
@@ -3709,19 +3699,18 @@ function SaveTextContent($page)
                            INNER JOIN :Hole ON :HoleResult.Hole = :Hole.id
                            WHERE RoundResult = %d", $rrid);
       $result = mysql_query($holeQuery);
-      echo mysql_error();
+      if (!$result) {
+         echo mysql_error();
+         return Error::Query($holeQuery);
+      }
 
-      if (!$result) return Error::Query($holeQuery);
-
-      $holes = 0;
-      $total = 0;
-      $plusminus = 0;
-      $dnf = false;
+      $holes = $total = $plusminus = $dnf = 0;
       while (($row = mysql_fetch_assoc($result)) !== false) {
          if ($row['DidNotShow']) {
             $dnf = true;
             break;
-         } else {
+         }
+         else {
             if ($row['Result']) {
                $total += $row['Result'];
                $ppm = $plusminus;
@@ -3749,35 +3738,26 @@ function SaveTextContent($page)
       }
 
       $suddendeath = $details['SuddenDeath'];
-      if ($modifyField == 'Sudden Death') $suddendeath = $modValue;
-
-
-
+      if ($modifyField == 'Sudden Death')
+         $suddendeath = $modValue;
 
       $query = data_query("UPDATE :RoundResult SET Result = %d, Penalty = %d, SuddenDeath = %d, Completed = %d,
-                          DidNotFinish = %d, PlusMinus = %d, LastUpdated = NOW()
-
-                          WHERE id = %d",
-                       $total,
-                       $penalty,
-                       $suddendeath,
-                       $complete,
-                       $dnf ? 1 : 0,
-                       $plusminus,
-                       $rrid);
+                          DidNotFinish = %d, PlusMinus = %d, LastUpdated = NOW() WHERE id = %d",
+                       $total, $penalty, $suddendeath, $complete, $dnf ? 1 : 0, $plusminus, $rrid);
       $res = mysql_query($query);
-      if (!$res) return Error::Query($query);
+      if (!$res)
+         return Error::Query($query);
 
-      UpdateCumulativeScores($rrid );
+      UpdateCumulativeScores($rrid);
       UpdateEventResults($round->eventId);
     }
+
 
     function UpdateCumulativeScores($rrid) {
         $query = data_query("
                 SELECT :RoundResult.PlusMinus, :RoundResult.Result, :RoundResult.CumulativePlusminus,
                         :RoundResult.CumulativeTotal, :RoundResult.id,
                         :RoundResult.DidNotFinish
-
                         FROM :RoundResult
                         INNER JOIN `:Round` ON `:Round`.id = :RoundResult.`Round`
                         INNER JOIN `:Round` RX ON `:Round`.Event = RX.Event
@@ -3804,32 +3784,57 @@ function SaveTextContent($page)
                 echo mysql_error();
             }
         }
-
         mysql_free_result($res);
-
     }
+
 
     function GetRoundResult($roundid, $playerid) {
-      // TODO: potential race condition, should be fixed
-      $query = data_query(
-        "SELECT id FROM :RoundResult WHERE `Round` = %d AND Player = $playerid",
-        $roundid, $playerid);
+
+      $id = 0;
+      $query = data_query("LOCK TABLE :RoundResult WRITE");
       $result = mysql_query($query);
-      echo mysql_error();
+      if ($result) {
+         $query = data_query("SELECT id FROM :RoundResult WHERE `Round` = %d AND Player = %d",
+            $roundid, $playerid);
+         $result = mysql_query($query);
 
+         if ($result) {
+            $id = 0;
+            $rows = mysql_num_rows($result);
+            /* FIXME: Need to pinpoint where exactly does this score mangling happen
+             * that causes two roundresult rows for same player on same round be created.
+             * Then fix it and then decommission this piece of code. */
+            if ($rows > 1) {
+               /* Cleanest thing we can do is to throw away all the invalid scores and return error.
+                * This way TD knows to reload the scoring page and can alleviate the error by re-entering. */
+               $query = data_query("DELETE FROM :RoundResult WHERE `Round` = %d AND Player = %d", $roundid, $playerid);
+               mysql_query($query);
+               // Fall thru the the end and return Error to get proper cleanup on the way
+            }
+            elseif (!mysql_num_rows($result)) {
+               $query = data_query("INSERT INTO :RoundResult (`Round`, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
+                                VALUES (%d, %d, 0, 0, 0, 0, NOW())",
+                                $roundid, $playerid);
+               $result = mysql_query($query);
+               if ($result)
+                  $id = mysql_insert_id();
+            }
+            else {
+               $row = mysql_fetch_assoc($result);
+               $id = $row['id'];
+            }
+         }
 
-      if (!mysql_num_rows($result)) {
-         $query = data_query("INSERT INTO :RoundResult (`Round`, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
-                          VALUES (%d, %d, 0, 0, 0, 0, NOW())",
-                          $roundid, $playerid);
-         mysql_query($query);
-         echo mysql_error();
-         return mysql_insert_id();
-      } else {
-         $row = mysql_fetch_assoc($result);
-         return $row['id'];
+         mysql_query(data_query("UNLOCK TABLES"));
       }
+
+      if ($id)
+         return $id;
+
+      echo mysql_error();
+      return Error::Query($query);
     }
+
 
     function CreateSection($round, $baseClassId, $name) {
       //@@section
