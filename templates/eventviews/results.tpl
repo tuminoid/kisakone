@@ -26,11 +26,8 @@
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         text-align: center;
-
         margin: 0;
     }
-
-
 
     .results td, .results th {
         background-color: #EEE;
@@ -38,8 +35,9 @@
         border: 2px solid white;
     }
 
-    .penalty_hidden { display: none !important; }
-
+    .penalty_hidden {
+        display: none !important;
+    }
 
     .in, .out {
         background-color: #caffca !important;
@@ -47,7 +45,6 @@
 
     .round_selection_table .selected {
         background-color: #DDD;
-
     }
 
     .results {
@@ -57,16 +54,22 @@
     .rightside {
         text-align: right !important;
     }
+
     .leftside {
         text-align: left !important;
     }
 
     .thr {
-
     }
 
-    .plusminus_neg { color: #F00; }
-    .plusminus_pos { color: #0000aa; font-weight: bold; }
+    .plusminus_neg {
+        color: #F00;
+    }
+
+    .plusminus_pos {
+        color: #0000aa;
+        font-weight: bold;
+    }
 
     .hio {
         background-color: Gold !important;
@@ -93,14 +96,14 @@
         color: white;
     }
 
-    .penaltytd { background-color: white !important}
+    .penaltytd {
+        background-color: white !important;
+    }
 
     .penalty {
         background-color: #EEE !important;
         color: red;
         min-width: 16px;
-
-
     }
 
 {/literal}</style>
@@ -133,10 +136,7 @@
     {/foreach}
 </table>
 
-
 <table class="results ">
-
-
     {foreach from=$resultsByClass key=class item=results}
     <tr style="border: none" class="class_border">
         {math assign=colspan equation="2+x+2+2" x=$round->NumHoles()}
@@ -152,16 +152,14 @@
         {counter assign=rowind}
 
         {if $rowind == 0}
-        <tr>
-               <td style="height: 8px; background-color: white;"></td>
+            <tr>
+                <td style="height: 8px; background-color: white;"></td>
             </tr>
             <tr class="thr">
                 <th rowspan="2">{translate id=result_pos}</th>
                 <th rowspan="2">{translate id=result_name}</th>
                 <th></th>
                 <th colspan="{math equation="x+2" x=$round->NumHoles()}">{translate id=result_score}</th>
-
-
                 <th colspan="2">{translate id=round}</th>
                 <th colspan="2">{translate id=cumulative}</th>
             </tr>
@@ -177,7 +175,7 @@
                         {if $hole->holeNumber == $out_hole_index}<th class="out">{translate id=hole_out}<br />{$parSoFar}{assign var=parSoFar value=0}</th>{/if}
                 {/foreach}
                 <th class="in">{translate id=hole_in}<br />{$parSoFar}</th>
-                 <th>+/-</th>
+                <th>+/-</th>
                 <th>{translate id=result}</th>
                 <th>+/-</th>
                 <th>{translate id=result}</th>
@@ -196,66 +194,81 @@
 {assign var=inout value=0}
 {assign var=dnfd value=false}
 {foreach from=$holes item=hole key=index}
+    {assign var=holenum value=$hole->holeNumber}
+    {capture assign="hr_id"}{$hole->round}_{$hole->holeNumber}{/capture}
+    {assign var=holeresult value=$result.Results.$holenum.Result}
+    {if !$holeresult}
+        {assign var=holeresult value=0}
+    {/if}
+    {math assign=inout equation="x+y" x=$inout y=$holeresult}
 
-{assign var=holenum value=$hole->holeNumber}
-{capture assign="hr_id"}{$hole->round}_{$hole->holeNumber}{/capture}
-{assign var=holeresult value=$result.Results.$holenum.Result}
-{if !$holeresult}{assign var=holeresult value=0}{/if}
-{math assign=inout equation="x+y" x=$inout y=$holeresult}
+    {if $holeresult >= 99}
+        {assign var=dnfd value=true}
+    {/if}
 
-{if $holeresult >= 99}{assign var=dnfd value=true}{/if}
-
-{math assign=pardiff equation="res-par" res=$holeresult par=$hole->par}
-{if $holeresult == 0}{assign var=holeclass value='noresult'}
-{elseif $holeresult == 1}{assign var=holeclass value='hio'}
-{elseif $pardiff < -1}{assign var=holeclass value='eagle'}
-{elseif $pardiff  == -1}{assign var=holeclass value='birdie'}
-{elseif $pardiff == 0}{assign var=holeclass value='par'}
-{elseif $pardiff  == 1}{assign var=holeclass value='bogey'}
-{elseif $pardiff > 1}{assign var=holeclass value='double'}
-{/if}
+    {math assign=pardiff equation="res-par" res=$holeresult par=$hole->par}
+    {if $holeresult == 0}
+        {assign var=holeclass value='noresult'}
+    {elseif $holeresult == 1}
+        {assign var=holeclass value='hio'}
+    {elseif $pardiff < -1}
+        {assign var=holeclass value='eagle'}
+    {elseif $pardiff  == -1}
+        {assign var=holeclass value='birdie'}
+    {elseif $pardiff == 0}
+        {assign var=holeclass value='par'}
+    {elseif $pardiff  == 1}
+        {assign var=holeclass value='bogey'}
+    {elseif $pardiff > 1}
+        {assign var=holeclass value='double'}
+    {/if}
 
 <td class="{$holeclass}"  id="r{$result.PlayerId}_{$hr_id}">
-    {if $holeresult != 0}{$holeresult}{/if}</td>
+    {if $holeresult != 0}
+        {$holeresult}
+    {/if}
+</td>
 
 
 {if $hole->holeNumber == $out_hole_index}
 <td class="out" id="r{$result.PlayerId}_out">
-    {if $dnfd}{translate id=result_dnf}{else}
-    {$inout}{/if}
+    {if $dnfd}
+        {translate id=result_dnf}
+    {else}
+        {$inout}
+    {/if}
     {assign var=inout value=0}
-</td>{/if}
+</td>
+{/if}
 
 {/foreach}
 
 <td class="in" id="r{$result.PlayerId}_in">
-{if $dnfd}{translate id=result_dnf}{else}
-    {$inout}{/if}
-
+{if $dnfd}
+    {translate id=result_dnf}
+{else}
+    {$inout}
+{/if}
 </td>
 
 {if $result.DidNotFinish}
- <td  id="r{$result.PlayerId}_rpm">{translate id=result_dnf}</td>
- <td  id="r{$result.PlayerId}_rt">{translate id=result_dnf}</td>
- <td class="cpm" id="r{$result.PlayerId}_cpm">{translate id=result_dnf}</td>
-<td  id="r{$result.PlayerId}_ct">{translate id=result_dnf}</td>
+    <td  id="r{$result.PlayerId}_rpm">{translate id=result_dnf}</td>
+    <td  id="r{$result.PlayerId}_rt">{translate id=result_dnf}</td>
+    <td class="cpm" id="r{$result.PlayerId}_cpm">{translate id=result_dnf}</td>
+    <td  id="r{$result.PlayerId}_ct">{translate id=result_dnf}</td>
 {else}
-<td class="plusminus_{if $result.RoundPlusMinus < 0}neg{elseif $result.RoundPlusMinus > 0}pos{else}zero{/if}"
-id="r{$result.PlayerId}_rpm">{$result.RoundPlusMinus}</td>
-<td id="r{$result.PlayerId}_rt">{$result.Total}</td>
-<td class="cpm plusminus_{if $result.CumulativePlusminus < 0}neg{elseif $result.CumulativePlusminus > 0}pos{else}zero{/if}"
-id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
-<td id="r{$result.PlayerId}_ct">{$result.CumulativeTotal}</td>
-<td id="r{$result.PlayerId}_p" class="penalty_hidden">{$result.Penalty}</td>
+    <td class="plusminus_{if $result.RoundPlusMinus < 0}neg{elseif $result.RoundPlusMinus > 0}pos{else}zero{/if}" id="r{$result.PlayerId}_rpm">{$result.RoundPlusMinus}</td>
+    <td id="r{$result.PlayerId}_rt">{$result.Total}</td>
+    <td class="cpm plusminus_{if $result.CumulativePlusminus < 0}neg{elseif $result.CumulativePlusminus > 0}pos{else}zero{/if}" id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
+    <td id="r{$result.PlayerId}_ct">{$result.CumulativeTotal}</td>
+    <td id="r{$result.PlayerId}_p" class="penalty_hidden">{$result.Penalty}</td>
 {/if}
 {if $result.Penalty}
-<td id="r{$result.PlayerId}_px" class="penaltytd penalty">
-{translate id=result_penalty_panel}
-
-</td>
+    <td id="r{$result.PlayerId}_px" class="penaltytd penalty">
+    {translate id=result_penalty_panel}
+    </td>
 { else}
-<td id="r{$result.PlayerId}_px" class="penaltytd">
-</td>
+    <td id="r{$result.PlayerId}_px" class="penaltytd"></td>
 {/if}
 
         </tr>
@@ -266,9 +279,7 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
     <tr><td></td></tr>
 </table>
 
-
     <script type="text/javascript" src="{url page=javascript/live}"></script>
-
     <script type="text/javascript">
     //<![CDATA[
     var holes = new Array();
@@ -277,57 +288,48 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
     {/foreach}
     holes["p"] = 0;
     var eventid = {$eventid};
-
     var roundid = {$roundid};
     var out_hole_index = {$out_hole_index};
     var penaltyText = "{translate id=result_penalty_panel}";
 
     {literal}
-
-
-
-    $(document).ready(function(){
+    $(document).ready(function() {
         {/literal}{if $live}
         initializeLiveUpdate(15, eventid, roundid, updateField, updateBatchDone);
-
         {/if}{literal}
-
-
         $("#stop").click(function(){ nolive=true; });
-
     });
 
     var anyChanges = false;
     var anySwaps = false;
 
     function updateField(data) {
-        if (data.hole == "sd") return;
+        if (data.hole == "sd")
+            return;
 
         var fieldid;
         if (data.hole == "p") {
             updatePenaltyField(data);
              fieldid = "r" + data.pid + "_p";
-        } else {
+        }
+        else {
             fieldid = "r" + data.pid + "_" + data.round + "_" + data.holeNum;
         }
-
-
-
 
         var field = document.getElementById(fieldid);
         if (field) {
             var current = parseInt(field.innerText || field.textContent);
-            if (isNaN( current )) current = 0;
+            if (isNaN( current ))
+                current = 0;
             var diff = data.value - current;
-
-
 
             if (diff) {
                 if (current == 99 || data.value == 99) {
                     window.location.reload();
                 }
 
-                if (field.firstChild) field.removeChild(field.childNodes[0]);
+                if (field.firstChild)
+                    field.removeChild(field.childNodes[0]);
                 var newTextNode = document.createTextNode(data.value);
                 field.appendChild(newTextNode);
                 $(field).effect("highlight", {color: '#5F5'}, 30000);
@@ -336,31 +338,37 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                 {
                     var totfield = document.getElementById("r" + data.pid + "_rt");
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
-                    if (isNaN(ctot)) ctot = 0;
+                    if (isNaN(ctot))
+                        ctot = 0;
 
-                    if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
+                    if (totfield.childNodes.length)
+                        totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
 
                     var pmfield = document.getElementById("r" + data.pid + "_rpm");
-
                     var cpm = parseInt(pmfield.innerText || pmfield.textContent);
-                    if (isNaN(cpm)) cpm = 0;
-
+                    if (isNaN(cpm))
+                        cpm = 0;
 
                     var par;
-                    if (data.hole == "p") par = 0;
-                    else par = holes[data.hole];
+                    if (data.hole == "p")
+                        par = 0;
+                    else
+                        par = holes[data.hole];
 
                     if (data.value == 0) {
                         newpm = cpm - (current - par);
-                    } else if (current == 0) {
+                    }
+                    else if (current == 0) {
                         newpm = cpm + (data.value - par);
-                    } else {
+                    }
+                    else {
                         newpm = cpm + diff;
                     }
 
-                    if (pmfield.childNodes.length) pmfield.removeChild(pmfield.childNodes[0]);
+                    if (pmfield.childNodes.length)
+                        pmfield.removeChild(pmfield.childNodes[0]);
                     pmfield.appendChild(document.createTextNode(newpm));
                     $(pmfield).effect("highlight", {color: '#55F'}, 30000);
                 }
@@ -370,28 +378,32 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                 {
                     var totfield = document.getElementById("r" + data.pid + "_ct");
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
-                    if (isNaN(ctot)) ctot = 0;
+                    if (isNaN(ctot))
+                        ctot = 0;
 
-                    if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
+                    if (totfield.childNodes.length)
+                        totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
 
                     var pmfield = document.getElementById("r" + data.pid + "_cpm");
-
                     var cpm = parseInt(pmfield.innerText || pmfield.textContent);
-                    if (isNaN(cpm)) cpm = 0;
+                    if (isNaN(cpm))
+                        cpm = 0;
 
                     var par = holes[data.hole];
-
                     if (data.value == 0) {
                         newpm = cpm - (current - par);
-                    } else if (current == 0) {
+                    }
+                    else if (current == 0) {
                         newpm = cpm + (data.value - par);
-                    } else {
+                    }
+                    else {
                         newpm = cpm + diff;
                     }
 
-                    if (pmfield.childNodes.length)pmfield.removeChild(pmfield.childNodes[0]);
+                    if (pmfield.childNodes.length)
+                        pmfield.removeChild(pmfield.childNodes[0]);
                     pmfield.appendChild(document.createTextNode(newpm));
                     $(pmfield).effect("highlight", {color: '#55F'}, 30000);
                 }
@@ -400,40 +412,42 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                     var suffix;
                     if (data.holenum <= out_hole_index) {
                         suffix = "out";
-                    } else {
+                    }
+                    else {
                         suffix = "in";
                     }
 
                     var totfield = document.getElementById("r" + data.pid + "_" + suffix);
                     var ctot = parseInt(totfield.innerText || totfield.textContent);
-                    if (isNaN(ctot)) ctot = 0;
+                    if (isNaN(ctot))
+                        ctot = 0;
 
-                    if (totfield.childNodes.length) totfield.removeChild(totfield.childNodes[0]);
+                    if (totfield.childNodes.length)
+                        totfield.removeChild(totfield.childNodes[0]);
                     totfield.appendChild(document.createTextNode(ctot + diff));
                     $(totfield).effect("highlight", {color: '#55F'}, 30000);
                 }
 
                 if (diff < 0)  {
                     moveUpIfNecessary(field);
-                } else {
+                }
+                else {
                     moveDownIfNecessary(field);
                 }
-
                 if (anySwaps) redoPositions();
-
             }
-
-
-        } else {
-//            alert('reloading  ' + fieldid);
+        }
+        else {
             window.location.reload();
         }
         anyChanges = true;
     }
 
+
     function updateBatchDone() {
         anyChanges = false;
     }
+
 
     function redoPositions() {
         var last = -9999;
@@ -452,13 +466,15 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
 
             if (val == last) {
                 setPosition(this, lastpos);
-            } else {
+            }
+            else {
                 lastpos++;
                 setPosition(this, lastpos);
                 last = val;
             }
         });
     }
+
 
     function setPosition(tr, pos) {
         var td = $(tr).find("td").get(0);
@@ -468,53 +484,55 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
 
     }
 
+
     function updatePenaltyField(data) {
         var field = $("#r" + data.pid + "_px");
-        if (!field.get(0)) return;
+        if (!field.get(0))
+            return;
+
         if (!data.value) {
             field.empty();
             field.get(0).className = "penaltytd";
-        } else {
-
+        }
+        else {
             field.empty();
             field.get(0).className = "penaltytd penalty";
             field.get(0).appendChild(document.createTextNode(penaltyText));
         }
     }
 
-    function moveDownIfNecessary(field) {
 
+    function moveDownIfNecessary(field) {
         var row = $(field).closest("tr").get(0);
         var nextrow = nextResultRow(row);
 
-        if (!nextrow) return;
+        if (!nextrow)
+            return;
 
         var c = compareRows(row, nextrow);
-
         if (c == 1) {
             swapRows(row, nextrow);
             anySwaps = true;
             moveDownIfNecessary(field);
         }
-
     }
+
 
     function moveUpIfNecessary(field) {
         var row = $(field).closest("tr").get(0);
         var nextrow = prevResultRow(row);
 
-        if (!nextrow) return;
-
+        if (!nextrow)
+            return;
 
         var c = compareRows(row, nextrow);
-
         if (c == -1) {
             swapRows(row, nextrow);
             anySwaps = true;
             moveUpIfNecessary(field);
         }
-
     }
+
 
     function prevResultRow(row) {
         var r=  row.previousSibling;
@@ -524,11 +542,11 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                 if (r.className == 'resultrow') return r;
                 if (r.className == 'class_border') return null;
             }
-
             r = r.previousSibling;
         }
         return null;
     }
+
 
     function nextResultRow(row) {
         var r = row.nextSibling;
@@ -538,35 +556,34 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
                 if (r.className == 'resultrow') return r;
                 if (r.className == 'class_border') return null;
             }
-
             r = r.nextSibling;
         }
         return null;
     }
 
-    function compareRows(a, b) {
 
+    function compareRows(a, b) {
         var acell = $(a).find(".cpm").get(0);
         var bcell = $(b).find(".cpm").get(0);
 
         if (!acell || !bcell) {
-            if (acell == bcell) return 0;
-            if (!acell) return 1;
+            if (acell == bcell)
+                return 0;
+            if (!acell)
+                return 1;
             return -1;
         }
 
         var avalue = parseInt(acell.textContent || acell.innerText);
         var bvalue = parseInt(bcell.textContent || bcell.innerText);
 
-
-
-        if (avalue == bvalue) return 0;
-        if (avalue < bvalue) return -1;
-
-
+        if (avalue == bvalue)
+            return 0;
+        if (avalue < bvalue)
+            return -1;
         return 1;
-
     }
+
 
     function swapRows(a, b) {
         var aa = a.nextSibling;
@@ -578,8 +595,6 @@ id="r{$result.PlayerId}_cpm">{$result.CumulativePlusminus}</td>
 
     {/literal}
 
-
     //]]>
     </script>
-
 {/if}
