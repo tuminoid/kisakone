@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Miscellaneous helper functions
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,18 +21,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
-/**
- * Displays the user an error message and prevents the requested page from being
- * displayed. This function will call die() before exiting, so it will be the final
- * call of the calling method.
- * 
- * @param string $errormessage Token for the error message. This will go through translation, for display.
- * @param integer $errorcode Typically a HTTP error code should be included for the error. This is the code.
- * @return Never
- */
-
-
 /**
  * Returns the relative base url for the website (including a trailing slash).
  * Necessary for providing links that work
@@ -48,19 +36,4 @@ function baseURL() {
     return $dir . '/';
 }
 
-
-
-
-
-function xhtmlentities($inputString) {
-   return htmlspecialchars($inputString);
-}
-
-
-// PHP 5 library function; implemented for PHP 4 as necessary for compatibility.
-if (!is_callable('stripos')) {
-   function stripos($haystack, $needle){
-    return strpos($haystack, stristr( $haystack, $needle ));
-   }
-}
 ?>

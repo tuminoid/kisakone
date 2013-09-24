@@ -1,10 +1,11 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Language subsystem
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -32,15 +33,15 @@ class Language {
      * @var array
     */
     var $data;
-    
+
     /**
      * For the purposes of determining which language was selected, this variable
      * can be checked.
      * @access public
-     * @var string 
+     * @var string
      */
     var $id;
-    
+
     /**
      * As a callback is used for replacing inner tokens within a string, data
      * has to be relayed to it somehow. This variable is used for holding the
@@ -50,10 +51,10 @@ class Language {
      * @var array
      */
     var $tokens;
-    
+
     var $dir;
     var $allLoaded = false;
-    
+
     /**
      * Constructor for the class. Loads the specified language.
      * @param string $id Identifier for the language this object is being created for.
@@ -63,81 +64,81 @@ class Language {
         $id = basename($id);
         $this->id = $id;
         $this->data = array();
-        
-        
+
+
         $langdirname = 'ui/languages/' . $id;
-        
+
         if (!file_exists($langdirname) || !is_dir($langdirname)) error('Could not load language');
-        
+
         $this->dir = $langdirname;
-        
+
     }
-    
+
     function LoadAllFiles() {
         $this->allLoaded = true;
         $langdirname = $this->dir;
         $id = $this->id;
-        
+
         $dir = opendir($langdirname);
         if ($dir === false) error('Could not load language.');
         while (($filename = readdir($dir)) !== false) {
             if ($filename == '.' || $filename == '..') continue;
-            
+
             $langfilename = 'ui/languages/' . $id . '/' . $filename;
-            
+
             if (is_dir($langfilename)) continue;
             $langfile = fopen($langfilename, 'r');
             while (!feof($langfile)) {
                 $line = trim(fgets($langfile));
-                
+
                 // Ignoring empty lines and comments
                 if ($line == "" || $line{0} == '#') continue;
-                
+
                 $parts = explode(" ", $line, 2);
                 if (count($parts) != 2) echo $line;
                 $this->data[$parts[0]] = trim($parts[1]);
-                
+
                 // 2-way mapping
                 if ($parts[0][0] == ':') {
                     $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
                 }
-                
+
             }
-            
+
             fclose($langfile);
         }
         closedir($dir);
-        
+
     }
-    
+
     function LoadSingleFile($file) {
-        $file = basename($file);                
+        $file = basename($file);
         $id = $this->id;
-        
+
         $langfilename = 'ui/languages/' . $id . '/' . $file;
         if (!file_exists($langfilename)) return false;
         $langfile = fopen($langfilename, 'r');
         while (!feof($langfile)) {
             $line = trim(fgets($langfile));
-            
+
             // Ignoring empty lines and comments
             if ($line == "" || $line{0} == '#') continue;
-            
+
             $parts = explode(" ", $line, 2);
-            
+
             $this->data[$parts[0]] = trim($parts[1]);
-            
+
             // 2-way mapping
             if ($parts[0][0] == ':') {
                 $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
             }
-                
+
         }
-        
+
         fclose($langfile);
         return true;
 
-        
+
     }
     /**
      * Translates a given token into proper text.
@@ -150,51 +151,51 @@ class Language {
      * arguments can't be passed, it is possible to append them to the token
      * identifier as follows: token/arg1:value1/arg2:value2...
      * This can not be done when the token value contains a slash.
-     * 
+     *
      * @param string $id The token to be translated.
      * @param array $arguments Values for subtokens found within the string.
      */
     function translate($id, $arguments) {
-        
+
         // Extract arguments from the token id if necessary
         if (strpos($id, '/') !== false) {
-            
+
             $data = $this->ExtractFromID($id);
             $id = $data[0];
             $arguments = $data[1];
         } else if (isset($arguments['arguments'])) {
             $arguments = $arguments['arguments'];
-                
+
         }
         if (!array_key_exists($id, $this->data)) {
             if ($this->allLoaded) {
                 return "[Missing $id]";
             } else {
                 $this->LoadAllFiles();
-                
+
                 return $this->translate($id, $arguments);
             }
-                        
+
         }
         $str = $this->data[$id];
         $this->tokens = $arguments;
-        
+
         // This regular expression matches anything contained within curly braces.
         $text = preg_replace_callback('/\{([^}]+)\}/', array($this, 'ReplaceToken'), $str);
-        
+
         // Convert any HTML entities found -- if necessary
         if (substr($text, 0, 6) == "<HTML>") {
             $text = substr($text, 6);
         } else {
-            $text = xhtmlentities($text);
+            $text = htmlspecialchars($text);
         }
-        
+
         // Lastly add forced line changes as necessary
         $text = str_replace("\\n", "<br />", $text);
-        
+
         return $text;
     }
-    
+
     /**
      * Callback function for preg_replace_callback, when used for replacing subtokens
      * within a string.
@@ -206,7 +207,7 @@ class Language {
 
         return $this->tokens[$token[1]];
     }
-    
+
     /**
      * A function used for making sure the language was loaded properly.
      * @return boolean True if the language contains data, false if not.
@@ -214,7 +215,7 @@ class Language {
     function seemsOK() {
         return count($this->data) > 0;
     }
-        
+
     /**
      * This function extracts the id and arguments when they are provided in the
      * same string, in the format id/arg1:value1/arg2:/value2/.../argn:valuen
@@ -228,15 +229,15 @@ class Language {
         $parts = explode('/', $id);
         $arguments = array();
         $id  = $parts[0];
-        
+
         // Prevent the id from being used as an argument
         unset ($parts[0]);
-        
+
         foreach ($parts as $part) {
             list($key, $value) = explode(':', $part, 2);
             $arguments[$key] = $value;
         }
-    
+
         return array($id, $arguments);
     }
 }
@@ -256,14 +257,14 @@ class DummyLanguage {
     function seemsOK() {
         return true;
     }
-        
+
     /**
      * Function normally used for translating a given text token id, in this
      * case it's merely returned though, within brackets.
      *
      * As function having fewer parameters than a call doesn't matter, the normal
      * $parameter is missing entrirely due to being unnecessary.
-     * 
+     *
      * @param string $id Id to be translated.
      * @return string $id in brackets
      */
@@ -299,7 +300,7 @@ function LoadLanguage($id, $return = false) {
      * @global Language $GLOBALS['language'] Object for the language being used.
     */
     global $language;
-    
+
     $newlanguage = new Language($id);
     if ($return) return $newlanguage;
     $language = $newlanguage;
