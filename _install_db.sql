@@ -1,5 +1,4 @@
 
-
 CREATE TABLE :Player
 (
    player_id SMALLINT NOT NULL AUTO_INCREMENT,
@@ -15,6 +14,7 @@ CREATE TABLE :Player
    INDEX(pdga)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :User
 (
@@ -42,6 +42,7 @@ CREATE TABLE :Venue
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :Level
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -52,6 +53,7 @@ CREATE TABLE :Level
    INDEX(Available)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :Tournament
 (
@@ -69,6 +71,7 @@ CREATE TABLE :Tournament
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :File
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -78,6 +81,7 @@ CREATE TABLE :File
    PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE IF NOT EXISTS `:AdBanner` (
   `id` int(11) NOT NULL auto_increment,
@@ -91,8 +95,8 @@ CREATE TABLE IF NOT EXISTS `:AdBanner` (
   FOREIGN KEY (`ImageReference`) REFERENCES :File(id),
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB;
-
 SHOW WARNINGS;
+
 
 CREATE TABLE :Event
 (
@@ -117,6 +121,7 @@ CREATE TABLE :Event
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :EventManagement
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -129,6 +134,7 @@ CREATE TABLE :EventManagement
    INDEX (User, Event, Role)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :TextContent
 (
@@ -147,8 +153,6 @@ CREATE TABLE :TextContent
 SHOW WARNINGS;
 
 
-
-
 CREATE TABLE :Classification
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -157,17 +161,11 @@ CREATE TABLE :Classification
    MaximumAge INT,
    GenderRequirement CHAR(1),
    Available TINYINT NOT NULL,
-
-
-
    PRIMARY KEY(id),
    INDEX(Available)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
-
-
-SHOW WARNINGS;
 
 CREATE TABLE :Course
 (
@@ -183,6 +181,7 @@ CREATE TABLE :Course
    FOREIGN KEY (Event) REFERENCES :Event(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE `:Round`
 (
@@ -200,6 +199,7 @@ CREATE TABLE `:Round`
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :Section (
    id INT NOT NULL AUTO_INCREMENT,
    Name VARCHAR(40) NOT NULL,
@@ -213,6 +213,7 @@ CREATE TABLE :Section (
    FOREIGN KEY (Round) REFERENCES `:Round`(id)
 ) ENGINE=InnoDB;
 
+
 CREATE TABLE :Hole
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -225,6 +226,7 @@ CREATE TABLE :Hole
    INDEX(Course, HoleNumber)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :Participation
 (
@@ -245,6 +247,7 @@ CREATE TABLE :Participation
    FOREIGN KEY (Classification) REFERENCES :Classification(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :RoundResult
 (
@@ -267,6 +270,7 @@ CREATE TABLE :RoundResult
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :HoleResult
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -284,6 +288,7 @@ CREATE TABLE :HoleResult
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :StartingOrder
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -298,6 +303,7 @@ CREATE TABLE :StartingOrder
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :SectionMembership
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -308,6 +314,7 @@ CREATE TABLE :SectionMembership
    FOREIGN KEY (Section) REFERENCES :Section(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :TournamentStanding
 (
@@ -323,6 +330,7 @@ CREATE TABLE :TournamentStanding
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :ClassInEvent
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -334,6 +342,7 @@ CREATE TABLE :ClassInEvent
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
+
 CREATE TABLE :LicensePayment
 (
    id INT NOT NULL AUTO_INCREMENT,
@@ -343,6 +352,7 @@ CREATE TABLE :LicensePayment
    FOREIGN KEY (Player) REFERENCES :Player(player_id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
 
 CREATE TABLE :MembershipPayment
 (
