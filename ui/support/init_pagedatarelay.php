@@ -38,9 +38,11 @@ function page_ChooseLanguage() {
    if (@$_GET['language'] != 'RESET') {
       if (@$_SESSION['kisakone_language']) {
          return @$_SESSION['kisakone_language'];
-      } else if (@$_COOKIE['kisakone_language']) {
+      }
+      elseif (@$_COOKIE['kisakone_language']) {
          $cookie = basename($_COOKIE['kisakone_language']);
-         if (file_exists('ui/languages/' . $cookie)) return $cookie;
+         if (file_exists('ui/languages/' . $cookie))
+            return $cookie;
       }
    }
 
@@ -48,12 +50,12 @@ function page_ChooseLanguage() {
    $lines = file('ui/languages/mapping');
    $options = array();
    foreach ($lines as $line) {
-      if (trim($line) == "") continue;
+      if (trim($line) == "")
+         continue;
       list($key, $value) = explode(":" , $line);
       $options[$key] = trim($value);
-
    }
-   $frombrowser = explode(',',@$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+   $frombrowser = explode(',', @$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
    foreach ($frombrowser as $item) {
       preg_match('/([\w-]+)(;q=(\d+(.\d+)))?/', $item, $found);
@@ -72,14 +74,13 @@ function page_ChooseLanguage() {
          break;
       }
    }
-   if (!$chosen) $chosen = $options['default'];
+   if (!$chosen)
+      $chosen = $options['default'];
 
    $_SESSION['kisakone_language'] = $chosen;
    setcookie('kisakone_language', $chosen, time() + 60 * 60 * 24 * 45, baseurl()); // 45 days
 
    return $chosen;
-
-
 }
 
 
@@ -95,6 +96,7 @@ function page_sort_languages($a, $b) {
 
 }
 
+
 /**
  * Initializes a copy of smarty and returns it. This function is mostly used
  * by index.php, should another page need one, this function shuold be used as well.
@@ -104,17 +106,12 @@ function page_sort_languages($a, $b) {
 function InitializeSmarty() {
 
    $smarty = new Smarty();
-
-
    // Initialize directories used by smarty
-
    $smarty->template_dir = './templates';
    $smarty->compile_dir  = './Smarty/templates_c';
    $smarty->config_dir   = './Smarty/configs';
 
-
    // Register some globally usable functions
-
    // Translates text tokens into actual text. Implementation in ui/translate.php
    $smarty->register_function('translate', 'translate_smarty', false);
 
@@ -132,22 +129,19 @@ function InitializeSmarty() {
 
    $smarty->register_function('submenulinks', 'submenulinks_smarty', true);
 
-    // Heading for sortable tables
-    $smarty->register_function('sortheading', 'sortheading_smarty', false);
+   // Heading for sortable tables
+   $smarty->register_function('sortheading', 'sortheading_smarty', false);
 
-    // Initialize some variables available to all pages
-
+   // Initialize some variables available to all pages
    $smarty->assign('url_base', BaseUrl());
 
-
-    // Link to be used within help system
-    $smarty->register_function('helplink', 'helplink_smarty', false);
+   // Link to be used within help system
+   $smarty->register_function('helplink', 'helplink_smarty', false);
 
    $user = @$_SESSION['user'];
-
    $smarty->assign('user', $user);
-
-   if (is_object($user)) $smarty->assign('admin', $user->role == 'admin');
+   if (is_object($user))
+      $smarty->assign('admin', $user->role == 'admin');
 
    // Main menu is defined in the file ui/mainmenu.php
    $smarty->assign('mainmenu', page_InitializeMainMenu());
@@ -167,14 +161,14 @@ function InitializeSmarty() {
 
 
    // Default help file; PDR and templates can change it if necessary
-
-
    if (@$_GET['showhelp'] && @$_GET['showhelp'] !== '1') {
       $smarty->assign('helpfile', basename(@$_GET['showhelp']));
-   } else {
+   }
+   else {
       if (empty($_GET['page'][0])) {
          $smarty->assign('helpfile', 'events');
-      } else {
+      }
+      else {
          $smarty->assign('helpfile', @$_GET['page'][0]);
       }
    }
