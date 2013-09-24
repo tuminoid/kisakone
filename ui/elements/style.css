@@ -3,7 +3,7 @@ body, html {
     margin: 0px;
     padding: 0px;
     font-size: 11pt;
-    
+
 }
 
 html, body, #contentcontainer, #maintr2 {
@@ -29,7 +29,8 @@ h2 {
     font-size: 1em;
     height: 20px;
     color: #4b4b4b;
-    -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 .hotlinks a {
@@ -51,7 +52,7 @@ th{
 
 #header {
     background-color: #67abeb;
-    height: 130px;        
+    height: 130px;
     text-align: center;
     color: white;
     background-image: url(headbg.png);
@@ -64,7 +65,7 @@ th{
 
 #sitename {
     margin: 0px;
-    
+
     font-family: verdana;
     font-size: 24px;
     font-weight: bold;
@@ -78,9 +79,9 @@ th{
     font-family: verdana;
     font-size: 16px;
     margin: 4px;
-    
+
 }
- 
+
 
 #sitelogo {
     float: left;
@@ -122,7 +123,7 @@ a {
 }
 
 .evenform label {
-    
+
     float: left;
     clear: both;
     min-width: 140px;
@@ -145,7 +146,7 @@ a {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    
+
 }
 
 #mainmenu a {
@@ -160,7 +161,7 @@ a {
     background-color: #79997e;
 }
 
-.submenu li {    
+.submenu li {
     margin-left: 16px;
     font-size: 11pt;
 }
@@ -180,18 +181,14 @@ a {
     float: left;
     min-width: 120px;
     padding-top: 3px;
-    text-align: center;        
+    text-align: center;
     color: white;
     font-family: verdana;
     font-size: 13pt;
     font-weight: normal;
     border-right: 1px solid #525252;
-    height: 32px;   
-    /*border-left: 1px solid #757575;*/
-    
-    
+    height: 32px;
 }
-
 
 #mainmenu a {
     display: block;
@@ -201,9 +198,8 @@ a {
 }
 
 #submenucontainer {
-    width: 160px;    
+    width: 160px;
 }
-
 
 #zmainmenu .selected {
     background-color: #285ea6;
@@ -218,31 +214,23 @@ a {
 
 #content {
     padding: 16px;
-   
 }
 
 #adbannercontainer {
     width: 160px;
-    
+
     padding: 0;
     background-color: #ccdae5;
-
 }
 
 #helpcontainer {
     width: 320px;
-    
-    
     background-color: #ccdae5;
-
 }
 
 #adbanner {
     height: 300px;
-    
-    
 }
-
 
 .evenform input[type="text"], .evenform select, .evenform textarea, .evenform input[type="password"]{
     min-width: 280px;
@@ -271,17 +259,46 @@ a {
 .form_end input {
     float: right;
     margin-right: 24px;
-    
 }
 
+.autocomplete-w1 {
+    background: url(img/shadow.png) no-repeat bottom right;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 8px 0 0 6px;
+    /* IE6 fix: */
+    _background: none;
+    _margin: 0;
+}
 
-.autocomplete-w1 { background:url(img/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
-.autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
-.autocomplete .selected { background:#F0F0F0; }
-.autocomplete div { padding:2px 5px; white-space:nowrap; }
-.autocomplete strong { font-weight:normal; color:#3399FF; }
+.autocomplete {
+    border: 1px solid #999;
+    background: #FFF;
+    cursor:default;
+    text-align:left;
+    max-height:350px;
+    overflow: auto;
+    margin: -6px 6px 6px -6px;
+    /* IE6 specific: */
+    _height: 350px;
+    _margin: 0;
+    _overflow-x: hidden;
+}
 
+.autocomplete .selected {
+    background: #F0F0F0;
+}
 
+.autocomplete div {
+    padding: 2px 5px;
+    white-space: nowrap;
+}
+
+.autocomplete strong {
+    font-weight: normal;
+    color: #3399FF;
+}
 
 .usersform input[type="text"] {
     min-width: 280px;
@@ -310,16 +327,19 @@ a {
     padding: 16px;
     background-color: #FEE;
 }
+
 .searcharea {
     color: green;
     padding: 16px;
     background-color: #EFE;
 }
+
 .buttonarea {
     clear: both;
     padding: 16px;
     background-color: #EEF;
 }
+
 .evenform .checkboxlabel {
     float: none;
 }
@@ -335,10 +355,12 @@ a {
 
 .note {
     font-size: 0.8em;
-    }
-    
-    .narrow { width: auto; }
-    
+}
+
+.narrow {
+    width: auto;
+}
+
 .breadcrumb, .breadcrumb li {
     list-style-type: none;
     padding: 0;
@@ -369,14 +391,16 @@ th {
 }
 
 .submenu0 > li > span, .submenu0 > li > a {
-    font-weight: bold;    
+    font-weight: bold;
 }
 
 .submenu0 > li {
     margin-bottom: 16px;
 }
 
-.nofloatylabels label { float: none; }
+.nofloatylabels label {
+    float: none;
+}
 
 .hilightedrow {
     background-color: #bbd1b6 !important;
@@ -393,8 +417,10 @@ th {
 .doubleHilight {
     background-color: #DFD;
 }
-a img { border: none;} 
 
+a img {
+    border: none;
+}
 
 .nobullets, .nobullets li {
     list-style-type: none;
@@ -408,7 +434,7 @@ a img { border: none;}
     background-color: #FAA;
 }
 
-.event_links a{
+.event_links a {
     display: inline-block;
     margin-right: 8px;
 }
