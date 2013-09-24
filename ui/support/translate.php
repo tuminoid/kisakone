@@ -65,14 +65,13 @@ class Language {
         $this->id = $id;
         $this->data = array();
 
-
         $langdirname = 'ui/languages/' . $id;
-
-        if (!file_exists($langdirname) || !is_dir($langdirname)) error('Could not load language');
+        if (!file_exists($langdirname) || !is_dir($langdirname))
+            error('Could not load language');
 
         $this->dir = $langdirname;
-
     }
+
 
     function LoadAllFiles() {
         $this->allLoaded = true;
@@ -80,54 +79,59 @@ class Language {
         $id = $this->id;
 
         $dir = opendir($langdirname);
-        if ($dir === false) error('Could not load language.');
-        while (($filename = readdir($dir)) !== false) {
-            if ($filename == '.' || $filename == '..') continue;
+        if ($dir === false)
+            error('Could not load language.');
 
+        while (($filename = readdir($dir)) !== false) {
+            if ($filename == '.' || $filename == '..')
+                continue;
             $langfilename = 'ui/languages/' . $id . '/' . $filename;
 
-            if (is_dir($langfilename)) continue;
+            if (is_dir($langfilename))
+                continue;
             $langfile = fopen($langfilename, 'r');
+
             while (!feof($langfile)) {
                 $line = trim(fgets($langfile));
 
                 // Ignoring empty lines and comments
-                if ($line == "" || $line{0} == '#') continue;
+                if ($line == "" || $line{0} == '#')
+                    continue;
 
                 $parts = explode(" ", $line, 2);
-                if (count($parts) != 2) echo $line;
+                if (count($parts) != 2)
+                    echo $line;
                 $this->data[$parts[0]] = trim($parts[1]);
 
                 // 2-way mapping
                 if ($parts[0][0] == ':') {
                     $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
                 }
-
             }
-
             fclose($langfile);
         }
         closedir($dir);
-
     }
+
 
     function LoadSingleFile($file) {
         $file = basename($file);
         $id = $this->id;
 
         $langfilename = 'ui/languages/' . $id . '/' . $file;
-        if (!file_exists($langfilename)) return false;
+        if (!file_exists($langfilename))
+            return false;
         $langfile = fopen($langfilename, 'r');
+
         while (!feof($langfile)) {
             $line = trim(fgets($langfile));
 
             // Ignoring empty lines and comments
-            if ($line == "" || $line{0} == '#') continue;
+            if ($line == "" || $line{0} == '#')
+                continue;
 
             $parts = explode(" ", $line, 2);
-
             $this->data[$parts[0]] = trim($parts[1]);
-
             // 2-way mapping
             if ($parts[0][0] == ':') {
                 $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
@@ -137,9 +141,9 @@ class Language {
 
         fclose($langfile);
         return true;
-
-
     }
+
+
     /**
      * Translates a given token into proper text.
      *
@@ -159,24 +163,24 @@ class Language {
 
         // Extract arguments from the token id if necessary
         if (strpos($id, '/') !== false) {
-
             $data = $this->ExtractFromID($id);
             $id = $data[0];
             $arguments = $data[1];
-        } else if (isset($arguments['arguments'])) {
-            $arguments = $arguments['arguments'];
-
         }
+        elseif (isset($arguments['arguments'])) {
+            $arguments = $arguments['arguments'];
+        }
+
         if (!array_key_exists($id, $this->data)) {
             if ($this->allLoaded) {
                 return "[Missing $id]";
-            } else {
+            }
+            else {
                 $this->LoadAllFiles();
-
                 return $this->translate($id, $arguments);
             }
-
         }
+
         $str = $this->data[$id];
         $this->tokens = $arguments;
 
@@ -186,7 +190,8 @@ class Language {
         // Convert any HTML entities found -- if necessary
         if (substr($text, 0, 6) == "<HTML>") {
             $text = substr($text, 6);
-        } else {
+        }
+        else {
             $text = htmlspecialchars($text);
         }
 
@@ -196,6 +201,7 @@ class Language {
         return $text;
     }
 
+
     /**
      * Callback function for preg_replace_callback, when used for replacing subtokens
      * within a string.
@@ -204,9 +210,9 @@ class Language {
      * @access private
      */
     function replaceToken($token) {
-
         return $this->tokens[$token[1]];
     }
+
 
     /**
      * A function used for making sure the language was loaded properly.
@@ -215,6 +221,7 @@ class Language {
     function seemsOK() {
         return count($this->data) > 0;
     }
+
 
     /**
      * This function extracts the id and arguments when they are provided in the
@@ -242,6 +249,7 @@ class Language {
     }
 }
 
+
 /**
  * This is a dummy language implementation which simply prints tokens passed
  * to it. Used for error message display whenever no language was successfully loaded.
@@ -257,6 +265,7 @@ class DummyLanguage {
     function seemsOK() {
         return true;
     }
+
 
     /**
      * Function normally used for translating a given text token id, in this
@@ -286,10 +295,12 @@ function translate($id, $params = array()) {
     return $language->translate($id, $params);
 }
 
+
 function language_include($file) {
     global $language;
     return $language->LoadSingleFile($file);
 }
+
 
 /**
  * Loads the provided language.
@@ -302,7 +313,8 @@ function LoadLanguage($id, $return = false) {
     global $language;
 
     $newlanguage = new Language($id);
-    if ($return) return $newlanguage;
+    if ($return)
+        return $newlanguage;
     $language = $newlanguage;
 }
 
