@@ -2,9 +2,7 @@
 CREATE TABLE :Player
 (
    player_id SMALLINT NOT NULL AUTO_INCREMENT,
-
    pdga varchar(10),
-
    sex ENUM('male', 'female'),
    lastname VARCHAR(100),
    firstname VARCHAR(100),
