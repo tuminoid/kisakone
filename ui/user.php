@@ -5,7 +5,7 @@
  * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * User details page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,7 +30,7 @@
 if (!is_callable('InitializeSmartyVariables')) {
    function InitializeSmartyVariables(&$smarty, $error) {
       return User_InitializeSmartyVariables($smarty, $error);
-      
+
    }
    /**
     * Determines which main menu option this page falls under.
@@ -46,32 +46,32 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
    $getId = $_GET['id'];
    if (is_numeric($getId)) $userid= $getId;
    else $userid = GetUserId($getId);
-   
+
    if (!$userid) return Error::NotFound('user');
-   
+
    $user = GetUserDetails($userid);
    if (is_a($user, 'Error')) return $user;
- 
+
    if (!$user) return Error::NotFound('user_record');
-   
-   
+
+
    $player = $user->GetPlayer();
-   
+
    $smarty->assign('userinfo', $user);
    $smarty->assign('player', $player);
-   
+
    $itsme = $user->username == @$_SESSION['user']->username;
    $smarty->assign('itsme', $itsme);
-   
+
    if ($itsme) {
       $ad = GetAd(null, 'myinfo');
       if ($ad) $smarty->assign('ad', $ad);
    }
-   
+
    if (IsAdmin() || $itsme) {
-      if (OVERRIDE_PAYMENTS) {
+      if (USE_SFL_PAYMENTS) {
          $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
-         
+
          $currentYear = date('Y');
          $years = array($currentYear, $currentYear + 1);
          foreach ($years as $year) {
@@ -80,7 +80,7 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
             $fees['membership'][$year] = $membership;
             $fees['bLicense'][$year] = $bLicense;
          }
-         
+
          $smarty->assign('fees', $fees);
       }
    }

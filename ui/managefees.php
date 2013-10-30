@@ -2,9 +2,10 @@
 /**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * License and membership fee management
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,17 +29,17 @@
  */
 function InitializeSmartyVariables(&$smarty, $error) {
 
-    if (OVERRIDE_PAYMENTS) return Error::AccessDenied();
-    
+    if (USE_SFL_PAYMENTS) return Error::AccessDenied();
+
     if (!IsAdmin()) {
         return Error::AccessDenied('eventfees');
     }
 
    $users = GetFeePayments(true, @$_GET['search'], @$_GET['sort']);
-   
-   
+
+
    $smarty->assign('users', $users);
-            
+
 }
 
 

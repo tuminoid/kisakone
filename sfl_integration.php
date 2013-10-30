@@ -23,20 +23,21 @@
  * */
 
 // Yes, we use SFL for payment checks
-define("OVERRIDE_PAYMENTS", true);
+define("USE_SFL_PAYMENTS", true);
 
-// Simulate payment status
-define("SIMULATE_PAYMENTS", false);
+// ignore payment status
+define("IGNORE_PAYMENTS", false);
 
 /*
  * Check SFL database for fees
- * 
+ *
  * Returns array(a_license, membership, b_license)
  */
 function SFL_FeesPaidForYear($user, $year) {
     // While developing, use this to simulate whatever payments
-    if (SIMULATE_PAYMENTS == true) {
-        return array(false, true, true);
+    // or if using Kisakone without SFL databases (like clubs)
+    if (IGNORE_PAYMENTS == true) {
+        return array(true, true, true);
     }
 
     $query = data_query("SELECT license, sfl_player.pdga
@@ -62,7 +63,7 @@ function SFL_FeesPaidForYear($user, $year) {
         if ($row['pdga']) {
             $pdgaFound = true;
         } else {
-            if ($pdgaFound) 
+            if ($pdgaFound)
                 continue;
         }
         if ($row['license'] >= 1) $membership = true;
