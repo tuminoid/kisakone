@@ -1,10 +1,11 @@
 {**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Index page
  * Note: This page uses "events" as the backend, instead of index
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,7 +26,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Event listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -50,7 +51,7 @@
 
 {else}
 <table>
-        
+
     {foreach from=$lists key=listtype item=events}
     <tr><td colspan="5"><h2>
     {if $listtype == 0}
@@ -64,14 +65,14 @@
         {assign var=trclass value="event_row"}
     {/if}
     </h2></td></tr>
-    
+
     <tr>
         <th>{translate id='event_name' }</th>
         <th>{translate id='event_location'}</th>
         <th>{translate id='event_level'}</th>
         <th>{translate id='event_date'}</th>
         <th></th>
-        <th></th>        
+        <th></th>
     </tr>
    {foreach from=$events item=event}
 
@@ -84,38 +85,39 @@
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
             <td>{$event->fulldate}</td>
-            <td class="event_links"> 
+            <td class="event_links">
             {if $event->resultsLocked}
+                <img src="{$url_base}ui/elements/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>
                 <a href="{url page='event' view=leaderboard id=$event->id}">{translate id=event_results}</a>
-                            <a href="{url page='event' view=leaderboard id=$event->id}"><img src="{$url_base}ui/elements/trophyIcon.png" alt="{translate id=results_available}" /></a>
-                
+
                 {if $event->standing != null}
                     {translate id=your_standing standing=$event->standing}
                 {/if}
             {elseif $event->approved !== null}
                 {* There is a participation record  *}
-                {if $event->approved || $event->eventFeePaid}
-                    {if $event->signupState == 'accepted'}{translate id=fee_paid}{/if}
+                {if $event->eventFeePaid}
+                    <img src="{$url_base}ui/elements/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
                 {else}
-                    {translate id=fee_not_paid} <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a>
+                    <img src="{$url_base}ui/elements/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
+                    <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a>
                 {/if}
-     
+
             {/if}
-            
-      
+
+
                 {if $loggedon}
                     {if $event->SignupPossible()}
                         {if $event->approved !== null}
                             <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a>
                         {elseif $user->role != 'admin' && $user->role != 'manager' && $event->management != 'td'}
-                        
+
                             <a href="{url page='event' view=signupinfo id=$event->id}">{translate id=event_signup}</a>
                             <a href="{url page='event' view=signupinfo id=$event->id}"><img src="{$url_base}ui/elements/goIcon.png" alt="{translate id=sign_up_here}" /></a>
-                            
+
                         {/if}
                     {/if}
-                    
-                                       
+
+
                     {if $event->management == 'td' || $user->role == 'admin'}
                         <a href="{url page='manageevent' id=$event->id}">{translate id=event_manage}</a>
                     {/if}
@@ -133,7 +135,7 @@
             <p>{translate id=no_matching_events}</p>
         </td></tr>
     {/foreach}
-    
+
     <tr><td colspan="5">
     {if $listtype == 0}
         <p>&nbsp;</p>
@@ -143,11 +145,11 @@
         <p><a href="{url page=eventarchive}">{translate id=show_archive}</a></p>
     {/if}
     </td></tr>
-    
+
     {/foreach}
 </table>
 
 
 
 {/if}
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}
