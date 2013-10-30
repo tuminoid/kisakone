@@ -5115,7 +5115,6 @@ function GetGroups($sectid) {
 
     $astand = $a['Standing'];
     $bstand = $b['Standing'];
-
     if ($astand != $bstand) {
         if ($astand < $bstand) return -1;
         return 1;
@@ -5124,39 +5123,32 @@ function GetGroups($sectid) {
     $asd = $a['SuddenDeath'];
     $bsd = $b['SuddenDeath'];
     if ($asd != $bsd) {
-        if ($asd < $bsd) return -1;
-        return 1;
+      if ($asd < $bsd)
+         return -1;
+      return 1;
     }
 
     $ar = $a['Results'];
     $br = $b['Results'];
 
     $keys = array_reverse(array_keys($ar));
-
     foreach ($keys as $key) {
-
-        $ae = $a['Results'][$key]['Total'];
-        $be = $b['Results'][$key]['Total'];
-        if ($ae != $be) {
-
-            if ($ae < $be) return -1;
-            return 1;
-        }
+      $ae = $ar[$key]['Total'];
+      $be = $br[$key]['Total'];
+      if ($ae != $be) {
+         if ($ae < $be)
+            return -1;
+         return 1;
+      }
     }
 
-
-    $as = $a['Results'][$keys[0]]['StartId'];
-    $bs = $b['Results'][$keys[0]]['StartId'];
-
-
-
-    if ($as < $bs) return -1;
+    $as = $ar[$keys[0]]['StartId'];
+    $bs = $br[$keys[0]]['StartId'];
+    if ($as < $bs)
+      return -1;
     return 1;
-
-    return 0;
-
-
   }
+
 function RemovePlayersDefinedforAnySection($a){
 
    list($round, $section) = $GLOBALS['RemovePlayersDefinedforAnySectionRound'];
