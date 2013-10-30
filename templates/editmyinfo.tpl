@@ -30,14 +30,14 @@
     <h2>{translate id='reg_contact_info'}</h2>
 
     <div>
-        <label for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" type="text" name="lastname" value="{$userdata->lastname|escape}" />
-        {formerror field='lastname'}
-    </div>
-    <div>
         <label for="firstname">{translate id='first_name'}</label>
         <input id="firstname" type="text" name="firstname"  value="{$userdata->firstname|escape}" />
         {formerror field='firstname'}
+    </div>
+    <div>
+        <label for="lastname">{translate id='last_name'}</label>
+        <input id="lastname" type="text" name="lastname" value="{$userdata->lastname|escape}" />
+        {formerror field='lastname'}
     </div>
     <div>
         <label for="email">{translate id='reg_email'}</label>

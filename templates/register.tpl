@@ -1,9 +1,10 @@
 {*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Registration form
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -23,28 +24,28 @@
 {include file='include/header.tpl'}
 
 <form method="post" class="evenform" id="regform">
-    
+
     <input type="hidden" name="formid" value="register" />
-    
-    <h2>{translate id='reg_contact_info'}</h2>    
-    
-    <div>
-        <label for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" type="text" name="lastname" value="{$smarty.post.lastname|escape}" />
-        {formerror field='lastname'}
-    </div>
+
+    <h2>{translate id='reg_contact_info'}</h2>
+
     <div>
         <label for="firstname">{translate id='first_name'}</label>
         <input id="firstname" type="text" name="firstname"  value="{$smarty.post.firstname|escape}" />
         {formerror field='firstname'}
     </div>
     <div>
+        <label for="lastname">{translate id='last_name'}</label>
+        <input id="lastname" type="text" name="lastname" value="{$smarty.post.lastname|escape}" />
+        {formerror field='lastname'}
+    </div>
+    <div>
         <label for="email">{translate id='reg_email'}</label>
         <input id="email" type="text" name="email"  value="{$smarty.post.email|escape}" />
         {formerror field='email'}
     </div>
-    
-    
+
+
     <h2>{translate id='reg_user_info'}</h2>
     <div>
         <label for="username">{translate id='username'}</label>
@@ -61,33 +62,33 @@
         <input id="password2" type="password" name="password2" />
         {formerror field='password2'}
     </div>
-    
+
     <h2>{translate id='reg_player_info'}</h2>
      <div>
         <label for="pdga">{translate id='pdga_number'}</label>
         <input id="pdga" type="text" name="pdga"  value="{$smarty.post.pdga|escape}" />
         {formerror field='pdga'}
     </div>
-     
+
      <div>
         <label for="gender">{translate id='gender'}</label>
         <input id="gender" type="radio" name="gender" value="male" {if $smarty.post.gender == 'male'}checked="checked"{/if} /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" name="gender" value="female" {if $smarty.post.gender == 'female'}checked="checked"{/if} /> {translate id="female"}
         {formerror field='gender'}
     </div>
-     
+
      <div style="margin-top: 8px">
         <label>{translate id='dob'}</label>
         <!--<select  style="min-width: 0" name="day">
             <option value="" selected="true">pp</option>
         </select>-->
         {translate id='year_default' assign='year_default'}
-        {html_select_date time='1980-1-1' field_order=DMY month_format=%m 
+        {html_select_date time='1980-1-1' field_order=DMY month_format=%m
         prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
         all_extra='style="min-width: 0"' }
         {formerror field='dob'}
     </div>
-    
+
     <h2>{translate id='reg_termsandconditions'}</h2>
     <div>
         <input type="checkbox" id="termsandconditions" name="termsandconditions" {if $smarty.post.termsandconditions}checked="checked"{/if} />
@@ -97,7 +98,7 @@
         <label class="checkboxlabel" for="termsandconditions">{translate id='termsandconditions' link=$termslink}</label>
         {formerror field='termsandconditions'}
     </div>
-    
+
     <h2>{translate id='reg_finalize'}</h2>
     <div>
         <input type="submit" value="{translate id='form_accept'}" name="register" />
@@ -115,25 +116,25 @@ $(document).ready(function(){
     CheckedFormField('regform', 'email', EmailField, null);
     CheckedFormField('regform', 'username', AjaxField, 'username');
     CheckedFormField('regform', 'password', NonEmptyField, null);
-    CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");    
+    CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");
     CheckedFormField('regform', 'gender', RadioFieldSet, null);
     CheckedFormField('regform', 'dob_Year', NonEmptyField, null);
     CheckedFormField('regform', 'termsandconditions', TermsAndConditionsField, null);
-    
+
     $("#cancelButton").click(CancelSubmit);
-    
+
 });
 
 function TermsAndConditionsField(field, arguments, initialize) {
-    if (!initialize) {	
+    if (!initialize) {
 	if (field.get()[0].checked) return true;
-	
-	
+
+
 	{/literal}
 	return "{translate id=FormError_Terms escape=false}";
 	{literal}
     }
-    
+
 }
 
 {/literal}

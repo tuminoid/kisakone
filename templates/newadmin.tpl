@@ -1,9 +1,10 @@
 {**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * "Create new admin" page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,27 +30,27 @@
 {/if}
 
 <form method="post" class="evenform" id="regform">
-    
+
     <input type="hidden" name="formid" value="add_admin" />
-    
-    <h2>{translate id='reg_contact_info'}</h2>    
-    
-    <div>
-        <label for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" type="text" name="lastname" value="{if !$done}{$smarty.post.lastname|escape}{/if}" />
-        {formerror field='lastname'}
-    </div>
+
+    <h2>{translate id='reg_contact_info'}</h2>
+
     <div>
         <label for="firstname">{translate id='first_name'}</label>
         <input id="firstname" type="text" name="firstname"  value="{if !$done}{$smarty.post.firstname|escape}{/if}" />
         {formerror field='firstname'}
     </div>
     <div>
-        <label  for="email">{translate id='reg_email'}</label>
+        <label for="lastname">{translate id='last_name'}</label>
+        <input id="lastname" type="text" name="lastname" value="{if !$done}{$smarty.post.lastname|escape}{/if}" />
+        {formerror field='lastname'}
+    </div>
+    <div>
+        <label for="email">{translate id='reg_email'}</label>
         <input id="email" type="text" name="email"  value="{if !$done}{$smarty.post.email|escape}{/if}" />
         {formerror field='email'}
     </div>
-    
+
     <h2>{translate id='reg_user_info'}</h2>
     <div>
         <label for="username">{translate id='username'}</label>
@@ -66,24 +67,24 @@
         <input type="password" name="password2" />
         {formerror field='password2'}
     </div>
-    
+
     <h2>{translate id='user_access_level'}</h2>
-    <div>        
+    <div>
         <input type="radio" name="access" value="admin" {if !$done && $smarty.post.access =='admin'}checked="checked"{/if} />
 	{translate id=access_level_admin}
 	    <br />
-	    
+
 	<input type="radio" name="access" value="manager" {if !$done && $smarty.post.access =='manager'}checked="checked"{/if} />
 	{translate id=access_level_manager}
 	<br />
         {formerror field='access'}
     </div>
-    
-    
+
+
     <h2>{translate id='reg_finalize'}</h2>
     <div>
         <input type="submit" value="{translate id='form_accept'}" name="register" />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />        
+        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
     </div>
 </form>
 
@@ -98,21 +99,21 @@ $(document).ready(function(){
     CheckedFormField('regform', 'password', NonEmptyField, null);
     CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");
     CheckedFormField('regform', 'access', RadioFieldSet, null);
-    
+
     $("#cancelButton").click(CancelSubmit);
-    
+
 });
 
 function TermsAndConditionsField(field, arguments, initialize) {
-    if (!initialize) {	
+    if (!initialize) {
 	if (field.get()[0].checked) return true;
-	
-	
+
+
 	{/literal}
 	return "{translate id=FormError_Terms escape=false}";
 	{literal}
     }
-    
+
 }
 
 {/literal}

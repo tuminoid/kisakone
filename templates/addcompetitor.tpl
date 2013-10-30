@@ -1,9 +1,10 @@
 {**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file is the UI for adding competitors to an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -35,11 +36,11 @@
         <input id="player" type="text" size="40" name="player" />
         <input name="op_s"  type="submit" value="{translate id=search}" />
     </form>
-    
+
     <p>
         <a href="{url page=addcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
     </p>
-    
+
     <script type="text/javascript">
 //<![CDATA[
 {literal}
@@ -49,16 +50,16 @@ $(document).ready(function(){
     options = { serviceUrl: baseUrl ,
                 params: {path: 'autocomplete', 'id': 'players' }};
     a = $('#player').autocomplete(options);
-    
-    
+
+
 });
 
 {/literal}
 
 //]]>
 </script>
-    
-    
+
+
 {elseif is_array($many)}
     {* Listing of users *}
     <p>{translate id=add_competitor_list_help}</p>
@@ -69,22 +70,22 @@ $(document).ready(function(){
                 <td><a href="{url page=addcompetitor id=$smarty.get.id user=$user->id}">{translate id=select}</a></td>
                 <td>{$player->pdga|escape}</td>
                 <td>{$user->fullname|escape}</td>
-                
+
                 <td>
                     {if $user->username}
                         {$user->username|escape}
                     {else}
-                        {translate id=add_competitor_no_username}                    
+                        {translate id=add_competitor_no_username}
                     {/if}
-                    
+
                 </td>
             </tr>
-        
+
         {foreachelse}
             <tr><td>{translate id=add_competitor_nomatch}</td></tr>
         {/foreach}
     </table>
-    
+
     <p>
         <a href="{url page=addcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
     </p>
@@ -95,25 +96,25 @@ $(document).ready(function(){
     {assign var=player value=$userdata->getPlayer()}
     <input type="hidden" name="userid" value="{$user->id}" />
     <input type="hidden" name="formid" value="add_competitor" />
-    
-    <h2>{translate id='reg_contact_info'}</h2>    
-    
-    <div>
-        <label  for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" {if !$edit}disabled="disabled"{/if} type="text" name="lastname" value="{$userdata->lastname|escape}" />
-        {formerror field='lastname'}
-    </div>
+
+    <h2>{translate id='reg_contact_info'}</h2>
+
     <div>
         <label for="firstname">{translate id='first_name'}</label>
         <input type="text" id="firstname" name="firstname" {if !$edit}disabled="disabled"{/if}  value="{$userdata->firstname|escape}" />
         {formerror field='firstname'}
     </div>
     <div>
+        <label for="lastname">{translate id='last_name'}</label>
+        <input id="lastname" {if !$edit}disabled="disabled"{/if} type="text" name="lastname" value="{$userdata->lastname|escape}" />
+        {formerror field='lastname'}
+    </div>
+    <div>
         <label for="email">{translate id='reg_email'}</label>
         <input id="email" {if !$edit}disabled="disabled"{/if} type="text" name="email"  value="{$userdata->email|escape}" />
         {formerror field='email'}
     </div>
-    
+
     {if $userdata->id}
     <h2>{translate id='reg_user_info'}</h2>
     <div>
@@ -123,58 +124,58 @@ $(document).ready(function(){
     </div>
     {/if}
 
-    
+
     <h2>{translate id='reg_player_info'}</h2>
      <div>
         <label for="pdga">{translate id='pdga_number'}</label>
         <input id="pdga" type="text" {if !$edit}disabled="disabled"{/if} name="pdga"  value="{$player->pdga|escape}" />
         {formerror field='pdga'}
     </div>
-     
+
      <div>
         <label for="gender">{translate id='gender'}</label>
         <input id="gender" type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
-        
+
     </div>
-     
-     
+
+
      <div style="margin-top: 8px">
         <label>{translate id='dob'}</label>
 
 
         {translate id='year_default' assign='year_default'}
         {if $edit}
-        {html_select_date time=0-0-0 field_order=DMY month_format=%m 
+        {html_select_date time=0-0-0 field_order=DMY month_format=%m
         prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
         all_extra='style="min-width: 0"' }
         {else}
         <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
         {/if}
-        
+
         {formerror field='dob'}
     </div>
-     
+
      <h2>{translate id='add_competitor_class'}</h2>
      <div>
-        
+
         <label for="class">{translate id='class'}</label>
-        
+
         <select id="class" name="class">
             {html_options options=$classOptions}
         </select>
-        
+
         {formerror field='class'}
      </div>
-    
-   
-    
+
+
+
     <h2>{translate id='reg_finalize'}</h2>
     <div>
         <input type="submit" value="{translate id='form_accept'}" name="accept" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        
-        
+
+
     </div>
 </form>
 
@@ -184,14 +185,14 @@ $(document).ready(function(){
 $(document).ready(function(){
     CheckedFormField('regform', 'lastname', NonEmptyField, null);
     CheckedFormField('regform', 'firstname', NonEmptyField, null);
-    CheckedFormField('regform', 'email', EmailField, null);    
+    CheckedFormField('regform', 'email', EmailField, null);
 
     CheckedFormField('regform', 'gender', RadioFieldSet, null);
     CheckedFormField('regform', 'dob_Year', NonEmptyField, null);
-    
-    
+
+
     $("#cancelButton").click(CancelSubmit);
-    
+
 });
 
 {/literal}
