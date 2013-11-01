@@ -3,6 +3,17 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2013.11.01
+==========
+  
+  * Write help for the Leaderboard CVS for TDs that have no prior experience where it applies. GH-39.
+  * "Järjestä Kilpailu" link was removed (to be replaced later with other function). GH-30.
+  * Competitions with registered and paid are now shown with green thumbs up icon to distinguish them from competitions where you have not registered into. GH-24.
+  * More obvious config switch for excluding SFL integration (for club use). GH-22.
+  * Reordered lastname, firstname in all forms to firstname, lastname as it makes way more sense and people continue to mix them. GH-44.
+  * Created this changelog.
+
+
 2013.09.23
 ==========
 
