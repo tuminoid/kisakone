@@ -22,12 +22,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// Yes, we use SFL for payment checks
-define("USE_SFL_PAYMENTS", true);
-
-// ignore payment status
-define("IGNORE_PAYMENTS", false);
-
 /*
  * Check SFL database for fees
  *
@@ -60,19 +54,23 @@ function SFL_FeesPaidForYear($user, $year) {
     $membership = $aLicense = $bLicense = $pdgaFound = false;
 
     while (($row = mysql_fetch_assoc($result)) !== false) {
+/*
+        // useless code afaik
         if ($row['pdga']) {
             $pdgaFound = true;
         } else {
             if ($pdgaFound)
                 continue;
         }
-        if ($row['license'] >= 1) $membership = true;
-        if ($row['license'] == 2) $aLicense = true;
-        if ($row['license'] == 6) $bLicense = true;
+*/
+
+        if ($row['license'] >= LICENSE_MEMBERSHIP) $membership = true;
+        if ($row['license'] == LICENSE_A) $aLicense = true;
+        if ($row['license'] == LICENSE_B) $bLicense = true;
     }
 
     mysql_free_result($result);
-    // logToFile("Membership:" . $membership ." A-license: " +  $aLicense + " B-license: " + $bLicense, "SFL_FeesPaidForYear");
     return array($aLicense, $membership, $bLicense);
 }
+
 ?>

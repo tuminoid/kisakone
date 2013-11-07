@@ -7,7 +7,7 @@
  * This file serves as the one and only interface users have for the PHP code. In fact,
  * whenever mod_rewrite is enabled, access to other php files is explicitly made
  * impossible.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,13 +28,12 @@
 // Suomen Frisbeeliitto-specific functionality
 require_once('sfl_integration.php');
 
-setlocale(LC_ALL,
-                    array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
 
 // Support libraries that do NOT rely on data relayed from the user
 
 require_once('config.php');
-
+require_once('config_site.php');
 
 // Some version of PHP 5 complain about lack of time zone data, so if we can
 // we'll set it now
@@ -55,8 +54,8 @@ require_once('data/init_data.php');
 
 // Disabling caching; we have menus and such which can vary depending on user's
 // access level, so this is necessary.
-header("Cache-Control: no-cache, must-revalidate"); 
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); 
+header("Cache-Control: no-cache, must-revalidate");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 
 // If we're supposed to be logged in, start the session
@@ -67,7 +66,7 @@ if (@$_COOKIE['kisakone_login']) {
 } else {
    // Not logged in; see if the user enabled automatic login
    if (@$_COOKIE['kisakone_autologin_as']) {
-      
+
       // Yes; ensure the automatic login token matches the one that can be
       // generated for the user from database, if so, log in, if not ignore;
       // we don't want to display error message for outdated cookies
@@ -79,7 +78,7 @@ if (@$_COOKIE['kisakone_login']) {
          global $user;
          $user = GetUserDetails($uid);
          $_SESSION['user'] = $user;
-         
+
       } else {
          // Login failed; no error message, just clear the cookies so that
          // the login doesn't have to be attempted for every page load
@@ -98,12 +97,13 @@ if (@$_COOKIE['kisakone_login']) {
 gate_StripSlashesIfNecessary();
 
 // These language files are either used globally, or are simply needed for the
-// basic layout. 
+// basic layout.
 language_include('general');
 language_include('mainmenu');
 language_include('submenu');
 language_include('loginbox');
 language_include('pageNameMapping');
+language_include('errors');
 
 
 gate_MapURLParameters();
@@ -121,9 +121,9 @@ $pageData = gate_ProcessInputData();
 // See if an error occured, and if so, determine how to show it
 if (is_a($pageData, 'Error')) {
    if ($pageData->isMajor) {
-      
+
       $_GET['page'] = array('error');
-   } else {   
+   } else {
       if ($pageData->errorPage) $_GET['page'] = $pageData->errorPage;
       // else: assume that the page being shown is fine
    }
@@ -155,7 +155,7 @@ $fullTemplateName = $fullPageName . '.tpl';
 // Ensure both the template and the PDR module exist
 if (!file_exists("templates/" . $fullTemplateName) || !file_exists("ui/$pagename[0].php")) {
    // Todo: support this
-   
+
    if (gate_AttemptLanguageDetection($pagename)) {
       gate_ReloadPage();
    }
@@ -167,7 +167,7 @@ if (!file_exists("templates/" . $fullTemplateName) || !file_exists("ui/$pagename
    $pageData->errorCode = 404;
    $pageData->cause = $_GET['page'];
    $pageData->function = 'Gatekeeper:(automatic)';
-   
+
 }
 
 
@@ -208,8 +208,8 @@ else if (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSI
 } else {
    header("Content-Type: application/xhtml+xml; charset=utf-8");
    $smarty->assign('contentType', "application/xhtml+xml; charset=utf-8");
-   
-   $isXhtml = true;   
+
+   $isXhtml = true;
 }
 
 // Choose the ad for the page
@@ -221,101 +221,101 @@ if (is_a($adSuccess, 'Error')) {
 // If the page data relay encountered an error, display it instead
 // of the normal page.
 if (is_a($pageData, 'Error')) {
-   
+
       $pagename = array('error');
       $fullTemplateName = "error.tpl";
       include_once('ui/error.php');
       Error_InitializeSmartyVariables($smarty, $pageData);
       $smarty->assign('error', $pageData);
-   
+
 }
 
 
 
 // And finally render the page
-if ($isXhtml) echo '<?xml version="1.0" encoding="UTF-8" ?>';   
+if ($isXhtml) echo '<?xml version="1.0" encoding="UTF-8" ?>';
 $smarty->display($fullTemplateName);
-   
- 
+
+
 /**
  * This function maps parameters passed within the URL (when mod_rewrite is used)
  * into parameters found in the $_GET and $_REQUEST arrays.
  */
-function gate_mapURLParameters() {   
+function gate_mapURLParameters() {
    global $parameterInPath;
    $parameterInPath = array();
-   
+
    // The entire call path is contained within the $_GET variable path. The
    // processing is only done if it's present.
    if (count($_GET) == 0 || !array_key_exists('path', $_GET)) {
       $_GET['page'] = explode('/', @$_GET['page']);
       return;
    }
-   
+
    // The paths come in the following format:
    // ./pagename/id/arg1/value1/arg2/value2/.../argn/valuen .
    // None of the elements is mandatory. Pagename defaults to "index" and id
-   // defaults to "default".   
-   
+   // defaults to "default".
+
    if (@$_GET['page'] && !$_GET['path']) $_GET['path'] = @$_GET['page'];
- 
+
    $pathnodes = explode('/', $_GET['path']);
-   
-   
-   
+
+
+
    // How many extra elements have been included in the path
    $offset = 0;
-   
+
    // Handle the 2 non-named arguments first
    $templatePath = '';
-   
+
    // Has "page" variable been provided?
    if (count($pathnodes) >= 1) {
       $node = gate_TranslatePathNode($pathnodes[0]);
       $templatePath = "templates/" . $node;
       $_GET['page'] = array($node);
       $_REQUEST['page'] = array($node);
-      
+
       $parameterInPath['page'] = true;
-      
+
    }
-   
+
    // It is also possible to use deeper paths as well for the templates. The PDR
    // unit is chosen as normally, but if there is no matching template, then the
    // directory tree can be traversed until one is found -- this is done here.
    //
    // For example, there's template javascript/base.tpl, but it's served by the
    // PDR module ui/javascript.php
-   
+
    if ($templatePath != '' && !file_exists($templatePath . ".tpl")) {
-      
+
       for ($offset = 1; $offset < count($pathnodes); ++$offset) {
          $element = gate_TranslatePathNode($pathnodes[$offset]);
-         
+
          // Ensure there are no dots in the filename; not only are they unnecessary,
          // doing this prevents directory traversal nicely
          if (strpos($element, '.') !== false) break;
-         
+
          $templatePath .= "/$element";
          $_GET['page'][] = $element;
          $_REQUEST['page'][] = $element;
-         
+
          if (file_exists($templatePath . ".tpl")) break;
       }
          if (!file_exists($templatePath . ".tpl")) {
          $offset = 0;
       }
-   
-   
+
+
    }
-   
+
    // Is there ID on the url?
    if (count($pathnodes) > $offset + 1) {
       $_GET['id'] = $pathnodes[$offset + 1];
       $_REQUEST['id'] = $pathnodes[$offset + 1];
       $parameterInPath['id'] = true;
    }
-   
+
    // And then the named arguments
    for ($ind = $offset + 2; $ind < count($pathnodes); $ind += 2) {
       if (count($pathnodes) == $ind + 1) break;
@@ -323,23 +323,23 @@ function gate_mapURLParameters() {
       $_REQUEST[$pathnodes[$ind]] = $pathnodes[$ind + 1];
       $parameterInPath[$pathnodes[$ind]] = true;
    }
-   
+
    // Translate all the variables as necessary
    gate_remapGet();
-   
+
 }
 
 // Choose the ad to be shown on this page; a page data relay unit may
 // have set one already, so we won't replace it in that case
 function gate_AssignAd(&$smarty) {
    if ($smarty->get_template_vars('ad')) return;
-   
+
    if (GetMainMenuSelection() == 'administration') return;
    global $fullPageName;
-   
+
    $ad = GetAd(null, $fullPageName);
    if (is_a($ad, 'Error')) return $ad;
-   
+
    if ($ad) {
       $smarty->assign('ad', $ad);
    } else {
@@ -356,45 +356,45 @@ function gate_TranslatePathNode($node) {
 
 // This function translates all the variables sent using GET method
 function gate_remapGet() {
-   
+
    global $language;
-   
-   
+
+
    foreach ($_GET as $param => $value) {
       // Page is translated as it's being read, not done here
       if ($param == 'page') continue;
-      
-      
+
+
       // Translates both the variable name and value
       if (array_key_exists("param:" . $param, $language->data)) $param = substr(translate("param:" . $param), 6);;
       if (array_key_exists("$param:" . $value, $language->data)) $value = substr(translate("$param:" .  $value), strlen($param) + 1);
-      
+
 /*
-      if ($param == 'page' && is_array($value)) {         
+      if ($param == 'page' && is_array($value)) {
          foreach ($value as $k => $v) {
-            
-            if (array_key_exists("$param:" . $v, $language->data)) {               
+
+            if (array_key_exists("$param:" . $v, $language->data)) {
                $value[$k] = substr(translate("$param:" .  $v), strlen($param) + 1);
             }
          }
       }*/
-      
+
       $_GET[$param] = $value;
-      
-      
-            
+
+
+
    }
-   
+
 }
 
-/** 
+/**
  * One of the more troublesome PHP settings is "magic quotes gpc", which prepends
  * quote characters with backslashes. If the settings is enabled,  this function
  * goes through the affected arrays and removes the backslashes.
  */
 function gate_stripSlashesIfNecessary() {
          if (!get_magic_quotes_gpc()) return;
-         
+
          // Luckily php doesn't mind having the array values changed while
          // in the foreach loops.
          foreach ($_POST as $k => $v) $_POST[$k] = recursive_stripslashes($v);
@@ -413,7 +413,7 @@ function recursive_stripslashes($data) {
          $out[$key] = recursive_stripslashes($value);
       }
       return $out;
-      
+
    } else {
       return stripslashes($data);
    }
@@ -424,7 +424,7 @@ function recursive_stripslashes($data) {
 function PageIs($pageName) {
    global $fullPageName;
    return $pageName == $fullPageName;
-   
+
 }
 
 // Set the content type for the request; this function should be used instead
@@ -443,12 +443,12 @@ function gate_AttemptLanguageDetection($pagename) {
    $dir = opendir('ui/languages');
    if ($dir) {
       $token = "page:" . $pagename[0];
-      
+
       while (($file = readdir($dir)) !== false) {
          if ($file == 'mapping' || $file{0} == '.') continue;
          $l = LoadLanguage($file, true);
          $l->LoadSingleFile('pageNameMapping');
-         
+
          if (isset($l->data[$token])) {
             $bits = $_GET;
             $bits['action'] = 'set_language';
@@ -456,16 +456,16 @@ function gate_AttemptLanguageDetection($pagename) {
             $bits['asl_nrd'] = 1;
             unset($bits['path']);
             $bits['page'] = $pagename[0];
-            
+
             header("Location: " . url_smarty($bits, $_GET));
             die();
-            
-            
-            
+
+
+
          }
-         
+
       }
-      
+
       closedir($dir);
    }
 }
