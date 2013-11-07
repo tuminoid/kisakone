@@ -2,9 +2,9 @@
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
- * 
+ *
  * Sign up page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,7 +22,7 @@
  * *}
 {if $mode == 'body'}
  <div id="event_content">
-    {$page->formattedText}    
+    {$page->formattedText}
 </div>
 
 
@@ -33,11 +33,11 @@
 <p>{translate id=login_to_sign_up}</p>
 {assign var=nosignup value=true}
 {elseif $feesMissing}
-    {if $feesMissing == 1}
+    {if $feesMissing == 1} {*this is membership free*}
         <p>{translate id=fees_necessary_for_signup_1}</p>
-    {elseif $feesMissing == 2}
+    {elseif $feesMissing == 2} {*this is A license *}
         <p>{translate id=fees_necessary_for_signup_2}</p>
-    {elseif $feesMissing == 6}
+    {elseif $feesMissing == 6} {*this is B license *}
         <p>{translate id=fees_necessary_for_signup_3}</p>
     {/if}
 {assign var=nosignup value=true}
@@ -49,14 +49,14 @@
     <input type="hidden" name="formid" value="sign_up" />
     {if $user}
         <p class="signup_status">{translate id=not_signed_up}</p>
-        {assign var=player value=$user->getPlayer()}        
+        {assign var=player value=$user->getPlayer()}
         {foreach from=$classes item=class}
             <div>
                 <input type="radio" name="class" id="class" value="{$class->id}" {if !$player || !$player->isSuitableClass($class) || $nosignup}disabled="disabled"{/if} />
                 <label>{$class->name|escape}</label>
             </div>
         {/foreach}
-        
+
         <hr style="clear: both" />
         <input type="submit" {if $nosignup}disabled="disabled"{/if} value="{translate id="signup"}" />
         <input type="submit" id="cancel" name="cancel" value="{translate id="cancel"}" />
@@ -65,13 +65,13 @@
 {elseif $paid}
     <p class="signup_status">{translate id=signed_up_and_paid}</p>
     <ul>
-        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>    
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
 {elseif $signedup && !$paid}
     <p class="signup_status">{translate id=signed_up_not_paid}</p>
     <ul>
-        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>    
-        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>    
+        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
 {else}
     <p>
@@ -82,5 +82,5 @@
     {/if}
     </p>
 {/if}
-    
+
 {/if}
