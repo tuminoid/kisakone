@@ -3,9 +3,9 @@
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
- * 
- * This file contains the User class. 
- * 
+ *
+ * This file contains the User class.
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -48,7 +48,7 @@ $user_access_level_admin        = 'admin';
 
 /* *****************************************************************************
  * This class represents a single user in the system.
- */ 
+ */
 class User {
     var $id;
     var $username;
@@ -61,7 +61,7 @@ class User {
     var $pdga;      // Player class attribute, repeated here for convenience
     var $birthyear; // Player class attribute, repeated here for convenience
     var $password;  // password as md5 hash
-    
+
     var $playerCache;
 
     /** ************************************************************************
@@ -87,18 +87,18 @@ class User {
         $this->birthyear = null;
         $this->password = null;
         $this->player = $player;
-        
+
         return;
     }
-    
+
     /** ************************************************************************
      * Method for setting the role attribute
      *
      * Returns null
      */
     function SetRole( $role)
-    {        
-        
+    {
+
         if( isset( $role))
         {
             $this->role = $role;
@@ -107,10 +107,10 @@ class User {
         {
             $this->role = USER_ROLE_PLAYER;
         }
-        
+
         return null;
     }
-    
+
     /** ************************************************************************
      * Method for setting the name attributes
      *
@@ -121,10 +121,10 @@ class User {
         $this->firstname = trim( $firstname);
         $this->lastname = trim( $lastname);
         $this->fullname = trim( $firstname . " " . $lastname);
-        
+
         return null;
     }
-    
+
     /** ************************************************************************
      * Method for setting the id attribute
      *
@@ -134,7 +134,7 @@ class User {
     function SetId( $id)
     {
         $err = null;
-        
+
         if( !isset( $this->id))
         {
             $this->id = $id;
@@ -155,10 +155,10 @@ class User {
                              "; new id:" . $id;
             }
         }
-        
+
         return $err;
     }
-    
+
     /** ************************************************************************
      * Method for setting the user password.
      *
@@ -168,7 +168,7 @@ class User {
     function SetPassword( $password)
     {
         $err = null;
-        
+
         if( !empty( $password))
         {
             // TODO: Is there need to check the password minimum length
@@ -185,10 +185,10 @@ class User {
             $err->IsMajor = false;
             $err->data = "username:" . $this->username;
         }
-        
+
         return $err;
     }
-    
+
     /** ************************************************************************
      * Method for setting the attributes related to player properties.
      *
@@ -201,10 +201,10 @@ class User {
         $this->gender = $gender;
         $this->pdga = $pdga;
         $this->birthyear = $birthyear;
-        
+
         return null;
     }
-    
+
     /** ************************************************************************
      * Method for validating the correctness of the object attributes.
      *
@@ -214,7 +214,7 @@ class User {
     function ValidateUser()
     {
         $err = null;
-        
+
         if(!$this->IsValidUsername( $this->username))
         {
             $err = new Error();
@@ -225,7 +225,7 @@ class User {
             $err->IsMajor = false;
             $err->data = "User->username:" . $this->username;
         }
-        
+
         if( !isset( $err) and !$this->IsValidEmail( $this->email))
         {
             $err = new Error();
@@ -237,10 +237,10 @@ class User {
             $err->data = "User->username:" . $this->username .
                          "; User->email:" . $this->email;
         }
-        
+
         return $err;
     }
-    
+
     /** ************************************************************************
      * Method for validating the correctness of the username argument.
      *
@@ -248,30 +248,30 @@ class User {
      */
     function IsValidUsername( $username)
     {
-        
+
         $retVal = false;
         if ($username === null) {
-            
+
             // Accountless user (manually entered empty username shows up as an
             // empty string and will not reach this point)
             $retVal = true;
         }
         else if( !empty( $username))
         {
-            if( ( is_string( $username)) and 
+            if( ( is_string( $username)) and
                 ( strlen( $username) >= USER_USERNAME_MIN_LENGTH) and
                 ( strlen( $username) <= USER_USERNAME_MAX_LENGTH))
             {
                 $retVal = true;
             }
-            
+
             if (!preg_match('/^[\pL\d_-]+$/', $username)) {
                 $retVal = false;
             }
         }
         return $retVal;
     }
-    
+
     /** ************************************************************************
      * Method for validating the correctness of the email argument.
      *
@@ -281,7 +281,7 @@ class User {
     function IsValidEmail( $email)
     {
         $retVal = false;
-        
+
         if( !isset( $email))
         {
             $retVal = true;
@@ -297,7 +297,7 @@ class User {
         }
         return $retVal;
     }
-    
+
     /** ************************************************************************
      * Method for checking if User role is admin
      *
@@ -305,10 +305,10 @@ class User {
      */
     function IsAdmin()
     {
-    
+
         return $this->role == USER_ROLE_ADMIN;
     }
-    
+
     /** ************************************************************************
      * Gets the Event objects that assiciate with the user id
      */
@@ -316,12 +316,12 @@ class User {
     {
         return GetUserEvents( null,  $eventType);
     }
-    
+
     /** ************************************************************************
      * Gets the Player object that associates with the user id
      *
      * Returns Player object in success or
-     * null if there is no Player that corresponds with the user id or 
+     * null if there is no Player that corresponds with the user id or
      * an Error object in case there was an error in accessing the database.
      */
     function GetPlayer()
@@ -330,19 +330,19 @@ class User {
         if (!is_a($this->playerCache, 'Player')) $this->playerCache = GetUserPlayer( $this->id);
         return $this->playerCache;
     }
-    
-    
+
+
     /** ************************************************************************
      * Send email to the user's email address containing a token which can be
      * used for changing one's password in case the user forgot it.
-     *     
+     *
      */
     function SendPasswordRecoveryEmail()
     {
         require_once('core/email.php');
-        
+
         $token = GetUserSecurityToken( $this->id);
-        
+
         global $settings;
         if ($settings['USE_MOD_REWRITE']) {
             $url = "http://" . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
@@ -350,11 +350,11 @@ class User {
         else {
             $url = "http://" . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
-        
+
         SendEmail('email_password', $this->id, null, $url, $token);
 
     }
-    
+
     /**
      * Determines membership and license payments for a given year
      * Returns true if player's licenses match the requirements
@@ -366,14 +366,14 @@ class User {
         // If there is any requirements for competition, membership is a must
         if ($required && !$membership) return false;
         // If A-license is required, we require that strictly
-        if ($required == 2 && !$aLicense) return false;
+        if ($required == LICENSE_A && !$aLicense) return false;
         // If B-license is required, both A- and B-license quality, obviusly
-        if ($required == 6 && !($aLicense || $bLicense)) return false;
+        if ($required == LICENSE_B && !($aLicense || $bLicense)) return false;
 
         return true;
     }
 }
- 
+
 /* *****************************************************************************
  * Function for checking if users access rights for an event are adequate for
  * a given level.
@@ -390,9 +390,9 @@ function access( $level)
     global $user_access_level_td;
     global $user_access_level_admin;
     $retVal = false;
-    
+
     $eventid = @$_GET['id'];
-    
+
     if( $level == $user_access_level_none)
     {
         // No level requirements, all users have access
@@ -405,7 +405,7 @@ function access( $level)
         if( isset( $user))
         {
             $admin_user = IsAdmin();
-  
+
             switch( $level)
             {
                 case $user_access_level_login:
@@ -427,10 +427,10 @@ function access( $level)
                         $retVal = true;
                     }
                     break;
-                case $user_access_level_td:                    
+                case $user_access_level_td:
                      $event = GetEventDetails($eventid);
-                     
-                     
+
+
                     if($event && ($admin_user || $event->management == $user_access_level_td)) {
                         $retVal = true;
                     }
@@ -456,7 +456,7 @@ function access( $level)
             }
         }
     }
-    
+
     return $retVal;
 }
 
@@ -468,13 +468,13 @@ function access( $level)
 function IsAdmin()
 {
     $retVal = false;
-    
+
     $user = @$_SESSION['user'];
     if( isset( $user))
     {
         $retVal = $user->isAdmin();
     }
-    
+
     return $retVal;
 }
 
