@@ -3,9 +3,15 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next
+====
+  * Document license values for maintainability.
+  * Drop "next year" license info from user profile and explain in licenses that A-license covers also B-license, that "not paid" looks unfriendly.
+
+
 2013.11.01
 ==========
-  
+
   * Write help for the Leaderboard CVS for TDs that have no prior experience where it applies. GH-39.
   * "Järjestä Kilpailu" link was removed (to be replaced later with other function). GH-30.
   * Competitions with registered and paid are now shown with green thumbs up icon to distinguish them from competitions where you have not registered into. GH-24.
@@ -34,13 +40,13 @@ Kisakone versions are simply release date tags:
 
   * A running counter was added to registered players list. GH-15.
   * All Windows line endings in all files were converted into Unix line endings. GH-14.
- 
+
   * Payments page was improved
     * Now Registration date is persistent
     * Payment date is separately visible
     * Selecting all players is possible with single click
     * Formatting of page improved to better use screen estate
- 
+
   * Leaderboard CVS page was recoded. Now the page is
     * Directly compatible with PDGA Tournament Manager upload field, thus making posting scores and getting ratings for players a blitz.
     * CVS is also directly applicable to International TD Report Excel sheet.
