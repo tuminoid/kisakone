@@ -61,8 +61,7 @@
 
 {if ($itsme || $isadmin) && $player }
    <hr />
-      <table style="width:300px">
-
+      <table style="width:500px">
          {if $fees}
             <tr>
                <td >{translate id=user_membershipfee}: </td>
@@ -82,36 +81,22 @@
                <td>
                   {foreach from=$fees.aLicense key=year item=paid}
                      {if $paid}
+                        {assign var=alicense_paid value=true}
                         {$year} {translate id=user_ispaid}
                      {else}
                         {$year} {translate id=user_notpaid}
                      {/if}
                      <br />
                   {/foreach}
-
                </td>
             </tr>
             <tr>
                <td >{translate id=user_blicensefee}: </td>
                <td>
                   {foreach from=$fees.bLicense key=year item=paid}
-                     {if $paid}
-                        {$year} {translate id=user_ispaid}
-                     {else}
-                        {$year} {translate id=user_notpaid}
-                     {/if}
-                     <br />
-                  {/foreach}
-
-               </td>
-            </tr>
-{*
-         {else}
-            <tr>
-               <td >{translate id=user_membershipfee}: </td>
-               <td>
-                  {foreach from=$player->membershipfeespaid() key=year item=paid}
-                     {if $paid}
+                     {if $alicense_paid}
+                        {$year} {translate id=user_alicense_paid}
+                     {elseif $paid}
                         {$year} {translate id=user_ispaid}
                      {else}
                         {$year} {translate id=user_notpaid}
@@ -120,23 +105,7 @@
                   {/foreach}
                </td>
             </tr>
-            <tr>
-               <td >{translate id=user_licensefee}: </td>
-               <td>
-                  {foreach from=$player->licensefeespaid() key=year item=paid}
-                     {if $paid}
-                        {$year} {translate id=user_ispaid}
-                     {else}
-                        {$year} {translate id=user_notpaid}
-                     {/if}
-                     <br />
-                  {/foreach}
-
-               </td>
-            </tr>
-*}
          {/if}
-
       </table>
 {/if}
 
