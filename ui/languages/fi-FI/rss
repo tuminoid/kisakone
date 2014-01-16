@@ -1,6 +1,6 @@
 eventrss_title          SFL Kisakone: {eventname}
 eventrss_description    Tässä syöttessä kerrotaan frisbeegolf-kilpailun {eventname} tapahtumista.
-rss_copyright           Copyright © 2009-2010 Suomen Frisbeeliito ja Kisakone-projektiryhmä
+rss_copyright           Copyright © 2009-2014 Suomen Frisbeegolfliitto, Tuomo Tanskanen ja Kisakone-projektiryhmä
 
 rss_event_in_1_week         Kilpailu alkaa viikon kuluessa!
 rss_event_in_1_week_text    Muistathan, että kilpailun alkuun on enää alle viikko aikaa. Kilpailuhan alkaa {dataDate}.
