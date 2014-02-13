@@ -1,7 +1,7 @@
 <?php
 global $settings;
 
-$settings['EMAIL_SENDER'] = "no-replu@kisakone.frisbeegolfliitto.fi";
+$settings['EMAIL_SENDER'] = "no-reply@kisakone.frisbeegolfliitto.fi";
 $settings['EMAIL_MAILER'] = "Frisbeegolfliitto Kisakone 2.0";
 
 ?>
