@@ -34,13 +34,22 @@ Good generic guide for setting LAMP:
 https://help.ubuntu.com/community/ApacheMySQLPHP
 
 Step by step:
-sudo apt-get install mysql-server apache2 libapache2-mod-php5 php5 php5-mysql
-sudo a2enmod php5
-sudo a2enmod rewrite
+$ sudo apt-get install mysql-server apache2 libapache2-mod-php5 php5 php5-mysql
+$ sudo a2enmod php5
+$ sudo a2enmod rewrite
 
 Edit /etc/apache2/sites-enabled/000-default to point to your local sources.
 
-sudo service apach2 restart
+$ sudo service apach2 restart
+
+
+Set up Postfix
+--------------
+
+If you want to send out emails (reminders, TDs messages, password reset links):
+When prompted, select "Internet Site" and enter your domain name.
+
+$ sudo apt-get install postfix
 
 
 Using VagrantUp as development:
