@@ -48,7 +48,7 @@
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
             <td>
-            {foreach from=$event->GetClasses() item=class}
+            {foreach from=$event->GetClasses()|@array_reverse item=class}
                 {$class->name|substr:0:3|escape}
             {foreachelse}
                 -
