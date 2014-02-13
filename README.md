@@ -1,4 +1,4 @@
-kisakone
+Kisakone
 ========
 
 Kisakone is Finnish Disc Golf Associations disc golf tournament management software.
