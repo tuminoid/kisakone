@@ -5,6 +5,11 @@ Kisakone versions are simply release date tags:
 
 next
 ====
+  * TBD
+
+
+2014.02.13
+==========
   * Document license values for maintainability.
   * Drop "next year" license info from user profile and explain in licenses that A-license covers also B-license, that "not paid" looks unfriendly.
   * Display available classes in event listings. GH-57.
