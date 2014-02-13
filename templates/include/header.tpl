@@ -50,7 +50,7 @@
             {* Disabled from normal use as we only have a single language *}
             {include file='include/languagebar.tpl'}
       {/if}
-      <img id="sitelogo" src="{$url_base}ui/elements/logo2.png" alt="{translate id=site_name}" />
+      <img id="sitelogo" src="{$url_base}ui/elements/sitelogo.png" alt="{translate id=site_name}" />
 
       <h1 id="sitename">{translate id=site_name_long}</h1>
       <div id="pagename">{$title}</div>
