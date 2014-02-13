@@ -144,7 +144,7 @@ function DoInstall() {
     }
 
     test('Config.php writable');
-    $fp = @fopen('config.php', 'a');
+    $fp = @fopen('../config.php', 'a');
     if (!$fp)
         return failed();
     success();
@@ -265,12 +265,12 @@ global \$settings;
 
 \$settings['USE_MOD_REWRITE'] = $rewrite;
 
-include_once('config_email.php');
+include_once('config_site.php');
 
 $q>
 EOF;
 
-    $fp = fopen('config.php', 'w');
+    $fp = fopen('../config.php', 'w');
     if (!$fp) {
         return false;
     }

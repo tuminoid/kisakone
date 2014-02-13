@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event listing
  *
@@ -33,6 +33,7 @@
         <th>{sortheading field=Name id='event_name' sortType=alphabetical}</th>
         <th>{sortheading field=VenueName id='event_location' sortType=alphabetical}</th>
         <th>{sortheading field=LevelName id='event_level' sortType=alphabetical}</th>
+        <th>{sortheading field=EventClasses id='event_classes' sortType=alphabetical}</th>
         <th>{sortheading field=Date id='event_date' sortType=date}</th>
         <th></th>
         <th></th>
@@ -46,8 +47,14 @@
             {/if}
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
-            <td><input type="hidden" value="{$event->date}" />
-            {$event->fulldate}</td>
+            <td>
+            {foreach from=$event->GetClasses()|@array_reverse item=class}
+                {$class->name|substr:0:3|escape}
+            {foreachelse}
+                -
+            {/foreach}
+            </td>
+            <td><input type="hidden" value="{$event->date}" />{$event->fulldate}</td>
             <td class="event_links">
             {if $event->resultsLocked}
                 <img src="{$url_base}ui/elements/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>

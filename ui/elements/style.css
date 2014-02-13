@@ -86,6 +86,8 @@ th{
 #sitelogo {
     float: left;
     margin: 4px;
+    height: 80px;
+    margin-top: 20px;
 }
 
 

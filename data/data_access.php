@@ -22,29 +22,13 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once('data/db_init.php');
+
 /* ****************************************************************************
  * Utility data structures and functions
  *
  * */
 
-
-   // Connects to the database
-   function InitializeDatabaseConnection()
-   {
-      $retValue = null;
-      global $settings;
-      $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
-
-      if(!($con && @mysql_select_db($settings['DB_DB'])))
-      {
-         $retValue = new Error();
-         $retValue->isMajor = true;
-         $retValue->title = 'error_db_connection';
-         $retValue->description = translate('error_db_connection_description');
-      }
-
-      return $retValue;
-   }
 
    // Returns $param as a database safe string surrounded by apostrophes
    // Returns 'NULL' if $param is null
@@ -559,9 +543,13 @@
          $uid = $user->id;
          $player = $user->GetPlayer();
 
-         if (is_a($player, 'Error')) return $player;
+         if (is_a($player, 'Error'))
+            return $player;
 
-         if ($player) $playerid = $player->id; else $playerid = -1; // -1 impossible normally
+         if ($player)
+            $playerid = $player->id;
+         else
+            $playerid = -1; // -1 impossible normally
 
 
          $query = data_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
@@ -573,7 +561,8 @@
                                          LEFT JOIN :Participation ON :Participation.Event = :Event.id AND :Participation.Player = $playerid
                                          LEFT JOIN :Level ON :Event.Level = :Level.id
                                          INNER Join :Venue ON :Venue.id = :Event.Venue
-                                         WHERE $conditions ORDER BY %s ", $sort);
+                                         WHERE $conditions
+                                         ORDER BY %s ", $sort);
 
       } else {
 
@@ -593,17 +582,13 @@
          return Error::Query($query);
       }
 
-      if(mysql_num_rows($result) > 0)
-      {
-         while($row = mysql_fetch_assoc($result))
-         {
-            //print_r($row);
+      if(mysql_num_rows($result) > 0) {
+         while($row = mysql_fetch_assoc($result)) {
             $temp = new Event($row);
-
             $retValue[] = $temp;
          }
       }
-        mysql_free_result($result);
+      mysql_free_result($result);
       return $retValue;
    }
 

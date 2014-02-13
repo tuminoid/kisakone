@@ -153,7 +153,7 @@ class Email {
  * get their values from the recipient. Event and link token values are provided
  * as parameters to this function.
  *
- * Some details of the messages can be adjusted in config_email.php file.
+ * Some details of the messages can be adjusted in config_site.php file.
  */
 function SendEmail($emailid, $userid, $event, $link = '', $token = '') {
     $user = GetUserDetails($userid);

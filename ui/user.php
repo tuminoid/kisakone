@@ -73,7 +73,7 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
          $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
          $currentYear = date('Y');
-         $years = array($currentYear, $currentYear + 1);
+         $years = array($currentYear);
          foreach ($years as $year) {
             list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($user->id, $year);
             $fees['aLicense'][$year] = $aLicense;

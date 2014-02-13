@@ -9,7 +9,13 @@ NOTE: Clone this with
 
     git clone --recursive ...
 
-to get the development environment into tools/development cloned for you! Otherwise, checkout tuminoid:kisakone-dev project on Github!
+to get the development environment into tools/development cloned for you! Otherwise, checkout https://github.com/tuminoid/kisakone-dev.git project on Github!
+
+Bleeding edge version is at branch called `next`. `master` aims to be stable.
+Releases are the ones you want to use for production.
 
 
-Bleeding edge version is at branch called 'next'. Master aims to be stable.
+Installation
+============
+
+See https://github.com/tuminoid/kisakone/blob/master/install/INSTALL.md

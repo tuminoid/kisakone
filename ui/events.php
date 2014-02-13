@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Event listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,9 +26,9 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
+function InitializeSmartyVariables(&$smarty, $error) {
    $user = @$_SESSION['user'];
-   
+
    global $event_sort_mode;
    $event_sort_mode = @$_GET['sort'];
 
@@ -48,7 +48,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
       case 'manage':
          $events = $user->GetMyEvents('manager');
          $title = 'manage_events_title';
-         break;      
+         break;
       case '':
       case 'default':
          global $fullTemplateName;
@@ -57,13 +57,14 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $current = GetRelevantEvents();
          $upcoming = GetUpcomingEvents(true);
          $past = GetPastEvents(true);
-         
+
          $smarty->assign('lists', array($current, $upcoming, $past));
          $title = 'index_title';
-         
+
          require_once ('core/textcontent.php');
          $tc = GetGlobalTextContent('index');
-         if ($tc) $smarty->assign('content', $tc->formattedText);
+         if ($tc)
+            $smarty->assign('content', $tc->formattedText);
 
          break;
       case 'upcoming':
@@ -76,7 +77,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
          break;
       case 'byUser':
          global $user;
-         $uid = GetUserId(@$_GET['username']);         
+         $uid = GetUserId(@$_GET['username']);
          if (is_a($uid, 'Error')) return $uid;
          $theuser = GetUserDetails($uid);
          if (is_a($theuser, 'Error')) return $theuser;
@@ -85,7 +86,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $user = $theuser;
          $events = $user->GetMyEvents('participant');
          $user = $loginUser;
-         
+
          $title = '!' . translate('user_events_title', array('eventuser' => htmlentities(@$_GET['username'])));
          break;
       default:
@@ -96,22 +97,20 @@ function InitializeSmartyVariables(&$smarty, $error) {
             return Error::AccessDenied();
          }
    }
-   
+
    if (is_a($events, 'Error')) {
       return $events;
    }
-   
-   if ($title[0] != '!') $title = translate($title);
-   else $title = substr($title, 1);
-   
-   $smarty->assign('title', $title);
-   
-    $smarty->assign('events', $events);
-    $smarty->assign('loggedon', isset($_SESSION['user']));
-    
-    
-}
 
+   if ($title[0] != '!')
+      $title = translate($title);
+   else
+      $title = substr($title, 1);
+
+   $smarty->assign('title', $title);
+   $smarty->assign('events', $events);
+   $smarty->assign('loggedon', isset($_SESSION['user']));
+}
 
 
 /**

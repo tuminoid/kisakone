@@ -1,9 +1,11 @@
 Smarty/templates_c/*
-config.php
-.vagrant
+/config.php
+/config_email.php
+/config_site.php
 temp*.txt
 *.tumi
 .htaccess
 php5-cgi
 php5-fcgi
 ui/elements/uploaded/*
+/api

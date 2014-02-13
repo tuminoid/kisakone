@@ -5,7 +5,7 @@
  * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,14 +27,15 @@
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
 function InitializeSmartyVariables(&$smarty, $error) {
-    
+
     require_once('ui/support/eventform_init.php');
-    
+    require_once('config_site.php');
+
     language_include('formvalidation');
-    
+
     $e = array();
     if ($error) {
-        
+
         if (!is_array($error->data)) {
             print_r($error);
             return $error;
@@ -49,37 +50,35 @@ function InitializeSmartyVariables(&$smarty, $error) {
         $e['duration'] = @$_POST['duration'];
         $e['signup_start'] = $_POST['signup_start'];
         $e['signup_end'] = $_POST['signup_end'];
-        
+
         $e['classes'] = $error->data['classList'];
         $e['rounds'] = $error->data['roundList'];
         $e['officials'] = $error->data['officialList'];
         $e['id'] = $_POST['eventid'];
-        //$e['isactive'] = @$_POST['activate'];
         $e['event_state'] = @$_POST['event_state'];
-        
+
         $e['requireFees_aLicense'] = @$_POST['requireFees_license'] == "requireFees_license_A";
         $e['requireFees_bLicense'] = @$_POST['requireFees_license'] == "requireFees_license_B";
         $e['requireFees_member'] = @$_POST['requireFees_member'];
-        //header("Content-type: text/plain"); print_r($e['classes']); die();
-        
+
         $e['td'] = $_POST['td'];
         $e['oldtd'] = $_POST['oldtd'];
     } else {
         $event = GetEventDetails($_GET['id']);
-        
-        if (!$event) return Error::NotFound('event');
-        
+
+        if (!$event)
+            return Error::NotFound('event');
+
         $e['id'] = $event->id;
         $e['name'] = $event->name;
         $e['contact'] = $event->contactInfo;
-        $e['venue'] = $event->venue;        
+        $e['venue'] = $event->venue;
         $e['tournament'] = $event->tournamentId;
         $e['level'] = $event->levelId;
-        
-        
+
         $e['start'] = date('Y-m-d', $event->startdate);
         $e['duration'] = $event->duration;
-        
+
         $e['signup_start'] = $event->signupStart == null ? '' : date('Y-m-d H:i', $event->signupStart);
         $e['signup_end'] = $event->signupEnd == null ? '' : date('Y-m-d H:i', $event->signupEnd);
         //$e['isactive'] = $event->isActive;
@@ -89,33 +88,27 @@ function InitializeSmartyVariables(&$smarty, $error) {
         }
         else if ($event->isActive) {
             $e['event_state'] = 'active';
-            
+
         }
-        
-        
-        
+
         $fees = $event->FeesRequired();
-        $e['requireFees_member'] = ($fees >= 1);
-        $e['requireFees_aLicense'] = ($fees == 2);
-        $e['requireFees_bLicense'] = ($fees == 6);
-        
+        $e['requireFees_member'] = ($fees >= LICENSE_MEMBERSHIP);
+        $e['requireFees_aLicense'] = ($fees == LICENSE_A);
+        $e['requireFees_bLicense'] = ($fees == LICENSE_B);
+
         $e['classes'] = array();
         foreach ($event->GetClasses() as $class) {
-            $e['classes'][] = $class->id;            
-            
+            $e['classes'][] = $class->id;
         }
-        
-        
+
         $e['rounds'] = array();
         foreach ($event->GetRounds() as $round) {
-            
             $holes = $round->GetHoles();
             $numHoles = count($holes);
             $e['rounds'][] = array('holes' => $numHoles, 'datestring' => date('Y-m-d', $round->starttime), 'time' => date('H:i', $round->starttime), 'roundid' => $round->id);
         }
-        
+
         $officials = $event->GetOfficials();
-        
         $e['officials'] = array();
         foreach ($officials as $record) {
             if ($record->role == 'td') {
@@ -125,29 +118,21 @@ function InitializeSmartyVariables(&$smarty, $error) {
                 $e['officials'][] = $record->user->username;
             }
         }
-                
-        
-        //array('date' => input_ParseDate($date), 'time' => $time, 'holes' => $holes, 'datestring' => $date);
     }
     global $user;
     $event = GetEventDetails($_GET['id']);
     if (!$event || (!IsAdmin() && $event->management != 'td' )) {
         return Error::AccessDenied('newEvent');
     }
-    
-    
+
     $smarty->assign('event', $e);
-    
     page_InitializeEventFormData($smarty, false);
-    
-    
 }
 
 
 function page_Map_Id_To_Name($array) {
     $out = array();
     foreach ($array as $item) $out[$item->id] = $item->name;
-    
     return $out;
 }
 
