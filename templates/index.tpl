@@ -53,7 +53,7 @@
 <table>
 
     {foreach from=$lists key=listtype item=events}
-    <tr><td colspan="5"><h2>
+    <tr><td colspan="7"><h2>
     {if $listtype == 0}
         {translate id=relevant_events}
         {assign var=trclass value="hot_event_row"}
@@ -70,6 +70,7 @@
         <th>{translate id='event_name' }</th>
         <th>{translate id='event_location'}</th>
         <th>{translate id='event_level'}</th>
+        <th>{translate id='event_classes'}</th>
         <th>{translate id='event_date'}</th>
         <th></th>
         <th></th>
@@ -84,6 +85,13 @@
             {/if}
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
+            <td>
+            {foreach from=$event->GetClasses()|@array_reverse item=class}
+                {$class->name|substr:0:3|escape}
+            {foreachelse}
+                -
+            {/foreach}
+            </td>
             <td>{$event->fulldate}</td>
             <td class="event_links">
             {if $event->resultsLocked}
@@ -131,12 +139,12 @@
             </td>
         </tr>
         {foreachelse}
-        <tr><td colspan="4">
+        <tr><td colspan="7">
             <p>{translate id=no_matching_events}</p>
         </td></tr>
     {/foreach}
 
-    <tr><td colspan="5">
+    <tr><td colspan="7">
     {if $listtype == 0}
         <p>&nbsp;</p>
     {elseif $listtype == 1}

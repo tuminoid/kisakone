@@ -63,7 +63,8 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
          require_once ('core/textcontent.php');
          $tc = GetGlobalTextContent('index');
-         if ($tc) $smarty->assign('content', $tc->formattedText);
+         if ($tc)
+            $smarty->assign('content', $tc->formattedText);
 
          break;
       case 'upcoming':
