@@ -8,6 +8,7 @@ next
   * Document license values for maintainability.
   * Drop "next year" license info from user profile and explain in licenses that A-license covers also B-license, that "not paid" looks unfriendly.
   * Display available classes in event listings. GH-57.
+  * More configuration options.
 
 2013.11.01
 ==========
