@@ -1,6 +1,7 @@
 Smarty/templates_c/*
 /config.php
 /config_email.php
+/config_site.php
 temp*.txt
 *.tumi
 .htaccess

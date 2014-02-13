@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Configuration options.
  *
@@ -21,11 +21,17 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// Yes, we use SFL for payment checks
-// Affects menu choices etc
+// Email setup
+global $settings;
+$settings['EMAIL_SENDER'] = "no-replu@kisakone.frisbeegolfliitto.fi";
+$settings['EMAIL_MAILER'] = "Frisbeegolfliitto Kisakone 2.0";
+
+// Do we use payment checks from SFL Jäsenrekisteri
+// Set to 'false' for club use, to fallback to payment checks within Kisakone DB
 define("USE_SFL_PAYMENTS", true);
 
-// ignore payment status, ie return as if everything is paid (useful for clubs, debug etc)
+// Ignore payment checks (even from Kisakone DB)
+// Return as if everything is paid (useful for clubs, debug etc)
 define("IGNORE_PAYMENTS", false);
 
 // defines for licences, mandated by SFL membership database

@@ -23,8 +23,10 @@ server from writing to config.php again.
 Step 7: The directory ui/elements/uploaded and Smarty/templetes_c needs to be
 writable by the web server.
 
-Step 8: Copy config_email.php.sample to config_email.php and modify the email
-address for the administration and Kisakone's name.
+Step 8: Copy config_site.php.sample to config_site.php and modify the email
+address for the administration and Kisakone's name, and set the definess
+correctly for club use.
+
 
 Setting up LAMP for Kisakone:
 -----------------------------
