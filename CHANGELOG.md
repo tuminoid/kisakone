@@ -9,7 +9,8 @@ next
   * Drop "next year" license info from user profile and explain in licenses that A-license covers also B-license, that "not paid" looks unfriendly.
   * Display available classes in event listings. GH-57.
   * More configuration options.
-  * Add favicon.ico
+  * Add favicon.ico.
+  * Change default logo to new Frisbeegolfliitto.com logo. New name is `sitelogo.png`.
 
 2013.11.01
 ==========
