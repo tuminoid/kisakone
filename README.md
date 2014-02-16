@@ -19,3 +19,8 @@ Installation
 ============
 
 See https://github.com/tuminoid/kisakone/blob/master/install/INSTALL.md
+
+Upgrading
+=========
+
+Upgrading to 2014.02.13: https://github.com/tuminoid/kisakone/blob/master/install/upgrade_to_20140213.md
