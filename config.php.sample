@@ -20,4 +20,3 @@ $settings['USE_MOD_REWRITE'] = false;
 include_once('config_site.php');
 
 ?>
-
