@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * TBD
+  * Quotas and Limits. GH-6.
 
 
 2014.02.13
