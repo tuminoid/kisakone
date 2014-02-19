@@ -3,7 +3,6 @@ Smarty/templates_c/*
 /config_email.php
 /config_site.php
 temp*.txt
-*.tumi
 .htaccess
 php5-cgi
 php5-fcgi
