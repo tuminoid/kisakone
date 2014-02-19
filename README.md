@@ -18,9 +18,12 @@ Releases are the ones you want to use for production.
 Installation
 ============
 
-See https://github.com/tuminoid/kisakone/blob/master/install/INSTALL.md
+See [INSTALL](https://github.com/tuminoid/kisakone/blob/master/doc/install/INSTALL.md)
 
 Upgrading
 =========
 
-Upgrading to 2014.02.13: https://github.com/tuminoid/kisakone/blob/master/install/upgrade_to_20140213.md
+Upgrade one version at a time. 
+List of ugprades is available at [upgrade](https://github.com/tuminoid/kisakone/tree/master/doc/upgrade) directory.
+
+

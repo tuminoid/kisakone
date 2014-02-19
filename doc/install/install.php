@@ -38,8 +38,8 @@ if (is_callable('date_default_timezone_set')) {
 
 stripSlashesIfNecessary();
 
-if (file_exists('config.php')) {
-    include('config.php');
+if (file_exists('../../config.php')) {
+    include('../../config.php');
 }
 
 if (@$settings['DB_ADDRESS']) {
@@ -144,7 +144,7 @@ function DoInstall() {
     }
 
     test('Config.php writable');
-    $fp = @fopen('../config.php', 'a');
+    $fp = @fopen('../../config.php', 'a');
     if (!$fp)
         return failed();
     success();
@@ -270,7 +270,7 @@ include_once('config_site.php');
 $q>
 EOF;
 
-    $fp = fopen('../config.php', 'w');
+    $fp = fopen('../../config.php', 'w');
     if (!$fp) {
         return false;
     }

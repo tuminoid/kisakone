@@ -13,8 +13,8 @@ written to by the web server.
 3. Have a database available in mysql, or create one for Kisakone. Installation
 process will not create one for you.
 
-4. Access the page `install/install.php` in the installation root using your browser,
-in the example that would be `http://example.com/kisakone/install/install.php`
+4. Access the page `doc/install/install.php` in the installation root using your browser,
+in the example that would be `http://example.com/kisakone/doc/install/install.php`
 
 5. Enter the requested details and submit the form.
 
