@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event editor UI backend
  *
@@ -48,6 +48,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
         $e['level'] = $_POST['level'];
         $e['start'] = $_POST['start'];
         $e['duration'] = @$_POST['duration'];
+        $e['playerlimit'] = @$_POST['playerlimit'];
         $e['signup_start'] = $_POST['signup_start'];
         $e['signup_end'] = $_POST['signup_end'];
 
@@ -78,17 +79,16 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
         $e['start'] = date('Y-m-d', $event->startdate);
         $e['duration'] = $event->duration;
+        $e['playerlimit'] = $event->playerLimit;
 
         $e['signup_start'] = $event->signupStart == null ? '' : date('Y-m-d H:i', $event->signupStart);
         $e['signup_end'] = $event->signupEnd == null ? '' : date('Y-m-d H:i', $event->signupEnd);
-        //$e['isactive'] = $event->isActive;
-        //print_r($event);
+
         if ($event->resultsLocked) {
             $e['event_state'] = 'done';
         }
         else if ($event->isActive) {
             $e['event_state'] = 'active';
-
         }
 
         $fees = $event->FeesRequired();
@@ -132,7 +132,8 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
 function page_Map_Id_To_Name($array) {
     $out = array();
-    foreach ($array as $item) $out[$item->id] = $item->name;
+    foreach ($array as $item)
+        $out[$item->id] = $item->name;
     return $out;
 }
 

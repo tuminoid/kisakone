@@ -63,6 +63,7 @@ admin_title             Ylläpito
 sitemanagement_title    Sivuston hallinta
 managelevels_title      Tasojen hallinta
 eventfees_title         Kilpailumaksut
+classquotas_title       Luokkakiintiöt
 editeventpages_title    Kilpailun sivujen muokkaus
 user_edit_done      Muokkaus tehty
 managerounds_title      Kierrosten hallinta
@@ -174,7 +175,7 @@ language-sv             <HTML>Ruotsi<br />Svenska
 course             Kierros
 
 results_available       Tulokset saatavilla
-results_cvs             CVS tulokset
+results_cvs             PDGA tulokset
 sign_up_here            Ilmoittaudu
 course_map              Radan kartta
 close                   Sulje

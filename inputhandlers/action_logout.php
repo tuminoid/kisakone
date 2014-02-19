@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Logs user out
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -32,9 +32,9 @@ function ProcessAction() {
     setcookie('kisakone_login', 0);
     setcookie('kisakone_autologin_as');
     setcookie('kisakone_autologin_key');
-    
-    
+
     header("Location: " . baseurl());
+    die();
 }
 
 ?>

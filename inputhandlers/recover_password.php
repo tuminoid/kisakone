@@ -1,10 +1,11 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Password recovery handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,22 +28,19 @@
  */
 function processForm() {
     $username = @$_POST['username'];
-    
+
     $userid = GetUserId($username);
-    if (!$userid) $userid = GetUserIdByEmail($username);
-    
-    if (!$userid) {
+    if (!$userid)
+        $userid = GetUserIdByEmail($username);
+    if (!$userid)
         return new Error();
-    }
-    
+
     $user = GetUserDetails($userid);
-    
     $user->SendPasswordRecoveryEmail();
-    
+
     $x = null;
     header("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => $userid), $x));
-    
-   
+    die();
 }
 
 ?>

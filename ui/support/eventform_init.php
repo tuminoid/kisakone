@@ -2,10 +2,11 @@
 
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * General initialization for event editing form
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,27 +23,28 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function page_InitializeEventFormData(&$smarty, $creatingNew) {
+function page_InitializeEventFormData(&$smarty, $creatingNew)
+{
     $tournaments = GetTournaments(null, $creatingNew);
     $tournamentOptions = array();
+
     foreach ($tournaments as $tournament) {
         $tournamentOptions[$tournament->id] = $tournament->name;
     }
-    
-    
     $smarty->assign('tournament_options', $tournamentOptions);
-    
+
     $levelList = GetLevels($creatingNew);
     $levels = array();
-    foreach ($levelList as $level) $levels[$level->id] = $level->name;
+    foreach ($levelList as $level)
+      $levels[$level->id] = $level->name;
 
-   $classList = GetClasses($creatingNew);
-   $classes = array();   
-   foreach($classList as $class) $classes[$class->id] = $class->name;
-    
-    
+    $classList = GetClasses($creatingNew);
+    $classes = array();
+    foreach($classList as $class)
+      $classes[$class->id] = $class->name;
+
     $smarty->assign('level_options', $levels);
-    $smarty->assign('class_options', $classes);    
+    $smarty->assign('class_options', $classes);
 }
 
 ?>

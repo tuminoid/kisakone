@@ -2,9 +2,10 @@
 /**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event management menu
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,15 +27,17 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-   $event = GetEventDetails(@$_GET['id']);
-   if (!$event || is_a($event, 'Error')) return Error::NotFound('event');
-   
-   if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied('manageevent_official');
-   
-    $smarty->assign('event', $event);
-    $smarty->assign('rounds', $event->GetRounds());
+function InitializeSmartyVariables(&$smarty, $error)
+{
+  $event = GetEventDetails(@$_GET['id']);
+  if (!$event || is_a($event, 'Error'))
+    return Error::NotFound('event');
 
+  if (!IsAdmin() && $event->management != 'td')
+    return Error::AccessDenied('manageevent_official');
+
+  $smarty->assign('event', $event);
+  $smarty->assign('rounds', $event->GetRounds());
 }
 
 

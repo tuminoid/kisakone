@@ -264,7 +264,9 @@ a {
 }
 
 .autocomplete-w1 {
+    /* Doesn't exist anymore, removed 2014.02.17
     background: url(img/shadow.png) no-repeat bottom right;
+    */
     position: absolute;
     top: 0px;
     left: 0px;

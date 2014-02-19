@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Creates an admin or another manager user
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,64 +27,61 @@
  */
 function processForm() {
     $problems = array();
-    
+
     if (@$_POST['cancel']) {
-        
-    
+
+
         header("Location: " . BaseURL());
         die();
     }
-    
+
     if (!IsAdmin()) return Error::AccessDenied();
-    
-    
+
+
     $lastname = $_POST['lastname'];
     if ($lastname == '') $problems['lastname'] = translate('FormError_NotEmpty');
-    
+
     $firstname = $_POST['firstname'];
     if ($firstname == '') $problems['firstname'] = translate('FormError_NotEmpty');
-    
+
     $email = $_POST['email'];
     if (!preg_match('/^.+@.+\..+$/', $email)) $problems['email'] = translate('FormError_InvalidEmail');
-    
+
     $username = $_POST['username'];
     if (!User::IsValidUsername($username))  $problems['username'] = translate('FormError_InvalidUsername');
     if (GetUserId($username) !== null)  $problems['username'] = translate('FormError_DuplicateUsername', array('username' => $username));
-    
+
     $password = $_POST['password'];
     if ($password == '') $problems['password'] = translate('FormError_NotEmpty');
-    
+
     $password2 = $_POST['password2'];
     if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
-    
+
     $role = @$_POST['access'];
     if ($role != USER_ROLE_ADMIN && $role != USER_ROLE_MANAGER) {
         $problems['access'] = translate('FormError_NotEmpty');
-        
+
     }
     if(count($problems)) {
         $error = new Error();
-        $error->title = 'Add Admin form error';        
+        $error->title = 'Add Admin form error';
         $error->function = 'InputProcessing:Add_admin:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'newadmin';
         return $error;
     }
-    
-    
-    
-    
+
     $admin = new User( null, $username, $role,
                       $firstname, $lastname, $email, null);
     $err = $admin->ValidateUser();
-    
+
     if( !isset( $err))
     {
         if ($admin->username !== null) {
             $err = $admin->SetPassword( $password);
         }
-        
+
         if( !isset( $err))
         {
             $admin = SetUserDetails( $admin);
@@ -100,9 +97,8 @@ function processForm() {
         $err->isMajor= true;
         return $err;
     }
-    else return true;
-    
-   
+    else
+        return true;
 }
 
 ?>

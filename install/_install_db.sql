@@ -112,6 +112,9 @@ CREATE TABLE :Event
    ContactInfo VARCHAR(250) NOT NULL,
    FeesRequired TINYINT NOT NULL,
    AdBanner INT NULL,
+   -- added 2014.02.15
+   PlayerLimit INT NOT NULL DEFAULT 0,
+   -- end
    PRIMARY KEY(id),
    FOREIGN KEY (Venue) REFERENCES :Venue(id),
    FOREIGN KEY (Tournament) REFERENCES :Tournament(id),
@@ -334,6 +337,10 @@ CREATE TABLE :ClassInEvent
    id INT NOT NULL AUTO_INCREMENT,
    Classification INT NOT NULL,
    Event INT NOT NULL,
+   -- added 2014.02.15
+   MinQuota INT NOT NULL DEFAULT 0,
+   MaxQuota INT NOT NULL DEFAULT 999,
+   -- end added
    PRIMARY KEY(id),
    FOREIGN KEY (Classification) REFERENCES :Classification(id),
    FOREIGN KEY (Event) REFERENCES :Event(id)
@@ -361,3 +368,22 @@ CREATE TABLE :MembershipPayment
    FOREIGN KEY (Player) REFERENCES :Player(player_id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
+
+
+-- added 2012.02.15
+-- if using previous version, add this to your database!
+CREATE TABLE :EventQueue (
+  id INT NOT NULL AUTO_INCREMENT,
+  Event INT NOT NULL,
+  Player SMALLINT NOT NULL,
+  Classification INT NOT NULL,
+  SignupTimestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (Event) REFERENCES :Event(id),
+  FOREIGN KEY (Player) REFERENCES :Player(player_id),
+  FOREIGN KEY (Classification) REFERENCES :Classification(id),
+  INDEX(Event)
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+-- end 2012.02.15 migration
+

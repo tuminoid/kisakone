@@ -1,10 +1,11 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Signup cancellation handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,53 +26,48 @@
  * Processes the form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     if (@$_POST['cancel']) {
-        
-    
         header("Location: " . url_smarty(array('page' => 'event', 'view' => 'signupinfo', 'id' => @$_GET['id']), $nothing));
         die();
     }
-    
-    global $user;
-    if (!$user) return Error::AccessDenied();
 
-    
+    global $user;
+    if (!$user)
+        return Error::AccessDenied();
+
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');
-    
-    
+    if (!$event)
+        return Error::NotFound('event');
+
+    /*
+    // This is not needed, also block queue sign offs
     if ($event->approved === null) {
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
         die();
     }
-    
+    */
     $nothing = null;
-    
-    
+
     if (!$event->signupPossible()) {
         return Error::AccessDenied();
     }
-    
+
     $player = $user->GetPlayer();
     if (!$player) {
         return Error::AccessDenied();
     }
-
-    
-    
     $result = CancelSignup($event->id, $player->id);
-    
-    
+
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
         return $result;
     }
-    
+
     $variableNeededAsItsReference = null;
     header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
-        
-   
+    die();
 }
 
 ?>

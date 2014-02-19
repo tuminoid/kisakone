@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Event-specific page editing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,45 +26,45 @@
  * @return Nothing or Error object on error
  */
 function processForm() {
-    
+
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');        
-    
-    
-    
+    if (!$event) return Error::NotFound('event');
+
+
+
     $custom = @$_GET['mode'] == 'custom';
     $news = @$_GET['mode'] == 'news';
-    
-    
+
+
     if (@$_POST['cancel']) {
-        
+
         if ($custom) {
             header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
         } else if ($news) {
-            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));    
+            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
             header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
         die();
     }
-    
+
     $evp = $event->GetTextContent(@$_GET['content']);
-    
+
     if (!IsAdmin() && $event->management != 'td') {
         $denied = true;
         if ($event->management == 'official') {
             if (!$evp && $news) $denied = false;
             else if ($evp->type =='news') $denied = false;
         }
-            
-        
-        if ($denied) return Error::AccessDenied('eventfees');        
+
+
+        if ($denied) return Error::AccessDenied('eventfees');
     }
-    
+
     $problems = array();
-    
+
     if (@$_POST['delete']) {
-        
+
          if ($evp && $evp->id) {
             $outcome = $evp->Delete();
             if (is_a($outcome, 'Error')) return $outcome;
@@ -72,20 +72,20 @@ function processForm() {
         if ($custom) {
             header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
         } else if ($news) {
-            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));    
+            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
             header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
-        
+
         die();
     }
-    
+
     $title = @$_POST['title'];
     $content = @$_POST['textcontent'];
-    
+
     if (($custom || $news) && $title == '') $problems['title'] = translate('FormError_NotEmpty');
-    
-    
+
+
 
     if(count($problems)) {
         $error = new Error();
@@ -95,11 +95,11 @@ function processForm() {
         $error->data = $problems;
         return $error;
     }
-    
+
     if (!$evp) {
         $evp = new TextContent(array());
         $evp->event = $event->id;
-        
+
         if (is_numeric(@$_GET['content']) || @$_GET['content'] == '*') {
             if ($custom) {
                 $evp->type = 'custom';
@@ -112,32 +112,30 @@ function processForm() {
             $evp->type = @$_GET['content'];
         }
     }
-    
+
     $evp->title = $title;
     $evp->content = $content;
-        
-    
+
+
     if (!@$_POST['preview']) {
-        $result = $evp->save();    
+        $result = $evp->save();
     } else {
-        $evp->FormatText();        
+        $evp->FormatText();
         return $evp;
     }
-    
-    
-    
+
+
+
     if (is_a($result, 'Error')) return $result;
-    
+
     if ($custom) {
         header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
     } else if ($news) {
-        header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));    
+        header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
     } else {
         header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
-    }     
-
-        
-   
+    }
+    die();
 }
 
 ?>

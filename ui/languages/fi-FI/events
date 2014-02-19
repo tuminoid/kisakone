@@ -18,6 +18,8 @@ event_tournament    Sarja
 event_start     Kilpailun alku
 event_duration  Kilpailun kesto
 event_duration_days     päivä(ä)
+event_playerlimit  Pelaajamäärä
+event_playerlimit_max pelaajaa enintään (0 = ei rajaa)
 event_signup_start  Ilmoittautumisen\nalku
 event_signup_end  Ilmoittautumisen\nloppu
 event_activate  Aktivoi käyttäjille
@@ -85,6 +87,7 @@ content     Sisältö
 pagetitle_index     Yleistiedot
 pagetitle_results   Tulokset
 pagetitle_competitors   Kilpailijat
+pagetitle_queue         Jono
 pagetitle_schedule      Aikataulu
 pagetitle_course        Rata
 pagetitle_signupinfo       Ilmoittautuminen
@@ -145,6 +148,7 @@ not_signed_up_nothere           Et ole vielä ilmoittautunut kilpailuun.
 signup_closed           Ilmoittautuminen ei tällä hetkellä ole mahdollista.
 signup_closed_dates           Ilmoittautuminen ei tällä hetkellä ole mahdollista. Ilmoittautuminen on mahdollista välillä {from} - {to}.
 cancel_signup           Peruuta ilmoittautuminen
+signed_up_in_queue      Olet ilmoittautunut kilpailuun, mutta olet jonossa.
 signed_up_not_paid      Olet ilmoittautunut kilpailuun. Et ole vielä maksanut kilpailumaksua, tai maksua ei ole syötetty kisakoneeseen.
 signed_up_and_paid          Olet ilmoittautunut kilpailuun ja kilpailumaksu on maksettu.
 no_news             Ei uutisia.
@@ -153,6 +157,11 @@ no_matching_events      Valitussa kategoriassa ei ole yhtäkään kilpailua.
 select_round            Valitse muokattava kierros
 
 toggle_menu         Näytä tai piilota sivuvalikko
+class_list          Luokkakiintiöt
+player_list         Pelaajien luokat
+class_minquota      Pelaajia vähintään
+class_maxquota      Pelaajia enintään
+class_registered_now Pelaajia ilmoittautunut
 
 button_ready        Valmis
 inline_search_help  Syötä haettavan henkilön nimi tai PDGA-numero

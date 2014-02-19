@@ -3,7 +3,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Event fee payment information
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,18 +21,18 @@
  * *}
 {if $mode == 'body'}
  <div id="event_content">
-    {$page->formattedText}    
+    {$page->formattedText}
 </div>
 
 {if !$user}
 <p>{translate id=login_to_sign_up}</p>
+{elseif $queued}
+<p class="signup_status">{translate id=signed_up_in_queue}</p>
 {elseif !$signedup}
 <p class="signup_status">{translate id=not_signed_up_nothere}</p>
 {elseif $paid}
 <p class="signup_status">{translate id=signed_up_and_paid}</p>
-    
 {else}
-    <p class="signup_status">{translate id=signed_up_not_paid}</p>
-    
+<p class="signup_status">{translate id=signed_up_not_paid}</p>
 {/if}
 {/if}

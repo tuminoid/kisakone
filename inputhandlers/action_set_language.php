@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Language selection handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,19 +28,16 @@
 function processAction() {
     $language=  basename(@$_GET['language']);
     if (file_exists('ui/languages/' . $language)) {
-        $_SESSION['kisakone_language'] = $language;   
+        $_SESSION['kisakone_language'] = $language;
         setcookie('kisakone_language', $language, time() + 60 * 60 * 24 * 45, baseurl()); // 45 days
         LoadLanguage($language);
     }
-    
+
     if (@$_GET['asl_nrd']) return;
-    
+
     $redirect = new Error();
     $redirect->errorPage = 'events';
     return $redirect;
-    
-    
-   
 }
 
 ?>

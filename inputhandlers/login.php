@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Login form handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,7 +28,7 @@
 function processForm() {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    
+
     $loginAt = (int)@$_POST['loginAt'];
     if ($loginAt < time() - 60 * 5) {
         $error = new Error();
@@ -38,14 +38,14 @@ function processForm() {
         $error->errorPage = 'login';
         return $error;
     }
-    
+
     $user = CheckUserAuthentication($username, $password);
-    
+
     if(is_a($user, 'Error'))
     {
       return $user;
     }
-    
+
     if(is_null($user)) {
         $error = new Error();
         $error->title = translate('error_invalid_login_details');
@@ -54,22 +54,22 @@ function processForm() {
         $error->errorPage = 'login';
         return $error;
     }
-    
+
     // Make sure a session is used from now on
-    
-    
+
+
     setcookie("kisakone_login", 1);
     if (!(@$_COOKIE['kisakone_login'])) session_start();
-    
+
     $_SESSION['user'] = $user;
-    
+
     if (@$_POST['rememberMe']) {
         $expires = time() + 60 * 60 * 24 * 30 * 2; // about 2 months
         setcookie('kisakone_autologin_as', $user->username, $expires);
         setcookie('kisakone_autologin_key', GetAutoLoginToken($user->id), $expires);
-            
+
     }
-    
+
     // Normally we just redirect user to the next page using header() call, but
     // in this particular case we'd have to relay the url to return to, amogst other
     // things, so to make that work more nicely we'll just display the redirection
@@ -79,10 +79,8 @@ function processForm() {
     $retvalue->internalDescription = 'Login page redirect; nothing to be concerned about';
     $retvalue->errorPage = 'redirect';
     $retvalue->data = 'login';
-    
+
     return $retvalue;
-    
-   
 }
 
 ?>

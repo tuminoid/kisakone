@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Access management form handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,41 +26,39 @@
  * @return Nothing or Error object on error
  */
 function processForm() {
-    
+
     if (!IsAdmin()) {
         return Error::AccessDenied('eventfees');
     }
-    
+
     if (!@$_POST['cancel']) {
 
-    
+
         foreach ($_POST as $key => $value) {
             if (substr($key, 0, 7) == 'oldban_') {
                 list($ignore, $userid) = explode('_', $key);
                 $newban = @$_POST['ban_' . $userid];
-                
+
                 $newban = (bool)$newban;
                 $value = (bool)$value;
-                
+
                 if ($newban != $value) {
                     $user = GetUserDetails($userid);
                     Ban($user->id, $newban);
-                }            
+                }
             } else if (substr($key, 0, 7) == 'delete_') {
                 // Note: user removal is not supported in this version; the UI
                 // will never enter this code path and $user->Remove is not implemented90
                 list($ignore, $userid) = explode('_', $key);
                 $user = GetUserDetails($userid);
-                $user->Remove();            
+                $user->Remove();
             }
         }
     }
-        
-        
+
+
     header("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
-    
-    
-   
+    die();
 }
 
 ?>

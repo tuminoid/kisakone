@@ -1,10 +1,9 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
- * Changing classes of signups for an event
+ * Event class quotas.
  *
  * --
  *
@@ -43,28 +42,20 @@ function processForm()
     $failures = false;
 
     foreach ($_POST as $key => $value) {
-        // Process player class changes
-        if (substr($key, 0, 6) == 'class_') {
-            $pid = substr($key, 6);
-            $init = $_POST["init_$pid"];
-
-            if ($value == "removeplayer") {
-                if (CancelSignup($event->id, $pid)) {
-                    $failures = true;
-                }
-            }
-
-            if ($init != $value)  {
-                SetParticipantClass($event->id, $pid, $value);
-            }
+        // Process minimum quota
+        if (substr($key, 0, 9) == "minquota_") {
+            $qid = substr($key, 9);
+            SetEventClassMinQuota($event->id, $qid, $value);
+        }
+        // Process maximum quota
+        else if (substr($key, 0, 9) == "maxquota_") {
+            $qid = substr($key, 9);
+            SetEventClassMaxQuota($event->id, $qid, $value);
         }
     }
 
     if ($failures)
         return true;
-
-    require_once('inputhandlers/support/event_edit_notification.php');
-    return input_EditNotification();
 }
 
 ?>

@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event creation and editing form
  *
@@ -99,6 +99,13 @@
     </div>
 
     <div>
+        <label for="playerlimit">{translate id=event_playerlimit}</label>
+        <input id="playerlimit" type="text" name="playerlimit" style="min-width: 64px;" value="{$event.playerlimit|escape}" />
+        <span>{translate id=event_playerlimit_max}</span>
+        {formerror field='playerlimit'}
+    </div>
+
+    <div>
         <label for="signup_start">{translate id=event_signup_start}</label>
         <input id="signup_start" type="text" name="signup_start" value="{$event.signup_start|escape}" class="useDatePicker" />
 
@@ -130,6 +137,8 @@
         <label class="checkboxlabel" for="requireFees_license_B">{translate id="event_require_blicense_fee"}</label>
         <br />
     </div>
+
+
 
     <h2>{translate id='event_classes'}</h2>
 
@@ -230,6 +239,7 @@ $(document).ready(function(){
     CheckedFormField('eventform', 'level', NonEmptyField, null);
     CheckedFormField('eventform', 'start', NonEmptyField, null, {delayed: true});
     CheckedFormField('eventform', 'duration', PositiveIntegerField, null);
+    CheckedFormField('eventform', 'playerlimit', PositiveIntegerField, null);
     CheckedFormField('eventform', 'td', NonEmptyField, null);
     CheckedFormField('eventform', 'td', AjaxField, 'validuser', {delayed: true});
     CheckedFormField('eventform', 'official', AlwaysEmptyField, null);

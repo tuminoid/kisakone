@@ -1,10 +1,11 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file defines functions used for manageing events
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,18 +30,24 @@
  * @param int $eventId
  * @param int $userId
  * @param int $classId
+ * @param boolean TD override
  */
-function SignUpUser( $eventId, $userId, $classId)
+function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
 {
-    $playerid = null;
-    
-    $player = GetUserPlayer( $userId);
-    if( isset( $player))
-    {
-        $retValue = SetPlayerParticipation( $player->id, $eventId, $classId);
+    $playerId = $error = null;
+    $player = GetUserPlayer($userId);
+
+    if (isset($player)) {
+        $playerId = $player->id;
+
+        if ($tdOverride)
+            $can_signup_directly = true;
+        else
+            $can_signup_directly = CheckSignUpQuota($eventId, $playerId, $classId);
+
+        return SetPlayerParticipation($playerId, $eventId, $classId, $can_signup_directly);
     }
-    else
-    {
+    else {
         $retValue = new Error();
         $retValue->title = "error_invalid_argument";
         $retValue->description = translate( "error_invalid_argument_description");
@@ -48,10 +55,10 @@ function SignUpUser( $eventId, $userId, $classId)
         $retValue->function = "SignUpUser()";
         $retValue->IsMajor = true;
         $retValue->data = "User id: " . $userId;
+        return $retValue;
     }
-    
-    return $retValue;
 }
+
 
 /** ****************************************************************************
  * Function for marking event participation fee payment
@@ -65,7 +72,7 @@ function MarkEventFeePayments($eventId, $payments)
 {
     $errors = array();
     $retValue = null;
-    
+
     foreach ($payments as $payment) {
         $outcome = MarkEventFeePayment($eventId, $payment['participationId'], $payment['payment']);
         if (is_a($outcome, 'Error')) {

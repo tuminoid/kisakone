@@ -1,9 +1,10 @@
 {**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Move players from one class to another within an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,9 +30,11 @@
 
 <p><button id="toggle_submenu">{translate id=toggle_menu}</button></p>
 
+<h2>{translate id=player_list}</h2>
+
 <form method="get" class="usersform searcharea" action="{url page=eventclasses id=$smarty.get.id}">
-    {initializeGetFormFields  search=false }
-    <div class="formelements">        
+    {initializeGetFormFields  search=false}
+    <div class="formelements">
          <p>{translate id=users_searchhint} </p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
@@ -44,7 +47,7 @@
 <form method="post">
     <p style="clear: both;"><input type="submit" value="{translate id=form_save}" />
         <input name="cancel" type="submit" value="{translate id=form_cancel}" /></p>
-    
+
     <input type="hidden" name="formid" value="event_classes" />
     <table id="userTable" class="hilightrows oddrows">
        <tr>
@@ -54,20 +57,20 @@
           <th>{sortheading field=birthyear id=birthyear sortType=integer}</th>
           <th>{sortheading field=gender id=gender sortType=alphabetical}</th>
           <th>{sortheading field=class id=class sortType=selectText}</th>
-          
-          
+
+
        </tr>
-        
-            
+
+
        {foreach from=$users item=user}
           {assign var=userid value=$user.user->id}
           {assign var=partid value=$user.participationId}
          <tr>
             <td><a href="{url page="user" id="$userid"}">{$user.user->lastname|escape}</a></td>
             <td><a href="{url page="user" id="$userid"}">{$user.user->firstname|escape}</a></td>
-            
+
              <td>{$user.player->pdga|escape}</td>
-             <td>{$user.player->birthyear}</td>             
+             <td>{$user.player->birthyear}</td>
              <td>{if $user.player->gender == 'M'}{translate id=male}{else}{translate id=female}{/if}</td>
              <td>
                 <input type="hidden" name="init_{$user.player->id}" value="{$user.classId}" />
@@ -92,13 +95,13 @@
                     <option disabled="disabled">---------</option>
                     <option style="background-color: #FCC;" value="removeplayer">{translate id=remove_player_from_event}</option>
                 </select>
-                
+
              </td>
-        
+
          </tr>
-       {/foreach}     
+       {/foreach}
     </table>
-    
+
     <p style="clear: both;">
         <input type="submit" value="{translate id=form_save}" />
         <input name="cancel" type="submit" value="{translate id=form_cancel}" />
@@ -112,15 +115,15 @@
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('userTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );   
+                );
     $($(".SortHeading").get(0)).click();
     $("#toggle_submenu").click(toggleSubmenu);
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 });
 
 

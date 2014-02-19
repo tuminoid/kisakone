@@ -108,7 +108,7 @@ function processForm() {
         } else {
             header("Location: " . url_smarty(array('page' => 'myinfo'), $user));
         }
-
+        die();
     } else {
         return $result;
     }

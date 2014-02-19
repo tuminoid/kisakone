@@ -1,10 +1,11 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file is the UI backend for adding competitors to an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,46 +29,47 @@
  */
 function InitializeSmartyVariables(&$smarty, $error) {
     $event = GetEventDetails(@$_GET['id']);
-    
-    if (!$event) return Error::NotFound('event');
-    if ($event->resultsLocked) $smarty->assign('locked' , true);
-    if (is_a($event, 'Error')) return $event;
-    if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied('addcompetitor');
-    
+
+    if (!$event)
+        return Error::NotFound('event');
+    if ($event->resultsLocked)
+        $smarty->assign('locked' , true);
+    if (is_a($event, 'Error'))
+        return $event;
+    if (!IsAdmin() && $event->management != 'td')
+        return Error::AccessDenied('addcompetitor');
+
     if (@$_GET['user']) {
         // User has been selected; show edit/confirmation form
-        
+
         $classes = $event->GetClasses();
         $classOptions = array();
-        
+
         foreach ($classes as $class) {
             $classOptions[$class->id] = $class->name;
         }
-        
-        
+
         $smarty->assign('classOptions', $classOptions);
-        
+
         $uid = @$_GET['user'];
         if ($uid == 'new') {
             // We don't have an existing user, activate edit mode and initialize
             // the fields from an empty user
             $smarty->assign('userdata', new User());
             $smarty->assign('edit', true);
-        } else {
+        }
+        else {
             $smarty->assign('userdata', GetUserDetails($_GET['user'] ));
         }
     }
     else if (@$_GET{'op_s'} || @$_GET['player']) {
         // "Search" button has been pressed
-        
+
         $query = @$_GET['player'];
-        
+
         // Due to autocomplete we have some extra characters which cause the search
         // to fail, remove them
-        $query = preg_replace("/[\(\),]/", "", $query);        
-        
-        
-        
+        $query = preg_replace("/[\(\),]/", "", $query);
         $players = GetPlayerUsers($query);
         if (count($players) == 1) {
             // Single player, skip the listing
@@ -77,10 +79,11 @@ function InitializeSmartyVariables(&$smarty, $error) {
             $smarty->assign('many', $players);
         }
     }
-    
+
     if (is_object($error)) {
         $smarty->assign('error', $error->data);
-    } else if (is_string($error)) {
+    }
+    else if (is_string($error)) {
         $smarty->assign('errorString', $error);
     }
 }

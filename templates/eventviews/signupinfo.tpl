@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Sign up page
  *
@@ -43,7 +43,14 @@
 {assign var=nosignup value=true}
 {/if}
 
-{if $admin ||( !$signedup && $signupOpen)}
+{if $queued}
+    <p class="signup_status">{translate id=signed_up_in_queue}</p>
+    <ul>
+        <li><a href="{url page=event view=queue id=$smarty.get.id}">{translate id=event_queue}</a></li>
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
+        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
+    </ul>
+{elseif $admin ||( !$signedup && $signupOpen)}
 
 <form method="post" class="">
     <input type="hidden" name="formid" value="sign_up" />

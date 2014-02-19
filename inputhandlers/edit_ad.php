@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * AD editor input handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,12 +26,12 @@
  * @return Nothing or Error object on error
  */
 function processForm() {
-     
-    
+
+
     $problems = array();
     $id = @$_GET['id'];
     if ($id == 'default') $id = '';
-    
+
     if (@$_POST['cancel']) {
         if ($id) {
             header("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
@@ -40,30 +40,30 @@ function processForm() {
         }
         die();
     }
-    
-    
-    
+
+
+
     if (!$id) {
         $id = null;
-        if (!isAdmin()) return Error::AccessDenied();        
+        if (!isAdmin()) return Error::AccessDenied();
     } else {
         $event = GetEventDetails($id);
         if (!$event) return Error::NotFound('event');
         if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
     }
-    
-    
+
+
     $contentid = @$_GET['adType'];
-    
+
     $ad = GetAd($id, $contentid);
     if (is_a($ad, 'Error')) return $ad;
-    if (!$ad) {        
-        $ad = InitializeAd($id, $contentid);        
-    } 
-    
-    
+    if (!$ad) {
+        $ad = InitializeAd($id, $contentid);
+    }
+
+
     if (is_a($ad, 'Error')) return $ad;
-    
+
     switch ($_POST['ad_type']) {
         case 'default':
             $ad->MakeDefault();
@@ -78,12 +78,12 @@ function processForm() {
             $ad->MakeDisabled();
             break;
         case 'reference':
-            
+
             $ad->MakeReference($_POST['ad_ref']);
-            
+
             break;
         case 'imageandlink':
-            
+
             switch(@$_POST['image_type']) {
                 case 'link':
                     $ad->MakeImageAndLink($_POST['url'], null, $_POST['image_url']);
@@ -102,28 +102,29 @@ function processForm() {
                     die('Error1');
             }
             break;
-            
+
         default:
             echo $_POST['ad_type'];
             die('Error');
     }
-    
-    
-    
+
+
+
     if (!@$_POST['preview']) {
         $result = $ad->save();
         if (is_a($result, 'Error')) return $result;
-        
-        if ($id) {            
+
+        if ($id) {
             header("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
         } else {
             header("Location: " . url_smarty(array('page' => 'ads'), $_GET));
         }
-        
+        die();
+
     } else {
         return $ad;
     }
-    
+
 }
 
 ?>

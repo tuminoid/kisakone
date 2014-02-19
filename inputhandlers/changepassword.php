@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Password change handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,24 +26,24 @@
  * @return Nothing or Error object on error
  */
 function processForm() {
-    
+
     $recover = @$_GET['mode'] == 'recover';
-    
+
     if ($recover) {
         // Password recovery mode; ensure the provided token is the correct one
         $user = GetUserDetails(@$_GET['id']);
         $token = GetUserSecurityToken(@$_GET['id']);
-        
-        if (!$user || $token != @$_GET['token']) {         
+
+        if (!$user || $token != @$_GET['token']) {
            return Error::AccessDenied();
         }
         $uid = $user->id;
-      
+
     }  else {
         $user = @$_SESSION['user'];
         if (!$user) return error::AccessDenied();
         $problems = array();
-        
+
         if (@$_GET['id']) {
             if (!IsAdmin()) return Error::AccessDenied();
             $getId = @$_GET['id'];
@@ -55,28 +55,28 @@ function processForm() {
     }
 
     if (@$_POST['cancel']) {
-        
-    
+
+
         header("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
         die();
     }
     $problems = array();
-    
+
     if (!@$_GET['id'] && !$recover) {
         $current = $_POST['current'];
          if (CheckUserAuthentication($user->username, $current) === null) $problems['current_password'] = translate('FormError_WrongPassword');
     }
-    
+
     $password = $_POST['password'];
     if ($password == '') $problems['password'] = translate('FormError_NotEmpty');
-    
+
     $password2 = $_POST['password2'];
     if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
-        
+
 
     if(count($problems)) {
         $error = new Error();
-        $error->title = 'Password form error';        
+        $error->title = 'Password form error';
         $error->function = 'InputProcessing:ChangePassword:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
@@ -92,8 +92,6 @@ function processForm() {
         header("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
     }
     die();
-    
-   
 }
 
 ?>

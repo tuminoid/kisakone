@@ -1,10 +1,9 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
- * Move players from one class to another within an event
+ * Manage event quotas for event
  *
  *
  * --
@@ -29,8 +28,6 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if ($error)
-        $smarty->assign('error', translate('player_removal_failed'));
     $event = GetEventDetails($_GET['id']);
 
     if (!IsAdmin() && $event->management != 'td') {
@@ -39,29 +36,9 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if ($event->resultsLocked)
         $smarty->assign('locked' , true);
-    $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
 
-    // Bad classes: classe which are not part of the event, but are used
-    $classes = $event->GetClasses();
-    $badClasses = array();
-    $goodClasses = array();
-
-    foreach ($classes as $class) {
-        $goodClasses[$class->id] = true;
-    }
-
-    foreach ($users as $user) {
-        $classid = $user['classId'];
-        if (!@$goodClasses[$classid]) {
-            $goodClasses[$classid] = true;
-            $badClasses[$classid] = true;
-            $classes[] = new Classification($classid, $user['className']);
-        }
-    }
-
-    $smarty->assign('badClasses', $badClasses);
-    $smarty->assign('classes', $classes);
-    $smarty->assign('users', $users);
+    $smarty->assign('quotas', GetEventQuotas($event->id));
+    $smarty->assign('counts', GetEventParticipantCounts($event->id));
 }
 
 

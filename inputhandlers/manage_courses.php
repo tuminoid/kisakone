@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Course editor input handler
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,37 +30,33 @@ function processForm() {
         }
         die();
     }
-    
-    
+
+
     $course['Name'] = @$_POST['name'];
     if (!$course['Name']) {
         return translate("error_name_must_be_defined");
-    
+
     }
-    
-    
-    
-    
-    
+
     $course['Link'] = @$_POST['link'];
     $course['Map'] = $_POST['map'];
-    
+
     $course['Description'] = $_POST['description'];
-    
+
     if (@$_GET['id'] != 'new') {
-        
+
         $course['id'] = $_GET['id'];
         $id = (int)@$_GET['id'];
-        
+
         if (!IsAdmin()) {
-            $oldcourse = GetCourseDetails($id);            
-            if (is_a($oldcourse, 'Error')) return $oldcourse;            
+            $oldcourse = GetCourseDetails($id);
+            if (is_a($oldcourse, 'Error')) return $oldcourse;
             if (!$oldcourse || !$oldcourse['Event']) return Error::AccessDenied();
-            
+
             $event = GetEventDetails($oldcourse['Event']);
             if ($event->management != 'td') return Error::AccessDenied();
         }
-        
+
         if (@$_POST['delete']) {
             if (CourseUsed($course['id'])) {
                 return translate("cant_delete_this_course");
@@ -72,29 +68,29 @@ function processForm() {
         }
         SaveCourse($course);
     } else {
-        if (!IsAdmin()) {                       
-            $event = GetEventDetails(@$_GET['event']);            
+        if (!IsAdmin()) {
+            $event = GetEventDetails(@$_GET['event']);
             if (!$event || $event->management != 'td') return Error::AccessDenied();
         }
-        
+
         if (@$_GET['event']) $course['Event'] = $_GET['event'];
-        
+
         if (@$_POST['delete']) {
             header("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
             die();
         }
-        
+
         $course['id'] = null;
         $id = SaveCourse($course);
     }
-    
+
     if (is_a($id, 'Error')) return $id;
-    
+
     foreach ($_POST as $key => $value) {
-        
-       
+
+
         if (substr($key, -4) == '_par') {
-            
+
             list($ignored, $number, $holeid, $alsoignored) = explode('_', $key);
 
             if (!$holeid) {
@@ -106,39 +102,40 @@ function processForm() {
                         'Par' => $value,
                         'Length' => $_POST['h_' . $number . '_' . $holeid . '_len']
                     ));
-                
+
             } else {
 
                 $hole = GetHoleDetails($holeid);
                 //echo $holeid;
-                
+
                 if (is_a($hole, 'Error')) return $hole;
                 if (!$hole) return Error::NotFound('hole');
                 if ($hole->course != $id) {
                     echo $hole->course,' -- ', $id;
                     return Error::InternalError('Child-container mismatch');
-                    
+
                 }
                 $hole->par = (int)$value;
                 $hole->length = (int)@$_POST['h_' . $number . '_' . $holeid . '_len'];
             }
-            
-            
-                        
+
+
+
             $outcome = SaveHole($hole);
             if (is_a($outcome, 'Error')) return $outcome;
-            
+
         }
-        
-       
+
+
     }
-    
-     
+
+
         if (@$_GET['event']) {
             header("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
         } else {
             header("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
         }
+        die();
 }
 
 ?>

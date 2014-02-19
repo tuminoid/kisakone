@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * License and membership payment management
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,52 +29,52 @@ function processForm() {
         return Error::AccessDenied('manage_fees');
     }
     $reminds = array();
-        
+
     if (!@$_POST['cancel']) {
-        
+
         $payments = array();
-        
+
         foreach ($_POST as $key => $value) {
             if (substr($key, 0, 8) == 'oldlfee_') {
                 list($ignore, $userid, $year) = explode('_', $key);
                 $newfee = @$_POST['newlfee_' . $userid . '_' . $year];
-                
+
                 $newfee = (bool)$newfee;
                 $value = (bool)$value;
-                
+
                 if ($newfee != $value) {
                     if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
                     if (!array_key_exists('license', $payments[$userid])) $payments[$userid]['license'] = array();
                     $payments[$userid]['license'][$year] = $newfee;
-                }            
+                }
             } else if (substr($key, 0, 8) == 'oldmfee_') {
                 list($ignore, $userid, $year) = explode('_', $key);
                 $newfee = @$_POST['newmfee_' . $userid . '_' . $year];
-                
+
                 $newfee = (bool)$newfee;
                 $value = (bool)$value;
-                
+
                 if ($newfee != $value) {
                     if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
                     if (!array_key_exists('membership', $payments[$userid])) $payments[$userid]['membership'] = array();
                     $payments[$userid]['membership'][$year] = $newfee;
-                }            
+                }
             } else if (substr($key, 0, 7) == 'remind_') {
                 $reminds[] = substr($key, 7);
             }
         }
-            
+
         if (count($payments)) StorePayments($payments);
     }
-    
+
     if (count($reminds)) {
         header("Location: " . url_smarty(array('page' => 'eventfeereminder', 'users' => implode($reminds, ',')), $_GET));
     } else {
         header("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
     }
-    
-    
-   
+    die();
+
+
 }
 
 ?>
