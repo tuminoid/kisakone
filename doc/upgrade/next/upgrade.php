@@ -1,16 +1,16 @@
 <?php
-/* Upgrade your database to version 2012.02.15
+/* Upgrade your database to version 2014.02.15
  *
- * Run this from command line, while in install/ directory.
+ * Run this from command line, while in 2014.02.15 ugprade directory.
  */
 
-require_once('../config.php');
-require_once('../data/db_init.php');
+require_once('../../../config.php');
+require_once('../../../data/db_init.php');
 
-function Upgrade_20140215() {
+function Upgrade_to_20140215() {
   global $settings;
 
-  $source = file_get_contents('upgrade_to_20140215.sql');
+  $source = file_get_contents('upgrade.sql');
   $queries = explode(';', $source);
   $prefix = $settings['DB_PREFIX'];
 
@@ -30,5 +30,5 @@ function Upgrade_20140215() {
 }
 
 InitializeDatabaseConnection();
-Upgrade_20140215();
+Upgrade_to_20140215();
 ?>

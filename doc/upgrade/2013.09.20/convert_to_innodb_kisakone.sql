@@ -1,4 +1,3 @@
-use fliitto_yleinen;
 ALTER TABLE kisakone_Venue ENGINE=InnoDB;
 ALTER TABLE kisakone_User ENGINE=InnoDB;
 ALTER TABLE kisakone_TournamentStanding ENGINE=InnoDB;
