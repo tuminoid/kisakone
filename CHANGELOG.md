@@ -6,15 +6,16 @@ Kisakone versions are simply release date tags:
 next
 ====
   * Quotas and Limits. GH-6.
-
+  * `tools/development` was removed to be standalone as `kisakone-dev`. It received updates of it's own.
+  * Fix install.php to actually create the database if it is missing.
 
 2014.02.13
 ==========
-  * Document license values for maintainability.
+  * Document A/B-license values for maintainability.
   * Drop "next year" license info from user profile and explain in licenses that A-license covers also B-license, that "not paid" looks unfriendly.
   * Display available classes in event listings. GH-57.
   * More configuration options.
-  * Add favicon.ico.
+  * Added favicon.ico.
   * Change default logo to new Frisbeegolfliitto.com logo. New name is `sitelogo.png`.
 
 2013.11.01

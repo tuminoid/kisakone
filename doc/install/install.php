@@ -71,7 +71,7 @@ function form() {
     <h1>Create database</h1>
     <p>Database will be created if not found with the defined prefix.</p>
     <table>
-        <tr><td colspan=2"><input type="checkbox" name="db_extralogin" /> Use different login information for creating the database</td></tr>
+        <tr><td colspan="2"><input type="checkbox" name="db_extralogin" /> Use different login information for creating the database</td></tr>
 
         <tr><td>Username</td><td><input type="text" name="db_admin_user"></td></tr>
         <tr><td>Password</td><td><input type="password" name="db_admin_pass"></td></tr>
@@ -112,11 +112,6 @@ function DoInstall() {
     }
     success();
 
-    test('Accessing database');
-    if (!mysql_select_db($_POST['db_db']))
-        return failed();
-    success();
-
     if (@$_POST['db_extralogin']) {
         test("Database Admin connection");
         mysql_close($conn);
@@ -126,12 +121,21 @@ function DoInstall() {
             return failed();
         }
         success();
+    }
 
-        test('Accessing database');
-        if (!mysql_select_db($_POST['db_db']))
+    test('Accessing database');
+    if (!mysql_select_db($_POST['db_db'])) {
+        warning();
+        test('Creating database');
+        if (!mysql_query("CREATE DATABASE ".$_POST['db_db']))
             return failed();
         success();
+
+        test('Reaccessing database');
+        if (!mysql_select_db($_POST['db_db']))
+            failed();
     }
+    success();
 
     if (@$_POST['ad_user']) {
         test('Admin username');
@@ -195,6 +199,10 @@ function test($n) {
 function failed() {
     echo '<td style="color: red">Failed!</td></tr></table>';
     return false;
+}
+
+function warning() {
+    echo '<td style="color: yellow">Failed!</td></tr>';
 }
 
 function success() {
