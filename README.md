@@ -3,16 +3,17 @@ Kisakone
 
 Kisakone is Finnish Disc Golf Associations disc golf tournament management software.
 
-Complete and separate fork from lekonna's SFL-disc-golf-engine. Kudos to previous maintainers.
+Complete and separate fork from [lekonna's SFL-disc-golf-engine](https://github.com/lekonna/SFL-disc-golf-engine). Kudos to previous maintainers.
 
-NOTE: Clone this with
 
-    git clone --recursive ...
-
-to get the development environment into tools/development cloned for you! Otherwise, checkout https://github.com/tuminoid/kisakone-dev.git project on Github!
+Development
+===========
 
 Bleeding edge version is at branch called `next`. `master` aims to be stable.
 Releases are the ones you want to use for production.
+
+For development, clone [kisakone-dev](https://github.com/tuminoid/kisakone-dev) at same directory level as `kisakone`.
+There is ready-made setup for Vagrant VM, usable for local development.
 
 
 Installation
