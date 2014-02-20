@@ -8,6 +8,7 @@ next
   * Quotas and Limits. GH-6.
   * `tools/development` was removed to be standalone as `kisakone-dev`. It received updates of it's own.
   * Fix install.php to actually create the database if it is missing.
+  * Upgrade jQuery to 1.11.0 and jQuery-UI to 1.10.4. GH-38.
 
 2014.02.13
 ==========
