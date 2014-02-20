@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event main page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,7 +22,7 @@
  * *}
  {if $mode == 'body'}
  <div id="event_content">
-    {$page->formattedText}    
+    {$page->formattedText}
 </div>
 
 <table class="narrow">
@@ -29,34 +30,34 @@
         <td>{translate id=event_name}</td>
         <td>{$event->name|escape}</td>
     </tr>
-    
+
     <tr>
         <td>{translate id=event_venue}</td>
         <td>{$event->venue|escape}</td>
     </tr>
-    
+
     <tr>
         <td>{translate id=event_date}</td>
         <td>{$event->fulldate|escape}</td>
     </tr>
-    
+
     <tr>
         <td>{translate id=event_level}</td>
         <td>{$event->level|escape}</td>
     </tr>
-    
+
     <tr>
         <td>{translate id=event_tournament}</td>
         <td>{$event->tournament|escape}</td>
     </tr>
     <tr>
         <td>{translate id=event_contact}</td>
-        <td id="contactInfo"><div style="font-family: monospace">{$contactInfoHTML}</div></td>        
+        <td id="contactInfo"><div style="font-family: monospace">{$contactInfoHTML}</div></td>
     </tr>
-    
 
-    
-    
+
+
+
 </table>
 
 <h2>{translate id=schedule}</h2>
@@ -68,27 +69,28 @@
     <th>{translate id=round_number number=''}</th>
     <th>{translate id=round_starttime}</th>
     {if $groups}
-    <th>{translate id=your_group_is}</th>    
+    <th>{translate id=your_group_is}</th>
     {/if}
     </tr>
     {foreach from=$rounds item=round key=index}
-    
+
     <tr>
         {math assign=number equation="x+1" x=$index}
         <td>{translate id=round_number number=$number}</td>
         <td>{$round->starttime|date_format:"%d.%m.%Y %H:%M"}</td>
-        
+
         {assign var=group value=$groups.$index}
         {if $group}
         <td>
+        {if $round->groupsFinished !== null}
             {if $round->starttype=='sequential'}
         {capture assign=groupstart}{$group.StartingTime|date_format:"%H:%M"}{/capture}
         {translate id=your_group_starting start=$groupstart}
-        {if $round->groupsFinished === null}{translate id=preliminary}{/if}
-      {else}{translate id=your_group_starting_hole hole=$group.StartingHole}{/if}
+        {else}{translate id=your_group_starting_hole hole=$group.StartingHole}{/if}
+        {/if}
    </td>
         {/if}
-        
+
     </tr>
     {/foreach}
 
@@ -118,8 +120,8 @@ var ci = new Array();
 
 function getContactInfo() {
     var str = '';
-    
-    
+
+
     for (var i = 0; i < ci.length; ++i) {
         str += ci[i];
     }
@@ -128,7 +130,7 @@ function getContactInfo() {
 }
 
 $(document).ready(function(){
-    
+
     $("#contactInfo").empty();
     $("#contactInfo").get(0).appendChild(document.createTextNode(getContactInfo()));
 });

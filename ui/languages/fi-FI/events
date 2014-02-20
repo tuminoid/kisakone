@@ -303,9 +303,9 @@ result_sd_panel         SD
 
 move_tagged_object_here  Siirrä tänne
 rebalance_groups    Tasoita ryhmien kilpailijamäärät
-groups_finished     Ryhmät ovat nyt lopullisia
+groups_published    Julkista ryhmät
 your_group_starting Lähtö {start}
-preliminary         (alustavasti)
+preliminary         (Ryhmiä ei ole vielä julkistettu)
 
 change_hole         Vaihda väylää
 change_hole_prompt  Ryhmän aloitusväylä

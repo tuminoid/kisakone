@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event schedule
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,23 +31,21 @@
     {$page->formattedText}
 </div>
 
-
-
 {if !$smarty.get.round}
-    {foreach from=$rounds key=index item=round}    
+    {foreach from=$rounds key=index item=round}
         {math assign=num equation="x+1" x=$index}
         <h3>{translate id=round_title number=$num}</h3>
         <div>{$round->starttime|date_format:"%d.%m.%Y"}</div>
         {capture assign=start}{$round->starttime|date_format:"%H:%M"}{/capture}
-        {if $round->starttype == 'sequential'}            
+        {if $round->starttype == 'sequential'}
             <p>{translate id=sequential_start time=$start}</p>
         {elseif $round->starttype == 'simultaneous'}
             <p>{translate id=simultaneous_start time=$start}</p>
         {/if}
         {if $round->groupsAvailable()}
             {assign var=group value=$round->GetUserGroup()}
-            {if $group}
-                <p>{translate id=your_group} {if $round->groupsFinished === null}{translate id=preliminary}{/if}</p>
+            {if $group && $round->groupsFinished !== null}
+                <p>{translate id=your_group}</p>
                 <p style="float: left; margin: 8px;">
                 {if $round->starttype == 'simultaneous'}{translate id=your_group_starting_hole hole=$group.0.StartingHole}
                   {else}
@@ -55,32 +54,36 @@
                 <table class="narrow">
                 {foreach from=$group item=player}
                     <tr>
-          
+
                         <td>
                             {$player.LastName|escape} {$player.FirstName|escape}
                         </td>
                         <td>
-                            {$player.ClassificationName}    
+                            {$player.ClassificationName}
                         </td>
                     </tr>
                 {/foreach}
                 </table>
-                {if $allow_print}<p><a href="{url page=printscorecard id=$smarty.get.id round=$smarty.get.round}">{translate id=print_score_card}</a></p>{/if}
+                {if $allow_print}
+                    <p><a href="{url page=printscorecard id=$smarty.get.id round=$num}">{translate id=print_score_card}</a></p>
+                {/if}
             {/if}
+            {if $round->groupsFinished !== null}
             <p>
                 <a href="{url page=event id=$smarty.get.id view=schedule round=$num}">{translate id=view_group_list}</a>
-                {if $round->groupsFinished === null}
-                    {translate id=groups_not_finished}
-                {/if}
             </p>
+            {/if}
         {/if}
         <hr />
     {/foreach}
 {else}
 {math assign=num equation="x-1" x=$smarty.get.round}
- {assign var=round value=$rounds.$num}    
+ {assign var=round value=$rounds.$num}
+ {if $round->groupsFinished !== null}
     <h3>{translate id=round_title number=$smarty.get.round}</h3>
-    {if $allow_print}<p><a href="{url page=printscorecard id=$smarty.get.id round=$smarty.get.round}">{translate id=print_score_card}</a></p>{/if}
+    {if $allow_print}
+        <p><a href="{url page=printscorecard id=$smarty.get.id round=$smarty.get.round}">{translate id=print_score_card}</a></p>
+    {/if}
     <table>
         {assign var=lastGroup value=-1}
         {foreach from=$round->GetAllGroups() item=group}
@@ -88,7 +91,7 @@
                 {assign var=lastGroup value=$group.PoolNumber}
                 <tr><td>&nbsp;</td></tr>
             {/if}
-            
+
             {if $group.UserId == $user->id}
             <tr class="selected">
             { else}
@@ -106,11 +109,12 @@
                     {$group.LastName|escape} {$group.FirstName|escape}
                 </td>
                 <td>
-                    {$group.ClassificationName}    
+                    {$group.ClassificationName}
                 </td>
-            </tr>            
+            </tr>
         {/foreach}
     </table>
     {if $allow_print}<p><a href="{url page=printscorecard id=$smarty.get.id round=$smarty.get.round}">{translate id=print_score_card}</p>{/if}
+{/if}
 {/if}
 {/if}

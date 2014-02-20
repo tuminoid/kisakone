@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm⌡
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Group editor
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,77 +30,77 @@
         padding: 0;
         list-style-type: none;
     }
-    
+
     .groupman li {
         padding: 2px;
         -moz-border-radius: 1em;
-        
+
     }
-    
+
     .beingDragged{
         background-color: #CCC;
     }
-    
 
-    
+
+
     .droponme {
         border: 2px solid blue !important;
-        
+
     }
-    
+
     .groupman td {
         padding-top: 10px;
         padding-bottom: 10px;
     }
-    
+
     .tag_person {
-        cursor: pointer;        
+        cursor: pointer;
     }
     .tag_person:hover {
         text-decoration: underline;
     }
-    
+
     .groupman .toplist {
         padding-top: 10px;
         padding-bottom: 10px;
     }
-    
+
     .innertable td {
         padding: 3px;
         min-height: 32px;
     }
-    
+
     .grouplist {
         width: 400px;
         float: left;
-        
+
     }
-    
+
     .tagged {
         border: 2px solid green !important;
     }
-    
+
     .taggedp {
         background-color: #FFA;
         font-weight: bold;
     }
-    
+
     h2 {
         clear: both;
     }
-    
+
     .needs_splitter li {
-        
+
         margin-left: 32px;
     }
-    
-    
+
+
     .toplist {
         border: 1px outset gray;
         padding: 0;
         margin: 2px;
     }
-    
+
     .tag_group {
         margin-top: -2px;
         border: 1px outset blue;
@@ -146,8 +147,9 @@
         <input type="submit" value="{translate id=save}" />
         <input type="submit" name="cancel" value="{translate id=cancel}" />
         <button style="margin-left: 64px" id="reba">{translate id=rebalance_groups}</button>
-        <p><input class="all" type="checkbox" name="done" {if $round->groupsFinished !== null}checked="checked"{/if} /> {translate id=groups_finished}</p>
-
+        <p><input class="all" type="checkbox" name="done" {if $round->groupsFinished !== null}checked="checked"{/if} />
+            {translate id=groups_published}
+        </p>
     </div>
 
 
@@ -156,7 +158,7 @@
     <div class="groupman" >
         <input type="hidden" name="e[]" value="sid{$section->id|escape}" />
         <h2>{$section->name|escape}</h2>
-        <ul class="oddrows grouplist"  style="">            
+        <ul class="oddrows grouplist"  style="">
             {foreach from=$section->GetGroups() item=group}
             <li style="clear: right;" class="toplist">
                 <div class="tag_group">
@@ -182,8 +184,8 @@
                                 <td>{counter}</td>
                                 <td>{$player.Classification|escape}</td>
                             </tr>
-                            
-                            
+
+
                         {/foreach}
                         {if $nump < 1}<tr class="filler"><td>-</td></tr>{/if}
                             {if $nump < 2}<tr class="filler"><td>-</td></tr>{/if}
@@ -191,8 +193,8 @@
                         </tbody>
                     </table>
                 </div>
-                
-                
+
+
             </li>
             {/foreach}
         </ul>
@@ -205,7 +207,9 @@
 <div  class="buttonarea">
         <input type="submit" value="{translate id=save}" />
         <input type="submit" name="cancel" value="{translate id=cancel}" />
-        <p><input class="all" type="checkbox" name="done" {if $round->groupsFinished !== null}checked="checked"{/if} /> {translate id=groups_finished}</p>
+        <p><input class="all" type="checkbox" name="done" {if $round->groupsFinished !== null}checked="checked"{/if} />
+            {translate id=groups_published}
+        </p>
     </div>
 </form>
 
@@ -229,12 +233,12 @@ var tagged_people = new Array();
 
 $(document).ready(function() {
     $("#reorg").click(redoColumns);
-    $("#reba").click(rebalanceGroups);    
+    $("#reba").click(rebalanceGroups);
     redoColumns();
-    
+
      $(".all").click(synchAll);
-    
-    
+
+
 });
 
 
@@ -247,36 +251,36 @@ function synchAll() {
 }
 
 // Renenerates the columns
-function redoColumns() { 
+function redoColumns() {
     $(".groupman").each(function(gmind, gm) {
         if (tagged_group) untag_group();
         var items = $(this).find("li").get();
         $(this).find("ul").remove();
-        
-        
+
+
         var cols = parseInt($("#cols").get(0).value);
         var percolumn = Math.ceil(items.length / cols);
         var elemind = 0;
-        
+
         for (var ind = 0; ind < cols; ++ind) {
             var list = document.createElement("ul");
             list.className = "oddrows grouplist";
             if (ind != 0) list.className += " needs_splitter";
-            
-            for (var rowind = 0; rowind < percolumn; ++rowind) {            
+
+            for (var rowind = 0; rowind < percolumn; ++rowind) {
                 if (elemind == items.length) break;
                 list.appendChild(items[elemind++]);
             }
-            
+
             gm.appendChild(list);
-        }        
-        
+        }
+
     });
     reinit();
 }
 
 // Attaches event handlers
-function reinit() {  
+function reinit() {
    if (locked) return;
    $(".tag_group").click(function(a) {
         if (tagged_people.length != 0) {
@@ -285,38 +289,38 @@ function reinit() {
         else if (this == tagged_group) {
             untag_group();
         } else if (tagged_group == null) {
-            tag_group(this);        
+            tag_group(this);
         } else {
             alert(retag_error);
         }
- 
+
     });
-   
+
    $(".tag_person").click(function(a) {
         if (tagged_group != null) {
             alert(tag_type_error);
         }
         else {
             tagOrUntagPerson(this);
-        
+
         }
- 
+
     });
-   
+
    $(".tag_person").draggable({
         addClasses: false,
         containment: '#content',
         revert: true,
-        revertDuration: 0,        
+        revertDuration: 0,
         zIndex: 200,
         helper: 'clone',
         scroll: true,
         start: function(e, ui)  { ui.helper.addClass("beingDragged"); beingDragged = this; },
         stop: function(e, ui)  { ui.helper.removeClass("beingDragged"); },
         opacity: 0.8
-        
+
     });
-   
+
    $(".toplist").draggable({
         addClasses: false,
         containment: '#content',
@@ -328,19 +332,19 @@ function reinit() {
         start: function()  { $(this).addClass("beingDragged"); beingDragged = this; },
         stop: function()  { $(this).removeClass("beingDragged"); },
         opacity: 0.8
-        
+
     });
    $(".toplist").droppable(
     {
         addClasses: false,
         hoverClass: 'droponme',
-        
+
         drop: dropped
     });
-   
+
    $(".change_hole").click(changeHole);
-   
-   
+
+
 }
 
 // Change hole for group
@@ -348,9 +352,9 @@ function changeHole(e) {
     var base = this.parentNode.parentNode;
     var hidden = $(base).find(".holenum").get(0);
     var dn = $(base).find(".dispname").get(0);
-    
+
     if (e) e.preventDefault();
-    
+
     var newhole = prompt(change_hole_text, dn.textContent || dn.innerText);
     var hind = parseInt(newhole);
     if (hind) {
@@ -358,9 +362,9 @@ function changeHole(e) {
         $(dn).empty();
         dn.appendChild(document.createTextNode(hind));
     }
-    
+
     return false;
-    
+
 }
 
 
@@ -377,12 +381,12 @@ function tagOrUntagPerson(tr) {
             return;
         }
     }
-    
+
     tagged_people.push(tr);
     $(tr).addClass("taggedp");
-    
+
     if (tagged_people.length == 1) {
-        $(tr).closest(".groupman").find(".tag_group").each(function(index, item) {        
+        $(tr).closest(".groupman").find(".tag_group").each(function(index, item) {
         var text = document.createTextNode(move_tagged_object);
         var button = document.createElement("button");
         var div = document.createElement("div");
@@ -393,37 +397,37 @@ function tagOrUntagPerson(tr) {
         item.appendChild(div);
     });
     }
-    
+
 }
 
 var droppedObj = null;
 function dropped() {
-    
+
     droppedObj = this;
     ignoreTagAttempt = true;
-    
+
     setTimeout(dropped2, 150);
 }
 
 // Has to be done with a bit of delay after dragging or things might
 // get weird
 function dropped2() {
-    
+
     if (beingDragged.tagName && beingDragged.tagName.match(/tr/i)) {
         for (var ind = 0; ind < tagged_people.length; ++ind) {
-        
+
             var tr = tagged_people[ind];
-            $(tr).removeClass('taggedp');            
+            $(tr).removeClass('taggedp');
         }
         tagged_people = new Array();
         tagged_people.push(beingDragged);
         moveTaggedPeople(null, droppedObj);
-        
+
     } else {
         tagged_group = $(beingDragged).find(".tag_group").get(0);
-        
+
         if (tagged_group) moveTaggedGroup(null, droppedObj);
-        
+
     }
     ignoreTagAttempt = true;
     tagged_group = null;
@@ -432,14 +436,14 @@ function dropped2() {
 
 function tag_group(group) {
     if (ignoreTagAttempt) {
-        ignoreTagAttempt = false;        
+        ignoreTagAttempt = false;
         return;
     }
-    
+
     tagged_group = group;
     $(group).parent().addClass("tagged");
-    
-    $(group).closest(".groupman").find(".tag_group").each(function(index, item) {        
+
+    $(group).closest(".groupman").find(".tag_group").each(function(index, item) {
         var text = document.createTextNode(move_tagged_object);
         var button = document.createElement("button");
         var div = document.createElement("div");
@@ -449,8 +453,8 @@ function tag_group(group) {
         $(button).click(moveTaggedGroupButton);
         item.appendChild(div);
     });
-    
-    
+
+
 }
 
 function moveTaggedGroupButton(e) {
@@ -461,21 +465,21 @@ function moveTaggedGroupButton(e) {
 
 function moveTaggedPeople(ignored, moveTarget) {
     ignoreTagAttempt = true;
-    var target, chosen, tagged_id;    
-    
+    var target, chosen, tagged_id;
+
     if (moveTarget == undefined) {
-        
+
         target = $(this).closest("li");
     } else {
-        
-        target = $(moveTarget);        
+
+        target = $(moveTarget);
     }
-    
+
     var tbody = target.find(".innertable tbody").get(0);
-    
+
     $(tbody).find(".filler").remove();
     for (var ind = 0; ind < tagged_people.length; ++ind) {
-        
+
         var tr = tagged_people[ind];
         sourceTable = tr.parentNode;
         $(tr).removeClass('taggedp');
@@ -483,13 +487,13 @@ function moveTaggedPeople(ignored, moveTarget) {
         lockRow(tr);
         ensureTablePadding(sourceTable);
     }
-    
+
     ensureTablePadding(tbody);
-    
+
     tagged_people = new Array();
     $(".moveToContainer").remove();
-    
-    
+
+
 }
 
 function lockRow(row) {
@@ -504,7 +508,7 @@ function lockRow(row) {
 // Not really necessary with the new layout, but this makes sure there's
 // either 3 people or dashes as placeholders in each group
 function ensureTablePadding(tbody) {
-    
+
     while ($(tbody).children("tr").length < 3) {
         var text = document.createTextNode("-");
         var td = document.createElement("td");
@@ -519,22 +523,22 @@ function ensureTablePadding(tbody) {
 function moveTaggedGroup(ignored, moveTarget) {
     ignoreTagAttempt = true;
     var target, chosen, tagged_id;
-        
-    
+
+
     var local_tagged_group = tagged_group;
     tagged_id = local_tagged_group.innerText || local_tagged_group.textContent;
-    
-    
-    
+
+
+
     $(tagged_group).addClass("persistent_tag");
-        
+
     var chosenText;
-        
-    if (!moveTarget) {                
+
+    if (!moveTarget) {
         target = $(this).closest("li");
         chosen = this.parentNode.previousSibling
         chosenText = chosen.innerText || chosen.textContent;
-    } else {        
+    } else {
         target = $(moveTarget);
         chosen = $(moveTarget).find(".tag_group").get(0);
         if (!chosen) {
@@ -543,139 +547,139 @@ function moveTaggedGroup(ignored, moveTarget) {
         }
         chosenText = chosen.innerText || chosen.textContent;
     }
-    
-    
+
+
     var sourceContent = $(tagged_group).parent().find(".tcon table").get(0);
 
     var sourceGm = $(tagged_group).closest(".groupman").get(0);
     var targetGm = $(target).closest(".groupman").get(0);
-    
+
     if (sourceGm != targetGm) {
         alert(not_between_sections);
         untag_group();
         return false;
     }
-    
+
     if (chosenText == tagged_id) {
         untag_group();
         return false;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     var colobj = $("#cols").get(0);
     var coltext = colobj.value;
     colobj.value = "1";
-    
-    
+
+
     $("#reorg").click();
     chosen = chosen.textContent || chosen.innerText;
-   
+
     tagged_id = local_tagged_group.innerText || local_tagged_group.textContent;
-    
+
     //alert(local_tagged_group.textContent);
-    
+
     var list = $(".persistent_tag").closest(".grouplist");
-    
+
     var last = null;
-    
+
     var foundtarget = false;
     var foundsource = false;
-    
+
     //var replaceTargetContent = false;
-    
-    
-    
+
+
+
     var targetTcon = $(target).find(".tcon");
-    
-    
-          
+
+
+
     list.find("li").each(function(index, item) {
-        
+
         if (foundtarget && foundsource) {
-            
-            
+
+
         } else {
-            
+
             var textobj = $(this).find(".tag_group").get(0);
             var text = textobj.innerText || textobj.textContent;
-        
+
             if (text == tagged_id) {
-                
+
                 foundsource = true;
                 var tcon = $(this).find(".tcon");
-                if (foundtarget) {                                        
+                if (foundtarget) {
                     tcon.empty();
                     tcon.get(0).appendChild(last.get(0));
                 } else {
-                    last = tcon;                   
+                    last = tcon;
                 }
             } else if (text == chosen) {
-                
+
                 foundtarget = true;
                 if (foundsource) {
-                    
+
                     last.empty();
                     last.get(0).appendChild($(this).find(".tcon table").get(0));
-                    
+
                 } else {
                     last = $(this).find(".tcon table");
                 }
             } else if (foundsource) {
-                
+
                 // source, but no target
                 last.empty();
                 var tcon = $(this).find(".tcon");
                 var table = $(tcon).find("table");
                 last.get(0).appendChild(table.get(0));
                 last = tcon;
-            
+
             } else if (foundtarget) {
-                
+
                 var tcon = $(this).find(".tcon");
                 var mytable = $(tcon).find("table");
-                
+
                 tcon.empty();
                 tcon.get(0).appendChild(last.get(0));
                 last = mytable;
             } else {
                 //alert('irrelevant');
-                
+
             }
-            
-            
+
+
         }
-        
-        
+
+
     });
-    
-    
+
+
     targetTcon.empty();
     targetTcon.get(0).appendChild(sourceContent);
-    
-    
+
+
     $(tagged_group).removeClass("persistent_tag");
-    
+
     colobj.value = coltext;
     $("#reorg").click();
-    
-    
+
+
 }
 
 function untag_group() {
-    
+
     $(tagged_group).parent().removeClass("tagged");
     tagged_group = null;
-    
+
     $(".moveToContainer").remove();
 }
 
 function rebalanceGroups(e) {
     if (e) e.preventDefault();
     $(".groupman").each(function(){
-       
+
        $(".tcon").each(function() {
         var trs = $(this).find("tr").get();
         var body = $(this).find("tbody").get(0);
@@ -684,61 +688,61 @@ function rebalanceGroups(e) {
             body.appendChild(trs[i]);
         }
        });
-       
+
         var trs = $(this).find(".tcon tr");
-        
-        
-        
-        
+
+
+
+
         var validPeople = trs.filter(function() {
-            
+
             return $(this).find("td").length == 3;
         });
-        
-        
+
+
         var trs = trs.get();
-        
-        
+
+
         var groupSizes = GetGroupSizes(validPeople.length, $(this).find(".tcon").length);
         var trind = 0;
         for (var groupInd = 0; groupInd < groupSizes.length; ++groupInd ) {
             var numPeople = groupSizes[groupInd];
             var body = $(this).find(".tcon tbody").get(groupInd);
             var locked = getNumLockedIn(body);
-            
+
             for (pInd = 0; pInd < numPeople - locked; ++pInd) {
                 var tr;
                 while (true) {
                     tr = trs[trind++];
-                    
+
                     if (!tr) return;
                     if ($(tr).find("td").length == 3) {
                         if ($(tr).find("td:eq(0) span").text().substring(0, 1) == "*") continue;
                         break;
-                    } else {                        
+                    } else {
                         $(tr).remove();
-                    }                    
+                    }
                 }
-                
+
                 body.appendChild(tr);
             }
         }
-        
+
         while (trind < trs.length - 1) {
             if ($(trs[trind]).find("td").length != 3) $(trs[trind]).remove();
             ++trind;
         }
-       
+
     });
     return false;
-    
+
 }
 
 function getNumLockedIn(tbody) {
     var locked = 0;
     $(tbody).find("tr").each(function() {
-        
-       if ($(this).find("td:eq(0) span").text().substring(0, 1) == "*") locked++; 
+
+       if ($(this).find("td:eq(0) span").text().substring(0, 1) == "*") locked++;
     });
     return locked;
 }
@@ -748,19 +752,19 @@ function GetGroupSizes(people, maxGroups) {
     sizes[3] = 0;
     sizes[4] = 0;
     sizes[5] = 0;
-    
+
     if (people == 6) {
         sizes[3] = 2;
     } else if (people == 9) {
         sizes[4] = 1;
-        sizes[5] = 1;    
+        sizes[5] = 1;
     } else {
         if (people <= 5) {
             sizes[people] = 1;
         } else {
             four = Math.floor(people / 4);
             three = people % 4 ? 1 : 0;
-            
+
             while (four * 4 + three * 3 != people) {
                 if (four * 4 + three * 3 > people) {
                     four--;
@@ -772,7 +776,7 @@ function GetGroupSizes(people, maxGroups) {
             sizes[3] = three;
         }
     }
-    
+
     var groups = new Array();
     for (var size = 1; size <= 5; ++size) {
         if (!sizes[size]) continue;
@@ -785,28 +789,28 @@ function GetGroupSizes(people, maxGroups) {
             }
         }
     }
-    
-    
-    
+
+
+
     return groups;
 }
 
 function personComparison(a, b) {
     var tdsa = $(a).find("td");
     var tdsb = $(b).find("td");
-    
+
     if (tdsa.length != tdsb.length) {
         if (tdsa.length > tdsb.length) return -1;
-        return 1;    
+        return 1;
     }
-    
+
     if (tdsa.length != 3) return 0;
     var tda = tdsa.get(1);
     var tdb = tdsb.get(1);
-    
+
     var av = parseInt(tda.textContent || tda.innerText);
     var bv = parseInt(tdb.textContent || tdb.innerText);
-    
+
     if (av < bv) return -1;
     if (av == bv) return 0;
     return 1;
