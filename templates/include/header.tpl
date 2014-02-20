@@ -27,14 +27,14 @@
 <head>
       <title>{$title} - {translate id=site_name}</title>
       <link rel="stylesheet" href="{$url_base}ui/elements/style.css" type="text/css" />
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery-1.3.2.min.js"></script>
+      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-1.11.0.min.js"></script>
       <script type="text/javascript" src="{$url_base}javascript/base"></script>
       {if $autocomplete}
       <script type="text/javascript" src="{$url_base}ui/elements/jquery.autocomplete-min.js"></script>
       {/if}
       {if $ui}
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery-ui-1.7.2.custom.min.js"></script>
-      <link rel="stylesheet" href="{$url_base}ui/elements/jquery-ui-1.7.2.custom.css" type="text/css" />
+      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+      <link rel="stylesheet" href="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.css" type="text/css" />
       <meta http-equiv="Content-Type" content="{$contentType}" />
       {/if}
       {$extrahead}

@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Provides AJAX support for live result updates
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,7 +28,7 @@
         {foreach from=$updates item=update key=ind}
         {if !$first},{/if}
         {assign var=first value=false}
-        {$ind}: {ldelim}
+        "{$ind}": {ldelim}
             "pid": {$update.PlayerId},
             "hole": {if $update.HoleId}{$update.HoleId}{elseif $update.Special == 'Penalty'}"p"{else}"sd"{/if},
             "value": {$update.Value},
@@ -35,8 +36,5 @@
             "holeNum": {$update.HoleNum}
         {rdelim}
         {/foreach}
-        
-    
     {rdelim}
-
 {rdelim}

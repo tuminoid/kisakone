@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Tournament editor ui backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,71 +29,71 @@
         border: 2px solid white;
         margin: 0;
     }
-    
+
     .results td, .results th {
         background-color: #EEE;
         text-align: center;
-        
+
     }
-    
+
     .results {
         border-collapse: collapse;
     }
-    
+
     input[type="text"] {
         border: 1px solid #BBB;
     }
-    
+
 
     .e_err {
         background-color: red;
     }
-    
+
     .e_pm0 {
         background-color: #EEE !important;
     }
-    
+
     .e_m1 {
         background-color: #f6a690 !important;
     }
-    
+
     .e_mm {
         background-color: #f6a690 !important;
     }
-    
+
     .e_p1 {
         background-color: #aacfcf !important;
-        
-        
-        
+
+
+
     }
     .e_p2 {
         background-color: #51787e !important;
         color: white;
-        
+
     }
-    
+
     .e_pm {
        background-color: #51787e !important;
         color: white;
-        
+
     }
-    
+
     .results input {
-        text-align: center;        
+        text-align: center;
     }
-    
+
     .name_hilight {
         background-color: #AFA !important;
     }
-    
+
     #result_table input {
         width: 95% !important;
         margin: 2px;
     }
-    
+
     .spacing td { background-color: #F8F8F8 !important;}
-    
+
 {/literal}</style>
 {/capture}
 {include file='include/header.tpl' ui=true}
@@ -118,11 +119,11 @@
         </form>
     </p>
     <p>{translate id="result_search_extrahelp"}</p>
-    
+
 </div>
 
 <table class="results" id="result_table">
-    {foreach from=$results item=group key=groupind}    
+    {foreach from=$results item=group key=groupind}
         {if $groupind % 3 == 1}
             <tr>
                <td style="height: 8px; background-color: white;"></td>
@@ -134,8 +135,8 @@
                 <th>{translate id=hole_num} <br />{translate id=hole_par}</th>
                 {foreach from=$holes key=index item=hole}
                     <th>
-       
-                        {$hole->holeNumber}<br />{$hole->par}                        
+
+                        {$hole->holeNumber}<br />{$hole->par}
                         </th>
                 {/foreach}
                 <th>{translate id=result_penalty}</th>
@@ -148,7 +149,7 @@
                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
-        
+
         {foreach from=$group item=result key=memberInd}
             <tr class="resultrow player_{$result.playerId}">
                 <td>{$result.PoolNumber}</td>
@@ -159,19 +160,19 @@
                     {assign var=holenum value=$hole->holeNumber}
                     <td class="{if $hindex % 2 == 1}c1{else}c0{/if}">
                         {assign var=holeresult value=$result.Results.$holenum.Result}
-                                            
+
                         <input type="text" id="r{$result.PlayerId}_{$hole->id}" size="2" name="r{$result.PlayerId}_{$hole->id    }" value="{$holeresult}" />
-                    
-                    </td>        
+
+                    </td>
                 {/foreach}
                 <td>
-                    <input class="penalty" type="text" id="r{$result.PlayerId}_p" size="2" name="r{$result.PlayerId}_p" value="{$result.Penalty}" /></td>                            
+                    <input class="penalty" type="text" id="r{$result.PlayerId}_p" size="2" name="r{$result.PlayerId}_p" value="{$result.Penalty}" /></td>
                 <td>
-                    <input type="text" id="r{$result.PlayerId}_sd" size="2" name="r{$result.PlayerId}_sd" value="{$result.SuddenDeath}" /></td>                                                
+                    <input type="text" id="r{$result.PlayerId}_sd" size="2" name="r{$result.PlayerId}_sd" value="{$result.SuddenDeath}" /></td>
                 <td class="total" id="r{$result.PlayerId}_t">{$result.Total}</td>
                 <td class="c0 plusminus" id="r{$result.PlayerId}_pm">{$result.TotalPlusMinus}</td>
                 <td id="r_{$result.PlayerId}_sv">{translate id=all_ready}</td>
-                
+
             </tr>
         {/foreach}
         <tr class="spacing">
@@ -180,7 +181,7 @@
             <td colspan="5" class="lastsaved"></td>
         </tr>
     {/foreach}
-    
+
 </table>
 
 
@@ -194,48 +195,48 @@
     holes["p"] = 0;
     var eventid = {$eventid};
     var roundid = {$roundid};
-    
-    
+
+
     var all_ready = "{translate id=all_ready}";
     var unsaved = new Array();
     {literal}
-    
-    
-    
+
+
+
     $(document).ready(function(){
         //initializeLiveUpdate(3, eventid, updateField, updateBatchDone);
         liveChangeCallback = updateField;
         liveDoneCallback = updateBatchDone;
-        
+
         $("#result_table input").focus(inputFocus);
         $("#result_table input").blur(inputBlur);
         $("#result_table input").keyup(change);
         $("#result_table input").change(change);
         $("#result_table input").keydown(keydown);
-        
+
         $("#searchField").keyup(searchUpdate);
         $("#searchField input").change(searchUpdate);
         $("#searchForm").submit(searchGoto);
-        
+
         scheduleLiveUpdate = function() {};
-        
+
         $("#toggle_submenu").click(toggleSubmenu);
-        
+
         AutoSave();
     });
-    
-    
+
+
     var doingAuto = false;
     var lastSaved = 0;
     function AutoSave() {
         setTimeout(AutoSave, 3000);
-        
+
         if (focused) {
             if (valueOnEntry == focused.value) return;
         } else {
             return;
         }
-        
+
         lastSaved++;
         if (lastSaved >= 3) {
             lastSaved = 0;
@@ -249,32 +250,32 @@
                 }
             }
             catch (e) {
-                
+
             }
         }
-        
+
     }
-    
+
     // Accepts numbers, characters go to search box
     function keydown(e) {
         if (!e) e = window.event;
-        
-      
+
+
         if (e.keyCode == 13) {
-            
+
             var next = findNextInput1(this);
             next.focus();
         } else if (e.keyCode >= 48 && e.keyCode <= 57) { // 0..9
             return true;
         } else if (e.keyCode >= 65 && e.keyCode <= 90)  {
             initSearch(String.fromCharCode(e.keyCode));
-        } else if (e.keyCode == 192) {            
+        } else if (e.keyCode == 192) {
             initSearch('Ö');
         }
-        else if (e.keyCode == 222) {            
+        else if (e.keyCode == 222) {
             initSearch('Ä');
         }
-        else if (e.keyCode == 192) {            
+        else if (e.keyCode == 192) {
             initSearch('Å');
         } else {
             return true;
@@ -282,95 +283,95 @@
         e.preventDefault();
         return false;
     }
-    
+
     function initSearch(initialText) {
         $("#searchField").get(0).value = initialText;
         $("#searchField").get(0).focus();
-        
+
         searchUpdate();
     }
-    
+
     var singleFoundRow = null;
-    
+
     // Searches for the correct row
     function searchUpdate() {
         var text = $("#searchField").get(0).value;
         var results = 0;
-        
+
         var words = text.split(' ');
         //alert(text);
-        if (text != "") {            
+        if (text != "") {
             var row = $("#result_table tr").get(0);
             while (row) {
-                
+
                 if (row.tagName && row.tagName.match(/TR/i)) {
                     var tds = $(row).find("td");
                     var fine = true;
                     for (var i = 0; i < words.length; ++i) {
-                        var word = words[i];                        
+                        var word = words[i];
                         var nametd = tds.get(1);
                         var pdgatd = tds.get(2);
-                        
+
                         if (!nametd || !pdgatd) {
                             fine = false;
                             break;
                         }
-                        
+
                         var name = nametd.textContent || nametd.innerText;
                         var pdga = pdgatd.textContent || pdgatd.innerText;
-                        
+
                         if (!name || !pdga) {
                             fine = false;
                             break;
                         }
-                        
+
                         if (!name.match(new RegExp(word, "i"))
                             && !pdga.match(new RegExp(word, "i") ))  {
                             fine = false;
                             break;
                         }
-                        
-                        
-                        
-                                                
+
+
+
+
                     }
-                    
+
                     if (fine) {
                         results++;
                         singleFoundRow = row;
                     }
                 }
-                
+
                 row = row.nextSibling;
             }
         }
         $("#x_results").empty();
         $("#x_results").get(0).appendChild(document.createTextNode(results));
-        
+
         $("#searchButton").get(0).disabled = results != 1;
     }
-    
-    
+
+
     var hilightedName = null;
-    function searchGoto(e) {        
+    function searchGoto(e) {
         if (!e) e=  window.event;
-        
+
         e.preventDefault();
-        
+
         if (hilightedName) $(hilightedName).removeClass('name_hilight');
-        
+
         hilightedName = $(singleFoundRow).find("td").get(1);
-        
+
         $(hilightedName).addClass('name_hilight');
-        
+
         $(singleFoundRow).find("td input").get(0).focus();
         return false;
     }
-    
+
     // Attempts to find an input following the input we have now
     function findNextInput1(from) {
         if (!from) return null;
-        
+
         var next = from.nextSibling;
         while (next) {
             //alert(next.tagName);
@@ -378,80 +379,80 @@
             if (potential) {
                 return potential;
             }
-            
+
             next = next.nextSibling;
         }
-        return findNextInput1(from.parentNode);        
+        return findNextInput1(from.parentNode);
     }
-    
+
     function findNextInput2(item) {
         //alert(item.tagName);
         if (!item.tagName) return null;
         if (item.tagName && item.tagName.match(/^input$/i)) {
             return item;
         }
-        
+
         for( var i = 0; i < item.childNodes.length ; ++i) {
-                
+
             var potential = findNextInput2(item.childNodes[i]);
-            
+
             if (potential) {
                 return potential;
             }
         }
-        
+
         return null;
     }
-    
+
     function toggleSubmenu() {
         $("#submenucontainer").toggle();
     }
-    
-    
 
-    
-    
+
+
+
+
     var anyChanges = false;
-    
-    
+
+
     var fh1, fh2, fh3;
     var valueOnEntry;
     var focused;
-    
+
     function inputFocus() {
         focused = this;
         if (!doingAuto) this.select();
-        
+
         fh1 = this.parentNode.parentNode.firstChild;
 
         while (!fh1.tagName || !fh1.tagName.match(/^td$/i)) {
             fh1 = fh1.nextSibling;
-            
-            
+
+
         }
-        
+
         var col = getColumnOf(this.parentNode);
-        
+
         var pp = this.parentNode.parentNode;
         while (pp != null && !isHeadingRow(pp)) {
             pp = pp.previousSibling;
         }
 
         if (pp) fh2 = $(pp).find("th:eq(" + col + ")").get(0);
-        
+
         pp = this.parentNode.parentNode;
         while (pp != null && !isHeadingRow(pp)) {
             pp = pp.nextSibling;
         }
-        if (pp) fh3 = $(pp).find("th:eq(" + col + ")").get(0);    
-    
+        if (pp) fh3 = $(pp).find("th:eq(" + col + ")").get(0);
+
         $(fh1).addClass("focused");
         $(fh2).addClass("focused");
         $(fh3).addClass("focused");
         $(this.parentNode).addClass("focused");
         valueOnEntry = this.value;
     }
-    
+
     function isHeadingRow(r) {
         var c = r.firstChild;
         while (c != null) {
@@ -459,12 +460,12 @@
                 if (c.tagName.match(/^td$/i)) return false;
                 if (c.tagName.match(/^th$/i)) return true;
             }
-            
+
             c = c.nextSibling;
         }
         return false;
     }
-    
+
     function inputBlur() {
         lastSaved = 0;
         focused = null;
@@ -472,11 +473,8 @@
         $(fh2).removeClass("focused");
         $(fh3).removeClass("focused");
         $(this.parentNode).removeClass("focused");
-        
-        
-        
+
         if (this.value != valueOnEntry) {
-            
             var v = this.value;
             if (v == "") v = "0";
             if (v == "0"  || parseInt(v)) {
@@ -489,23 +487,23 @@
                     error: saveError,
                     success: saved,
                     url: "{/literal}{url page=liveresultdata}{literal}"
-		
-		
+
+
 	});
             }
         }
         }
-        
+
         var errorNotifications = 0;
-        
-        function saveError(e) {
+        function saveError(xhr, errortext, errorthrown) {
             // Max 3 warnings
-            if (errorNotifications == 3) return;
+            if (errorNotifications == 3)
+                return;
             errorNotifications++;
 
             alert({/literal}"{translate id=save_failed}"{literal});
         }
-    
+
     function saved(data){
         var pid = parseInt(data.status);
         if (!pid) {
@@ -513,14 +511,10 @@
         } else {
             UpdateSaveStatus(pid, -1);
         }
-        
-        
-        
-        
-        handleLiveUpdateData(data);        
 
+        handleLiveUpdateData(data);
     }
-    
+
     function change() {
         var v = this.value;
         var classes = ["e_err", "e_pm0", "e_m1", "e_mm", "e_p1", "e_p2", "e_pm"];
@@ -530,41 +524,41 @@
             UpdateTotals(this);
          }
         else if (!parseInt(v) || parseInt(v) < 0) {
-            
+
             p.addClass("e_err");
         } else {
             var col = getHoleOf(this.parentNode);
-            
+
             var par = holes[col + 1];
             var c = "";
-            
-            
-            
+
+
+
             if (v == par) c = "e_pm0";
             else if (v == par + 1) c = "e_p1";
             else if (v == par + 2) c = "e_p2";
             else if (v > par) c = "e_pm";
             else if (v == par - 1) c = "e_m1";
-            else if (v != 0) c = "e_mm";                    
-            
+            else if (v != 0) c = "e_mm";
+
             if (c != "") p.addClass(c);
-            
+
             UpdateTotals(this);
-            
+
         }
     }
-    
+
     function GetPlayerId(fieldname) {
         return parseInt(fieldname.substring(1));
     }
-    
+
     function UpdateSaveStatus(pid, adjustment) {
         if (!unsaved[pid]) {
             unsaved[pid] = adjustment;
         } else {
             unsaved[pid] += adjustment;
         }
-        
+
         var num = unsaved[pid];
         var element = $("#r_" + pid + "_sv");
         if (num) {
@@ -575,18 +569,18 @@
             element.get(0).appendChild(document.createTextNode(all_ready));
         }
     }
-    
-    function UpdateTotals(srcinput) {        
+
+    function UpdateTotals(srcinput) {
         var tr = $(srcinput).closest("tr");
         var inputs = tr.find("input");
-        
+
         var total = 0;
         var plusminus = 0;
         var dns = false;
-        
-        for (var holenum in holes) {            
+
+        for (var holenum in holes) {
             if (!parseInt(holenum)) continue;
-            
+
             var input = inputs.get(holenum - 1);
             if (input.value != "" && input.value != "0") {
                 var val = parseInt(input.value);
@@ -597,24 +591,24 @@
                 break;
             }
         }
-        
+
         var penaltyInput = tr.find(".penalty").get(0);
         var penalty = parseInt(penaltyInput.value);
         if (!penalty) penalty = 0;
-        
+
         total += penalty;
         plusminus += penalty;
-        
-        
+
+
         var totalElement = tr.find(".total").get(0);
         $(totalElement).empty();
         totalElement.appendChild(document.createTextNode(total));
-        
+
         var pmElement = tr.find(".plusminus").get(0);
         $(pmElement).empty();
         pmElement.appendChild(document.createTextNode(plusminus));
     }
-    
+
     function getHoleOf(td){
         var fe = td.parentNode.firstChild;
         var holeind = -5;
@@ -627,46 +621,46 @@
         }
         return -1;
     }
-    
-    function updateField(data) {        
+
+    function updateField(data) {
         var fieldid = "r" + data.pid + "_" + data.hole;
-        
+
         var field = document.getElementById(fieldid);
-        
-        
-        
+
+
+
         if (field) {
             var current = parseInt(field.value);
             if (isNaN(current)) current = 0;
             var diff = data.value - current;
-                        
-            
+
+
             if (diff) {
-                
+
                 var dontChangeValue = false;
                 if (data.hole == "p" || data.hole == "sd") {
                     if (focused == field) dontChangeValue = true;
                 }
                 if (!dontChangeValue) field.value = data.value;
-                
+
                 $(field).effect("highlight", {color: '#5F5'}, 30000);
-                
+
                 var totfield = document.getElementById("r" + data.pid + "_t");
                 var ctot = parseInt(totfield.innerText || totfield.textContent);
                 if (isNaN(ctot)) ctot = 0;
-                
+
                 if (totfield.firstChild) totfield.removeChild(totfield.firstChild);
                 totfield.appendChild(document.createTextNode(ctot + diff));
                 $(totfield).effect("highlight", {color: '#55F'}, 30000);
-                                
+
                 var pmfield = document.getElementById("r" + data.pid + "_pm");
                 var cpm = parseInt(pmfield.innerText || pmfield.textContent);
-                
+
                 var par = holes[data.holeNum];
-                
+
                 if (data.hole != "sd") {
                     if (data.hole == "p") par = 0;
-                    
+
                     if (data.value == 0) {
                         newpm = cpm - (current - par);
                     } else if (current == 0) {
@@ -675,26 +669,26 @@
                         newpm = cpm + diff;
                     }
                     //alert(cpm + " " + newpm + " " + diff);
-                    
+
                     if (pmfield.firstChild) pmfield.removeChild(pmfield.firstChild);
                     pmfield.appendChild(document.createTextNode(newpm));
                     $(pmfield).effect("highlight", {color: '#55F'}, 30000);
                 }
             }
-            
+
 
         }
         anyChanges = true;
     }
-    
-    function updateBatchDone() {        
+
+    function updateBatchDone() {
         anyChanges = false;
     }
-        
-    
+
+
     {/literal}
-    
-    
+
+
     //]]>
     </script>
     <form method="post" action="{url page=event id=$smarty.get.id view=leaderboard}">

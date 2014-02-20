@@ -1,10 +1,11 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Provides AJAX support for live result updates
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,18 +26,16 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $status) {        
+function InitializeSmartyVariables(&$smarty, $status)
+{
     SetContentType("text/javascript");
-    
+
     $smarty->assign('updateTime', time());
     $smarty->assign('forceRefresh', 'false');
     $smarty->assign('statusText', (string)$status);
 
     $updates = GetResultUpdatesSince(@$_GET['id'], @$_GET['round'], @$_GET['lastUpdate']);
-
-    
     $smarty->assign('updates', $updates);
-    
 }
 
 
@@ -47,7 +46,8 @@ function InitializeSmartyVariables(&$smarty, $status) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'index';
 }
 ?>
