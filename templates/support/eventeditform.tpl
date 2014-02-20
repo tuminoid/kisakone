@@ -30,7 +30,7 @@
 {else}
 {translate id='editevent_title' assign='title'}
 {/if}
-{include file='include/header.tpl' autocomplete=1 ui=1}
+{include file='include/header.tpl' autocomplete=1 ui=1 timepicker=1}
 
 {translate id='year_default' assign='year_default'}
 {translate id='month_default' assign='month_default'}
@@ -108,8 +108,6 @@
     <div>
         <label for="signup_start">{translate id=event_signup_start}</label>
         <input id="signup_start" type="text" name="signup_start" value="{$event.signup_start|escape}" class="useDatePicker" />
-
-
         {formerror field='signup_start'}
     </div>
 
@@ -271,7 +269,21 @@ $(document).ready(function(){
         params: { path : 'autocomplete', id: 'users'
       }}
     );
-    $(".useDatePicker").datepicker({
+
+    $("#signup_start").datetimepicker({
+                            dateFormat: 'yy-mm-dd',
+                            changeMonth: true,
+                            {/literal}
+                            dayNames: [{translate id=DayNameArray}],
+                            dayNamesShort: [{translate id=DayNameShortArray}],
+                            dayNamesMin: [{translate id=DayNameMinArray}],
+                            monthNames: [{translate id=MonthNameArray}],
+                            monthNamesShort: [{translate id=MonthNameShortArray}],
+                            {literal}
+                            firstDay: 1
+                            });
+
+    $("#signup_end").datetimepicker({
                             dateFormat: 'yy-mm-dd',
                             changeMonth: true,
                             {/literal}
