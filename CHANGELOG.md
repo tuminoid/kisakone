@@ -11,6 +11,7 @@ next
   * Upgrade jQuery to 1.11.0 and jQuery-UI to 1.10.4. GH #38.
   * Use Datetimepicker for setting event start and end dates. GH #35.
   * Preliminary groups are hidden until TD publishes them. GH #11.
+  * Registering and Registering Soon events are listed in the front page. GH #31.
 
 2014.02.13
 ==========
