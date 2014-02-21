@@ -107,13 +107,13 @@
 
     <div>
         <label for="signup_start">{translate id=event_signup_start}</label>
-        <input id="signup_start" type="text" name="signup_start" value="{$event.signup_start|escape}" class="useDatePicker" />
+        <input id="signup_start" type="text" name="signup_start" value="{$event.signup_start|escape}" />
         {formerror field='signup_start'}
     </div>
 
     <div>
         <label for="signup_end">{translate id=event_signup_end}</label>
-        <input id="signup_end" type="text" name="signup_end" value="{$event.signup_end|escape}" class="useDatePicker" />
+        <input id="signup_end" type="text" name="signup_end" value="{$event.signup_end|escape}" />
         {formerror field='signup_end'}
     </div>
 
@@ -269,6 +269,19 @@ $(document).ready(function(){
         params: { path : 'autocomplete', id: 'users'
       }}
     );
+
+    $(".useDatePicker").datepicker({
+                            dateFormat: 'yy-mm-dd',
+                            changeMonth: true,
+                            {/literal}
+                            dayNames: [{translate id=DayNameArray}],
+                            dayNamesShort: [{translate id=DayNameShortArray}],
+                            dayNamesMin: [{translate id=DayNameMinArray}],
+                            monthNames: [{translate id=MonthNameArray}],
+                            monthNamesShort: [{translate id=MonthNameShortArray}],
+                            {literal}
+                            firstDay: 1
+                            });
 
     $("#signup_start").datetimepicker({
                             dateFormat: 'yy-mm-dd',
