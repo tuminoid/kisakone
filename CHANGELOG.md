@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next
-====
+2014.02.21
+==========
   * Quotas and Limits. GH #6.
   * `tools/development` was removed to be standalone as `kisakone-dev`. It received updates of it's own.
   * Fix install.php to actually create the database if it is missing.
@@ -12,6 +12,9 @@ next
   * Use Datetimepicker for setting event start and end dates. GH #35.
   * Preliminary groups are hidden until TD publishes them. GH #11.
   * Registering and Registering Soon events are listed in the front page. GH #31.
+
+[Database migration](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20140221.md) 
+is required for this upgrade.
 
 2014.02.13
 ==========
@@ -21,6 +24,9 @@ next
   * More configuration options.
   * Added favicon.ico.
   * Change default logo to new Frisbeegolfliitto.com logo. New name is `sitelogo.png`.
+
+[Upgrade docs](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20140213.md) 
+are available for this upgrade.
 
 2013.11.01
 ==========
@@ -47,6 +53,8 @@ next
   * In preparation of the scoring fix, all database tables were converted into InnoDB. GH #17.
   * Hole-in-Ones and Eagles and better are now separated in the scores table by Gold and Dark Red. GH #9.
 
+[Upgrade docs](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20130920.md) 
+are available for this upgrade.
 
 2013.09.17
 ==========

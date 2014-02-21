@@ -7,7 +7,7 @@
 require_once('../../../config.php');
 require_once('../../../data/db_init.php');
 
-function Upgrade_to_20140215() {
+function Upgrade() {
   global $settings;
 
   $source = file_get_contents('upgrade.sql');
@@ -30,5 +30,5 @@ function Upgrade_to_20140215() {
 }
 
 InitializeDatabaseConnection();
-Upgrade_to_20140215();
+Upgrade();
 ?>
