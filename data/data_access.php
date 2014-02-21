@@ -520,7 +520,7 @@ require_once('data/db_init.php');
    }
 
    // Gets an array of Event objects where the conditions match
-   function data_GetEvents($conditions)
+   function data_GetEvents($conditions, $sort_mode = null)
    {
       $retValue = array();
       $dbError = InitializeDatabaseConnection();
@@ -532,9 +532,13 @@ require_once('data/db_init.php');
 
 
       global $event_sort_mode;
-      if (!$event_sort_mode) {
+      if ($sort_mode !== null) {
+         $sort = "`$sort_mode`";
+      }
+      elseif (!$event_sort_mode) {
         $sort = "`Date`";
-      } else {
+      }
+      else {
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
       }
       global $user;
@@ -5312,13 +5316,13 @@ function GetGroups($sectid) {
 
   function GetRegisteringEvents() {
     $now = time();
-    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)");
+    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)", "SignupEnd");
   }
 
   function GetRegisteringSoonEvents() {
     $now = time();
     $twoweeks = time() + 14*24*60*60;
-    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)");
+    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)", "SignupStart");
   }
 
   function GetUpcomingEvents($onlySome) {
