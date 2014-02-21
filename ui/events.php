@@ -1,7 +1,8 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event listing
  *
@@ -45,10 +46,17 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $events = $user->GetMyEvents('participant');
          $title = 'myevents_title';
          break;
+
       case 'manage':
          $events = $user->GetMyEvents('manager');
          $title = 'manage_events_title';
          break;
+
+      case 'relevant':
+         $events = GetRelevantEvents();
+         $title = 'relevant_events';
+         break;
+
       case '':
       case 'default':
          global $fullTemplateName;
@@ -56,39 +64,52 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $fullTemplateName = "index.tpl";
          $current = GetRelevantEvents();
          $upcoming = GetUpcomingEvents(true);
+         $registering = GetRegisteringEvents(true);
+         $registeringsoon = GetRegisteringSoonEvents(true);
          $past = GetPastEvents(true);
 
-         $smarty->assign('lists', array($current, $upcoming, $past));
+         $smarty->assign('lists', array($current, $registering, $registeringsoon, $upcoming, $past));
          $title = 'index_title';
 
          require_once ('core/textcontent.php');
          $tc = GetGlobalTextContent('index');
          if ($tc)
             $smarty->assign('content', $tc->formattedText);
-
          break;
+
+      case 'past':
+         $events = GetPastEvents(false, date("Y"));
+         $title = 'past_events';
+         break;
+
       case 'upcoming':
          $events = GetUpcomingEvents(false);
          $title = 'upcoming_events';
          break;
+
       case 'currentYear':
          $events = GetEventsByYear(date('Y'));
          $title = 'current_year_events_title';
          break;
+
       case 'byUser':
          global $user;
          $uid = GetUserId(@$_GET['username']);
-         if (is_a($uid, 'Error')) return $uid;
+         if (is_a($uid, 'Error'))
+            return $uid;
          $theuser = GetUserDetails($uid);
-         if (is_a($theuser, 'Error')) return $theuser;
-         if (!$theuser) return Error::Notfound('user');
+         if (is_a($theuser, 'Error'))
+            return $theuser;
+         if (!$theuser)
+            return Error::Notfound('user');
+
          $loginUser = $user;
          $user = $theuser;
          $events = $user->GetMyEvents('participant');
          $user = $loginUser;
-
          $title = '!' . translate('user_events_title', array('eventuser' => htmlentities(@$_GET['username'])));
          break;
+
       default:
          if (is_numeric($id)) {
             $events = GetEventsByYear((int)$id);

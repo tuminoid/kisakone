@@ -5310,6 +5310,17 @@ function GetGroups($sectid) {
     return array($license, $membership);
   }
 
+  function GetRegisteringEvents() {
+    $now = time();
+    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)");
+  }
+
+  function GetRegisteringSoonEvents() {
+    $now = time();
+    $twoweeks = time() + 14*24*60*60;
+    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)");
+  }
+
   function GetUpcomingEvents($onlySome) {
     $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
     if ($onlySome) {
@@ -5319,9 +5330,12 @@ function GetGroups($sectid) {
     return $data;
   }
 
-  function GetPastEvents($onlySome) {
-    $data = data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") AND ResultsLocked IS NOT NULL");
+  function GetPastEvents($onlySome, $onlyYear = null) {
+    $thisYear = "";
+    if ($onlyYear != null)
+       $thisYear = "AND YEAR(Date) = $onlyYear";
 
+    $data = data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL");
     $data = array_reverse($data);
 
     if ($onlySome) {

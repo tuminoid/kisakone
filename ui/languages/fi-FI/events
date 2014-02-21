@@ -318,7 +318,9 @@ fees_necessary_for_signup_2     Tähän kilpailuun ilmoittautuminen vaatii A-lis
 fees_necessary_for_signup_3      Tähän kilpailuun ilmoittautuminen vaatii B-lisenssin.
 event_is_locked_cant_edit       Kilpailu on lukittu. Muutokset eivät ole mahdollisia ellei kilpailua avata uudelleen.
 cant_cancel_signup_now      Ilmoittautuminen on sulkeutunut, eikä perumista voi enää tehdä.
-relevant_events        Ajankohtaiset kilpailut
+relevant_events         Ajankohtaiset kilpailut
+registering_events      Ilmoittautuminen käynnissä
+registering_soon_events Ilmoittautuminen aukeaa seuraavaksi
 past_events             Käydyt kilpailut
 show_archive            Näytä arkisto
 show_all                Näytä kaikki

@@ -86,8 +86,9 @@ function page_getSubMenu() {
 
         'events' => array('title' => translate('events'), 'link' => array('page' => 'events'), 'children' => array(
             array('open' => 'auto', 'title' => translate('submenu_all_events'), 'link' => array('page' => 'events', 'id' => ''), 'access' => null, 'children' => array(
-                array('title' => translate('submenu_relevant_events'), 'link' => array('page' => 'events', 'id' => ''), 'access' => null, 'children' => array()),
+                array('title' => translate('submenu_relevant_events'), 'link' => array('page' => 'events', 'id' => 'relevant'), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_upcoming_events'), 'link' => array('page' => 'events', 'id' => 'upcoming'), 'access' => null, 'children' => array()),
+                array('title' => translate('submenu_season_past_events'), 'link' => array('page' => 'events', 'id' => 'past'), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_current_year_events'), 'link' => array('page' => 'events', 'id' => 'currentYear'), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_event_archive'), 'link' => array('page' => 'eventarchive'), 'access' => null, 'children' => $archivedEvents),
             )),

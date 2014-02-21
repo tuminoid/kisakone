@@ -1,31 +1,10 @@
 {**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Index page
  * Note: This page uses "events" as the backend, instead of index
- *
- * --
- *
- * This file is part of Kisakone.
- * Kisakone is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Kisakone is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
- * *}
-{*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
- *
- * Event listing
  *
  * --
  *
@@ -58,9 +37,15 @@
         {translate id=relevant_events}
         {assign var=trclass value="hot_event_row"}
     {elseif $listtype == 1}
-        {translate id=upcoming_events}
+        {translate id=registering_events}
         {assign var=trclass value="event_row"}
     {elseif $listtype == 2}
+        {translate id=registering_soon_events}
+        {assign var=trclass value="event_row"}
+    {elseif $listtype == 3}
+        {translate id=upcoming_events}
+        {assign var=trclass value="event_row"}
+    {elseif $listtype == 4}
         {translate id=past_events}
         {assign var=trclass value="event_row"}
     {/if}
@@ -71,12 +56,24 @@
         <th>{translate id='event_location'}</th>
         <th>{translate id='event_level'}</th>
         <th>{translate id='event_classes'}</th>
-        <th>{translate id='event_date'}</th>
+        <th>
+        {if $listtype == 1}
+            {translate id='event_signup_end'}
+        {elseif $listtype == 2}
+            {translate id='event_signup_start'}
+        {else}
+            {translate id='event_date'}
+        {/if}
+        </th>
         <th></th>
         <th></th>
     </tr>
    {foreach from=$events item=event}
-
+        {if $listtype == 1 || $listtype == 2}
+            {if !$event->isActive}
+                {php}continue;{/php}
+            {/if}
+        {/if}
         <tr class="{$trclass}">
             {if $event->isAccessible()}
             <td><a href="{url page="event" id=$event->id}">{$event->name|escape}</a> </td>
@@ -92,7 +89,16 @@
                 -
             {/foreach}
             </td>
-            <td>{$event->fulldate}</td>
+            <td>
+            {if $listtype == 1}
+                {$event->signupEnd|date_format:"%d.%m.%Y %H:%M"}
+            {elseif $listtype == 2}
+                {$event->signupStart|date_format:"%d.%m.%Y %H:%M"}
+            {else}
+                {$event->fulldate}
+            {/if}
+            </td>
+
             <td class="event_links">
             {if $event->resultsLocked}
                 <img src="{$url_base}ui/elements/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>
@@ -146,10 +152,10 @@
 
     <tr><td colspan="7">
     {if $listtype == 0}
-        <p>&nbsp;</p>
-    {elseif $listtype == 1}
+        &nbsp;
+    {elseif $listtype == 3}
         <p><a href="{url page=events id=upcoming}">{translate id=show_all}</a></p>
-    {elseif $listtype == 2}
+    {elseif $listtype == 4}
         <p><a href="{url page=eventarchive}">{translate id=show_archive}</a></p>
     {/if}
     </td></tr>

@@ -2,14 +2,16 @@
 
 
 # Sub menu options
-submenu_all_events          Kaikki kilpailut
-submenu_relevant_events     Ajankohtaiset kilpailut
-submenu_current_year_events Kuluvan vuoden kilpailut
+submenu_all_events          Kilpailut
+submenu_relevant_events     Ajankohtaiset
+submenu_current_year_events Kaikki
 submenu_event_archive       Arkisto
 submenu_new_event           Uusi kilpailu
 submenu_my_events           Omat kilpailut
 submenu_events_competitor   Kilpailijana
 submenu_events_manage       Hallinnoijana
+submenu_upcoming_events     Tulevat
+submenu_season_past_events  Päättyneet
 
 submenu_all_users           Kaikki käyttäjät
 submenu_my_info             Omat tiedot
@@ -42,50 +44,42 @@ event_course        Rata
 event_signup_info   Ilmoittautuminen
 event_rss           Tilaa RSS
 event_info          Yleistiedot
-
-
+event_custom_pages  Lisäsivut
 event_manage        Muokkaa
 event_add_news      Lisää uutinen
-
+event_newsarchive        Uutisarkisto
+event_leaderboard    Leaderboard
 
 new_news_item       Uusi uutinen
 edit_news_item      Muokkaa uutista
+edit_event_classes  Luokat
+edit_event_quotas   Kiintiöt
+edit_ads            Mainokset
+editclass           Muokkaa luokkaa
+edittournament      Muokkaa sarjaa
+editlevel           Muokkaa tasoa
+
 submenu_new_admin   Lisää ylläpitäjä
 submenu_tournaments Sarjat
 submenu_levels      Tasot
 submenu_classes     Luokat
-
 submenu_manage_fees_item Maksut
 submenu_ban_and_remove_users    Käyttöoikeuksien poisto
-
 submenu_edit_user       Muokkaa
 submenu_user_events     Käyttäjän kilpailut
 submenu_past_events Vuosi {year}
 
 user_events Käyttäjän {username} kilpailut
-event_custom_pages  Lisäsivut
 
 add_offline_competitor  Lisää kilpailija
-event_newsarchive        Uutisarkisto
 submenu_recover_password    Unohtunut salasana
-edit_ads            Mainokset
 
 manage_rounds           Kierrosten määritys
 class_starting_times    Luokkien lähtöajat
-
-editclass           Muokkaa luokkaa
-edittournament      Muokkaa sarjaa
-editlevel           Muokkaa tasoa
 
 submenu_manage_users    Käyttäjien hallinnointi
 submenu_manage_submenutext   Sivuvalikon lisäteksti
 submenu_manage_index   Etusivun lisäteksti
 submenu_manage_fees   Lisenssi- ja jäsenmaksujen lisäteksti
 submenu_manage_terms    Käyttöehdot
-edit_event_classes  Luokat
-edit_event_quotas   Kiintiöt
-
 submenu_courses     Radat
-
-event_leaderboard    Leaderboard
-submenu_upcoming_events     Tulevat kilpailut

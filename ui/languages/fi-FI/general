@@ -28,6 +28,7 @@ MonthNameMinArray 'Tam', 'Hel', 'Maas', 'Huh', 'Tou', 'Kesä', 'Hei', 'Elo', 'Sy
 
 
 index_title     Ajankohtaiset kilpailut
+registering_events_title  Ilmoittautuminen ajankohtaista
 current_year_events_title       Kuluvan vuoden kilpailut
 eventarchive_title          Kilpailuarkisto
 events_by_year Vuoden {year} kilpailut
