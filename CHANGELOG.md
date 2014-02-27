@@ -3,6 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next
+====
+  * Regression: Fix some broken autocomplete fields. GH #65.
+
+
 2014.02.21
 ==========
   * Quotas and Limits. GH #6.
