@@ -4662,7 +4662,7 @@ function GetGroups($sectid) {
         if (data_string_in_array($bit, $fields)) $field = $bit;
         else {
             echo $bit;
-            return Error::InvalidSortOrder();
+            return Error::notImplemented();
         }
       }
 
