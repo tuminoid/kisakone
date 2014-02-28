@@ -28,7 +28,7 @@
         <generator>Kisakone 1.0 EventRSS</generator>
         <copyright>{translate id=rss_copyright}</copyright>
         <image>
-            <url>http://{$smarty.server.HTTP_HOST}{$url_base}ui/elements/logo2.png</url>
+            <url>http://{$smarty.server.HTTP_HOST}{$url_base}ui/elements/sitelogo.png</url>
             <title>{translate id=eventrss_title eventname=$event->name eventvenue=$event->venue}</title>
             <link>http://{$smarty.server.HTTP_HOST}{$url_base}event/{$event->id}</link>
         </image>
