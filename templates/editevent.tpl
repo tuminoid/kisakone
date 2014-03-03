@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event editor page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -19,5 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
- {include file='support/eventeditform.tpl' new=false allowTdChange="`IsAdmin()`"}
+ {php}$this->assign("allowTdChange", IsAdmin());{/php}
+ {include file='support/eventeditform.tpl' new=false}
 
