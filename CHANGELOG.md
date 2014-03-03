@@ -6,7 +6,9 @@ Kisakone versions are simply release date tags:
 next
 ====
   * Regression: Fix some broken autocomplete fields. GH #65.
-  * TD may add competitor to the queue as well.
+  * TD may add competitor via queue as well, subject to queue rules. GH #69.
+  * Player's are autopromoted when event's playerlimit is changed. GH #62.
+  * Player's are autopromoted when event's quotas are changed. GH #62.
 
 
 2014.02.21
