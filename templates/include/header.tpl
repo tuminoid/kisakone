@@ -33,6 +33,7 @@
       <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.js"></script>
       <link rel="stylesheet" href="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.css" type="text/css" />
       <meta http-equiv="Content-Type" content="{$contentType}" />
+      {/if}
       {if $timepicker}
       <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-timepicker-addon.min.js"></script>
       <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-sliderAccess.js"></script>
@@ -40,7 +41,6 @@
       {/if}
       {if $autocomplete}
       <script type="text/javascript" src="{$url_base}ui/elements/jquery.autocomplete-min.js"></script>
-      {/if}
       {/if}
       {$extrahead}
 </head>
