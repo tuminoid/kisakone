@@ -12,6 +12,7 @@ FormError_Summary   Lomaketta ei voida lähettää sen virheellisen täytön joh
 FormError_InvalidUsername   Virheellinen käyttäjänimi {username}
 FormError_DuplicateUsername Käyttäjänimi on jo käytössä: {username}
 FormError_ShouldBeEmpty     Kentän tulisi olla tyhjä. Joko lisää tietue listaan, tai tyhjennä kenttä.
+FormError_TDasOfficial  TD:tä ei saa asettaa myös toimitsijaksi.
 
 class_already_in_use    Luokka on jo otettu mukaan kilpailuun.
 confirm_class_removal   Haluatko varmasti poistaa valitun luokan?

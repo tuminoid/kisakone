@@ -185,7 +185,7 @@
         <label for="td">{translate id=event_td}</label>
         <input type="hidden" name="oldtd" value="{$event.oldtd|escape}" />
         <input type="text"
-               {if !$allowTdChange} disabled="true"{/if}
+               {if !$allowTdChange} disabled="disabled"{/if}
                name="td" id="td" value="{$event.td|escape}" />
         {formerror field='td'}
     </div>

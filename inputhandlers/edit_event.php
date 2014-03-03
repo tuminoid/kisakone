@@ -176,6 +176,8 @@ function processForm()
         $oid = input_GetUser($official);
         if ($oid === null)
             $problems['officials'] = translate('FormError_InvalidUser');
+        if ($oid == $td)
+            $problems['officials'] = translate('FormError_TDasOfficial');
         $officialIds[] = $oid;
     }
 
