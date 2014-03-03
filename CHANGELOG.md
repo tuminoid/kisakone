@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * TBD
+  * Run whole codebase against php-cs-fixer to fix the most obvious coding style issues
 
 
 2014.03.03:
