@@ -235,6 +235,9 @@ function processForm()
     if ($tournament != $oldTournament)
         UpdateTournamentPoints($oldTournament);
 
+    // Promote queuers if playerlimit changed
+    CheckQueueForPromotions($eventid);
+
     $dummy = null;
     header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
     die();

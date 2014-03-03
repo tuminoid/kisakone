@@ -33,10 +33,10 @@ function processForm()
         return Error::AccessDenied();
 
     if (!IsAdmin() && $event->management != 'td') {
-        return Error::AccessDenied('eventclasses');
+        return Error::AccessDenied('eventquotas');
     }
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $_GET['id']), $_GET));
+        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $_GET));
         die();
     }
     $failures = false;
@@ -54,8 +54,13 @@ function processForm()
         }
     }
 
-    if ($failures)
-        return true;
+    // Promote queuers if playerlimit changed
+    GetEventDetails("clear_cache");
+    CheckQueueForPromotions($event->id);
+
+    $dummy = null;
+    header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
+    die();
 }
 
 ?>
