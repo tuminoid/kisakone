@@ -71,11 +71,11 @@ function processForm()
         $requireFees = LICENSE_B;
 
     $duration = @$_POST['duration'];
-    if ((int)$duration <= 0)
+    if ((int) $duration <= 0)
         $problems['duration'] = translate('FormError_NotPositiveInteger');
 
     $playerlimit = @$_POST['playerlimit'];
-    if ((int)$playerlimit < 0)
+    if ((int) $playerlimit < 0)
         $problems['playerlimit'] = translate('FormError_NotPositiveInteger');
 
     $start = input_ParseDate($_POST['start']);
@@ -103,13 +103,11 @@ function processForm()
             list($operation, $class) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $classes[] = $class;
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 $index = array_search($class, $classes);
                 if ($index !== false)
                     unset($classes[$index]);
-            }
-            else
+            } else
                 fail();
         }
     }
@@ -121,10 +119,9 @@ function processForm()
             @list($operation, $index, $roundid, $date, $time) = explode(':', $op, 5);
             if ($operation == 'add') {
                 preg_match('/\s(\d+)$/', $date, $parts);
-                $rdate = $start + 60 * 60 * 24 * ((int)$parts[1] - 1);
+                $rdate = $start + 60 * 60 * 24 * ((int) $parts[1] - 1);
                 $rounds[$index] = array('date' => input_ParseDate(date("Y-m-d", $rdate) . " " . $time), 'time' => $time, 'datestring' => $date, 'roundid' => $roundid);
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 unset($rounds[$index]);
             }
         }
@@ -142,8 +139,7 @@ function processForm()
             list($operation, $official) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $officials[] = $official;
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
                     unset($officials[$index]);
@@ -158,7 +154,7 @@ function processForm()
         $officialIds[] = $oid;
     }
 
-    if(count($problems)) {
+    if (count($problems)) {
         $problems['classList'] = $classes;
         $problems['roundList'] = $rounds;
         $problems['officialList'] = $officials;
@@ -169,21 +165,20 @@ function processForm()
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'newevent';
+
         return $error;
     }
-
 
     $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees);
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
+
         return $result;
     }
 
-    require_once('core/email.php');
+    require_once 'core/email.php';
     SendEmail(EMAIL_YOU_ARE_TD, $td, GetEventDetails($result));
 
     header("Location: " . BaseURL() . "events");
     die();
 }
-
-?>

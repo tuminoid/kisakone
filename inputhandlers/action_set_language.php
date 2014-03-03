@@ -25,7 +25,8 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processAction() {
+function processAction()
+{
     $language=  basename(@$_GET['language']);
     if (file_exists('ui/languages/' . $language)) {
         $_SESSION['kisakone_language'] = $language;
@@ -37,7 +38,6 @@ function processAction() {
 
     $redirect = new Error();
     $redirect->errorPage = 'events';
+
     return $redirect;
 }
-
-?>

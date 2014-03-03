@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Group editor
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,27 +26,27 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
    language_include('errors');
    $event = GetEventDetails($_GET['id']);
-    
+
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied('eventfees');
     }
-    
-    
+
     if ($event->resultsLocked) $smarty->assign('locked' , true);
-   
 
    if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
    if (!@$_REQUEST['round']) {
-      require_once('ui/support/roundselection.php');
+      require_once 'ui/support/roundselection.php';
+
       return page_SelectRound($event, $smarty);
    }
-   
+
    $round = GetRoundDetails(@$_REQUEST['round']);
    if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
-   
+
    if (@$_GET['regenerate']) {
       $round->RegenerateGroups();
       header("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
@@ -56,30 +56,30 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $smarty->assign('suggestRegeneration', true);
       }
    }
-   
+
    $smarty->assign('round', $round);
    $smarty->assign('data', GetSections($round->id));
 
    if ($round->starttype == 'simultaneous') {
       $holes = $round->GetHoles();
       $smarty->assign('numHoles', count($holes));
-            
+
    }
-   
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
 
-function GetPlayersByGroup($class){
+function GetPlayersByGroup($class)
+{
    die();
+
    return array();
 }
-?>

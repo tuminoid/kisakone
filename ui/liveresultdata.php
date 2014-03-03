@@ -32,12 +32,11 @@ function InitializeSmartyVariables(&$smarty, $status)
 
     $smarty->assign('updateTime', time());
     $smarty->assign('forceRefresh', 'false');
-    $smarty->assign('statusText', (string)$status);
+    $smarty->assign('statusText', (string) $status);
 
     $updates = GetResultUpdatesSince(@$_GET['id'], @$_GET['round'], @$_GET['lastUpdate']);
     $smarty->assign('updates', $updates);
 }
-
 
 /**
  * Determines which main menu option this page falls under.
@@ -50,4 +49,3 @@ function getMainMenuSelection()
 {
     return 'index';
 }
-?>

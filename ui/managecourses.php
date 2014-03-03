@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Course management listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,7 +25,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $id = @$_GET['id'];
     if ($id) {
         $event = GetEventDetails($id);
@@ -34,22 +35,16 @@ function InitializeSmartyVariables(&$smarty, $error) {
     } else {
         if (!IsAdmin()) return Error::AccessDenied();
     }
-    
 
-    
-    $smarty->assign('courses', GetCourses());    
+    $smarty->assign('courses', GetCourses());
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     if (@$_GET['id'])  return 'events';
     else return 'administration';
 }
-
-
-?>

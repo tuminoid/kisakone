@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * AD editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,55 +26,55 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $data) {
-    
+function InitializeSmartyVariables(&$smarty, $data)
+{
     $id = @$_GET['id'];
     if ($id == 'default') $id = null;
     if ($id) {
         $event = GetEventDetails($id);
         if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
-    } else {    
+    } else {
         if (!IsAdmin()) return Error::AccessDenied();
     }
-        
 
     if (is_a($data, 'Ad')) {
         $ad = $data;
     } else {
-        
-                
+
         $ad = GetAd($id, @$_GET['adType']);
-        
+
         // If there's no ad initially, create one
         if (!$ad) {
             $ad = new Ad(null, @$_GET['adType'], null, AD_DEFAULT, null, null, null, null);
         }
     }
-    
 
-    $adTypes = explode(' ', GLOBAL_AD_TYPES);    
+
+    $adTypes = explode(' ', GLOBAL_AD_TYPES);
     $smarty->assign('globalReferenceOptions', $adTypes);
-    
-    if ($id ) {
+
+    if ($id) {
         $eventAds = explode( ' ', EVENT_AD_TYPES);
         $smarty->assign('eventReferenceOptions', $eventAds);
     }
-    
+
     $smarty->assign('event', $id);
-    
+
     $smarty->assign('images', pdr_FileArray(GetFilesOfType('ad')));
-    
+
     $smarty->assign('ad', $ad);
 }
 
 /**
  * Convert files from a regular array into an array that maps file id to the display name
  */
-function pdr_FileArray($files) {
+function pdr_FileArray($files)
+{
     $out = array();
     foreach ($files as $file) {
         $out[$file->id] = $file->displayName;
     }
+
     return $out;
 }
 
@@ -83,8 +83,8 @@ function pdr_FileArray($files) {
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
-    
+function getMainMenuSelection()
+{
     // This is a special page, as it can be under 2 different branches
     $id = @$_GET['id'];
     if ($id && $id != 'default') {
@@ -93,4 +93,3 @@ function getMainMenuSelection() {
         return 'administration';
     }
 }
-?>

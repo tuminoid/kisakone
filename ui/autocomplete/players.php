@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Autocomplete listing for players
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,25 +21,22 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function page_Autocomplete($query) {
+function page_Autocomplete($query)
+{
     $users = GetPlayerUsers($query);
     $display = array();
     $data = array();
-    
+
     //print_r($users);
-        
+
     foreach ($users as $user) {
         $player = $user->GetPlayer();
         $display[] = sprintf("%s (%s%s%d)",  $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
-        $data[] = sprintf("%s (%s%s%d)",  $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);        
+        $data[] = sprintf("%s (%s%s%d)",  $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
     }
-        
-    
+
     return array('suggestions' => $display,
                  'data' => $data,
                  'useKeys' => false);
-        
+
 }
-
-
-?>

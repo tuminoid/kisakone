@@ -22,24 +22,23 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once('translate.php');
-require_once('menu.php');
-require_once('functions.php');
+require_once 'translate.php';
+require_once 'menu.php';
+require_once 'functions.php';
 
 LoadLanguage(page_ChooseLanguage());
-
 
 /**
  * Determines the language we want to display
  */
-function page_ChooseLanguage() {
+function page_ChooseLanguage()
+{
    // reset support is only for debug purposes, as it'd be a bit of a pain
    // to force the basic detection otherwise
    if (@$_GET['language'] != 'RESET') {
       if (@$_SESSION['kisakone_language']) {
          return @$_SESSION['kisakone_language'];
-      }
-      elseif (@$_COOKIE['kisakone_language']) {
+      } elseif (@$_COOKIE['kisakone_language']) {
          $cookie = basename($_COOKIE['kisakone_language']);
          if (file_exists('ui/languages/' . $cookie))
             return $cookie;
@@ -83,8 +82,8 @@ function page_ChooseLanguage() {
    return $chosen;
 }
 
-
-function page_sort_languages($a, $b) {
+function page_sort_languages($a, $b)
+{
    $qa = @$a[3];
    $qb = @$b[3];
    if (!$qa) $qa = 1;
@@ -96,15 +95,14 @@ function page_sort_languages($a, $b) {
 
 }
 
-
 /**
  * Initializes a copy of smarty and returns it. This function is mostly used
  * by index.php, should another page need one, this function shuold be used as well.
  * For example, the error function requires a smarty of its own.
  * @return Smarty Properly initialized smarty object
  */
-function InitializeSmarty() {
-
+function InitializeSmarty()
+{
    $smarty = new Smarty();
    // Initialize directories used by smarty
    $smarty->template_dir = './templates';
@@ -125,7 +123,6 @@ function InitializeSmarty() {
    // Depending on if mod_rewrite is used or not, it might be necessary to add
    // form fields for GET method forms to ensure correct page being loaded
    $smarty->register_function('initializeGetFormFields', 'initializeGetFormFields_Smarty', false);
-
 
    $smarty->register_function('submenulinks', 'submenulinks_smarty', true);
 
@@ -155,20 +152,17 @@ function InitializeSmarty() {
    // Assume no errors
    $smarty->assign('errors', array());
 
-   require_once ('core/textcontent.php');
+   require_once 'core/textcontent.php';
    $tc = GetGlobalTextContent('submenu');
    if ($tc) $smarty->assign('submenu_content', $tc->formattedText);
-
 
    // Default help file; PDR and templates can change it if necessary
    if (@$_GET['showhelp'] && @$_GET['showhelp'] !== '1') {
       $smarty->assign('helpfile', basename(@$_GET['showhelp']));
-   }
-   else {
+   } else {
       if (empty($_GET['page'][0])) {
          $smarty->assign('helpfile', 'events');
-      }
-      else {
+      } else {
          $smarty->assign('helpfile', @$_GET['page'][0]);
       }
    }
@@ -178,5 +172,3 @@ function InitializeSmarty() {
 
    return $smarty;
 }
-
-?>

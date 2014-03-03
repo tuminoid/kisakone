@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Result entering UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,33 +26,34 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $event = GetEventDetails($_GET['id']);
    if (!$event) return Error::NotFound('event');
    if ($event->resultsLocked) $smarty->assign('locked' , true);
-   
+
    $smarty->assign('event', $event);
-   
+
    $smarty->assign('eventid', $event->id);
    if (!IsAdmin() && $event->management == '') {
         return Error::AccessDenied('enterresults');
-       
+
    }
-   
+
    if (!@$_REQUEST['round']) {
-      require_once('ui/support/roundselection.php');
+      require_once 'ui/support/roundselection.php';
+
       return page_SelectRound($event, $smarty);
    }
    $round = GetRoundDetails(@$_REQUEST['round']);
    if ($round->eventId != $event->id) return Error::NotFound('round');
    $smarty->assign('holes', $round->GetHoles());
    $results = $round->GetFullResults('group');
-   
+
    $groupResults = array();
-      
+
    // Grouping results by the groups of the participants
-   
+
    $last = null;
    $poolNum = -1;
    foreach ($results as $result) {
@@ -62,31 +63,26 @@ function InitializeSmartyVariables(&$smarty, $error) {
          }
          $poolNum = $result['PoolNumber'];
          $last = array($result);
-      }
-      
-      else {
+      } else {
          $last[] = $result;
       }
-      
+
    }
-   
+
    if ($last) {
       $groupResults[$poolNum] = $last;
    }
-   
-   
+
    $smarty->assign('results', $groupResults);
    $smarty->assign('roundid', $round->id);
-     
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

@@ -25,16 +25,14 @@
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
-    require_once('core/scorecalculation.php');
+function processForm()
+{
+    require_once 'core/scorecalculation.php';
 
     if (!IsAdmin()) return error::AccessDenied();
     $problems = array();
 
-
     if (@$_POST['cancel']) {
-
 
         header("Location: " . url_smarty(array('page' => 'managetournaments')));
         die();
@@ -52,32 +50,32 @@ function processForm() {
     if ($name == '') $problems['name'] = translate('FormError_NotEmpty');
 
     $year = $_POST['year'];
-    if ((int)$year == '') $problems['year'] = translate('FormError_NotEmpty');
+    if ((int) $year == '') $problems['year'] = translate('FormError_NotEmpty');
 
     $method = $_POST['scoreCalculationMethod'];
     if (is_a(GetScoreCalculationMethod('tournament', $method), 'Error')) $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
 
-    $level = (int)$_POST['level'];
+    $level = (int) $_POST['level'];
     if (GetLevelDetails($level) === null) $problems['level'] = translate('FormError_InternalError');
 
     $description = @$_POST['description'];
 
-    $available = (bool)@$_POST['available'];
+    $available = (bool) @$_POST['available'];
 
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Tournament Editor form error';
         $error->function = 'InputProcessing:Edit_Tournament:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
 
-
     if ($_GET['id'] != 'new') {
-        $result = EditTournament($_GET['id'], $name, $method, $level, $available, (int)$year, $description);
+        $result = EditTournament($_GET['id'], $name, $method, $level, $available, (int) $year, $description);
     } else {
-        $result = CreateTournament($name, $method, $level, $available, (int)$year, $description);
+        $result = CreateTournament($name, $method, $level, $available, (int) $year, $description);
     }
 
     if (is_a($result, 'Error')) return $result;
@@ -86,5 +84,3 @@ function processForm() {
     header("Location: " . url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));
     die();
 }
-
-?>

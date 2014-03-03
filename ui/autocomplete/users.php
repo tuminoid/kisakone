@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Autocomplete listing for users
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,25 +21,21 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function page_Autocomplete($query) {
-    
+function page_Autocomplete($query)
+{
     $users = GetUsers($query);
     $display = array();
     $data = array();
-    
+
     //print_r($users);
-        
-    foreach ($users as $user) {    
+
+    foreach ($users as $user) {
         $display[] = $user->fullname . " (" . $user->username . ")";
         $data[] = $user->username . " (" . $user->fullname . ")";
     }
-        
-    
+
     return array('suggestions' => $display,
                  'data' => $data,
                  'useKeys' => false);
-        
+
 }
-
-
-?>

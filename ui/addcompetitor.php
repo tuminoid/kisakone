@@ -27,7 +27,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $event = GetEventDetails(@$_GET['id']);
 
     if (!$event)
@@ -57,12 +58,10 @@ function InitializeSmartyVariables(&$smarty, $error) {
             // the fields from an empty user
             $smarty->assign('userdata', new User());
             $smarty->assign('edit', true);
-        }
-        else {
+        } else {
             $smarty->assign('userdata', GetUserDetails($_GET['user'] ));
         }
-    }
-    else if (@$_GET{'op_s'} || @$_GET['player']) {
+    } elseif (@$_GET{'op_s'} || @$_GET['player']) {
         // "Search" button has been pressed
 
         $query = @$_GET['player'];
@@ -74,16 +73,14 @@ function InitializeSmartyVariables(&$smarty, $error) {
         if (count($players) == 1) {
             // Single player, skip the listing
             header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
-        }
-        else {
+        } else {
             $smarty->assign('many', $players);
         }
     }
 
     if (is_object($error)) {
         $smarty->assign('error', $error->data);
-    }
-    else if (is_string($error)) {
+    } elseif (is_string($error)) {
         $smarty->assign('errorString', $error);
     }
 }
@@ -96,7 +93,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

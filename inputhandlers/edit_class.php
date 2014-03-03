@@ -21,14 +21,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
-function processForm() {
-
-
-
+function processForm()
+{
     if (!IsAdmin()) return error::AccessDenied();
     $problems = array();
-
 
     if (@$_POST['cancel']) {
 
@@ -57,17 +53,17 @@ function processForm() {
     $gender = $_POST['GenderRequirement'];
     if (!in_array($gender, array('', 'M', 'F'))) $problems['GenderRequirement'] = translate('FormError_InternalError');
 
-    $available = (bool)@$_POST['Available'];
+    $available = (bool) @$_POST['Available'];
 
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Class Editor form error';
         $error->function = 'InputProcessing:Edit_Class:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
-
 
     if (!$minage) $minage = null;
     if (!$maxage) $maxage = null;
@@ -80,6 +76,7 @@ function processForm() {
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
+
         return $result;
     }
 
@@ -87,5 +84,3 @@ function processForm() {
     header("Location: " . url_smarty(array('page' => 'manageclasses'), $variableNeededAsItsReference));
     die();
 }
-
-?>

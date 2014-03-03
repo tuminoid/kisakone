@@ -26,7 +26,8 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     $username = @$_POST['username'];
 
     $userid = GetUserId($username);
@@ -42,5 +43,3 @@ function processForm() {
     header("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => $userid), $x));
     die();
 }
-
-?>

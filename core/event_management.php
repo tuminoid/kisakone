@@ -46,8 +46,7 @@ function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
             $can_signup_directly = CheckSignUpQuota($eventId, $playerId, $classId);
 
         return SetPlayerParticipation($playerId, $eventId, $classId, $can_signup_directly);
-    }
-    else {
+    } else {
         $retValue = new Error();
         $retValue->title = "error_invalid_argument";
         $retValue->description = translate( "error_invalid_argument_description");
@@ -55,10 +54,10 @@ function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
         $retValue->function = "SignUpUser()";
         $retValue->IsMajor = true;
         $retValue->data = "User id: " . $userId;
+
         return $retValue;
     }
 }
-
 
 /** ****************************************************************************
  * Function for marking event participation fee payment
@@ -82,9 +81,9 @@ function MarkEventFeePayments($eventId, $payments)
     if (count($errors)) {
         $retValue = $errors[0];
     }
+
     return $retValue;
 }
 /* ****************************************************************************
  * End of file
  * */
-?>

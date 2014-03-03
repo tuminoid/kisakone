@@ -5,7 +5,7 @@
  *
  * This file contains the TextContent class. TextContent is used for nearly
  * all user-entered content.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,69 +22,70 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-class TextContent {
+class TextContent
+{
     // Sometimes title is not used,
-    var $title; 
+    var $title;
     var $event;
     var $id;
-    
+
     // Type determines what this content is used for, common ones are "news" and "custom".
     var $type;
     var $content;
     var $order;
     var $date;
-    
+
     var $formattedText;
-    
-    function TextContent($row) {
-        
+
+    function TextContent($row)
+    {
         foreach ($row as $key => $value) {
             $varname = strtolower($key);
             $this->$varname = $value;
         }
-        
+
         if ($this->type == 'submenu' || $this->type == 'index') {
             $this->FormatText(false);
         } else {
             $this->FormatText();
         }
-        
-        
-    
+
     }
-    
-    function Delete() {
+
+    function Delete()
+    {
         DeleteTextContent($this->id);
     }
-    
+
     /**
      * Some content has default title; this function returns title which is
      * to be shown (content title if defined, default title otherwise)
-    */ 
-    function GetProperTitle() {
+    */
+    function GetProperTitle()
+    {
         if ($this->title) return $this->title;
-        
         return translate('pagetitle_' . $this->type);
     }
-    
-    function Save() {
+
+    function Save()
+    {
         SaveTextContent($this);
     }
-    
+
     /**
      Prepares the content for use in a page. After call, use the formattedText variable.
      Not used by email
     */
-    function FormatText($disableXHTML = true) {
-        
+    function FormatText($disableXHTML = true)
+    {
         $this->formattedText = $this->content;
-        
-        // can't guarantee that the contained text is valid xhtml    
+
+        // can't guarantee that the contained text is valid xhtml
         if ($disableXHTML && trim($this->formattedText) != '') {
             $GLOBALS['disable_xhtml']  = true;
         }
     }
-    
+
 }
 
 /**
@@ -92,25 +93,19 @@ class TextContent {
  set to true, and no content matches the id, $contentId is assumed to be the title
  of the page and it's searched as such.
  */
-function GetGlobalTextContent( $contentId, $searchByTitle = false)
+function GetGlobalTextContent($contentId, $searchByTitle = false)
     {
-        if( is_numeric( $contentId))
-        {            
-            $content = GetTextContent( $contentId);            
-            if( !$content || $content->event !== null)
-            {
+        if ( is_numeric( $contentId)) {
+            $content = GetTextContent( $contentId);
+            if (!$content || $content->event !== null) {
                 return Error::accessDenied();
             }
-        }
-        else
-        {
+        } else {
             $content = GetTextContentByEvent(null, $contentId);
             if ($searchByTitle && !$content) {
                 $content = GetTextContentByTitle(null, $contentId);
             }
         }
+
         return $content;
     }
-
-
-?>

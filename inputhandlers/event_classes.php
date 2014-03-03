@@ -54,7 +54,7 @@ function processForm()
                 }
             }
 
-            if ($init != $value)  {
+            if ($init != $value) {
                 SetParticipantClass($event->id, $pid, $value);
             }
         }
@@ -63,8 +63,7 @@ function processForm()
     if ($failures)
         return true;
 
-    require_once('inputhandlers/support/event_edit_notification.php');
+    require_once 'inputhandlers/support/event_edit_notification.php';
+
     return input_EditNotification();
 }
-
-?>

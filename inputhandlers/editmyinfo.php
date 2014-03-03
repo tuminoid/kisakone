@@ -25,7 +25,8 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     $user = @$_SESSION['user'];
     if (!$user) return error::AccessDenied();
 
@@ -42,7 +43,6 @@ function processForm() {
     $problems = array();
 
     if (@$_POST['cancel']) {
-
 
         header("Location: " . url_smarty(array('page' => 'myinfo')));
         die();
@@ -61,33 +61,32 @@ function processForm() {
 
     if ($player) {
 
-
         $pdga = $_POST['pdga'];
         if ($pdga == '') $pdga = null;
-	else {
-		$pdga = (int)$pdga;
-		if (!$pdga) $problems['pdga'] = translate('FormError_NotPositiveInteger');
-	}
+    else {
+        $pdga = (int) $pdga;
+        if (!$pdga) $problems['pdga'] = translate('FormError_NotPositiveInteger');
+    }
 
         $gender = @$_POST['gender'];
         if ($gender != 'M' && $gender != 'F') $problems['gender'] = translate('FormError_NotEmpty');
 
         $dobYear = $_POST['dob_Year'];
 
-        if ($dobYear != (int)$dobYear) $problems['dob'] = translate('FormError_NotEmpty');
-    }
-     else {
+        if ($dobYear != (int) $dobYear) $problems['dob'] = translate('FormError_NotEmpty');
+    } else {
         $pdga = null;
         $gender = null;
         $dobYear = null;
      }
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Edit My Info failed';
         $error->function = 'InputProcessing:EditMyInfo:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'editmyinfo';
+
         return $error;
     }
 
@@ -113,5 +112,3 @@ function processForm() {
         return $result;
     }
 }
-
-?>

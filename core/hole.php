@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains the Hole class definition.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,20 +21,21 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-class Hole {
+class Hole
+{
     var $id;
     var $holeNumber;
     var $course;
     var $length;
     var $par;
     var $round;
-    
-    function Hole($data) {
+
+    function Hole($data)
+    {
          foreach ($data as $key => $value) {
             $fieldName = core_ProduceFieldName($key);
             $this->$fieldName = $value;
         }
     }
-    
+
 }
-?>

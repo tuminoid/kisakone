@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * This file is UI baseholder for main ad management page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,36 +26,35 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     if (!IsAdmin()) return Error::AccessDenied();
-        
-    require_once('core/ads.php');
+
+    require_once 'core/ads.php';
     $ads = GetAllAds(null);
-    
+
     $adTypes = explode(' ', GLOBAL_AD_TYPES);
-    
+
     $adTypes = array_flip($adTypes);
-    
+
     foreach ($ads as $ad) {
         $adTypes[$ad->contentId] = false;
     }
-    
+
     foreach ($adTypes as $adType => $userd) {
         if ($userd === false) continue;
-        
+
         $ads[] = new Ad(null, $adType, null, AD_DEFAULT, null, null, null, null);
     }
-    
+
     $smarty->assign('ads', $ads);
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'administration';
 }
-?>

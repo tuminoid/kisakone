@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Autocomplete listing for venues
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,14 +21,11 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function page_Autocomplete($query) {
+function page_Autocomplete($query)
+{
     $venues = GetVenueNAmes($query);
     //$venues = array();
     //foreach ($allvenues as $venue) $venues[] = $venue->name;
-    
     return array('suggestions' => $venues,
                  'useKeys' => false);
 }
-
-
-?>

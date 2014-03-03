@@ -25,8 +25,8 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
+function processForm()
+{
     $recover = @$_GET['mode'] == 'recover';
 
     if ($recover) {
@@ -39,7 +39,7 @@ function processForm() {
         }
         $uid = $user->id;
 
-    }  else {
+    } else {
         $user = @$_SESSION['user'];
         if (!$user) return error::AccessDenied();
         $problems = array();
@@ -55,7 +55,6 @@ function processForm() {
     }
 
     if (@$_POST['cancel']) {
-
 
         header("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
         die();
@@ -73,14 +72,14 @@ function processForm() {
     $password2 = $_POST['password2'];
     if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
 
-
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Password form error';
         $error->function = 'InputProcessing:ChangePassword:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'changepassword';
+
         return $error;
     }
 
@@ -93,5 +92,3 @@ function processForm() {
     }
     die();
 }
-
-?>

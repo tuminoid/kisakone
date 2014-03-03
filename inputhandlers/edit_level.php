@@ -25,17 +25,15 @@
  * Processes the form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
-    require_once('core/scorecalculation.php');
-
+function processForm()
+{
+    require_once 'core/scorecalculation.php';
 
     if (!IsAdmin()) return error::AccessDenied();
     $problems = array();
 
     $nothing = null;
     if (@$_POST['cancel']) {
-
 
         header("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
         die();
@@ -55,17 +53,17 @@ function processForm() {
     $method = $_POST['scoreCalculationMethod'];
     if (is_a(GetScoreCalculationMethod('level', $method), 'Error')) $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
 
-    $available = (bool)@$_POST['available'];
+    $available = (bool) @$_POST['available'];
 
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Level Editor form error';
         $error->function = 'InputProcessing:Edit_Level:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
-
 
     if ($_GET['id'] != 'new') {
         $result = EditLevel($_GET['id'], $name, $method, $available);
@@ -75,6 +73,7 @@ function processForm() {
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
+
         return $result;
     }
 
@@ -82,5 +81,3 @@ function processForm() {
     header("Location: " . url_smarty(array('page' => 'managelevels'), $variableNeededAsItsReference));
     die();
 }
-
-?>

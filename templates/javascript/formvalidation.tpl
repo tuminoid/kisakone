@@ -3,7 +3,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Form field validation support
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -32,167 +32,167 @@ $("document").ready(function() {
 var DelayedTest;
 
 function DelayedValidationTest() {
-    
+
     var entry = DelayedTest;
     if (!entry) return;
-    
-    DelayedTest = null;
-    
-    //alert('here');
-    
 
-	
+    DelayedTest = null;
+
+    //alert('here');
+
+
+
     object = entry.delayedObject;
-	    
-    
+
+
     test = entry[0];
     arguments = entry[2];
-    
+
     TestField(test, object, arguments);
-    
-    
+
+
 }
 
-function InitializeFormValidation(formName) {    
+function InitializeFormValidation(formName) {
     if (fieldTests[formName] != null) return;
     fieldTests[formName] = new Array();
 
-    
+
     $("#" + formName).submit(function() {
 	return ValidateFullForm(formName);
     });
 }
 
 function CancelSubmit() {
-    
+
     cancellingForm = true;
 }
 
 function FindField(form, field) {
-    
+
     var element = $("#" + form + " :input[name='" + field + "']");
-    
+
     return element;
 }
 
 function CheckedFormField(form, field, test, arguments, options ) {
 
-    
+
     InitializeFormValidation(form);
     var fieldobject = FindField(form, field);
-    
+
     test(fieldobject, arguments, true);
-    
-    
+
+
     var entry = new Array( test, fieldobject, arguments );
     entry.options = options;
 
-    
+
     fieldTests[form][field] = entry;
 }
 
 function ValidateFullForm(formName) {
-    
+
     if (cancellingForm) {
 	cancellingForm = false;
 	return true;
     }
-    
+
     var tests = fieldTests[formName];
-    
-    
+
+
     var allOk = true;
     fullTest = true;
-    
+
     for (var index in tests) {
-	
+
 	var test  = tests[index];
-	
+
 	if (test[1] == null) continue;
 	if (!TestField(test[0], test[1], test[2])) allOk = false;
     }
-    
+
     fullTest = false;
-    
+
     if (!allOk) {
 	{/literal}
 	alert("{translate id=FormError_Summary escape=false}");
 	{literal}
 	return false;
 	}
-    
+
     return allOk;
 }
 
 function NonEmptyField(field, arguments, initialize) {
     if (initialize) {
-	field.blur(TestField);	
+	field.blur(TestField);
     }
     else {
-	
+
 	//for (i in do)
 	//if (field.attr("value") != "") return true;
-	    
-	
+
+
 	if (getvalue(field) != "") return true;
-	
-	
+
+
 	{/literal}
 	return "{translate id=FormError_NotEmpty escape=false}";
 	{literal}
     }
-    
+
 }
 
 function EmailField(field, arguments, initialize) {
-    
+
     if (initialize) {
-	field.blur(TestField);	
+	field.blur(TestField);
     }
     else {
 	var value = getvalue(field);
-	
+
 	if (value.indexOf('@') != -1 && value.indexOf('.') != -1) return true;
-	
+
 	{/literal}
 	return "{translate id=FormError_InvalidEmail escape=false }";
 	{literal}
     }
-    
+
 }
 
 function RepeatedPasswordField(field, arguments, initialize) {
-    
+
     if (initialize) {
-	field.blur(TestField);	
+	field.blur(TestField);
     }
     else {
-	
+
 	var testField = $("#" + arguments);
 	if (getvalue(field) == getvalue(testField)) return true;
-	
+
 	{/literal}
 	return "{translate id=FormError_PasswordsDontMatch escape=false}";
 	{literal}
     }
-    
+
 }
 
 
 function PositiveIntegerField(field, arguments, initialize) {
     if (initialize) {
-	field.blur(TestField);	
+	field.blur(TestField);
     }
     else {
 	var value = getvalue(field);
 	if (arguments == true && value == "") return true;
 	if (!isNaN(parseInt(value))) return true;
-	
+
 	{/literal}
 	return "{translate id=FormError_NotPositiveInteger escape=false}";
 	{literal}
     }
-    
+
 }
 
 function RadioFieldSet(field, arguments, initialize) {
@@ -200,27 +200,27 @@ function RadioFieldSet(field, arguments, initialize) {
 	var fields;
 	//if (field.form)	var fields = FindField(field.form.id, field.name);
 	//else fields = field;
-	
+
 	if (field.is(":checked")) return true;
-	
-	
+
+
 	{/literal}
 	return "{translate id=FormError_NotEmpty escape=false}";
 	{literal}
     }
-    
+
 }
 
 function AjaxField(field, arguments, initialize) {
     if (initialize) {
-	field.blur(TestField);	
+	field.blur(TestField);
     }
     else {
 
 	{/literal}
 	jQuery.get("{$url_base}ajaxCheck/" {literal} + arguments, {username: getvalue(field)},
-		   function(data) {		    
-		    
+		   function(data) {
+
 			if (data == "OK") {
 			    HideError(field);
 			} else {
@@ -229,10 +229,10 @@ function AjaxField(field, arguments, initialize) {
 		   }
 		   , 'text'
 		   );
-	
+
 	return true;
     }
-    
+
 }
 
 function OrangeField(field, arguments, initialize) {
@@ -242,35 +242,35 @@ function OrangeField(field, arguments, initialize) {
 
 
 function TestField(test, object, arguments) {
-    
-    if (object == null) {
-	
-	var entry = fieldTests[this.form.id][this.name];	
 
-	
+    if (object == null) {
+
+	var entry = fieldTests[this.form.id][this.name];
+
+
 	object = $(this);
-	        
-	
+
+
 	test = entry[0];
 	arguments = entry[2];
-	
+
 	if (entry.options) {
-	    
+
 	    if (entry.options.delayed) {
-		
+
 		entry.delayedObject = $(this);
 		DelayedTest = entry;
 		return true;
 	    }
 	}
-	
-	
-    } 
-    
+
+
+    }
+
     //alert(fieldTests[this.form.id] == null);
-    
+
     var result = test(object, arguments, false);
-    
+
     if (result == true) {
 	HideError(object);
     } else if (result == false) {
@@ -278,22 +278,22 @@ function TestField(test, object, arguments) {
     } else {
 	ShowError(object, result);
     }
-    
+
     return result == true;
 }
 
-function ShowError(context, message) {    
+function ShowError(context, message) {
     $(context).css("background-color", "#FDD")
     var ef = $(context).siblings(".fielderror");
     ef.show();
-    ef.text(message);    
-    
+    ef.text(message);
+
 }
 
 function HideError(context) {
     $(context).css("background-color", "")
     var ef = $(context).siblings(".fielderror");
-    ef.hide();    
+    ef.hide();
 }
 
 function getvalue(field) {
@@ -301,10 +301,10 @@ function getvalue(field) {
 }
 
 function DefaultError(context) {
-    
+
 {/literal}
     ShowError(context, "{translate id=FormError_Default}");
 {literal}
     }
-    
+
     {/literal}

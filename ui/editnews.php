@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * News editor listing ui backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,35 +25,33 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-    
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $event = GetEventDetails($_GET['id']);
-    
+
     if (!IsAdmin() && $event->management == '') {
         return Error::AccessDenied('editnews');
     }
-    
+
     $news = $event->GetNews(0, 99999999);
-    
+
     $news = array_map('page_summarize', $news);
     $smarty->assign('news', $news);
-            
-    
+
 }
 
-function page_summarize($news) {
+function page_summarize($news)
+{
     $news->content = substr(strip_tags($news->content), 0, 32);
+
     return $news;
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

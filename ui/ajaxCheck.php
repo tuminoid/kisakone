@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * This file is the backend for doing form validation using AJAX
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,45 +26,41 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     language_include('formvalidation');
     switch ($_GET['id']) {
         case "username":
             // Ensure username is valid
             if (!preg_match('/^[\pL\d_-]+$/', $_GET['username'])) {
                 $data = translate('FormError_InvalidUsername', array('username' => htmlentities($_GET['username'])));
-            }
-            else if (GetUserId($_GET['username']) !== null) {
-                $data = translate('FormError_DuplicateUsername', array('username' => htmlentities($_GET['username'])));                
+            } elseif (GetUserId($_GET['username']) !== null) {
+                $data = translate('FormError_DuplicateUsername', array('username' => htmlentities($_GET['username'])));
             } else {
                 $data = 'OK';
             }
-            
-            
+
             break;
         case 'validuser':
-            
-            
+
             $username = @$_GET['username'];
-            
+
             $td = input_GetUser($username);
-            
 
             if (!$td) $data = translate('FormError_InvalidUsername', array('username' => $username));
             else $data = 'OK';
-            
+
             break;
 
             default:
             $data = 'InvalidOperation';
-            
+
     }
-    
+
     $smarty->assign('data', $data);
-    
+
     SetContentType("text/plain");
 }
-
 
 /**
  * Determines which main menu option this page falls under.
@@ -73,7 +69,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'index';
 }
-?>

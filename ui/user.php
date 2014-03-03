@@ -28,7 +28,8 @@
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
 if (!is_callable('InitializeSmartyVariables')) {
-   function InitializeSmartyVariables(&$smarty, $error) {
+   function InitializeSmartyVariables(&$smarty, $error)
+   {
       return User_InitializeSmartyVariables($smarty, $error);
 
    }
@@ -36,13 +37,14 @@ if (!is_callable('InitializeSmartyVariables')) {
     * Determines which main menu option this page falls under.
     * @return String token of the main menu item text.
     */
-   function getMainMenuSelection() {
+   function getMainMenuSelection()
+   {
        return 'users';
    }
 }
 
-function User_InitializeSmartyVariables(&$smarty, $error) {
-
+function User_InitializeSmartyVariables(&$smarty, $error)
+{
    $getId = $_GET['id'];
    if (is_numeric($getId)) $userid= $getId;
    else $userid = GetUserId($getId);
@@ -53,7 +55,6 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
    if (is_a($user, 'Error')) return $user;
 
    if (!$user) return Error::NotFound('user_record');
-
 
    $player = $user->GetPlayer();
 
@@ -87,5 +88,3 @@ function User_InitializeSmartyVariables(&$smarty, $error) {
 
    $smarty->assign('isadmin', @$_SESSION['user']->role == "admin");
 }
-
-?>

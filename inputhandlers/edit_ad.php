@@ -25,9 +25,8 @@
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
-
+function processForm()
+{
     $problems = array();
     $id = @$_GET['id'];
     if ($id == 'default') $id = '';
@@ -41,8 +40,6 @@ function processForm() {
         die();
     }
 
-
-
     if (!$id) {
         $id = null;
         if (!isAdmin()) return Error::AccessDenied();
@@ -52,7 +49,6 @@ function processForm() {
         if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
     }
 
-
     $contentid = @$_GET['adType'];
 
     $ad = GetAd($id, $contentid);
@@ -60,7 +56,6 @@ function processForm() {
     if (!$ad) {
         $ad = InitializeAd($id, $contentid);
     }
-
 
     if (is_a($ad, 'Error')) return $ad;
 
@@ -84,12 +79,12 @@ function processForm() {
             break;
         case 'imageandlink':
 
-            switch(@$_POST['image_type']) {
+            switch (@$_POST['image_type']) {
                 case 'link':
                     $ad->MakeImageAndLink($_POST['url'], null, $_POST['image_url']);
                     break;
                 case 'upload':
-                    require_once('core/files.php');
+                    require_once 'core/files.php';
                     $fid = StoreUploadedImage('ad');
                     if (is_a($fid, 'Error')) return $fid;
                     $ad->MakeImageAndLink($_POST['url'], $fid, null);
@@ -108,8 +103,6 @@ function processForm() {
             die('Error');
     }
 
-
-
     if (!@$_POST['preview']) {
         $result = $ad->save();
         if (is_a($result, 'Error')) return $result;
@@ -126,5 +119,3 @@ function processForm() {
     }
 
 }
-
-?>

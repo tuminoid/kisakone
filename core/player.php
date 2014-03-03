@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains the Player class.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,26 +29,24 @@ define('PLAYER_GENDER_FEMALE', 'F');
 define('PLAYER_BIRTHYEAR_MIN', 1900);
 define('PLAYER_BIRTHYEAR_MAX', intval( date( "Y")));
 
-
 /* *****************************************************************************
  * This class represents a single player in the system.
  */
 class Player
 {
     var $id;
-    
+
     var $pdga;
     var $gender;
     var $birthyear;
     var $lastname;
     var $firstname;
     var $email;
-    
 
     /** ************************************************************************
      * Class constructor
      */
-    function Player( $id = null,
+    function Player($id = null,
                      $pdga = 0,
                      $gender = null,
                      $birthyear = 0,
@@ -59,62 +57,56 @@ class Player
         if ($pdga && $email == null) {
             die('Invalid player construction call ' . print_r(debug_backtrace()));
         }
-        
+
         if ($gender == 'male') $gender = 'M';
         else if ($gender =='female') $gender = 'F';
-        
+
         $this->id = $id;
         $this->user = null;
         if ($pdga == null) $this->pdga = null;
-        else $this->pdga = (int)$pdga;
+        else $this->pdga = (int) $pdga;
         $this->SetGender( $gender);
         $this->birthyear = intval( $birthyear);
         $this->lastname = $lastname;
         $this->firstname = $firstname;
         $this->email = $email;
-        
+
         return;
     }
-    
+
     /** ************************************************************************
      * Method for setting the gender attribute
      *
      * Returns null
      */
-    function SetGender( $gender)
+    function SetGender($gender)
     {
-        
-        if( ( $gender == PLAYER_GENDER_MALE) or 
+
+        if( ( $gender == PLAYER_GENDER_MALE) or
             ( $gender == PLAYER_GENDER_FEMALE))
         {
             $this->gender = $gender;
-        }
-        else
-        {
+        } else {
             $this->gender = null;
         }
-        
+
         return null;
     }
-    
+
     /** ************************************************************************
      * Method for setting the id attribute
      *
      * Returns null for success or
      * an Error object in case the id is already set to a different value.
      */
-    function SetId( $id)
+    function SetId($id)
     {
         $err = null;
-        
-        if( !isset( $this->id))
-        {
+
+        if ( !isset( $this->id)) {
             $this->id = intval( $id);
-        }
-        else
-        {
-            if( $this->id !== $id)
-            {
+        } else {
+            if ($this->id !== $id) {
                 // Attempt to change a valid id, report internal error
                 $err = new Error();
                 $err->title = "error_invalid_argument";
@@ -126,12 +118,10 @@ class Player
                              "; id argument:" . $id;
             }
         }
-        
+
         return $err;
     }
-    
-  
-    
+
     /** ************************************************************************
      * Method for validating the correctness of the object attributes.
      *
@@ -140,11 +130,10 @@ class Player
      */
     function ValidatePlayer()
     {
-        
+
         $err = null;
-        
-        if(( !is_int( $this->pdga) or ( $this->pdga < 0)) && $this->pdga !== null)
-        {
+
+        if (( !is_int( $this->pdga) or ( $this->pdga < 0)) && $this->pdga !== null) {
             // Invalid pdga attribute
             $err = new Error();
             $err->title = "error_invalid_attribute1";
@@ -155,9 +144,7 @@ class Player
             $err->data = "player id:" . $this->id .
                          "; user:" . $this->user .
                          "; pdga:" . $this->pdga;
-        }
-        else
-        {
+        } else {
             if( ( $this->gender != PLAYER_GENDER_MALE) and
                 ( $this->gender != PLAYER_GENDER_FEMALE))
             {
@@ -172,14 +159,12 @@ class Player
                              "; user:" . $this->user .
                              "; pdga:" . $this->pdga .
                              "; gender:" . $this->gender;
-            }
-            else
-            {
+            } else {
                 if( !is_int( $this->birthyear) or
                     ( $this->birthyear < PLAYER_BIRTHYEAR_MIN) or
                     ( $this->birthyear > PLAYER_BIRTHYEAR_MAX))
                 {
-                    
+
                     // invalid birthyear attribute
                     $err = new Error();
                     $err->title = "error_invalid_attribute3";
@@ -195,40 +180,43 @@ class Player
                 }
             }
         }
-        
+
         return $err;
     }
-    
+
     /** ************************************************************************
      * Method for testing if this player is acceptable for the given class
      *
-     * Returns true if class is fine, false otherwise     
+     * Returns true if class is fine, false otherwise
      */
-    function IsSuitableClass($class) {
+    function IsSuitableClass($class)
+    {
         if (!$class) return false;
         $age = date('Y') - $this->birthyear;
-        
+
         $problems = 0;
-        
+
         if ($class->gender && $class->gender != $this->gender) $problems++;
         if ($class->minAge && $class->minAge > $age) $problems++;
         if ($class->maxAge && $class->maxAge < $age) $problems++;
-        
         return $problems == 0;
-    
-        
+
     }
-    
-    function LicenseFeesPaid() {
+
+    function LicenseFeesPaid()
+    {
         $data = GetFeePayments(true, null, null, $this->id);
-        
+
         $item = $data[0];
+
         return $item['licensefees'];
     }
-    
-    function MembershipFeesPaid() {
+
+    function MembershipFeesPaid()
+    {
         $data = GetFeePayments(true, null, null, $this->id);
         $item = $data[0];
+
         return $item['membershipfees'];
     }
 }
@@ -236,4 +224,3 @@ class Player
 /* ****************************************************************************
  * End of file
  * */
-?>

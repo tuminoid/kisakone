@@ -41,8 +41,7 @@ function processForm()
     if (@$_POST['cancel']) {
         header("Location: " . BaseURL());
         die();
-    }
-    else if (@$_POST['delete']) {
+    } elseif (@$_POST['delete']) {
         header("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
         die();
     }
@@ -71,11 +70,11 @@ function processForm()
     }
 
     $duration = @$_POST['duration'];
-    if ((int)$duration <= 0)
+    if ((int) $duration <= 0)
         $problems['duration'] = translate('FormError_NotPositiveInteger');
 
     $playerlimit = @$_POST['playerlimit'];
-    if ((int)$playerlimit < 0)
+    if ((int) $playerlimit < 0)
         $problems['playerlimit'] = translate('FormError_NotPositiveInteger');
 
     $start = input_ParseDate($_POST['start']);
@@ -106,13 +105,11 @@ function processForm()
             list($operation, $class) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $classes[] = $class;
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 $index = array_search($class, $classes);
                 if ($index !== false)
                     unset($classes[$index]);
-            }
-            else
+            } else
                 fail();
         }
     }
@@ -128,13 +125,12 @@ function processForm()
             if ($operation == 'add') {
                 preg_match('/\s(\d+)$/', $date, $parts);
                 if (isset($parts[1]))
-                    $rdate = $start + 60 * 60 * 24 * ((int)$parts[1] - 1);
+                    $rdate = $start + 60 * 60 * 24 * ((int) $parts[1] - 1);
                 else
                     $rdate = 0;
 
                 $rounds[$index] = array('date' => input_ParseDate(date("Y-m-d", $rdate) . " " . $time), 'time' => $time, 'datestring' => $date, 'roundid' => $roundid);
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 $deletedRounds[] = $rounds[$index]['roundid'];
                 unset($rounds[$index]);
             }
@@ -162,8 +158,7 @@ function processForm()
             list($operation, $official) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $officials[] = $official;
-            }
-            else if ($operation == 'remove') {
+            } elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
                     unset($officials[$index]);
@@ -181,7 +176,7 @@ function processForm()
         $officialIds[] = $oid;
     }
 
-    $eventid = (int)$_GET['id'];
+    $eventid = (int) $_GET['id'];
     $event = GetEventDetails($eventid);
     if ($event === null || is_a($event, 'Error')) {
         return Error::NotFound('event');
@@ -189,7 +184,7 @@ function processForm()
 
     $oldTournament = $event->tournament;
 
-    if(count($problems)) {
+    if (count($problems)) {
         $problems['classList'] = $classes;
         $problems['roundList'] = $rounds;
         $problems['officialList'] = $officials;
@@ -199,6 +194,7 @@ function processForm()
         $error->function = 'InputProcessing:Edit_Event:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
 
@@ -212,7 +208,7 @@ function processForm()
             return $result;
 
         if ($td != @$_POST['oldtd']) {
-            require_once('core/email.php');
+            require_once 'core/email.php';
             SendEmail(EMAIL_YOU_ARE_TD, $td, GetEventDetails($eventid));
         }
     }
@@ -232,7 +228,7 @@ function processForm()
     GetEventDetails("clear_cache");
     UpdateEventResults($eventid);
 
-    require_once('core/tournament.php');
+    require_once 'core/tournament.php';
     UpdateTournamentPoints($tournament);
     if ($tournament != $oldTournament)
         UpdateTournamentPoints($oldTournament);
@@ -244,5 +240,3 @@ function processForm()
     header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
     die();
 }
-
-?>

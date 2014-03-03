@@ -64,12 +64,11 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('users', $users);
 }
 
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

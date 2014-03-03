@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains functionality for managing users
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,10 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
-require_once('core/player.php');
-
-
+require_once 'core/player.php';
 
 /** ****************************************************************************
  * Function for registering a new user.
@@ -41,61 +38,50 @@ require_once('core/player.php');
  * @param int    $birthyear - players birthyear
  */
 
-
-function RegisterPlayer( $username, $password, $email, $firstname, $lastname,
-                         $gender, $pdga , $birthyear )
+function RegisterPlayer($username, $password, $email, $firstname, $lastname,
+                         $gender, $pdga , $birthyear)
 {
-    
+
     $err = null;
-    
-    if( isset( $gender))
-    {
-        if( 'male' == $gender)
-        {
+
+    if ( isset( $gender)) {
+        if ('male' == $gender) {
             $gender = PLAYER_GENDER_MALE;
-        }
-        else if( 'female' == $gender)
-        {
+        } elseif ('female' == $gender) {
             $gender = PLAYER_GENDER_FEMALE;
         }
     }
-    
+
     $player = new Player( null, $pdga, $gender, $birthyear, $firstname, $lastname, $email);
-    
+
     $err = $player->ValidatePlayer();
-    if( !isset( $err))
-    {
+    if ( !isset( $err)) {
         $player = SetPlayerDetails( $player);
-        if( is_a( $player, "Error"))
-        {
+        if ( is_a( $player, "Error")) {
             return $player;
         }
     } else {
         return $err;
     }
-    
+
     $user = new User( null, $username, USER_ROLE_PLAYER,
                       $firstname, $lastname, $email, $player->id);
     $err = $user->ValidateUser();
-    
-    if( !isset( $err))
-    {
+
+    if ( !isset( $err)) {
         if ($user->username !== null) {
             $err = $user->SetPassword( $password);
         }
-        
-        if( !isset( $err))
-        {
+
+        if ( !isset( $err)) {
             $user = SetUserDetails( $user);
-            if( is_a( $user, "Error"))
-            {
+            if ( is_a( $user, "Error")) {
                 $err = $user;
                 $user = null;
             }
         }
     }
-    
-   
+
     if ($err) return $err;
     return $user;
 }
@@ -103,4 +89,3 @@ function RegisterPlayer( $username, $password, $email, $firstname, $lastname,
 /* ****************************************************************************
  * End of file
  * */
-?>

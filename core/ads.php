@@ -5,7 +5,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file includes the Ad class, and other general support functionality for ads
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,7 +22,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 // Space-separated list of ad types. Both event-specific and global ads are listed, in
 // their own functions. If colon is present in an ad name, special handling needs to take
 // place on the corresponding page.
@@ -38,7 +37,8 @@ define('AD_REFERENCE', 'reference');
 
 define('MAX_AD_RENDER_DEPTH', 0);
 
-class Ad {
+class Ad
+{
     var $id;
     var $url;
     var $contentId;
@@ -47,10 +47,9 @@ class Ad {
     var $imageReference;
     var $type;
     var $event;
-    
-    
-    
-    function Ad($idOrArray, $contentId = null, $event = null, $adType = null, $url = null, $imageUrl = null, $longData = null, $imageReference = null) {
+
+    function Ad($idOrArray, $contentId = null, $event = null, $adType = null, $url = null, $imageUrl = null, $longData = null, $imageReference = null)
+    {
         if (is_array($idOrArray)) {
             $this->InitializeFromArray($idOrArray);
         } else {
@@ -62,86 +61,92 @@ class Ad {
             $this->longData = $longData;
             $this->imageReference = $imageReference;
             $this->type = $adType;
-            
+
         }
     }
-    
+
     /**
      * This set of functions converts an existing ad object into an ad of the
      * type specified by the name. All necessary data is provided in parameters
     */
-    
-    function MakeDefault() {
+
+    function MakeDefault()
+    {
         $this->type = AD_DEFAULT;
         $this->url = null;
         $this->imageURL = null;
-        $this->longData = null;        
+        $this->longData = null;
         $this->imageReference = null;
-        
+
     }
-    
-    function MakeEventDefault() {
+
+    function MakeEventDefault()
+    {
         $this->type = AD_EVENT_DEFAULT;
         $this->url = null;
         $this->imageURL = null;
-        $this->longData = null;        
+        $this->longData = null;
         $this->imageReference = null;
-        
+
     }
-    
-    function MakeDisabled() {
+
+    function MakeDisabled()
+    {
         $this->type = AD_DISABLED;
         $this->url = null;
         $this->imageURL = null;
-        $this->longData = null;        
+        $this->longData = null;
         $this->imageReference = null;
-        
+
     }
-    
-    function MakeHTML($html) {
+
+    function MakeHTML($html)
+    {
         $this->type = AD_HTML;
         $this->url = null;
         $this->imageURL = null;
-        $this->longData = $html;        
+        $this->longData = $html;
         $this->imageReference = null;
-        
+
     }
-    
-    function MakeReference($to) {        
-       
+
+    function MakeReference($to)
+    {
         if (strpos(" " . GLOBAL_AD_TYPES . " ", $to) === false) {
-            if (substr($to, 2) == "e:" &&                
+            if (substr($to, 2) == "e:" &&
                 strpos(" " . EVENT_AD_TYPES . " ", $to) === false) {
                 // Todo: should really be an error message instead
                 $to = "default";
             }
         }
-        
+
         $this->type = AD_REFERENCE;
         $this->url = null;
         $this->imageURL =null;
         $this->longData = $to;
         $this->imageReference = null;
     }
-    
-    function MakeImageAndLink($url, $imageRef, $imageUrl) {
+
+    function MakeImageAndLink($url, $imageRef, $imageUrl)
+    {
         $this->type = AD_IMAGEANDLINK;
-        $this->url = $url;        
+        $this->url = $url;
         $this->longData = null;
-        
+
         if ($imageRef && $imageUrl) {
             return new Error();
         }
-        
+
         if ($imageRef) {
             $this->imageReference = $imageRef;
         } else {
             $this->imageURL = $imageUrl;
         }
-        
+
     }
-    
-    function Render() {
+
+    function Render()
+    {
         // As it is trivially possible to enter an infinite loop with ads
         // referencing each other, we need to ensure this is taken care of
         // in a graceful fashion
@@ -151,15 +156,16 @@ class Ad {
         }
         $ad_render_depth++;
         $retVal = call_user_method("Render" . $this->type, $this);
-        
+
         $ad_render_depth--;
-        
+
         return $retVal;
     }
-    
+
     /* Below are functions that render ads of various types */
-    
-    function RenderDefault() {
+
+    function RenderDefault()
+    {
         if ($this->contentId == 'default') {
             // Ad being told to render itself
             //return sprintf('<img src="%s" />', baseurl() . "ui/elements/placeholderAd.png");
@@ -170,12 +176,14 @@ class Ad {
                 return '';
             } if (is_a($ad, 'Error')) {
                 return $ad;
-            }            
+            }
+
             return $ad->Render();
         }
     }
-    
-    function RenderEventDefault() {
+
+    function RenderEventDefault()
+    {
         if ($this->contentId == 'eventdefault') {
             // In this particular case we do something that's not strictly speaking
             // what we were told to do -- if event's default ad is told to render itself,
@@ -187,49 +195,54 @@ class Ad {
                 return $this->RenderDefault();
             } if (is_a($ad, 'Error')) {
                 return $ad;
-            }            
+            }
+
             return $ad->Render();
         }
     }
-    
-    function RenderHTML(){
+
+    function RenderHTML()
+    {
         return $this->longData;
     }
-    
-    function RenderImageAndLink() {
-        
+
+    function RenderImageAndLink()
+    {
         $url = $this->url;
         if ($this->imageReference) {
-            require_once('core/files.php');
+            require_once 'core/files.php';
             $file = GetFile($this->imageReference);
             $image = baseurl() . "ui/elements/uploaded/" . $file->filename;
         } else {
             $image = $this->imageURL;
         }
-        
+
         return sprintf('<a target="_blank" href="%s"><img src="%s" /></a>',
                        htmlentities($url),
                        htmlentities($image));
     }
-    
-    function RenderReference() {
+
+    function RenderReference()
+    {
         $ref = $this->longData;
-        
+
         if (substr($ref, 0, 2) == 'e-') {
             $ref = substr($ref, 2);
             $event = $this->event;
         } else {
             $event= null;
         }
-        
+
         $ad = GetAd($event, $ref);
         if ($ad) {
             return $ad->Render();
         }
+
         return '';
     }
-    
-    function InitializeFromArray($data) {
+
+    function InitializeFromArray($data)
+    {
         foreach ($data as $key => $value) {
             $fieldName = core_ProduceFieldName($key);
             $this->$fieldName = $value;
@@ -239,10 +252,8 @@ class Ad {
 
     }
 
-
-    function Save() {
+    function Save()
+    {
         SaveAd($this);
     }
 }
-
-?>

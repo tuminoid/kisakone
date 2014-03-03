@@ -23,7 +23,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 class Classification
 {
     var $id;
@@ -40,8 +39,7 @@ class Classification
     {
       if (is_array($id)) {
         $this->initializeFromArray($id);
-      }
-      else {
+      } else {
         $this->id = $id;
         $this->name = $name;
         $this->minAge = $minAge;
@@ -68,7 +66,7 @@ class Classification
             return $data;
 
         $data = GetSignupsForClass($event, $this->id);
+
         return $data;
     }
 }
-?>

@@ -25,7 +25,8 @@
  * Logs out the user. As a side-effect, redirects the user to the index page.
  * @return Nothing or Error object on error
  */
-function ProcessAction() {
+function ProcessAction()
+{
     // Clearing the session
     @session_destroy();
     $_SESSION = array();
@@ -36,5 +37,3 @@ function ProcessAction() {
     header("Location: " . baseurl());
     die();
 }
-
-?>

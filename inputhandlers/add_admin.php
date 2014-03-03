@@ -25,18 +25,17 @@
  * Processes the add admin form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     $problems = array();
 
     if (@$_POST['cancel']) {
-
 
         header("Location: " . BaseURL());
         die();
     }
 
     if (!IsAdmin()) return Error::AccessDenied();
-
 
     $lastname = $_POST['lastname'];
     if ($lastname == '') $problems['lastname'] = translate('FormError_NotEmpty');
@@ -62,13 +61,14 @@ function processForm() {
         $problems['access'] = translate('FormError_NotEmpty');
 
     }
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Add Admin form error';
         $error->function = 'InputProcessing:Add_admin:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'newadmin';
+
         return $error;
     }
 
@@ -76,17 +76,14 @@ function processForm() {
                       $firstname, $lastname, $email, null);
     $err = $admin->ValidateUser();
 
-    if( !isset( $err))
-    {
+    if ( !isset( $err)) {
         if ($admin->username !== null) {
             $err = $admin->SetPassword( $password);
         }
 
-        if( !isset( $err))
-        {
+        if ( !isset( $err)) {
             $admin = SetUserDetails( $admin);
-            if( is_a( $admin, "Error"))
-            {
+            if ( is_a( $admin, "Error")) {
                 $err = $admin;
                 $admin = null;
             }
@@ -95,10 +92,9 @@ function processForm() {
 
     if ($err) {
         $err->isMajor= true;
+
         return $err;
-    }
-    else
+    } else
+
         return true;
 }
-
-?>

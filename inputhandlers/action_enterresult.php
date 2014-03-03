@@ -22,7 +22,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function ProcessAction() {
+function ProcessAction()
+{
     language_include('events');
 
     $event = GetEventDetails(@$_GET['id']);
@@ -47,12 +48,10 @@ function ProcessAction() {
 
     if (is_numeric(@$bits[1])) {
         $holeid = $bits[1];
-    }
-    else {
+    } else {
         if ($bits[1] == 'p') {
             $specialid = 'Penalty';
-        }
-        else {
+        } else {
             $specialid = 'Sudden Death';
         }
     }
@@ -64,4 +63,3 @@ function ProcessAction() {
     //return translate('saved', array('time' => date('H:i:s')));
     return $playerid;
 }
-?>

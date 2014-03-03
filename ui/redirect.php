@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Post-login redirect
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,10 +26,10 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $data) {
+function InitializeSmartyVariables(&$smarty, $data)
+{
     $smarty->assign('type', $data->data);
 }
-
 
 /**
  * Determines which main menu option this page falls under.
@@ -38,7 +38,7 @@ function InitializeSmartyVariables(&$smarty, $data) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'unique';
 }
-?>

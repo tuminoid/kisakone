@@ -5,7 +5,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Round selection listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,20 +22,18 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function page_SelectRound($event, &$smarty) {
+function page_SelectRound($event, &$smarty)
+{
    $rounds = $event->GetRounds();
    $roundOptions = array();
-   
+
    foreach ($rounds as $round) {
       $roundOptions[$round->id] = translate('round_selection_text', array('number' => $round->roundnumber, 'date' => date('Y-m-d H:i', $round->starttime)));
    }
    $smarty->assign('rounds', $roundOptions);
-   
-   global $fullTemplateName;
-   
-   $fullTemplateName = "support/roundselection.tpl";
-      
-      
-}
 
-?>
+   global $fullTemplateName;
+
+   $fullTemplateName = "support/roundselection.tpl";
+
+}

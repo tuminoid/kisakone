@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Score calculation unit for having no score calculation
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,21 +21,24 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-class scorecalc_level_none {
+class scorecalc_level_none
+{
     var $name;
     var $id;
-    
-    function scorecalc_level_none() {
+
+    function scorecalc_level_none()
+    {
         $this->id = $this->id = substr(get_class($this), 16);
         $this->name = translate('not_used');
     }
-    
-    function CalculateScores(&$participants, $totalHoles, $event ,$active) {
+
+    function CalculateScores(&$participants, $totalHoles, $event ,$active)
+    {
         $participantCount = $active;
-        
+
         foreach ($participants as $index => $participant) {
            $score = 0;
-            
+
             if ($score != $participant['TournamentPoints']) {
                 $participants[$index]['TournamentPoints'] = $score;
                 $participants[$index]['Changed'] = true;
@@ -44,4 +47,3 @@ class scorecalc_level_none {
         }
     }
 }
-?>

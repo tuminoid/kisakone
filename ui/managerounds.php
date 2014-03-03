@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Round management
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,28 +26,25 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $event = GetEventDetails(@$_GET['id']);
-    
+
     if ($event->resultsLocked) $smarty->assign('locked' , true);
-   
-    
+
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied('eventads');
     }
-        
+
     $smarty->assign('rounds', $event->GetRounds());//print_r($event->GetRounds());
     $smarty->assign('courses', GetCourses());
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

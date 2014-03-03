@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Adjust tournament tie breaking
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,9 +21,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function processForm() {
+function processForm()
+{
     if (!Isadmin()) return Error::AccessDenied();
-    
+
     $tid = @$_GET['id'];
     foreach ($_POST as $key => $value) {
         if (substr($key, 0, 3) == 'tb_') {
@@ -31,11 +32,9 @@ function processForm() {
             SetTournamentTieBreaker($tid, $pid, $value);
         }
     }
-    
-    require_once('core/tournament.php');
-    
-    UpdateTournamentPoints((int)$tid);
+
+    require_once 'core/tournament.php';
+
+    UpdateTournamentPoints((int) $tid);
 
 }
-
-?>

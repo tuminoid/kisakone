@@ -20,8 +20,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-function processForm() {
-    require_once('core/hole.php');
+function processForm()
+{
+    require_once 'core/hole.php';
     if (@$_POST['cancel']) {
         if (@$_GET['event']) {
             header("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
@@ -30,7 +31,6 @@ function processForm() {
         }
         die();
     }
-
 
     $course['Name'] = @$_POST['name'];
     if (!$course['Name']) {
@@ -46,7 +46,7 @@ function processForm() {
     if (@$_GET['id'] != 'new') {
 
         $course['id'] = $_GET['id'];
-        $id = (int)@$_GET['id'];
+        $id = (int) @$_GET['id'];
 
         if (!IsAdmin()) {
             $oldcourse = GetCourseDetails($id);
@@ -88,7 +88,6 @@ function processForm() {
 
     foreach ($_POST as $key => $value) {
 
-
         if (substr($key, -4) == '_par') {
 
             list($ignored, $number, $holeid, $alsoignored) = explode('_', $key);
@@ -112,23 +111,20 @@ function processForm() {
                 if (!$hole) return Error::NotFound('hole');
                 if ($hole->course != $id) {
                     echo $hole->course,' -- ', $id;
+
                     return Error::InternalError('Child-container mismatch');
 
                 }
-                $hole->par = (int)$value;
-                $hole->length = (int)@$_POST['h_' . $number . '_' . $holeid . '_len'];
+                $hole->par = (int) $value;
+                $hole->length = (int) @$_POST['h_' . $number . '_' . $holeid . '_len'];
             }
-
-
 
             $outcome = SaveHole($hole);
             if (is_a($outcome, 'Error')) return $outcome;
 
         }
 
-
     }
-
 
         if (@$_GET['event']) {
             header("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
@@ -137,5 +133,3 @@ function processForm() {
         }
         die();
 }
-
-?>

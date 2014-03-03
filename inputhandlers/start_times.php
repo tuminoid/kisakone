@@ -55,21 +55,19 @@ function ProcessForm()
             $id = substr($key, 5);
             if (!in_array($id, $validIds))
               fail();
-            $present = (bool)@$_POST['present_' . $id];
+            $present = (bool) @$_POST['present_' . $id];
 
             $roundStart = $round->starttime;
             if (!$value) {
                 $sectionTime = null;
-            }
-            else {
+            } else {
                 $time1 = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
 
                 if (!$time1)
                   fail2();
                 if ($time1 >= $roundStart) {
                     $sectionTime = $time1;
-                }
-                else {
+                } else {
                     $roundStart += 24 * 60 * 60;
                     $sectionTime = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
                 }
@@ -82,5 +80,3 @@ function ProcessForm()
    header("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
    die();
 }
-
-?>

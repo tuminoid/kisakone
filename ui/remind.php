@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Event fee reminder
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,48 +25,49 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $data) {
-    require_once('core/textcontent.php');
-    require_once('core/email.php');
-    
+function InitializeSmartyVariables(&$smarty, $data)
+{
+    require_once 'core/textcontent.php';
+    require_once 'core/email.php';
+
     language_include('email');
     $event = GetEventDetails($_GET['id']);
-    
+
     if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
-        
+
     if (is_a($data, 'TextContent')) {
         $evp = $data;
-        
+
     } else {
         $evp = GetGlobalTextContent('email_fee');
     }
-    
+
     if (is_a($data, 'Error')) {
         $smarty->assign('error', $data->title);
-        
+
     }
-    
+
     if (is_a($data, 'TextContent')) {
         $ids = explode(',', $_POST['ids']);
-    } else  {
+    } else {
         $ids = $data->data;
-       
+
     }
      $u1 = GetUserDetails($ids[0]);
     $p1 = $u1->GetPlayer();
-    
+
     if (!$evp || is_a($evp, 'Error')) {
         $evp = new TextContent(array());
-        $evp->type = htmlentities(substr(@$_GET['id'], 0, 16));        
+        $evp->type = htmlentities(substr(@$_GET['id'], 0, 16));
     }
-    
+
     if (@$_REQUEST['preview']) {
-        $email = new Email($evp);        
+        $email = new Email($evp);
         $special['link'] = 'http://www.example.com';
         $email->Prepare($u1, $p1, $event, $special);
         $smarty->assign('preview_email', $email);
     }
-    
+
     $smarty->assign('inline', false);
     $smarty->assign('tokens', GetEmailTokens());
     $smarty->assign('page', $evp);
@@ -74,27 +75,26 @@ function InitializeSmartyVariables(&$smarty, $data) {
     $smarty->assign('numReminds', count($ids));
 }
 
-
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
 
-
 // We need some functions to get data for the preview
 
-function pdr_GetDemoPlayer() {
+function pdr_GetDemoPlayer()
+{
     $us = GetUsers();
     $user = null;
     $player = null;
     foreach ($us as $u) {
         if (!$user && $u->firstname) $user = $u;
         if (!$player) {
-            
+
             $p = $u->GetPlayer();
             if ($p) {
                 $player = $p;
@@ -102,10 +102,12 @@ function pdr_GetDemoPlayer() {
         }
         if ($user && $player) return array($user, $player);
     }
+
     return array($user, $player);
 }
 
-function pdr_GetDemoEvent() {
+function pdr_GetDemoEvent()
+{
     $events = data_GetEvents("1");
     foreach ($events as $event) {
         if ($event->signupEnd) return $event;
@@ -113,5 +115,3 @@ function pdr_GetDemoEvent() {
     if (count($events)) return $events[0];
     return null;
 }
-
-?>

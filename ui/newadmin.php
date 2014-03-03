@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * "Create new admin" page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,9 +26,10 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     if (!IsAdmin()) return Error::AccessDenied();
-    
+
     if ($error === true) {
         $smarty->assign('done', true);
     }
@@ -38,7 +39,6 @@ function InitializeSmartyVariables(&$smarty, $error) {
     }
 }
 
-
 /**
  * Determines which main menu option this page falls under.
  *
@@ -46,7 +46,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'administration';
 }
-?>

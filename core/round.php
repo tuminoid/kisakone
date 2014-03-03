@@ -42,7 +42,7 @@ class Round
     /** ************************************************************************
      * Class constructor
      */
-    function Round( $id = null,
+    function Round($id = null,
                     $eventId = null,
                     $starttype = null,
                     $starttime = "",
@@ -68,44 +68,48 @@ class Round
     /**
      * Returns all the holes that belong to the course this round is using
     */
-    function GetHoles() {
+    function GetHoles()
+    {
         return GetRoundHoles($this->id);
     }
-
 
     /**
      * Returns the number of holes on the course this round is using
      * (convenience function for Smarty)
     */
-    function NumHoles() {
+    function NumHoles()
+    {
         if (!$this->holes)
             $this->holes = count($this->GetHoles());
+
         return $this->holes;
     }
-
 
     /**
      * Returns all the results for this round. See GetRoundResults in data_access.php
     */
     // $sortedBy one of 'group', 'position'
-    function GetFullResults($sortedBy = 'group') {
+    function GetFullResults($sortedBy = 'group')
+    {
         return GetRoundResults($this->id, $sortedBy);
     }
 
     /**
      * Returns true if this is the first round of the event it belongs to. False otherwise.
     */
-    function IsFirstRound() {
+    function IsFirstRound()
+    {
         $event = GetEventDetails($this->eventId);
         $rounds = $event->GetRounds();
+
         return $rounds[0]->id == $this->id;
     }
-
 
     /**
      * Returns the round before this in the event
     */
-    function GetPreviousRound() {
+    function GetPreviousRound()
+    {
         $event = GetEventDetails($this->eventId);
         $rounds = $event->GetRounds();
         $last = null;
@@ -113,36 +117,39 @@ class Round
             if ($round->id == $this->id) return $last;
             $last = $round;
         }
+
         return null;
     }
 
     /**
      * Returns true if any groups have been defined for the round
     */
-    function GroupsAvailable() {
+    function GroupsAvailable()
+    {
         return AnyGroupsDefined($this->id);
     }
-
 
     /**
      * Returns teh course this round is using
     */
-    function GetCourse() {
+    function GetCourse()
+    {
         return GetRoundCourse($this->id);
     }
-
 
     /**
      * Returns all the groups on this round. See GetRoundGroups in data_access.php
     */
-    function GetAllGroups() {
+    function GetAllGroups()
+    {
         return GetRoundGroups($this->id);
     }
 
     /**
      * Returns all the group of the currently logged in user
     */
-    function GetUserGroup() {
+    function GetUserGroup()
+    {
         global $user;
         if (!$user) return null;
         $player = $user->GetPlayer();
@@ -153,7 +160,8 @@ class Round
     /**
      * Resets the rounds and then reinitializes all the sections on it
     */
-    function RegenerateSections() {
+    function RegenerateSections()
+    {
         ResetRound($this->id);
         $this->InitializeSections();
     }
@@ -161,7 +169,8 @@ class Round
     /**
      * Resets the groups on this round and regenerates them
     */
-    function RegenerateGroups() {
+    function RegenerateGroups()
+    {
         ResetRound($this->id, 'groups');
         $this->InitializeGroups();
     }
@@ -169,11 +178,12 @@ class Round
     /**
      * Initializes all the groups for this round.
     */
-    function InitializeGroups() {
+    function InitializeGroups()
+    {
         $changes = false;
         $sections = GetSections($this->id);
 
-        switch($this->starttype) {
+        switch ($this->starttype) {
             case 'sequential':
                 $start = $this->starttime;
                 break;
@@ -187,13 +197,15 @@ class Round
         foreach ($sections as $section) {
             $section->InitializeGroups($this, $start, $changes);
         }
+
         return $changes;
     }
 
     /**
      * Initializes all the sections for this round
     */
-    function InitializeSections() {
+    function InitializeSections()
+    {
         if ($this->IsFirstRound()) {
             return $this->InitializeFirstRound();
         } else {
@@ -266,13 +278,13 @@ class Round
             return $changes;
         }
 
-
     }
 
     /**
      * Returns true if the provided player is participating on this round
     */
-    function Participating($playerid) {
+    function Participating($playerid)
+    {
         return PlayerOnRound($this->id, $playerid);
     }
 
@@ -280,8 +292,8 @@ class Round
      * First round is special, so it has its own unique initialization. It uses
      * a combination class instead of real classes for players, and random order
     */
-    function InitializeFirstRound() {
-
+    function InitializeFirstRound()
+    {
         $sections = GetSections($this->id);
         $changes = false;
 
@@ -321,10 +333,8 @@ class Round
         return $changes;
     }
 
-
 }
 
 /* ****************************************************************************
  * End of file
  * */
-?>

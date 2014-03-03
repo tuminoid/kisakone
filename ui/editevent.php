@@ -26,10 +26,10 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-
-    require_once('ui/support/eventform_init.php');
-    require_once('config_site.php');
+function InitializeSmartyVariables(&$smarty, $error)
+{
+    require_once 'ui/support/eventform_init.php';
+    require_once 'config_site.php';
 
     language_include('formvalidation');
 
@@ -38,6 +38,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
         if (!is_array($error->data)) {
             print_r($error);
+
             return $error;
         }
         $smarty->assign('error', $error->data);
@@ -86,8 +87,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
         if ($event->resultsLocked) {
             $e['event_state'] = 'done';
-        }
-        else if ($event->isActive) {
+        } elseif ($event->isActive) {
             $e['event_state'] = 'active';
         }
 
@@ -129,21 +129,20 @@ function InitializeSmartyVariables(&$smarty, $error) {
     page_InitializeEventFormData($smarty, false);
 }
 
-
-function page_Map_Id_To_Name($array) {
+function page_Map_Id_To_Name($array)
+{
     $out = array();
     foreach ($array as $item)
         $out[$item->id] = $item->name;
+
     return $out;
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Printable score card
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,32 +26,30 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $event = GetEventDetails($_GET['id']);
-   
-   
-   
+
    $smarty->assign('event', $event);
-   
+
    if (is_a($event, 'Error')) return $event;
-   
+
    if (!IsAdmin() && $event->management == '') return Error::AccessDenied();
-   
+
    if (!$event) return Error::NotFound('event');
-   
-   if (!isAdmin() && !$event->isTD() && !$event->isActive) {      
+
+   if (!isAdmin() && !$event->isTD() && !$event->isActive) {
       $error = new Error();
       $error->isMajor = true;
       $error->title = 'error_event_not_active';
       $error->description = translate('error_event_not_active_description');
       $error->source = 'PDR:Event:InitializeSmartyVariables';
+
       return $error;
    }
-   
-   
+
          $rounds = $event->GetRounds();
-         
+
          foreach ($rounds as $index => $round) {
             if ($_GET['round'] == $index + 1) {
                $round->roundNumber = $index + 1;
@@ -59,24 +57,21 @@ function InitializeSmartyVariables(&$smarty, $error) {
             }
          }
          if (!$round->roundNumber) return Error::NotFound('round');
-         
-         
-        
-         
+
          $holes = $round->GetHoles();
          $smarty->assign('holes', $holes);
          $smarty->assign('round', $round);
          $smarty->assign('numHoles', count($holes));
          $smarty->assign('out_hole_index', ceil(count($holes) / 2) );
-         
+
          $smarty->assign('groups', pdr_GroupByGroup($round->GetAllGroups()));
 
-   
 }
 
-function pdr_GroupByGroup($data) {
+function pdr_GroupByGroup($data)
+{
    $out = array();
-   
+
    $currentGroup = array();
    $currentNum = -1;
    foreach ($data as $row) {
@@ -85,23 +80,18 @@ function pdr_GroupByGroup($data) {
          $currentGroup = array();
          $currentNum = $row['PoolNumber'];
       }
-      
+
       $currentGroup[] = $row;
    }
    if (count($currentGroup)) $out[] = $currentGroup;
-   
    return $out;
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-
-
-?>

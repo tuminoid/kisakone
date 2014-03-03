@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Deletes an event permanently
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,30 +25,27 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     if (!IsAdmin()) {
-       
         return Error::AccessDenied();
-        
+
     }
 
-    
     if (@$_POST['cancel']) {
-            
+
         header("Location: " . url_smarty(array('page' => 'editevent', 'id' => @$_POST['id']), $_GET));
         die();
     }
     $event = GetEventDetails(@$_POST['id']);
     if (!$event) return Error::NotFound('event');
-    
-    $tournament = $event->tournament;
-    
-    DeleteEventPermanently($event);
-    
-    require_once('core/tournament.php');
-    
-    UpdateTournamentPoints($tournament);
-   
-}
 
-?>
+    $tournament = $event->tournament;
+
+    DeleteEventPermanently($event);
+
+    require_once 'core/tournament.php';
+
+    UpdateTournamentPoints($tournament);
+
+}

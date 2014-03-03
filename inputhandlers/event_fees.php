@@ -25,9 +25,9 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
-    require_once('core/event_management.php');
-
+function processForm()
+{
+    require_once 'core/event_management.php';
 
     $event = GetEventDetails($_GET['id']);
     if ($event->resultsLocked) return Error::AccessDenied();
@@ -43,16 +43,14 @@ function processForm() {
             list($ignore, $userid, $partid) = explode('_', $key);
             $newfee = @$_POST['newfee_' . $userid . '_' . $partid];
 
-            $newfee = (bool)$newfee;
-            $value = (bool)$value;
-
-
+            $newfee = (bool) $newfee;
+            $value = (bool) $value;
 
             if ($newfee != $value) {
 
                 $payments[] = array('participationId' => $partid, 'payment' => $newfee);
             }
-        } else if (substr($key, 0, 7) == 'remind_') {
+        } elseif (substr($key, 0, 7) == 'remind_') {
             $reminds[] = substr($key, 7);
         }
     }
@@ -61,7 +59,6 @@ function processForm() {
         MarkEventFeePayments($_GET['id'], $payments);
     }
 
-
     if (count($reminds)) {
         if (in_array('all', $reminds)) $reminds = GetAllToRemind($event->id);
         //header("Location: " . url_smarty(array('page' => 'eventfeereminder', 'id' => $_GET['id'], 'users' => implode($reminds, ',')), $reminds));
@@ -69,11 +66,11 @@ function processForm() {
         $error->internalDescription ='redirecting, not a real error';
         $error->errorPage = 'remind';
         $error->data = $reminds;
+
         return $error;
     } else {
-        require_once('inputhandlers/support/event_edit_notification.php');
+        require_once 'inputhandlers/support/event_edit_notification.php';
+
         return input_EditNotification();
     }
 }
-
-?>

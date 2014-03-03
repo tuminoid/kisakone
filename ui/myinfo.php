@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * "My info" page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,22 +26,20 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $user = @$_SESSION['user'];
    if (!$user) return error::AccessDenied();
-   
-  
+
    header('Location: ' . url_smarty(array('page' => 'user', 'id' => $user->username), $user));
-  
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'users';
 }
-?>

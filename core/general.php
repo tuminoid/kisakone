@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file provides general functionality needed in the core module
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,19 +29,18 @@
  * $field = core_ProduceFieldName("Username")
  * // $field == 'username'
  * $object->$field = $value  // works then
- * 
+ *
  */
-function core_ProduceFieldName($dbfield) {
+function core_ProduceFieldName($dbfield)
+{
     return strtolower($dbfield[0]) . substr($dbfield, 1);
 }
 
-
-function core_sort_by_count($a, $b) {
+function core_sort_by_count($a, $b)
+{
     $ac = count($a);
     $bc = count($b);
     if ($ac == $bc) return 0;
     if ($ac < $bc) return 1;
-    
     return -1;
 }
-?>

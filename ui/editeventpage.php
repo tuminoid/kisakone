@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Event page editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,39 +26,35 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-    
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $GLOBALS['disable_xhtml'] = true;
-    
+
     $event = GetEventDetails($_GET['id']);
-    
-    
-    
-    
+
     if (is_a($error, 'TextContent')) {
-        $evp = $error;   
+        $evp = $error;
     } else {
         $evp = $event->GetTextContent(@$_GET['content']);
     }
-    
+
     if (is_a($error, 'Error')) {
-        $smarty->assign('error', $error->title);        
+        $smarty->assign('error', $error->title);
     }
     if (!$evp || is_a($evp, 'Error')) {
         $evp = new TextContent(array());
         $evp->type = htmlentities(substr(@$_GET['content'], 0, 12));
-        
+
         if (!is_numeric($evp->type)) {
             if (@$_GET['mode'] != 'news' && $evp->type != 'index_schedu') {
-                
+
                 $evp->content = "<h2>" . $evp->GetProperTitle() . "</h2><br /><br />";
             }
-        } else{            
+        } else {
             $evp->type = 'custom';
         }
     }
-    
+
     if (!IsAdmin() && $event->management != 'td') {
         if ($evp->type == 'news' && $event->management == 'official' || ( @$_GET['content'] == '*' && @$_GET['mode'] == 'news')) {
             // allowed in
@@ -66,19 +62,17 @@ function InitializeSmartyVariables(&$smarty, $error) {
             return Error::AccessDenied('eventfees');
         }
     }
-    
+
     $smarty->assign('custom', @$_GET['custom'] || @$_GET['mode'] == 'custom');
     $smarty->assign('custom', @$_GET['mode'] == 'custom');
     $smarty->assign('page', $evp);
 }
 
-
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

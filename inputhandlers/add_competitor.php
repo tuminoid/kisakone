@@ -29,8 +29,8 @@
 function processForm()
 {
     $problems = array();
-    require_once('core/event_management.php');
-    require_once('core/user_operations.php');
+    require_once 'core/event_management.php';
+    require_once 'core/user_operations.php';
 
     $godmode = false;
     $event = GetEventDetails(@$_GET['id']);
@@ -66,8 +66,7 @@ function processForm()
             return $retVal;
         header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'signup' => $retVal), $_GET));
         die();
-    }
-    else {
+    } else {
         $lastname = $_POST['lastname'];
         if ($lastname == '')
             $problems['lastname'] = translate('FormError_NotEmpty');
@@ -84,7 +83,7 @@ function processForm()
         if ($pdga == '')
             $pdga = null;
         else {
-            $num = (int)$pdga;
+            $num = (int) $pdga;
             if ($num <= 0)
                 $problems['pdga'] = translate('FormError_PDGA');
         }
@@ -94,17 +93,18 @@ function processForm()
             $problems['gender'] = translate('FormError_NotEmpty');
 
         $dobYear = $_POST['dob_Year'];
-        if ($dobYear != (int)$dobYear)
+        if ($dobYear != (int) $dobYear)
             $problems['dob'] = translate('FormError_NotEmpty');
 
-        $class = (int)@$_POST['class'];
+        $class = (int) @$_POST['class'];
 
-        if(count($problems)) {
+        if (count($problems)) {
             $error = new Error();
             $error->title = 'Add_Competitor form error';
             $error->function = 'InputProcessing:Add_Competitor:processForm';
             $error->cause = array_keys($problems);
             $error->data = $problems;
+
             return $error;
         }
     }
@@ -127,5 +127,3 @@ function processForm()
     header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'signup' => $retVal), $_GET));
     die();
 }
-
-?>

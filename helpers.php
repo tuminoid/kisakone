@@ -30,11 +30,10 @@
  * http://www.example.com/kisakone/some/page, /kisakone/ will be returend.
  * @return string
  */
-function baseURL() {
+function baseURL()
+{
     $dir = dirname($_SERVER['SCRIPT_NAME']);
     if ($dir == "/")
         return $dir;
     return $dir . '/';
 }
-
-?>

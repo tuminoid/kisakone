@@ -22,12 +22,12 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 /**
  * Chooses the right input handler for sent form data, and calls it.
  * @return Nothing or Error object on error
  */
-function gate_ProcessInputData() {
+function gate_ProcessInputData()
+{
     $actionresult = gate_ProcessActionRequest();
     if (is_a($actionresult, 'Error')) return $actionresult;
 
@@ -47,6 +47,7 @@ function gate_ProcessInputData() {
     // included file.
 
     include("inputhandlers/$formid.php");
+
     return ProcessForm();
 
 
@@ -56,7 +57,8 @@ function gate_ProcessInputData() {
  * Chooses the right handler for a selected action, and calls it.
  * @return Nothing or Error object on error
  */
-function gate_ProcessActionRequest() {
+function gate_ProcessActionRequest()
+{
     if (!array_key_exists('action', $_GET)) return;
 
     $action = $_GET['action'];
@@ -68,19 +70,21 @@ function gate_ProcessActionRequest() {
     // included file.
 
     include("inputhandlers/action_$action.php");
+
     return ProcessAction();
 }
 
 /**
  * Returns an Error object for the error of invalid form.
  */
-function gate_InvalidForm($formid) {
+function gate_InvalidForm($formid)
+{
     $e = new Error();
     $e->title = 'error_invalidform';
     $e->description = translate('error_invalidform_description');
     $e->cause = $formid;
     $e->internalDescription = 'No handler exists for the specified form or action id';
     $e->isMajor = true;
+
     return $e;
 }
-?>

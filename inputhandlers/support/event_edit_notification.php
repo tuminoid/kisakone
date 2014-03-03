@@ -5,7 +5,7 @@
  *
  * Helped for displaying notification after various types of
  * event editing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,7 +22,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function input_EditNotification($round = null) {
+function input_EditNotification($round = null)
+{
     if ($round) {
         if (!$round->GroupsAvailabled()) {
             // no need for notification, just redirect
@@ -30,9 +31,7 @@ function input_EditNotification($round = null) {
             die();
         }
     }
-    
+
     header("Location: " . url_smarty(array('page' => 'manageevent', 'notify' => true, 'id' => @$_GET['id']), $_GET));
     die();
 }
-
-?>

@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * User info editor
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,9 +26,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
-   
-   
+function InitializeSmartyVariables(&$smarty, $error)
+{
    if ($error) {
         $smarty->assign('error', $error->data);
         $user = new User();
@@ -42,35 +41,29 @@ function InitializeSmartyVariables(&$smarty, $error) {
    } else {
          if (@$_GET['id']) {
             if (!IsAdmin()) return Error::AccessDenied();
-            
+
             $getId = $_GET['id'];
             if (is_numeric($getId)) $userid= $getId;
             else $userid = GetUserId($getId);
-   
+
              $user = GetUserDetails($userid);
-             
-             
-             
+
          } else {
             $user = @$_SESSION['user'];
          }
          $player = $user->GetPlayer();
    }
-   
 
-   
    $smarty->assign('userdata', $user);
    $smarty->assign('player', $player);
-   if ($player) $smarty->assign('dob', $player->birthyear . '-1-1');    
+   if ($player) $smarty->assign('dob', $player->birthyear . '-1-1');
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'users';
 }
-?>

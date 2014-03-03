@@ -46,5 +46,3 @@ function page_InitializeEventFormData(&$smarty, $creatingNew)
     $smarty->assign('level_options', $levels);
     $smarty->assign('class_options', $classes);
 }
-
-?>

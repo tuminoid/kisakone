@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file provides means for accessing score calculation units.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,11 +25,12 @@
  * This function provides a list of all score calulation methods of the given type.
  * Type can be either level or tournament.
  */
-function GetScoreCalculationMethods($type) {
+function GetScoreCalculationMethods($type)
+{
     $dirname = "core/${type}Scores";
     $dir = opendir($dirname);
     $out = array();
-    
+
     if ($dir !== false) {
         while (($file = readdir($dir)) !== false) {
             if ($file[0] == '.') continue;
@@ -41,24 +42,21 @@ function GetScoreCalculationMethods($type) {
         }
         closedir($dir);
     }
-    
+
     return $out;
 }
-
 
 /**
  * This function provides a specific score calculation unit.
  * Type can be either level or tournament.
  */
-function GetScoreCalculationMethod($type, $name) {
+function GetScoreCalculationMethod($type, $name)
+{
     if ($name != basename($name)) return Error::AccessDenied();
-    
+
     $filename = "core/${type}Scores/$name.php";
     require_once($filename);
     $className = sprintf("scorecalc_%s_%s", $type, $name);
+
     return new $className();
 }
-
-
-
-?>

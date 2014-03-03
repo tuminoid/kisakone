@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains Venue class.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -24,23 +24,23 @@
 /* *****************************************************************************
  * This class represents a single venue in the system.
  */
-class Venue 
+class Venue
 {
     var $id;
     var $name;
     var $location;
-    
+
     /** ************************************************************************
      * Class constructor
      */
-    function Venue( $id = null,
+    function Venue($id = null,
                     $name = "",
                     $location = "")
     {
         $this->id = $id;
         $this->name = $name;
         $this->location = $location;
-        
+
         return;
     }
 }
@@ -48,4 +48,3 @@ class Venue
 /* ****************************************************************************
  * End of file
  * */
-?>

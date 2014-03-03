@@ -25,38 +25,39 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $loginAt = (int)@$_POST['loginAt'];
+    $loginAt = (int) @$_POST['loginAt'];
     if ($loginAt < time() - 60 * 5) {
         $error = new Error();
         $error->title = translate('error_expired_login_form');
         $error->description = translate('error_expired_login_form_description');
         $error->function = 'InputProcessing:Login:processForm';
         $error->errorPage = 'login';
+
         return $error;
     }
 
     $user = CheckUserAuthentication($username, $password);
 
-    if(is_a($user, 'Error'))
-    {
+    if (is_a($user, 'Error')) {
       return $user;
     }
 
-    if(is_null($user)) {
+    if (is_null($user)) {
         $error = new Error();
         $error->title = translate('error_invalid_login_details');
         $error->description = translate('error_invalid_login_details_description');
         $error->function = 'InputProcessing:Login:processForm';
         $error->errorPage = 'login';
+
         return $error;
     }
 
     // Make sure a session is used from now on
-
 
     setcookie("kisakone_login", 1);
     if (!(@$_COOKIE['kisakone_login'])) session_start();
@@ -82,5 +83,3 @@ function processForm() {
 
     return $retvalue;
 }
-
-?>

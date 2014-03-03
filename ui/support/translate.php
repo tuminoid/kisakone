@@ -25,7 +25,8 @@
 /**
  * This class contains the details of a loaded language.
  */
-class Language {
+class Language
+{
     /**
      * Contains all loaded language data as an associative array. Item key is the
      * text token, the value is the actual string.
@@ -59,7 +60,8 @@ class Language {
      * Constructor for the class. Loads the specified language.
      * @param string $id Identifier for the language this object is being created for.
     */
-    function Language($id) {
+    function Language($id)
+    {
         // Making sure the id is safe to be used
         $id = basename($id);
         $this->id = $id;
@@ -72,8 +74,8 @@ class Language {
         $this->dir = $langdirname;
     }
 
-
-    function LoadAllFiles() {
+    function LoadAllFiles()
+    {
         $this->allLoaded = true;
         $langdirname = $this->dir;
         $id = $this->id;
@@ -113,8 +115,8 @@ class Language {
         closedir($dir);
     }
 
-
-    function LoadSingleFile($file) {
+    function LoadSingleFile($file)
+    {
         $file = basename($file);
         $id = $this->id;
 
@@ -140,9 +142,9 @@ class Language {
         }
 
         fclose($langfile);
+
         return true;
     }
-
 
     /**
      * Translates a given token into proper text.
@@ -156,27 +158,26 @@ class Language {
      * identifier as follows: token/arg1:value1/arg2:value2...
      * This can not be done when the token value contains a slash.
      *
-     * @param string $id The token to be translated.
-     * @param array $arguments Values for subtokens found within the string.
+     * @param string $id        The token to be translated.
+     * @param array  $arguments Values for subtokens found within the string.
      */
-    function translate($id, $arguments) {
-
+    function translate($id, $arguments)
+    {
         // Extract arguments from the token id if necessary
         if (strpos($id, '/') !== false) {
             $data = $this->ExtractFromID($id);
             $id = $data[0];
             $arguments = $data[1];
-        }
-        elseif (isset($arguments['arguments'])) {
+        } elseif (isset($arguments['arguments'])) {
             $arguments = $arguments['arguments'];
         }
 
         if (!array_key_exists($id, $this->data)) {
             if ($this->allLoaded) {
                 return "[Missing $id]";
-            }
-            else {
+            } else {
                 $this->LoadAllFiles();
+
                 return $this->translate($id, $arguments);
             }
         }
@@ -190,8 +191,7 @@ class Language {
         // Convert any HTML entities found -- if necessary
         if (substr($text, 0, 6) == "<HTML>") {
             $text = substr($text, 6);
-        }
-        else {
+        } else {
             $text = htmlspecialchars($text);
         }
 
@@ -205,11 +205,12 @@ class Language {
     /**
      * Callback function for preg_replace_callback, when used for replacing subtokens
      * within a string.
-     * @param array $token The found match
+     * @param  array  $token The found match
      * @return string Value for the token
      * @access private
      */
-    function replaceToken($token) {
+    function replaceToken($token)
+    {
         return $this->tokens[$token[1]];
     }
 
@@ -218,7 +219,8 @@ class Language {
      * A function used for making sure the language was loaded properly.
      * @return boolean True if the language contains data, false if not.
      */
-    function seemsOK() {
+    function seemsOK()
+    {
         return count($this->data) > 0;
     }
 
@@ -226,13 +228,14 @@ class Language {
     /**
      * This function extracts the id and arguments when they are provided in the
      * same string, in the format id/arg1:value1/arg2:/value2/.../argn:valuen
-     * @param string $id String in the specified format
-     * @return array Array, with first element being the token id, the second element
-     *   is an associative array where keys stand for argument names, values are
-     *   the corresponding values
+     * @param  string $id String in the specified format
+     * @return array  Array, with first element being the token id, the second element
+     *                   is an associative array where keys stand for argument names, values are
+     *                   the corresponding values
      * @access private
      */
-    function extractFromID($id) {
+    function extractFromID($id)
+    {
         $parts = explode('/', $id);
         $arguments = array();
         $id  = $parts[0];
@@ -249,7 +252,6 @@ class Language {
     }
 }
 
-
 /**
  * This is a dummy language implementation which simply prints tokens passed
  * to it. Used for error message display whenever no language was successfully loaded.
@@ -257,15 +259,16 @@ class Language {
  * Implements the public interface from Language class. Due to major differences in
  * functionality, the class is not extented.
  */
-class DummyLanguage {
+class DummyLanguage
+{
     /**
      * A function used for making sure the language was loaded properly.\
      * @return boolean Always true when this class is used.
      */
-    function seemsOK() {
+    function seemsOK()
+    {
         return true;
     }
-
 
     /**
      * Function normally used for translating a given text token id, in this
@@ -274,14 +277,14 @@ class DummyLanguage {
      * As function having fewer parameters than a call doesn't matter, the normal
      * $parameter is missing entrirely due to being unnecessary.
      *
-     * @param string $id Id to be translated.
+     * @param  string $id Id to be translated.
      * @return string $id in brackets
      */
-    function Translate($id) {
+    function Translate($id)
+    {
         return "[$id]";
     }
 }
-
 
 /**
  * This function provides slightly simplified interface for translating text. See
@@ -290,23 +293,26 @@ class DummyLanguage {
  * @param array $param Values for the subtokens in the string.
  * @see Language::translate
  */
-function translate($id, $params = array()) {
+function translate($id, $params = array())
+{
     global $language;
+
     return $language->translate($id, $params);
 }
 
-
-function language_include($file) {
+function language_include($file)
+{
     global $language;
+
     return $language->LoadSingleFile($file);
 }
-
 
 /**
  * Loads the provided language.
  * @param string $id Identifier for the language to be loaded.
  */
-function LoadLanguage($id, $return = false) {
+function LoadLanguage($id, $return = false)
+{
     /**
      * @global Language $GLOBALS['language'] Object for the language being used.
     */
@@ -317,5 +323,3 @@ function LoadLanguage($id, $return = false) {
         return $newlanguage;
     $language = $newlanguage;
 }
-
-?>

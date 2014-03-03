@@ -34,7 +34,6 @@ function processForm()
         die();
     }
 
-
     $lastname = $_POST['lastname'];
     if ($lastname == '') $problems['lastname'] = translate('FormError_NotEmpty');
 
@@ -46,7 +45,7 @@ function processForm()
 
     // String cast is there to turn a possibly missing username into an empty string,
     // to avoid confusion with accountless users
-    $username = (string)@$_POST['username'];
+    $username = (string) @$_POST['username'];
 
     if (!User::IsValidUsername($username))  $problems['username'] = translate('FormError_InvalidUsername', array('username' => $username));
     if (GetUserId($username) !== null)  $problems['username'] = translate('FormError_DuplicateUsername', array('username' => $username));
@@ -60,7 +59,7 @@ function processForm()
     $pdga = $_POST['pdga'];
     if ($pdga == '') $pdga = null;
     else {
-        $num = (int)$pdga;
+        $num = (int) $pdga;
         if ($num <= 0) $problems['pdga'] = translate('FormError_PDGA');
 
     }
@@ -70,22 +69,23 @@ function processForm()
 
     $dobYear = $_POST['dob_Year'];
 
-    if ($dobYear != (int)$dobYear) $problems['dob'] = translate('FormError_NotEmpty');
+    if ($dobYear != (int) $dobYear) $problems['dob'] = translate('FormError_NotEmpty');
 
     $terms = @$_POST['termsandconditions'];
     if (!$terms) $problems['termsandconditions'] =  translate('FormError_Terms');
 
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = 'Registration form error';
         $error->function = 'InputProcessing:Register:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
         $error->errorPage = 'register';
+
         return $error;
     }
 
-    require_once('core/user_operations.php');
+    require_once 'core/user_operations.php';
 
     $r = RegisterPlayer($username, $password, $email, $firstname, $lastname, $gender, $pdga, $dobYear );
     if (is_a($r, 'Error'))
@@ -106,5 +106,3 @@ function processForm()
 
     return $r;
 }
-
-?>

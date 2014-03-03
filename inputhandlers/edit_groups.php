@@ -21,12 +21,12 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function ProcessForm() {
+function ProcessForm()
+{
     if (@$_POST['cancel']) {
         header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
         die();
     }
-
 
     $event = GetEventDetails($_GET['id']);
 
@@ -41,7 +41,6 @@ function ProcessForm() {
    if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
 
    ResetRound($round->id, 'groups');
-
 
    $groupTemplate = null;
 
@@ -70,15 +69,14 @@ function ProcessForm() {
         }
    }
 
-   SetRoundGroupsDone($round->id, (bool)@$_POST['done']);
-
-
+   SetRoundGroupsDone($round->id, (bool) @$_POST['done']);
 
    header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
    die();
 }
 
-function InitNewGroup($round, $section, $template, $startingHole) {
+function InitNewGroup($round, $section, $template, $startingHole)
+{
         if (!$template) {
             $template = array(
                 'PoolNumber' => 0,
@@ -95,7 +93,7 @@ function InitNewGroup($round, $section, $template, $startingHole) {
             $template['Section'] = $section->id;
         }
 
-        switch($round->starttype) {
+        switch ($round->starttype) {
             case 'sequential':
                 $template['StartingTime'] += 60 * $round->interval;
                 break;
@@ -108,8 +106,6 @@ function InitNewGroup($round, $section, $template, $startingHole) {
         }
         $template['PoolNumber']++;
 
-
         return $template;
 
    }
-?>

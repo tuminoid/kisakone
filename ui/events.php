@@ -27,7 +27,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $user = @$_SESSION['user'];
 
    global $event_sort_mode;
@@ -71,7 +72,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
          $smarty->assign('lists', array($current, $registering, $registeringsoon, $upcoming, $past));
          $title = 'index_title';
 
-         require_once ('core/textcontent.php');
+         require_once 'core/textcontent.php';
          $tc = GetGlobalTextContent('index');
          if ($tc)
             $smarty->assign('content', $tc->formattedText);
@@ -112,8 +113,8 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
       default:
          if (is_numeric($id)) {
-            $events = GetEventsByYear((int)$id);
-            $title = '!' . translate('events_by_year', array('year' => (int)$id));
+            $events = GetEventsByYear((int) $id);
+            $title = '!' . translate('events_by_year', array('year' => (int) $id));
          } else {
             return Error::AccessDenied();
          }
@@ -133,12 +134,11 @@ function InitializeSmartyVariables(&$smarty, $error) {
    $smarty->assign('loggedon', isset($_SESSION['user']));
 }
 
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

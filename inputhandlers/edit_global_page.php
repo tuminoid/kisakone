@@ -25,19 +25,18 @@
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
-    require_once('core/textcontent.php');
+function processForm()
+{
+    require_once 'core/textcontent.php';
     if (!IsAdmin()) return error::AccessDenied();
     $problems = array();
 
     $custom = @$_GET['mode'] == 'custom';
     $email = @$_REQUEST['mode'] == 'email';
 
-
     if (@$_POST['cancel']) {
 
-        if (!$email)  {
+        if (!$email) {
             header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
         } else {
             header("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
@@ -47,8 +46,6 @@ function processForm() {
     }
 
     $evp = GetGlobalTextContent(@$_GET['id']);
-
-
 
     if (@$_POST['delete']) {
 
@@ -67,17 +64,17 @@ function processForm() {
 
     if ($custom && !$title) {
         fail();
-    } else if ($custom) {
+    } elseif ($custom) {
         if ($title =='index' || $title == 'submenu' || $title == 'fees' || $title == 'terms') return Error::AccessDenied();
     }
 
-
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = translate('title_is_mandatory');
         $error->function = 'InputProcessing:edit_event_page:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
 
@@ -110,19 +107,16 @@ function processForm() {
         $result = $evp->save();
     } else {
         $evp->FormatText();
+
         return $evp;
     }
 
-
-
     if (is_a($result, 'Error')) return $result;
 
-    if (!$email)  {
+    if (!$email) {
         header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
     } else {
         header("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
     }
     die();
 }
-
-?>

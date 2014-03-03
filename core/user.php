@@ -49,7 +49,8 @@ $user_access_level_admin        = 'admin';
 /* *****************************************************************************
  * This class represents a single user in the system.
  */
-class User {
+class user
+{
     var $id;
     var $username;
     var $role;      // $user_role_player or $user_role_admin
@@ -67,7 +68,7 @@ class User {
     /** ************************************************************************
      * Class constructor
      */
-    function User( $id = null,
+    function User($id = null,
                    $uname = "",
                    $role = null,
                    $fname = "",
@@ -96,15 +97,12 @@ class User {
      *
      * Returns null
      */
-    function SetRole( $role)
+    function SetRole($role)
     {
 
-        if( isset( $role))
-        {
+        if ( isset( $role)) {
             $this->role = $role;
-        }
-        else
-        {
+        } else {
             $this->role = USER_ROLE_PLAYER;
         }
 
@@ -116,7 +114,7 @@ class User {
      *
      * Returns null
      */
-    function SetNames( $firstname, $lastname)
+    function SetNames($firstname, $lastname)
     {
         $this->firstname = trim( $firstname);
         $this->lastname = trim( $lastname);
@@ -131,18 +129,14 @@ class User {
      * Returns null for success or
      * an Error object in case the id is already set to a different value.
      */
-    function SetId( $id)
+    function SetId($id)
     {
         $err = null;
 
-        if( !isset( $this->id))
-        {
+        if ( !isset( $this->id)) {
             $this->id = $id;
-        }
-        else
-        {
-            if( $this->id !== $id)
-            {
+        } else {
+            if ($this->id !== $id) {
                 // Attempt to change valid id, report internal error
                 $err = new Error();
                 $err->title = "error_internal";
@@ -165,17 +159,14 @@ class User {
      * Returns null for success or
      * an Error object in case the argument is not valid.
      */
-    function SetPassword( $password)
+    function SetPassword($password)
     {
         $err = null;
 
-        if( !empty( $password))
-        {
+        if ( !empty( $password)) {
             // TODO: Is there need to check the password minimum length
             $this->password = md5( $password);
-        }
-        else
-        {
+        } else {
             // Missing password, report error
             $err = new Error();
             $err->title = "error_missing_password";
@@ -194,7 +185,7 @@ class User {
      *
      * Returns null
      */
-    function SetPlayerFields( $gender, $pdga, $birthyear)
+    function SetPlayerFields($gender, $pdga, $birthyear)
     {
         // Set Player arguments
         // No validation here, it is done in the Player class instead
@@ -215,8 +206,7 @@ class User {
     {
         $err = null;
 
-        if(!$this->IsValidUsername( $this->username))
-        {
+        if (!$this->IsValidUsername( $this->username)) {
             $err = new Error();
             $err->title = "error_invalid_username";
             $err->description = translate( "error_invalid_username_description");
@@ -226,8 +216,7 @@ class User {
             $err->data = "User->username:" . $this->username;
         }
 
-        if( !isset( $err) and !$this->IsValidEmail( $this->email))
-        {
+        if ( !isset( $err) and !$this->IsValidEmail( $this->email)) {
             $err = new Error();
             $err->title = "error_invalid_email";
             $err->description = translate( "error_invalid_email_description");
@@ -246,7 +235,7 @@ class User {
      *
      * Returns true if the username is valid, otherwise returns false.
      */
-    function IsValidUsername( $username)
+    function IsValidUsername($username)
     {
 
         $retVal = false;
@@ -255,9 +244,7 @@ class User {
             // Accountless user (manually entered empty username shows up as an
             // empty string and will not reach this point)
             $retVal = true;
-        }
-        else if( !empty( $username))
-        {
+        } elseif ( !empty( $username)) {
             if( ( is_string( $username)) and
                 ( strlen( $username) >= USER_USERNAME_MIN_LENGTH) and
                 ( strlen( $username) <= USER_USERNAME_MAX_LENGTH))
@@ -269,6 +256,7 @@ class User {
                 $retVal = false;
             }
         }
+
         return $retVal;
     }
 
@@ -278,23 +266,20 @@ class User {
      * Returns true if the email is valid, otherwise returns false.
      * Unset or null argument is considered to be valid.
      */
-    function IsValidEmail( $email)
+    function IsValidEmail($email)
     {
         $retVal = false;
 
-        if( !isset( $email))
-        {
+        if ( !isset( $email)) {
             $retVal = true;
-        }
-        else if( !empty( $email))
-        {
+        } elseif ( !empty( $email)) {
             $validEmailExpr = "^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" .
                               "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$";
-            if( eregi( $validEmailExpr, $email))
-            {
+            if ( eregi( $validEmailExpr, $email)) {
                 $retVal = true;
             }
         }
+
         return $retVal;
     }
 
@@ -305,7 +290,6 @@ class User {
      */
     function IsAdmin()
     {
-
         return $this->role == USER_ROLE_ADMIN;
     }
 
@@ -326,11 +310,10 @@ class User {
      */
     function GetPlayer()
     {
-        require_once('core/player.php');
+        require_once 'core/player.php';
         if (!is_a($this->playerCache, 'Player')) $this->playerCache = GetUserPlayer( $this->id);
         return $this->playerCache;
     }
-
 
     /** ************************************************************************
      * Send email to the user's email address containing a token which can be
@@ -339,15 +322,14 @@ class User {
      */
     function SendPasswordRecoveryEmail()
     {
-        require_once('core/email.php');
+        require_once 'core/email.php';
 
         $token = GetUserSecurityToken( $this->id);
 
         global $settings;
         if ($settings['USE_MOD_REWRITE']) {
             $url = "http://" . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
-        }
-        else {
+        } else {
             $url = "http://" . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
 
@@ -359,7 +341,8 @@ class User {
      * Determines membership and license payments for a given year
      * Returns true if player's licenses match the requirements
     */
-    function FeesPaidForYear($year, $required) {
+    function FeesPaidForYear($year, $required)
+    {
         if (!$required) return true;
         list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($this->id, $year);
 
@@ -369,7 +352,6 @@ class User {
         if ($required == LICENSE_A && !$aLicense) return false;
         // If B-license is required, both A- and B-license quality, obviusly
         if ($required == LICENSE_B && !($aLicense || $bLicense)) return false;
-
         return true;
     }
 }
@@ -381,7 +363,7 @@ class User {
  * Returns true if user has adequate rights for the level,
  * otherwise returns false
  */
-function access( $level)
+function access($level)
 {
     global $user_access_level_none;
     global $user_access_level_login;
@@ -393,21 +375,16 @@ function access( $level)
 
     $eventid = @$_GET['id'];
 
-    if( $level == $user_access_level_none)
-    {
+    if ($level == $user_access_level_none) {
         // No level requirements, all users have access
         $retVal = true;
-    }
-    else
-    {
+    } else {
         // Check user access rights against required level
         $user = @$_SESSION['user'];
-        if( isset( $user))
-        {
+        if ( isset( $user)) {
             $admin_user = IsAdmin();
 
-            switch( $level)
-            {
+            switch ($level) {
                 case $user_access_level_login:
                     // All logged users have access to 'login' level
                     $retVal = true;
@@ -423,7 +400,7 @@ function access( $level)
                 case $user_access_level_officialonly:
                     // Only officials have access to features with this type of protection, no-one else
                      $event = GetEventDetails($eventid);
-                    if( $event && $event->management == $user_access_level_official) {
+                    if ($event && $event->management == $user_access_level_official) {
                         $retVal = true;
                     }
                     break;
@@ -431,13 +408,12 @@ function access( $level)
                      $event = GetEventDetails($eventid);
 
 
-                    if($event && ($admin_user || $event->management == $user_access_level_td)) {
+                    if ($event && ($admin_user || $event->management == $user_access_level_td)) {
                         $retVal = true;
                     }
                     break;
                 case $user_access_level_admin:
-                    if( $admin_user)
-                    {
+                    if ($admin_user) {
                         $retVal = true;
                     }
                     break;
@@ -470,8 +446,7 @@ function IsAdmin()
     $retVal = false;
 
     $user = @$_SESSION['user'];
-    if( isset( $user))
-    {
+    if ( isset( $user)) {
         $retVal = $user->isAdmin();
     }
 
@@ -481,4 +456,3 @@ function IsAdmin()
 /* *****************************************************************************
  * End of file
  * */
-?>

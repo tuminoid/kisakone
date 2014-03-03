@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Terms and conditions page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,12 +26,12 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-    require_once ('core/textcontent.php');
+function InitializeSmartyVariables(&$smarty, $error)
+{
+    require_once 'core/textcontent.php';
     $tc = GetGlobalTextContent('terms');
     $smarty->assign('content', $tc->formattedText);
 }
-
 
 /**
  * Determines which main menu option this page falls under.
@@ -40,7 +40,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'index';
 }
-?>

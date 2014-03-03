@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Event management menu (official version)
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,29 +21,27 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $event = GetEventDetails(@$_GET['id']);
    if (!$event || is_a($event, 'Error')) return Error::NotFound('event');
-   
+
    if ($event->management != 'official') return Error::AccessDenied('manageevent_official');
-   
+
    $smarty->assign('event', $event);
    $smarty->assign('rounds', $event->GetRounds());
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

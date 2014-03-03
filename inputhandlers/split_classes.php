@@ -22,20 +22,18 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-function ProcessForm() {
-
+function ProcessForm()
+{
     if (@$_POST['cancel']) {
         header("Location: " . url_smarty(array('page' => 'editrounds', 'id' => @$_GET['id']), $_GET));
         die();
     }
-
 
     $event = GetEventDetails($_GET['id']);
 
    if (!$event) return Error::NotFound('event');
 
      if ($event->resultsLocked) return Error::AccessDenied();
-
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
@@ -46,10 +44,6 @@ function ProcessForm() {
    if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
 
    $newIds = array();
-
-
-
-
 
    foreach ($_POST as $key => $item) {
         if (substr($key, 0, 8) == "base_c_n") {
@@ -65,7 +59,6 @@ function ProcessForm() {
    foreach ($_POST as $key => $item) {
         if (substr($key, 0, 6) == "cname_") {
             $id = substr($key, 6);
-
 
             if (array_key_exists($id, $newIds)) {
                 $id = $newIds[$id];
@@ -101,7 +94,7 @@ function ProcessForm() {
 
    ResetRound($round->id, 'players');
 
-   foreach ($assign as $sectId => $players)  {
+   foreach ($assign as $sectId => $players) {
 
         AssignPlayersToSection($round->id, $sectId, $players );
    }
@@ -112,5 +105,3 @@ function ProcessForm() {
    die();
 
 }
-
-?>

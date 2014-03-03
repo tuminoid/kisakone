@@ -5,7 +5,7 @@
  *
  * This file defines a class which represents and official or tournament
  * director of an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,7 +26,8 @@
  * Normally this type of thing wouldn't have an entire class to itself, but
  * this one does. 1:1 mapping with the matching database table.
  */
-class EventOfficial {
+class EventOfficial
+{
     var $id;
     var $eventid;
     var $user;
@@ -46,4 +47,3 @@ class EventOfficial {
         $this->role = $role;
     }
 }
-?>

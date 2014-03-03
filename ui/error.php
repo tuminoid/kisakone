@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Tournament editor ui backend for error display
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,32 +29,32 @@
 if (!is_callable('InitializeSmartyVariables')) {
     // Some other page might already have been included, so these functions are
     // included conditionally
-    
-    function InitializeSmartyVariables(&$smarty, $error) {
+
+    function InitializeSmartyVariables(&$smarty, $error)
+    {
         Error_InitializeSmartyVariables($smarty, $error);
     }
 
-
-    
     /**
      * Determines which main menu option this page falls under.
      * @return String token of the main menu item text.
      */
-    function getMainMenuSelection() {
+    function getMainMenuSelection()
+    {
         $GLOBAL['unique_title'] = translate('error_title');
+
         return 'unique';
     }
 }
 
-function Error_InitializeSmartyVariables(&$smarty, $error) {    
-  
-    
+function Error_InitializeSmartyVariables(&$smarty, $error)
+{
     $smarty->assign('error',
                     $error
-                    
+
                     );
-    
-    switch($error->errorCode) {
+
+    switch ($error->errorCode) {
         case 403:
             header("HTTP/1.1 403 Access Denied");
             break;
@@ -64,12 +64,11 @@ function Error_InitializeSmartyVariables(&$smarty, $error) {
         case 500:
             header("HTTP/1.1 500 Internal Server Error");
             break;
-    
+
         default:
-            // No HTTP error                    
-        
+            // No HTTP error
+
     }
-    
+
     $smarty->assign('backtrace', print_r($error->backtrace, true));
 }
-?>

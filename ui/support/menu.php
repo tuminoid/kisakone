@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Main menu definition
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,20 +25,17 @@
  * Returns the main menu as an array for arrays. Each item has 'url' and 'title' subitems.
  * @return array
 */
-function page_initializeMainMenu() {
-    
-    $mainmenu = array(        
+function page_initializeMainMenu()
+{
+    $mainmenu = array(
         array('title' => 'events', 'url' => 'events'),
         array('title' => 'tournaments', 'url' => 'tournaments'),
-        array('title' => 'users', 'url' => 'users')        
-        
+        array('title' => 'users', 'url' => 'users')
+
     );
-    
+
     if (IsAdmin()) $mainmenu[] = array('title' => 'administration', 'url' => 'admin');
-    
     return $mainmenu;
 }
 
-include('submenu.php');
-
-?>
+include 'submenu.php';

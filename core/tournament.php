@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains the Tournament class.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-class Tournament 
+class Tournament
 {
     var $id;
     var $level;
@@ -29,7 +29,7 @@ class Tournament
     var $available;
     var $year;
     var $description;
-    
+
     function Tournament($id = 0, $level = null, $name = null, $year = null, $scoreCalculationMethod = null, $available, $description = '')
     {
       $this->id = $id;
@@ -40,87 +40,93 @@ class Tournament
       $this->year = $year;
       $this->description = $description;
     }
-    
+
     /**
      * Returns the number of participants in this tournament
     */
-    function GetNumParticipants() {
+    function GetNumParticipants()
+    {
         return GetTournamentParticipantCount($this->id);
     }
-    
+
     /**
      * Returns number of held events in the tournament
     */
-    function GetEventsHeld() {
+    function GetEventsHeld()
+    {
         $e = $this->GetEvents();
         $count = 0;
         foreach ($e as $event) {
-            
+
             if ($event->resultsLocked) $count++;
         }
+
         return $count;
     }
-    
-    
+
     /**
      * Returns total number of events in this tournament
     */
-    function GetNumEvents() {
+    function GetNumEvents()
+    {
         $e = $this->GetEvents();
+
         return count($e);
     }
-    
+
     /**
      * Fails atm
     */
-    function GetLeader() {
+    function GetLeader()
+    {
        GetTournamentLeader($this->id);
     }
-    
+
     /**
      * Returns the level of this tournament
      */
-    function GetLevel() {
+    function GetLevel()
+    {
         return GetLevelDetails($this->level);
     }
-    
-    
+
     /**
      * Returns the score calculation used in this tournament
     */
-    function GetScoreCalculation() {
-        require_once('core/scorecalculation.php');
+    function GetScoreCalculation()
+    {
+        require_once 'core/scorecalculation.php';
+
         return GetScoreCalculationMethod('tournament', $this->scoreCalculationMethod);
     }
-    
-    
+
     /**
      * Returns all the events in this tournament.
     */
-    function GetEvents() {
-        
+    function GetEvents()
+    {
         static $cache = array();
-        
+
         if (!@$cache[$this->id]) $cache[$this->id] = GetTournamentEvents($this->id);
         return $cache[$this->id];
-        
+
     }
-    
+
     /**
      * Returns all the results of this tournament.
     */
-    function GetResults() {
-        
+    function GetResults()
+    {
         $results = GetTournamentResults($this->id);
-        
+
         return $results;
     }
-    
-    function GetResultsByClass() {
-        
+
+    function GetResultsByClass()
+    {
         $results = $this->GetResults();
         if (is_a($results,' Error')) return $results;
-        
+
         $out = array();
         foreach ($results as $result) {
             $class = $result['ClassName'];
@@ -128,7 +134,7 @@ class Tournament
             $out[$class][] = $result;
         }
         uasort($out, 'core_sort_by_count');
-        
+
         return $out;
     }
 }
@@ -136,12 +142,11 @@ class Tournament
 /**
  * Updates the tournament scores and standings of the given tournament
  */
-function UpdateTournamentPoints($tournamentId){
+function UpdateTournamentPoints($tournamentId)
+{
     $tournament = GetTournamentDetails($tournamentId);
     if (!$tournament) return;
     $sc = $tournament->GetScoreCalculation();
-    
+
     $sc->UpdateTournamentPoints($tournamentId, $tournament);
 }
-
-?>

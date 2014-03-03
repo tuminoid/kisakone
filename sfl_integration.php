@@ -27,7 +27,8 @@
  *
  * Returns array(a_license, membership, b_license)
  */
-function SFL_FeesPaidForYear($user, $year) {
+function SFL_FeesPaidForYear($user, $year)
+{
     // While developing, use this to simulate whatever payments
     // or if using Kisakone without SFL databases (like clubs)
     if (IGNORE_PAYMENTS == true) {
@@ -48,6 +49,7 @@ function SFL_FeesPaidForYear($user, $year) {
     $result = mysql_query($query);
     if (!$result) {
         echo mysql_error();
+
         return array(false, false, false);
     }
 
@@ -70,7 +72,6 @@ function SFL_FeesPaidForYear($user, $year) {
     }
 
     mysql_free_result($result);
+
     return array($aLicense, $membership, $bLicense);
 }
-
-?>

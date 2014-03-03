@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * "Create new event" page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,12 +25,13 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     language_include('formvalidation');
     if (!IsAdmin()) return Error::AccessDenied('newEvent');
-    
-    require_once('ui/support/eventform_init.php');
-    
+
+    require_once 'ui/support/eventform_init.php';
+
     $e = array();
     if ($error) {
         $smarty->assign('error', $error->data);
@@ -43,29 +44,25 @@ function InitializeSmartyVariables(&$smarty, $error) {
         $e['duration'] = @$_POST['duration'];
         $e['signup_start'] = $_POST['signup_start'];
         $e['signup_end'] = $_POST['signup_end'];
-        
+
         $e['classes'] = $error->data['classList'];
         $e['rounds'] = $error->data['roundList'];
         $e['officials'] = $error->data['officialList'];
-                
-        
+
         $e['td'] = $_POST['td'];
     }
-    
-    
+
     $smarty->assign('event', $e);
-    
+
     page_InitializeEventFormData($smarty, true);
-    
-    
-    
+
 }
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-?>

@@ -62,5 +62,3 @@ function processForm()
     header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
     die();
 }
-
-?>

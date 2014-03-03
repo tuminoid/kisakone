@@ -24,7 +24,8 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
-function processForm() {
+function processForm()
+{
     if (!IsAdmin()) {
         return Error::AccessDenied('manage_fees');
     }
@@ -39,27 +40,27 @@ function processForm() {
                 list($ignore, $userid, $year) = explode('_', $key);
                 $newfee = @$_POST['newlfee_' . $userid . '_' . $year];
 
-                $newfee = (bool)$newfee;
-                $value = (bool)$value;
+                $newfee = (bool) $newfee;
+                $value = (bool) $value;
 
                 if ($newfee != $value) {
                     if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
                     if (!array_key_exists('license', $payments[$userid])) $payments[$userid]['license'] = array();
                     $payments[$userid]['license'][$year] = $newfee;
                 }
-            } else if (substr($key, 0, 8) == 'oldmfee_') {
+            } elseif (substr($key, 0, 8) == 'oldmfee_') {
                 list($ignore, $userid, $year) = explode('_', $key);
                 $newfee = @$_POST['newmfee_' . $userid . '_' . $year];
 
-                $newfee = (bool)$newfee;
-                $value = (bool)$value;
+                $newfee = (bool) $newfee;
+                $value = (bool) $value;
 
                 if ($newfee != $value) {
                     if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
                     if (!array_key_exists('membership', $payments[$userid])) $payments[$userid]['membership'] = array();
                     $payments[$userid]['membership'][$year] = $newfee;
                 }
-            } else if (substr($key, 0, 7) == 'remind_') {
+            } elseif (substr($key, 0, 7) == 'remind_') {
                 $reminds[] = substr($key, 7);
             }
         }
@@ -74,7 +75,4 @@ function processForm() {
     }
     die();
 
-
 }
-
-?>

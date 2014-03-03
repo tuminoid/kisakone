@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Backend for providing autocomplete functionality
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,24 +26,24 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     header("Content-Type: text/javascript");
     $id = basename(@$_GET['id']);
-    
+
     if (!file_exists("ui/autocomplete/$id.php")) return new Error();
-    
-    
+
     include("ui/autocomplete/$id.php");
-    
+
     $options = page_Autocomplete($_GET['query']);
-    
+
     $suggestions = $options['suggestions'];
-    
+
     $smarty->assign('query', str_replace('"', '\"', $_GET['query']));
-    
+
     //$smarty->assign('suggestions', array_map('Page_JSDoubleQuotes', array_values($suggestions)));
     $smarty->assign('suggestions', $suggestions);
-    
+
     if ($options['useKeys']) {
         $smarty->assign('data', array_keys($suggestions));
     } else {
@@ -52,8 +52,8 @@ function InitializeSmartyVariables(&$smarty, $error) {
         } else {
             $smarty->assign('data', false);
         }
-    }    
-    
+    }
+
     SetContentType("text/plain");
 }
 
@@ -64,7 +64,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'unique';
 }
-?>

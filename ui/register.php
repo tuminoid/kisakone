@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Registration form
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,17 +26,17 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     language_include('users');
     if ($error) {
-        $smarty->assign('initial_date', (int)$_POST['dob_Year'] . '-1-1');
+        $smarty->assign('initial_date', (int) $_POST['dob_Year'] . '-1-1');
         $smarty->assign('error', $error->data);
-        
+
     } else {
         $smarty->assign('initial_date', '0-0-0');
     }
 }
-
 
 /**
  * Determines which main menu option this page falls under.
@@ -45,7 +45,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
  * the menu.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'unique';
 }
-?>

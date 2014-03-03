@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Data access module initialization
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -20,6 +20,4 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-   require_once('data_access.php');
-
-?>
+   require_once 'data_access.php';

@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Tournament details page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,29 +26,28 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
+function InitializeSmartyVariables(&$smarty, $error)
+{
     language_include('users');
    SetContentType('text/html; charset=utf-8');
     $tournament = GetTournamentDetails($_GET['id']);
-    
+
     $eph = array();
     $numev = $tournament->GetNumEvents();
     for ($ind = 0; $ind < $numev; ++$ind) $eph[] = true;
-   
+
    $smarty->assign('eventplaceholders', $eph);
     $smarty->assign('tournament', $tournament);
-    
+
     if (@$_GET['edit'] && IsAdmin()) $smarty->assign('edit', true);
-    
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'tournaments';
 }
-?>

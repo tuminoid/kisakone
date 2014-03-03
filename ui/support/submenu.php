@@ -12,7 +12,8 @@
  * This function defines and returns the submenu tree
  * @return submenu. The structure is fairly complicated, so it is ideal just to look at the implementation.
  */
-function page_getSubMenu() {
+function page_getSubMenu()
+{
     // Submenu format:
     // The submenu itself is an array which consists of items matching each of the main menu items
     // (irrelevant items can be left out, such as administration items when the user is viewing an event)
@@ -58,7 +59,6 @@ function page_getSubMenu() {
         $archivedEvents[] =
             array('title' => translate('submenu_past_events', array('year' => $year)), 'link' => array('page' => 'events', 'id' => $year), 'access' => null, 'children' => array());
     }
-
 
     global $user;
     $username = '(not_available)';
@@ -155,7 +155,7 @@ function page_getSubMenu() {
 
     // Event details part can only be shown if there is a selected event; because of that it's added
     // to the menu conditionally
-    if ($id == (int)$id && $id != 0 && getmainmenuselection() == 'events') {
+    if ($id == (int) $id && $id != 0 && getmainmenuselection() == 'events') {
         $eventData = array('title' => pdr_GetEventName($id), 'link' => array('page' => 'event', 'id' => $id), 'access' => null, 'children' => array(
             array('title' => translate('event_info'), 'link' => array('page' => 'event', 'id' => $id, 'view' => ''), 'access' => null, 'children' => array(
                 array('title' => translate('event_newsarchive'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'newsarchive'), 'access' => null, 'children' => array()),
@@ -175,14 +175,11 @@ function page_getSubMenu() {
                 array('title' => translate('event_cancel_signup'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'cancelsignup'), 'access' => null, 'children' => array(), 'condition' => @$_GET['view'] == 'cancelsignup'),
             )),
 
-
-
         ));
 
         // It is possible to edit the titles of the event pages and add new custom pages; these
         // changes are taken care of by this call.
-        page_customizeEventMenu((int)$id, $eventData);
-
+        page_customizeEventMenu((int) $id, $eventData);
 
         $eventData['children'][] = array('title' => translate('event_rss'), 'link' => array('page' => 'eventrss', 'id' => $id, '_url_suffix' => '.rss'), 'access' => null, 'children' => array());
 
@@ -271,11 +268,11 @@ function page_getSubMenu() {
 
         }
 
-
     // Open the branch which contains the currently selected page
     foreach ($submenu as $index => $ignore) {
         page_openSubmenuBranchs($submenu[$index]);
     }
+
     return $submenu;
 }
 
@@ -284,8 +281,8 @@ function page_getSubMenu() {
  * @param $submenu array Submenu item to process
  * @return boolean true if the item itself or one of its subitems is selected
  */
-function page_openSubmenuBranchs(&$submenu) {
-
+function page_openSubmenuBranchs(&$submenu)
+{
     $containsSelection  = false;
 
     // See if any of the contained items is selected
@@ -324,25 +321,25 @@ function page_openSubmenuBranchs(&$submenu) {
     return $containsSelection || $submenu['selected'];
 }
 
-
 /**
  * Returns true if the page matching the link (as defined in submenu) is the current page
  */
-function page_selected($link) {
-
+function page_selected($link)
+{
     foreach ($link as $parameter => $value) {
         $getValue = @$_GET[$parameter];
         if (is_array($getValue)) $getValue = implode('/', $getValue);
         if ($getValue != $value) return false;
     }
+
     return true;
 }
-
 
 /**
  * Simple wrapper to return event name based on its id
  */
-function pdr_GetEventName($evid) {
+function pdr_GetEventName($evid)
+{
     $event = GetEventDetails($evid);
     if (!$event || is_a($event, 'Error')) return '';
     else return $event->name;
@@ -351,7 +348,8 @@ function pdr_GetEventName($evid) {
 /**
  * Customizes the submenu for an event based on entered custom pages and modified titles
  */
-function page_customizeEventMenu($eventid, &$menu) {
+function page_customizeEventMenu($eventid, &$menu)
+{
     $data = GetAllTextContent($eventid);
     foreach ($data as $row) {
         // Ignoring pages set up to use default title
@@ -380,18 +378,18 @@ function page_customizeEventMenu($eventid, &$menu) {
 }
 
 // Returns the deepest selected menu item from the provided submenu
-function page_GetSelectedMenuItem($menu) {
-
+function page_GetSelectedMenuItem($menu)
+{
     $mm = GetMainMenuSelection();
     $from = $menu[$mm];
-    return page_GetSelectedMenuItem2($from);
 
+    return page_GetSelectedMenuItem2($from);
 
 }
 
 // Returns the deepest selected menu item from the provided submenu item recursively
-function page_GetSelectedMenuItem2($from) {
-
+function page_GetSelectedMenuItem2($from)
+{
     if ($from['selected']) {
         // This item is selected; if one of its children is selected then that children is deeper
         // and must be considered, otherwise this is the item
@@ -401,8 +399,9 @@ function page_GetSelectedMenuItem2($from) {
                 return page_GetSelectedMenuItem2($child);
             }
         }
+
         return $from;
-    } else if ($from['open']) {
+    } elseif ($from['open']) {
         // Not selected but open, one of the children might be selected
         foreach ($from['children'] as $child) {
             if ($child['open'] || $child['selected']) {
@@ -411,7 +410,7 @@ function page_GetSelectedMenuItem2($from) {
             }
         }
     }
+
     return null;
 
 }
-?>

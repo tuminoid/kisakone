@@ -11,16 +11,15 @@
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
-    require_once('core/textcontent.php');
+function processForm()
+{
+    require_once 'core/textcontent.php';
 
     $problems = array();
 
     $event = GetEventDetails(@$_GET['id']);
     if (!$event) return Error::NotFound('event');
     if (!IsAdmin() && $event->management !='td') return Error::AccessDenied();
-
 
     if (@$_POST['cancel']) {
 
@@ -31,12 +30,13 @@ function processForm() {
     $title = @$_POST['title'];
     $content = @$_POST['textcontent'];
 
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = translate('title_is_mandatory');
         $error->function = 'InputProcessing:edit_event_page:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
 
@@ -46,9 +46,9 @@ function processForm() {
 
     if (!@$_POST['preview']) {
        input_emails(@$_POST['ids'], $evp, $event);
-    }
-    else {
+    } else {
         $evp->FormatText();
+
         return $evp;
     }
 
@@ -59,7 +59,7 @@ function processForm() {
 function input_emails($recipientlist, $mail, $event)
 {
     $recipients = explode(',', $recipientlist);
-    require_once('core/email.php');
+    require_once 'core/email.php';
     $email = new Email($mail);
     $link = "http://" . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'event', 'id' => $event->id, 'view' => 'payment'), $link);
     $special = array('link' => $link);
@@ -71,5 +71,3 @@ function input_emails($recipientlist, $mail, $event)
         $email->Send($p->email);
     }
 }
-
-?>

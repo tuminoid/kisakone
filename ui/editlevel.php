@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Level editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,13 +25,12 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     if (!IsAdmin()) return Error::AccessDenied();
-    
-    
-    require_once('core/scorecalculation.php');
-    
+
+    require_once 'core/scorecalculation.php';
+
     if ($error) {
         $smarty->assign('error', $error->data);
         $smarty->assign('level', $_POST);
@@ -40,29 +39,27 @@ function InitializeSmartyVariables(&$smarty, $error) {
         if (is_object($levelobj)) {
             $level = get_object_vars($levelobj);
             $smarty->assign('level', $level);
-        } else if (@$_GET['id'] != 'new'){         
+        } elseif (@$_GET['id'] != 'new') {
             return Error::NotFound('level');
-        
+
         }
     }
-    
+
     $scoremethods =  GetScoreCalculationMethods('level');
     $scoreOptions = array();
-    
+
     foreach ($scoremethods as $method) $scoreoptions[$method->id] = $method->name;
-    
-    $smarty->assign('scoreOptions', $scoreoptions);    
-    
+
+    $smarty->assign('scoreOptions', $scoreoptions);
+
     $smarty->assign('deletable', !LevelBeingUsed($_GET['id']));
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'administration';
 }
-?>

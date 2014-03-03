@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Class editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,13 +26,10 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     if (!IsAdmin()) return Error::AccessDenied();
-    
-    
-    
-    
+
     if ($error) {
         $smarty->assign('error', $error->data);
         $smarty->assign('class', $_POST);
@@ -43,25 +40,22 @@ function InitializeSmartyVariables(&$smarty, $error) {
         }
         $smarty->assign('class', $class);
     }
-    
-    
+
     $smarty->assign('genderOptions', array(
         '' => translate('noRestriction'),
        'M' => translate('male'),
        'F' => translate('female'),
-        
+
     ));
-    
+
     $smarty->assign('deletable', !ClassBeingUsed($_GET['id']));
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'administration';
 }
-?>

@@ -62,6 +62,7 @@ function processForm()
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
+
         return $result;
     }
 
@@ -69,5 +70,3 @@ function processForm()
     header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
     die();
 }
-
-?>

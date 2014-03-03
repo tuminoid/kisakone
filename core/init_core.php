@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains initialization code for the core module
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,10 +22,7 @@
  * */
 
 // Only the most crucial files are included
-require_once('user.php');
-require_once('event.php');
-require_once('general.php');
-require_once('error.php');
-
-
-?>
+require_once 'user.php';
+require_once 'event.php';
+require_once 'general.php';
+require_once 'error.php';

@@ -23,7 +23,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-class Error {
+class Error
+{
     /**
      * User-friendly very brief title of the error.
      * @var string
@@ -90,7 +91,8 @@ class Error {
     */
     var $backtrace;
 
-    function Error() {
+    function Error()
+    {
         $this->backtrace = debug_backtrace();
 
     }
@@ -99,7 +101,8 @@ class Error {
     // minimal effort  from the caller. Their use is highly recommended when
     // appropriate.
 
-    function notImplemented() {
+    function notImplemented()
+    {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 500;
@@ -107,11 +110,11 @@ class Error {
         $e->description = translate('error_not_implemented_description');
         $e->errorPage = 'error';
 
-
         return $e;
     }
 
-    function notFound($resourceType) {
+    function notFound($resourceType)
+    {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 404;
@@ -122,7 +125,8 @@ class Error {
         return $e;
     }
 
-    function accessDenied() {
+    function accessDenied()
+    {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 403;
@@ -133,7 +137,8 @@ class Error {
         return $e;
     }
 
-    function Query($query) {
+    function Query($query)
+    {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 500;
@@ -142,8 +147,7 @@ class Error {
         $e->description = translate('error_db_query_description');
         $e->errorPage = 'error';
         $e->isMajor = true;
+
         return $e;
     }
 }
-
-?>

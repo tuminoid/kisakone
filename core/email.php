@@ -5,7 +5,7 @@
  *
  * This file includes the Email class and other support functionality
  * used for sending e-mail messages.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,7 +26,8 @@
  * E-mail tokens are bits of text which are converted within an e-mail message
  * with appropriate content.
  */
-function GetEmailTokens() {
+function GetEmailTokens()
+{
     // The key stands for the token itself, the value is instruction for
     // the Email::Prepare function letting it know how to deal with it
     return array(
@@ -41,7 +42,7 @@ function GetEmailTokens() {
         'signup_end' => 'event.signupEnd/d',
         'link' => 'special.link',
         'token' => 'special.token',
-        
+
     );
 }
 
@@ -50,26 +51,26 @@ define('EMAIL_YOU_ARE_TD', 'email_td');
 define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
 
-class Email {
-    // E-mails are quite simply text content, using different processing.    
-    
-    
+class Email
+{
+    // E-mails are quite simply text content, using different processing.
+
     var $textcontent;
     var $text;
     var $title;
-    
+
     // Initialization can be done with either e-mail id, or by supplying a
     // TextContent object for the message
-    function Email($content){
-        
-        require_once('core/textcontent.php');
+    function Email($content)
+    {
+        require_once 'core/textcontent.php';
         if (is_a($content, 'TextContent')) {
             $this->textcontent = $content;
         } else {
-            $this->textcontent = GetGlobalTextContent($content);            
+            $this->textcontent = GetGlobalTextContent($content);
         }
     }
-    
+
     /**
      * The contained e-mail message is prepared to be sent; all the tokens
      * within are replaced by the corrersponding values. $user, $player and
@@ -80,26 +81,27 @@ class Email {
      * Once this function has been called, the field text contains the
      * prepared e-mail message.
     */
-    function Prepare($user, $player, $event, $special) {
+    function Prepare($user, $player, $event, $special)
+    {
         if (!$this->textcontent) return;
         $tokens = GetEmailTokens();
-        
+
         $text = $this->textcontent->content;
-        
+
         $from = array();
         $to = array();
-        
+
         foreach ($tokens as $token => $data) {
             $from[] = '{' . $token . '}';
             list($object, $field) = explode('.', $data);
-            
-            switch($object) {
+
+            switch ($object) {
                 case 'event':
                     if (!$event) $value = '';
                     else {
                         if (substr($field, -2) == '/d') {
                             $field = substr($field, 0, -2);
-                            $date = true;                        
+                            $date = true;
                         } else $date = false;
                         $value = $event->$field;
                         if (!is_object($event)) echo print_r($event);
@@ -114,37 +116,37 @@ class Email {
                     if (!$user) $value = '';
                     else $value = $user->$field;
                     break;
-                case 'special':                
+                case 'special':
                     $value = @$special[$field];
                     break;
-                    
+
             }
-            
+
             $to[] = $value;
         }
-        
+
         $this->text = str_replace($from, $to, $text);
         $this->title = str_replace($from, $to, $this->textcontent->title);
     }
-    
-    function Send($recipientAddress) {        
+
+    function Send($recipientAddress)
+    {
         if (!$this->text) return;
-    
+
         global $settings;
         $from = $settings['EMAIL_SENDER'];
         $mailer = $settings['EMAIL_MAILER'];
-        
+
         mail(
             $recipientAddress,
             utf8_decode($this->title),
             utf8_decode($this->text),
             "From: " . $from . "\r\n"
             . "X-Mailer: " . $mailer
-        
+
         );
     }
-    
-    
+
 }
 
 /**
@@ -155,29 +157,27 @@ class Email {
  *
  * Some details of the messages can be adjusted in config_site.php file.
  */
-function SendEmail($emailid, $userid, $event, $link = '', $token = '') {
+function SendEmail($emailid, $userid, $event, $link = '', $token = '')
+{
     $user = GetUserDetails($userid);
     $player = $user->GetPlayer();
     $special = array('link' => $link, 'token' => $token);
     $email = new Email($emailid);
     $email->prepare($user, $player, $event, $special);
-    
+
     if (!$email->text) return;
-    
+
     global $settings;
     $from = $settings['EMAIL_SENDER'];
     $mailer = $settings['EMAIL_MAILER'];
-    
+
     mail(
         $user->email,
         utf8_decode($email->title),
         utf8_decode($email->text),
         "From: " . $from . "\r\n"
         . "X-Mailer: " . $mailer
-        
-    );
-    
-    
-}
 
-?>
+    );
+
+}

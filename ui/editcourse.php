@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Course editor UI backend
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,14 +26,13 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     language_include('events');
-    require_once('core/hole.php');
-    
+    require_once 'core/hole.php';
+
     if (is_string($error))  $smarty->assign('error', $error);
-    
-    
+
     if (@$_GET['id'] == 'new') {
         if (!IsAdmin()) {
             $eventid = @$_GET['event'];
@@ -41,15 +40,16 @@ function InitializeSmartyVariables(&$smarty, $error) {
             $event = GetEventDetails($eventid);
             if ($event->management != 'td') return Error::AccessDenied();
         }
-        
-        if (!(int)@$_GET['holes'] && !@$_GET['template'] ) {
+
+        if (!(int) @$_GET['holes'] && !@$_GET['template'] ) {
             // New item, no holes defined, no template either
             $smarty->assign('holeChooser', true);
+
             return;
         }
-        
+
         if (@$_GET['template']) {
-            
+
             // Initialize data from template
             $course =  GetCourseDetails(@$_GET['template']);
             $course['id'] = 'new';
@@ -64,7 +64,7 @@ function InitializeSmartyVariables(&$smarty, $error) {
         } else {
             // Number of holes defined, create blank holes
             $smarty->assign('course', array('Name' => '', 'Link' => '', 'Map' => '', 'Description' => '', 'id' => 'new'));
-            $holes = (int)@$_GET['holes'];            
+            $holes = (int) @$_GET['holes'];
             $h = array();
             $ind = 1;
             do {
@@ -78,33 +78,28 @@ function InitializeSmartyVariables(&$smarty, $error) {
         if (!IsAdmin()) {
             $eventid = $course['Event'];
 
-
             if (!$eventid) return Error::AccessDenied();
             $event = GetEventDetails($eventid);
             if ($event->management != 'td') return Error::AccessDenied();
         }
-        
+
         $smarty->assign('course',$course);
         $smarty->assign('holes', GetCourseHoles(@$_GET['id']));
-        
-        
+
         if (CourseUsed($course['id'])) {
             $smarty->assign('warning', true);
-                        
+
         }
     }
-    
-    
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     if (@$_GET['id'])  return 'unique';
     else return 'administration';
 }
-?>

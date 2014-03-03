@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Tournament listing page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,28 +25,24 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {    
+function InitializeSmartyVariables(&$smarty, $error)
+{
     $year = @$_GET['id'];
     if (!$year) $year = date('Y');
-    $year = (int)$year;
-    
+    $year = (int) $year;
+
     $tournaments = GetTournaments($year);
-   
-   
-   
+
     $smarty->assign('tournaments', $tournaments);
-    $smarty->assign('year', $year);    
-    
-    
+    $smarty->assign('year', $year);
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'tournaments';
 }
-?>

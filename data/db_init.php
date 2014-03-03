@@ -29,8 +29,7 @@
       global $settings;
       $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
 
-      if(!($con && @mysql_select_db($settings['DB_DB'])))
-      {
+      if (!($con && @mysql_select_db($settings['DB_DB']))) {
          $retValue = new Error();
          $retValue->isMajor = true;
          $retValue->title = 'error_db_connection';
@@ -39,5 +38,3 @@
 
       return $retValue;
    }
-
-?>

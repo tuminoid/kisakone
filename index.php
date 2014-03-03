@@ -24,16 +24,15 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 // Suomen Frisbeeliitto-specific functionality
-require_once('sfl_integration.php');
+require_once 'sfl_integration.php';
 
 setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
 
 // Support libraries that do NOT rely on data relayed from the user
 
-require_once('config.php');
-require_once('config_site.php');
+require_once 'config.php';
+require_once 'config_site.php';
 
 // Some version of PHP 5 complain about lack of time zone data, so if we can
 // we'll set it now
@@ -41,14 +40,14 @@ if (is_callable('date_default_timezone_set')) {
    date_default_timezone_set("Europe/Helsinki");
 }
 
-require_once('helpers.php');
+require_once 'helpers.php';
 
-require_once('./Smarty/libs/Smarty.class.php');
+require_once './Smarty/libs/Smarty.class.php';
 
-require_once('core/init_core.php');
-require_once('ui/support/init_pagedatarelay.php');
-require_once('inputhandlers/support/init_input.php');
-require_once('data/init_data.php');
+require_once 'core/init_core.php';
+require_once 'ui/support/init_pagedatarelay.php';
+require_once 'inputhandlers/support/init_input.php';
+require_once 'data/init_data.php';
 
 
 
@@ -56,7 +55,6 @@ require_once('data/init_data.php');
 // access level, so this is necessary.
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-
 
 // If we're supposed to be logged in, start the session
 if (@$_COOKIE['kisakone_login']) {
@@ -105,15 +103,11 @@ language_include('loginbox');
 language_include('pageNameMapping');
 language_include('errors');
 
-
 gate_MapURLParameters();
 
 // Support libraries that do or might rely on data from the user.
 
-require_once('inputmapping.php');
-
-
-
+require_once 'inputmapping.php';
 
 // Process sent form data. The function itself can be found in inputmapping.php
 $pageData = gate_ProcessInputData();
@@ -129,12 +123,9 @@ if (is_a($pageData, 'Error')) {
    }
 }
 
-
 // $pagename represents the subpage that is to be shown.
 if (array_key_exists('page', $_GET) && $_GET['page'] && !$_GET['page'][0] == "") $pagename = $_GET['page'];
 else $pagename = array('events');
-
-
 
 // Pagename needs to be an array; in some cases (especially after errors) it might
 // be a string; in this case the string should be the first and only item in the array,
@@ -170,7 +161,6 @@ if (!file_exists("templates/" . $fullTemplateName) || !file_exists("ui/$pagename
 
 }
 
-
 require_once("ui/$pagename[0].php");
 
 // Although rarely used, pages can have their own language files
@@ -186,7 +176,7 @@ $smarty = InitializeSmarty();
 // Provided by the ui/$pagename.php
 $pageData = InitializeSmartyVariables($smarty, $pageData);
 
-foreach($smarty->get_template_vars() as $var => $value) {
+foreach ($smarty->get_template_vars() as $var => $value) {
    if (is_a($value, 'Error')) $pageData = $value;
 }
 
@@ -201,8 +191,7 @@ $isXhtml = false;
 if (@$GLOBALS['contentTypeSet']) {
    // already done, do nothing now
    $smarty->assign('contentType', $GLOBALS['contentTypeSet']);
-}
-else if (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+} elseif (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
    header("Content-Type: text/html; charset=utf-8");
    $smarty->assign('contentType', "text/html; charset=utf-8");
 } else {
@@ -224,7 +213,7 @@ if (is_a($pageData, 'Error')) {
 
       $pagename = array('error');
       $fullTemplateName = "error.tpl";
-      include_once('ui/error.php');
+      include_once 'ui/error.php';
       Error_InitializeSmartyVariables($smarty, $pageData);
       $smarty->assign('error', $pageData);
 
@@ -241,7 +230,8 @@ $smarty->display($fullTemplateName);
  * This function maps parameters passed within the URL (when mod_rewrite is used)
  * into parameters found in the $_GET and $_REQUEST arrays.
  */
-function gate_mapURLParameters() {
+function gate_mapURLParameters()
+{
    global $parameterInPath;
    $parameterInPath = array();
 
@@ -249,6 +239,7 @@ function gate_mapURLParameters() {
    // processing is only done if it's present.
    if (count($_GET) == 0 || !array_key_exists('path', $_GET)) {
       $_GET['page'] = explode('/', @$_GET['page']);
+
       return;
    }
 
@@ -260,8 +251,6 @@ function gate_mapURLParameters() {
    if (@$_GET['page'] && !$_GET['path']) $_GET['path'] = @$_GET['page'];
 
    $pathnodes = explode('/', $_GET['path']);
-
-
 
    // How many extra elements have been included in the path
    $offset = 0;
@@ -306,7 +295,6 @@ function gate_mapURLParameters() {
          $offset = 0;
       }
 
-
    }
 
    // Is there ID on the url?
@@ -331,7 +319,8 @@ function gate_mapURLParameters() {
 
 // Choose the ad to be shown on this page; a page data relay unit may
 // have set one already, so we won't replace it in that case
-function gate_AssignAd(&$smarty) {
+function gate_AssignAd(&$smarty)
+{
    if ($smarty->get_template_vars('ad')) return;
 
    if (GetMainMenuSelection() == 'administration') return;
@@ -348,22 +337,22 @@ function gate_AssignAd(&$smarty) {
 }
 
 // Translates a single entry in a page name
-function gate_TranslatePathNode($node) {
+function gate_TranslatePathNode($node)
+{
    global $language;
    if (array_key_exists("page:" . $node, $language->data)) $node = substr(translate("page:" .  $node), 5);
    return $node;
 }
 
 // This function translates all the variables sent using GET method
-function gate_remapGet() {
-
+function gate_remapGet()
+{
    global $language;
 
 
    foreach ($_GET as $param => $value) {
       // Page is translated as it's being read, not done here
       if ($param == 'page') continue;
-
 
       // Translates both the variable name and value
       if (array_key_exists("param:" . $param, $language->data)) $param = substr(translate("param:" . $param), 6);;
@@ -381,8 +370,6 @@ function gate_remapGet() {
 
       $_GET[$param] = $value;
 
-
-
    }
 
 }
@@ -392,7 +379,8 @@ function gate_remapGet() {
  * quote characters with backslashes. If the settings is enabled,  this function
  * goes through the affected arrays and removes the backslashes.
  */
-function gate_stripSlashesIfNecessary() {
+function gate_stripSlashesIfNecessary()
+{
          if (!get_magic_quotes_gpc()) return;
 
          // Luckily php doesn't mind having the array values changed while
@@ -406,12 +394,14 @@ function gate_stripSlashesIfNecessary() {
 
 // This is a slightly extented version of stripslashes; if the value is an array,
 // it remains an array and all its values are sanitized similarly
-function recursive_stripslashes($data) {
+function recursive_stripslashes($data)
+{
    if (is_array($data)) {
       $out = array();
       foreach ($data as $key => $value) {
          $out[$key] = recursive_stripslashes($value);
       }
+
       return $out;
 
    } else {
@@ -421,15 +411,18 @@ function recursive_stripslashes($data) {
 
 // Simple function which can be used to confirm whether or not the current page
 // matches the provided string, for example, PageIs("events")
-function PageIs($pageName) {
+function PageIs($pageName)
+{
    global $fullPageName;
+
    return $pageName == $fullPageName;
 
 }
 
 // Set the content type for the request; this function should be used instead
 // of a simple header() call, as otherwise the type will be replaced later on.
-function SetContentType($type) {
+function SetContentType($type)
+{
    $GLOBALS['contentTypeSet'] = $type;
    header("Content-Type: " . $type);
 }
@@ -439,7 +432,8 @@ function SetContentType($type) {
  * language by default. To rectify this, all languages are changed for valid page name mapping
  * when attempting to access a file that doesn't exist
  */
-function gate_AttemptLanguageDetection($pagename) {
+function gate_AttemptLanguageDetection($pagename)
+{
    $dir = opendir('ui/languages');
    if ($dir) {
       $token = "page:" . $pagename[0];
@@ -460,8 +454,6 @@ function gate_AttemptLanguageDetection($pagename) {
             header("Location: " . url_smarty($bits, $_GET));
             die();
 
-
-
          }
 
       }
@@ -469,4 +461,3 @@ function gate_AttemptLanguageDetection($pagename) {
       closedir($dir);
    }
 }
-?>

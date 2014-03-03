@@ -26,8 +26,9 @@
  * Processes the form
  * @return Nothing or Error object on error
  */
-function processForm() {
-    require_once('core/event_management.php');
+function processForm()
+{
+    require_once 'core/event_management.php';
 
     if (@$_POST['cancel']) {
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
@@ -64,6 +65,7 @@ function processForm() {
         $error->function = 'InputProcessing:sign_up:processForm';
         $error->description = translate('invalid_class_selection_description');
         $error->isMajor= true;
+
         return $error;
     }
 
@@ -77,6 +79,7 @@ function processForm() {
     $result = SignupUser($event->id, $user->id, $class->id);
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
+
         return $result;
     }
 
@@ -84,12 +87,9 @@ function processForm() {
     if ($result) {
         // Show payment if signup true
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result?1:0), $nothing));
-    }
-    else {
+    } else {
         // Show queue if signup false
         header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result?1:0), $nothing));
     }
     die();
 }
-
-?>

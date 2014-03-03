@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * User listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,27 +26,23 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-
+function InitializeSmartyVariables(&$smarty, $error)
+{
    if (IsAdmin()) {
       $users = GetUsers(@$_GET['search'], @$_GET['sort']);
    } else {
       $users = GetPlayerUsers(@$_GET['search'], @$_GET['sort']);
    }
 
-
-   
     $smarty->assign('users', $users);
-            
+
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'users';
 }
-?>

@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains the Level class
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -24,17 +24,17 @@
 /* *****************************************************************************
  * This class represents a single level in the system.
  */
-class Level 
+class Level
 {
     var $id;
     var $name;
     var $scoreCalculationMethod;
     var $available;
-    
+
     /** ************************************************************************
      * Class constructor
      */
-    function Level( $id = null,
+    function Level($id = null,
                     $name = "",
                     $scoreCalculationMethod = null, $available = false)
     {
@@ -42,10 +42,10 @@ class Level
         $this->name = $name;
         $this->scoreCalculationMethod = $scoreCalculationMethod;
         $this->available = $available;
-        
+
         return;
     }
-    
+
     /** ************************************************************************
      * Method for getting the score calculation method name.
      *
@@ -53,15 +53,14 @@ class Level
      */
     function getScoreCalculationName()
     {
-        require_once('core/scorecalculation.php');
+        require_once 'core/scorecalculation.php';
         $methodName = "";
-        
-        if( !($this->scoreCalculationMethod == ""))
-        {
+
+        if ( !($this->scoreCalculationMethod == "")) {
             $obj = GetScoreCalculationMethod('level', $this->scoreCalculationMethod);
             $methodName = $obj->name;
         }
-        
+
         return $methodName;
     }
 }
@@ -69,4 +68,3 @@ class Level
 /* ****************************************************************************
  * End of file
  * */
-?>

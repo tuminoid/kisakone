@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Finnish Championship style tournament score calculation
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -21,18 +21,21 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-class scorecalc_level_sm {
+class scorecalc_level_sm
+{
     var $name;
     var $id;
-    
-    function scorecalc_level_sm() {
+
+    function scorecalc_level_sm()
+    {
         $this->id = $this->id = substr(get_class($this), 16);
         $this->name = 'SM';
     }
-    
-    function CalculateScores(&$participants, $totalHoles, $event ,$active) {
+
+    function CalculateScores(&$participants, $totalHoles, $event ,$active)
+    {
         if (!count($participants)) return;
-        
+
         $className = $participants[0]['Name'];
         if (stripos($className, 'naiset') !== false) {
 # Janne muutti, tapani pyyti
@@ -44,7 +47,7 @@ class scorecalc_level_sm {
 # Janne muutti, tapani pyyti, vain naisill vähän pisteitä, muilla sarjoilla täydet
 #            $scores = array(100,80,65,52,40,30,20,10);
         }
-        
+
         $participantCount = $active;
 
         foreach ($participants as $index => $participant) {
@@ -52,39 +55,39 @@ class scorecalc_level_sm {
             foreach ($participant['Rounds'] as $round) {
                 $done += $round['Completed'];
             }
-            
+
             /*if ($done == 0) {
                 $score = 0;
             } else {*/
                 $standing = $participant['Standing'];
-                $same = 0;                
+                $same = 0;
                 for ($i = $index - 1; $i >= 0; --$i) {
                     if ($participants[$i]['Standing'] == $standing) $same++;
                     else break;
                 }
-                
+
                 for ($i = $index + 1; $i < count($participants); ++$i) {
                     if ($participants[$i]['Standing'] == $standing) $same++;
                     else break;
                 }
-                
+
                 if ($same == 0) {
                     $score = 0;
                     $score = @$scores[$standing - 1];
                 } else {
                     $score = 0;
-                    
+
                     $left = $same + 1;
                     while ($left--) {
                         $score += @$scores[$standing + $left - 1];
                     }
                     $score = round($score * 10 / ($same + 1)) / 10;
-                    
+
                 }
-                
+
             //}
             $score *= 10;
-            
+
             if ($score != $participant['TournamentPoints']) {
                 $participants[$index]['TournamentPoints'] = $score;
                 $participants[$index]['Changed'] = true;
@@ -92,7 +95,5 @@ class scorecalc_level_sm {
 
         }
     }
-    
-    
+
 }
-?>

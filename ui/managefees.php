@@ -27,8 +27,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-
+function InitializeSmartyVariables(&$smarty, $error)
+{
     if (USE_SFL_PAYMENTS) return Error::AccessDenied();
 
     if (!IsAdmin()) {
@@ -37,18 +37,15 @@ function InitializeSmartyVariables(&$smarty, $error) {
 
    $users = GetFeePayments(true, @$_GET['search'], @$_GET['sort']);
 
-
    $smarty->assign('users', $users);
 
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'users';
 }
-?>

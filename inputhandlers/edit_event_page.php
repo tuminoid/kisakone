@@ -25,22 +25,19 @@
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
-function processForm() {
-
+function processForm()
+{
     $event = GetEventDetails(@$_GET['id']);
     if (!$event) return Error::NotFound('event');
 
-
-
     $custom = @$_GET['mode'] == 'custom';
     $news = @$_GET['mode'] == 'news';
-
 
     if (@$_POST['cancel']) {
 
         if ($custom) {
             header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-        } else if ($news) {
+        } elseif ($news) {
             header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
             header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
@@ -57,7 +54,6 @@ function processForm() {
             else if ($evp->type =='news') $denied = false;
         }
 
-
         if ($denied) return Error::AccessDenied('eventfees');
     }
 
@@ -71,7 +67,7 @@ function processForm() {
         }
         if ($custom) {
             header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-        } else if ($news) {
+        } elseif ($news) {
             header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
             header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
@@ -85,14 +81,13 @@ function processForm() {
 
     if (($custom || $news) && $title == '') $problems['title'] = translate('FormError_NotEmpty');
 
-
-
-    if(count($problems)) {
+    if (count($problems)) {
         $error = new Error();
         $error->title = translate('title_is_mandatory');
         $error->function = 'InputProcessing:edit_event_page:processForm';
         $error->cause = array_keys($problems);
         $error->data = $problems;
+
         return $error;
     }
 
@@ -103,7 +98,7 @@ function processForm() {
         if (is_numeric(@$_GET['content']) || @$_GET['content'] == '*') {
             if ($custom) {
                 $evp->type = 'custom';
-            } else if ($news) {
+            } elseif ($news) {
                 $evp->type = 'news';
             } else {
                 return Error::InternalError();
@@ -116,26 +111,22 @@ function processForm() {
     $evp->title = $title;
     $evp->content = $content;
 
-
     if (!@$_POST['preview']) {
         $result = $evp->save();
     } else {
         $evp->FormatText();
+
         return $evp;
     }
-
-
 
     if (is_a($result, 'Error')) return $result;
 
     if ($custom) {
         header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-    } else if ($news) {
+    } elseif ($news) {
         header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
     } else {
         header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
     }
     die();
 }
-
-?>

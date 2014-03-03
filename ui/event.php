@@ -27,8 +27,8 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
-function InitializeSmartyVariables(&$smarty, $error) {
-
+function InitializeSmartyVariables(&$smarty, $error)
+{
    $event = GetEventDetails($_GET['id']);
    $smarty->assign('event', $event);
    global $user;
@@ -49,10 +49,11 @@ function InitializeSmartyVariables(&$smarty, $error) {
       $error->title = 'error_event_not_active';
       $error->description = translate('error_event_not_active_description');
       $error->source = 'PDR:Event:InitializeSmartyVariables';
+
       return $error;
    }
 
-   switch((string)@$_GET['view']) {
+   switch ((string) @$_GET['view']) {
       case '':
          $view = 'index';
 
@@ -254,22 +255,21 @@ function InitializeSmartyVariables(&$smarty, $error) {
    $smarty->assign('textcontent', $evp);
 }
 
-
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
  */
-function getMainMenuSelection() {
+function getMainMenuSelection()
+{
     return 'events';
 }
-
 
 /**
  * Provides obfuscated version of contact info, suitable for use on a web page
  * with less risk of bots finding it
  */
-function page_ObfuscateContactInfo($contactInfo) {
+function page_ObfuscateContactInfo($contactInfo)
+{
    return array(
       page_ObfuscateContactInfo_HTML($contactInfo),
       page_ObfuscateContactInfo_JS($contactInfo));
@@ -281,7 +281,8 @@ function page_ObfuscateContactInfo($contactInfo) {
  * restore the order on-screen; the downside is that browsers can't really
  * select the text either.
  */
-function page_ObfuscateContactInfo_HTML($ci) {
+function page_ObfuscateContactInfo_HTML($ci)
+{
    preg_match_all('/(.)/us', $ci, $characters);
    $reversed = array_reverse($characters[0]);
    ob_start();
@@ -293,13 +294,15 @@ function page_ObfuscateContactInfo_HTML($ci) {
                    $pos, $character);
       $pos -= 1.25;
    }
+
    return ob_get_clean();
 }
 
 /**
  * Simple javascript-based string construction
  */
-function page_ObfuscateContactInfo_JS($ci) {
+function page_ObfuscateContactInfo_JS($ci)
+{
    preg_match_all('/(.)/us', $ci, $characters);
    $characters = $characters[0];
    ob_start();
@@ -309,10 +312,12 @@ function page_ObfuscateContactInfo_JS($ci) {
       else if ($character == "\\") $character == "\\\\";
       echo "ci.push('$character');\n";
    }
+
    return ob_get_clean();
 }
 
-function pdr_GetCourses($event) {
+function pdr_GetCourses($event)
+{
    $rounds = $event->GetRounds();
    $courses = array();
    foreach ($rounds as $index => $round) {
@@ -348,9 +353,10 @@ function pdr_GetCourses($event) {
 /**
  * Groups results by the classes of the players
  */
-function pdr_GroupByClasses($data) {
+function pdr_GroupByClasses($data)
+{
    $out = array();
-   foreach($data as $row){
+   foreach ($data as $row) {
       $class = $row['ClassName'];
       if (!isset($out[$class])) $out[$class] = array();
       $out[$class][] = $row;
@@ -367,7 +373,8 @@ function pdr_GroupByClasses($data) {
  * Combines strings "nicely"; that is, commas between all items, except the last 2
  * which have "and" between them
  */
-function pdr_nice_implode($text) {
+function pdr_nice_implode($text)
+{
    $and = translate('and');
    $list = array();
    foreach ($text as $item) {
@@ -389,7 +396,8 @@ function pdr_nice_implode($text) {
 /**
  * Adds a standing field to result data
  */
-function pdr_IncludeStanding($d) {
+function pdr_IncludeStanding($d)
+{
    $out = array();
    $lastResult = -999;
    $lastStanding = 0;
@@ -400,7 +408,7 @@ function pdr_IncludeStanding($d) {
 
       if ($item['DidNotFinish']) $result = 999;
 
-      if ($result == $lastResult)  {
+      if ($result == $lastResult) {
          $item['Standing'] = $lastStanding;
          ++$step;
       } else {
@@ -410,10 +418,8 @@ function pdr_IncludeStanding($d) {
          $lastResult = $result;
       }
 
-
       $out[] = $item;
    }
    //print_r($out);
    return $out;
 }
-?>
