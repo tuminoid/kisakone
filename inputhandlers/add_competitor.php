@@ -61,7 +61,7 @@ function processForm()
             return translate("error_invalid_class");
         }
 
-        $retVal = SignupUser($_GET['id'], $_GET['user'], $_POST['class'], $godmode);
+        $retVal = SignupUser($_GET['id'], $_GET['user'], $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
         if (is_a($retVal, 'Error'))
             return $retVal;
         header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'signup' => $retVal), $_GET));
@@ -120,7 +120,7 @@ function processForm()
         return translate("error_invalid_class");
     }
 
-    $retVal = SignupUser(@$_GET['id'], $u->id, $class, $godmode);
+    $retVal = SignupUser(@$_GET['id'], $u->id, $class, @$_POST['accept_queue'] ? false : $godmode);
     if (is_a($retVal, 'Error'))
         return $retVal;
 

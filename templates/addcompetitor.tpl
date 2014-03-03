@@ -172,10 +172,9 @@ $(document).ready(function(){
 
     <h2>{translate id='reg_finalize'}</h2>
     <div>
-        <input type="submit" value="{translate id='form_accept'}" name="accept" />
+        <input type="submit" value="{translate id='form_add_competitor'}" name="accept" />
+        <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-
-
     </div>
 </form>
 
