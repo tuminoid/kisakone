@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Tournament details page
  *
@@ -28,19 +29,22 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    require_once 'core/tournament.php';
+
     language_include('users');
-   SetContentType('text/html; charset=utf-8');
+    SetContentType('text/html; charset=utf-8');
     $tournament = GetTournamentDetails($_GET['id']);
 
     $eph = array();
     $numev = $tournament->GetNumEvents();
-    for ($ind = 0; $ind < $numev; ++$ind) $eph[] = true;
+    for ($ind = 0; $ind < $numev; ++$ind)
+        $eph[] = true;
 
-   $smarty->assign('eventplaceholders', $eph);
+    $smarty->assign('eventplaceholders', $eph);
     $smarty->assign('tournament', $tournament);
 
-    if (@$_GET['edit'] && IsAdmin()) $smarty->assign('edit', true);
-
+    if (@$_GET['edit'] && IsAdmin())
+        $smarty->assign('edit', true);
 }
 
 /**
