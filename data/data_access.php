@@ -870,7 +870,7 @@ require_once 'data/db_init.php';
  * Returns the new event id for success or
  * an Error in case there was an error in creating a new event.
  */
-function CreateEvent($name, $venue, $duration, $contact, $tournament, $level, $start,
+function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start,
                       $signup_start, $signup_end, $classes, $td, $officials, $requireFees)
 {
     $retValue = null;
@@ -880,9 +880,10 @@ function CreateEvent($name, $venue, $duration, $contact, $tournament, $level, $s
         return $dbError;
     }
 
-    $query = datA_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
-                     (%d, %s, %d, '%s', FROM_UNIXTIME(%d), %d, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s), '%s', %d)",
-                      esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), mysql_real_escape_string($name), (int) $start, (int) $duration,
+    $query = data_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
+                     (%d, %d, %d, '%s', FROM_UNIXTIME(%d), %d, %d, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s), '%s', %d)",
+                      esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), mysql_real_escape_string($name),
+                      (int) $start, (int) $duration, (int) $playerlimit,
                       esc_or_null($signup_start, 'int'), esc_or_null($signup_end,'int'), mysql_escape_string($contact),
                       $requireFees );
 

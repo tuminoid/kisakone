@@ -5,8 +5,8 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * Run whole codebase against php-cs-fixer to fix the most obvious coding style issues
-
+  * Run whole codebase against php-cs-fixer to fix the most obvious coding style issues.
+  * Regression: Adding a competition throws foreign key error, due missing parameter. GH #72.
 
 2014.03.03:
 ===========
