@@ -117,7 +117,6 @@ CREATE TABLE :Event
    -- end
    PRIMARY KEY(id),
    FOREIGN KEY (Venue) REFERENCES :Venue(id),
-   FOREIGN KEY (Tournament) REFERENCES :Tournament(id),
    FOREIGN KEY (Level) REFERENCES :Level(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
