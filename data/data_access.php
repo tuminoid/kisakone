@@ -2712,6 +2712,31 @@ function GetEventParticipantCounts($eventId)
    return $retValue;
 }
 
+/* Return event's queue counts by class */
+function GetEventQueueCounts($eventId)
+{
+   $dbError = InitializeDatabaseConnection();
+   if ($dbError) {
+      return $dbError;
+   }
+
+   $eventId = (int) $eventId;
+   $query = data_query("SELECT count(*) as cnt, Classification
+      FROM :EventQueue
+      WHERE Event = $eventId
+      GROUP BY Classification");
+   $result = mysql_query($query);
+
+   $ret = array();
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $ret[$row['Classification']] = $row['cnt'];
+      }
+   }
+
+   return $ret;
+}
+
    // This is more or less copypaste from ^^
    // FIXME: Redo to a simpler form sometime
  function GetEventQueue($eventId, $sortedBy, $search)
@@ -5228,7 +5253,6 @@ function DeleteEventPermanently($event)
       }
 
       mysql_free_result($rrres);
-
 
       $queries[] = data_query("DELETE FROM :RoundResult WHERE Round = %d", $rid);
 

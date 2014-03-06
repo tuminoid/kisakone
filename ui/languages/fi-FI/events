@@ -159,9 +159,14 @@ select_round            Valitse muokattava kierros
 toggle_menu         Näytä tai piilota sivuvalikko
 class_list          Luokkakiintiöt
 player_list         Pelaajien luokat
-class_minquota      Pelaajia vähintään
-class_maxquota      Pelaajia enintään
-class_registered_now Pelaajia ilmoittautunut
+class_minquota      Varatut paikat
+class_maxquota      Maksimimäärä
+class_registered_now Pelaajia kisassa
+class_queued_now     Pelaajia jonossa
+class_quota_free     Vapaita kiintiöpaikkoja
+event_playerlimit_text Kilpailuun otetaan maksimissaan (0 = ei rajaa) pelaajaa
+event_playerlimit_not_set Ei asetettu
+class_quota_invalid  VIRHE! Minimikiintiöt ovat suuremmat kuin kisan maksimipelaajamäärä!
 
 button_ready        Valmis
 inline_search_help  Syötä haettavan henkilön nimi tai PDGA-numero

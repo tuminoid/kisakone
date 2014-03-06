@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * TBD
+  * Add more data to quota page for TD and clarify Finnish terms.
 
 2014.03.05:
 ===========

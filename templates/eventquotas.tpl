@@ -25,19 +25,42 @@
 <p class="error">{$error}</p>
 {/if}
 
-{include file=support/eventlockhelper.tpl}
+{assign var="min" value="0"}
+{assign var="max" value="0"}
+{assign var="reg" value="0"}
+{assign var="que" value="0"}
+{assign var="fre" value="0"}
+
+<h2>{translate id=event_playerlimit}</h2>
+
+  <p style="clear: both;">{translate id=event_playerlimit_text}: {$playerlimit}</p>
 
 <h2>{translate id=class_list}</h2>
+
 <form method="post">
   <input type="hidden" name="formid" value="event_quotas" />
   <table id="classLimitTable">
     <tr>
-      <th>{translate id=event_classes}</th>
+      <th>{translate id=class}</th>
       <th>{translate id=class_minquota}</th>
       <th>{translate id=class_maxquota}</th>
       <th>{translate id=class_registered_now}</th>
+      <th>{translate id=class_queued_now}</th>
+      <th>{translate id=class_quota_free}</th>
     </tr>
+
     {foreach from=$quotas item=quota}
+      {assign var="count" value=$counts[$quota.id]|default:0}
+      {assign var="queue" value=$queues[$quota.id]|default:0}
+      {math assign="free" equation="x - y" x=$quota.MinQuota y=$count}
+      {if $free <= 0} {assign var="free" value="0"} {/if}
+
+      {math assign="min" equation="x + y" x=$min y=$quota.MinQuota}
+      {math assign="max" equation="x + y" x=$max y=$quota.MaxQuota}
+      {math assign="reg" equation="x + y" x=$reg y=$count}
+      {math assign="que" equation="x + y" x=$que y=$queue}
+      {math assign="fre" equation="x + y" x=$fre y=$free}
+
     <tr>
       <td>{$quota.Name}</td>
       <td>
@@ -51,9 +74,28 @@
       <td>
         {$counts[$quota.id]|default:"0"}
       </td>
+      <td>
+        {$queues[$quota.id]|default:"0"}
+      </td>
+      <td>{$free}</td>
     </tr>
     {/foreach}
+
+    <tr>
+      <th>{translate id=total}</th>
+      <th>{$min}</th>
+      <th>{if $max > 999} 999 {else} {$max} {/if}</th>
+      <th>{$reg}</th>
+      <th>{$que}</th>
+      <th>{$fre}</th>
+    </tr>
   </table>
+
+  {if $playerlimit > 0 && $min > $playerlimit}
+  <p style="clear: both;" class="error">
+    {translate id="class_quota_invalid"}
+  </p>
+  {/if}
 
   <p style="clear: both;">
     <input type="submit" value="{translate id=form_save}" />

@@ -31,14 +31,13 @@ function InitializeSmartyVariables(&$smarty, $error)
     $event = GetEventDetails($_GET['id']);
 
     if (!IsAdmin() && $event->management != 'td') {
-        return Error::AccessDenied('eventfees');
+        return Error::AccessDenied('eventquotas');
     }
 
-    if ($event->resultsLocked)
-        $smarty->assign('locked' , true);
-
+    $smarty->assign('playerlimit', $event->playerLimit);
     $smarty->assign('quotas', GetEventQuotas($event->id));
     $smarty->assign('counts', GetEventParticipantCounts($event->id));
+    $smarty->assign('queues', GetEventQueueCounts($event->id));
 }
 
 /**
