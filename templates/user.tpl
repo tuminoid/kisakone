@@ -56,7 +56,7 @@
 </table>
 
 {if $player && $player->pdga}
-<p><a href="http://www.pdga.com/player-stats?PDGANum={$player->pdga}">{translate id=user_pdga_link}</a></p>
+<p><a href="http://www.pdga.com/player/{$player->pdga}">{translate id=user_pdga_link}</a></p>
 {/if}
 
 {if ($itsme || $isadmin) && $player }

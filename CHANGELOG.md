@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next
 ====
   * Add more data to quota page for TD and clarify Finnish terms.
+  * Link pointing to PDGA updated. GH #78.
 
 2014.03.05:
 ===========
