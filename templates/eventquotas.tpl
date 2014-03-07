@@ -78,7 +78,7 @@
         <input type="hidden" name="init_{$quota.id}_maxquota" value="{$quota.MaxQuota}" />
         <input type="text" name="maxquota_{$quota.id}" value="{$quota.MaxQuota}" />
 {else}
-        {if $quota.MaxQuota == 999}-{else}$quota.MaxQuota{/if}
+        {if $quota.MaxQuota == 999}-{else}{$quota.MaxQuota}{/if}
 {/if}
       </td>
       <td>
