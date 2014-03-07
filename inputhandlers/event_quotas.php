@@ -32,9 +32,9 @@ function processForm()
     if ($event->resultsLocked)
         return Error::AccessDenied();
 
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventquotas');
-    }
+
     if (@$_POST['cancel']) {
         header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $_GET));
         die();

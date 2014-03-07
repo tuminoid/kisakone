@@ -37,8 +37,10 @@
 
 <h2>{translate id=class_list}</h2>
 
+{if $allow_edit}
 <form method="post">
   <input type="hidden" name="formid" value="event_quotas" />
+{/if}
   <table id="classLimitTable">
     <tr>
       <th>{translate id=class}</th>
@@ -64,12 +66,20 @@
     <tr>
       <td>{$quota.Name}</td>
       <td>
+{if $allow_edit}
         <input type="hidden" name="init_{$quota.id}_minquota" value="{$quota.MinQuota}" />
         <input type="text" name="minquota_{$quota.id}" value="{$quota.MinQuota}" />
+{else}
+        {$quota.MinQuota}
+{/if}
       </td>
       <td>
+{if $allow_edit}
         <input type="hidden" name="init_{$quota.id}_maxquota" value="{$quota.MaxQuota}" />
         <input type="text" name="maxquota_{$quota.id}" value="{$quota.MaxQuota}" />
+{else}
+        {if $quota.MaxQuota == 999}-{else}$quota.MaxQuota{/if}
+{/if}
       </td>
       <td>
         {$counts[$quota.id]|default:"0"}
@@ -84,24 +94,25 @@
     <tr>
       <th>{translate id=total}</th>
       <th>{$min}</th>
-      <th>{if $max > 999} 999 {else} {$max} {/if}</th>
+      <th>{if $max >= 999}-{else} {$max} {/if}</th>
       <th>{$reg}</th>
       <th>{$que}</th>
       <th>{$fre}</th>
     </tr>
   </table>
 
-  {if $playerlimit > 0 && $min > $playerlimit}
+  {if $allow_edit && $playerlimit > 0 && $min > $playerlimit}
   <p style="clear: both;" class="error">
     {translate id="class_quota_invalid"}
   </p>
   {/if}
 
+{if $allow_edit}
   <p style="clear: both;">
     <input type="submit" value="{translate id=form_save}" />
     <input name="cancel" type="submit" value="{translate id=form_cancel}" />
   </p>
 </form>
-
+{/if}
 
 {include file='include/footer.tpl' noad=true}

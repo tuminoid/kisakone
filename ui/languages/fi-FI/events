@@ -161,8 +161,8 @@ class_list          Luokkakiintiöt
 player_list         Pelaajien luokat
 class_minquota      Varatut paikat
 class_maxquota      Maksimimäärä
-class_registered_now Pelaajia kisassa
-class_queued_now     Pelaajia jonossa
+class_registered_now Kisassa
+class_queued_now     Jonossa
 class_quota_free     Vapaita kiintiöpaikkoja
 event_playerlimit_text Kilpailuun otetaan maksimissaan (0 = ei rajaa) pelaajaa
 event_playerlimit_not_set Ei asetettu

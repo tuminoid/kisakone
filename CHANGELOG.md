@@ -7,6 +7,7 @@ next
 ====
   * Add more data to quota page for TD and clarify Finnish terms.
   * Link pointing to PDGA updated. GH #78.
+  * Expose Quotas to the competitors. GH #80.
 
 2014.03.05:
 ===========
