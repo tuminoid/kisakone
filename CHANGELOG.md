@@ -5,11 +5,15 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * Add more data to quota page for TD and clarify Finnish terms.
+  * TBD.
+
+2014.03.07:
+===========
+  * Add more data to quota page for TD and clarify Finnish terms. Fixes GH #61 plus more.
   * Link pointing to PDGA updated. GH #78.
   * Expose Quotas to the competitors. GH #80.
   * Participant CSV: New view for sending preregistration list to PDGA.com. GH #79.
- 
+
 2014.03.05:
 ===========
   * Run whole codebase against php-cs-fixer to fix the most obvious coding style issues.
