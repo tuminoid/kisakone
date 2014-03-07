@@ -48,7 +48,6 @@
     <ul>
         <li><a href="{url page=event view=queue id=$smarty.get.id}">{translate id=event_queue}</a></li>
         <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
-        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
     </ul>
 {elseif $admin ||( !$signedup && $signupOpen)}
 

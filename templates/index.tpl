@@ -111,6 +111,7 @@
                 {* There is a participation record  *}
                 {if $event->eventFeePaid}
                     <img src="{$url_base}ui/elements/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
+                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a>
                 {else}
                     <img src="{$url_base}ui/elements/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
                     <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a>
@@ -122,12 +123,10 @@
                 {if $loggedon}
                     {if $event->SignupPossible()}
                         {if $event->approved !== null}
-                            <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a>
+                            {* <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a> *}
                         {elseif $user->role != 'admin' && $user->role != 'manager' && $event->management != 'td'}
-
+                            <img src="{$url_base}ui/elements/goIcon.png" alt="{translate id=sign_up_here}" />
                             <a href="{url page='event' view=signupinfo id=$event->id}">{translate id=event_signup}</a>
-                            <a href="{url page='event' view=signupinfo id=$event->id}"><img src="{$url_base}ui/elements/goIcon.png" alt="{translate id=sign_up_here}" /></a>
-
                         {/if}
                     {/if}
 

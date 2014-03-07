@@ -1,5 +1,5 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
@@ -55,6 +55,7 @@
             {/foreach}
             </td>
             <td><input type="hidden" value="{$event->date}" />{$event->fulldate}</td>
+
             <td class="event_links">
             {if $event->resultsLocked}
                 <img src="{$url_base}ui/elements/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>
@@ -67,6 +68,7 @@
                 {* There is a participation record  *}
                 {if $event->eventFeePaid}
                     <img src="{$url_base}ui/elements/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
+                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a>
                 {else}
                     <img src="{$url_base}ui/elements/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
                     <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a>
@@ -78,12 +80,10 @@
                 {if $loggedon}
                     {if $event->SignupPossible()}
                         {if $event->approved !== null}
-                            <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a>
+                            {* <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a> *}
                         {elseif $user->role != 'admin' && $user->role != 'manager' && $event->management != 'td'}
-
+                            <img src="{$url_base}ui/elements/goIcon.png" alt="{translate id=sign_up_here}" />
                             <a href="{url page='event' view=signupinfo id=$event->id}">{translate id=event_signup}</a>
-                            <a href="{url page='event' view=signupinfo id=$event->id}"><img src="{$url_base}ui/elements/goIcon.png" alt="{translate id=sign_up_here}" /></a>
-
                         {/if}
                     {/if}
 
