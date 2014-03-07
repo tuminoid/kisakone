@@ -188,11 +188,10 @@ function InitializeSmartyVariables(&$smarty, $error)
          $rounds = $event->GetRounds();
          $smarty->assign('numRounds', count($rounds));
          $smarty->assign('rounds', $rounds);
-
          break;
 
-      case 'leaderboard_cvs':
-         $view = 'leaderboard_cvs';
+      case 'leaderboard_csv':
+         $view = 'leaderboard_csv';
          $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
          $scoresAssigned = null;
          foreach ($results as $class) {
@@ -208,6 +207,12 @@ function InitializeSmartyVariables(&$smarty, $error)
          $rounds = $event->GetRounds();
          $smarty->assign('numRounds', count($rounds));
          $smarty->assign('rounds', $rounds);
+         break;
+
+      case 'participant_csv':
+         $view = 'participant_csv';
+         $results = pdr_GroupByClasses($event->GetParticipants());
+         $smarty->assign('resultsByClass', $results);
          break;
 
       default:
@@ -357,7 +362,8 @@ function pdr_GroupByClasses($data)
 {
    $out = array();
    foreach ($data as $row) {
-      $class = $row['ClassName'];
+      // A little hack as we added PDGA participant lists as well
+      $class = isset($row['ClassName']) ? $row['ClassName'] : $row['className'];
       if (!isset($out[$class])) $out[$class] = array();
       $out[$class][] = $row;
    }

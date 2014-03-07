@@ -8,7 +8,8 @@ next
   * Add more data to quota page for TD and clarify Finnish terms.
   * Link pointing to PDGA updated. GH #78.
   * Expose Quotas to the competitors. GH #80.
-
+  * Participant CSV: New view for sending preregistration list to PDGA.com. GH #79.
+ 
 2014.03.05:
 ===========
   * Run whole codebase against php-cs-fixer to fix the most obvious coding style issues.
