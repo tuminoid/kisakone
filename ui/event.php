@@ -191,6 +191,9 @@ function InitializeSmartyVariables(&$smarty, $error)
          break;
 
       case 'leaderboard_csv':
+         if (!isAdmin() && !$event->isTD())
+            return Error::AccessDenied('leaderboard_csv');
+
          $view = 'leaderboard_csv';
          $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
          $scoresAssigned = null;
@@ -210,6 +213,9 @@ function InitializeSmartyVariables(&$smarty, $error)
          break;
 
       case 'participant_csv':
+         if (!isAdmin() && !$event->isTD())
+            return Error::AccessDenied('participant_csv');
+
          $view = 'participant_csv';
          $results = pdr_GroupByClasses($event->GetParticipants());
          $smarty->assign('resultsByClass', $results);
