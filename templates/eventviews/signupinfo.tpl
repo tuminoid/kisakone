@@ -27,7 +27,7 @@
 
 
 {if $admin}
-<p>{translate id=admin_cant_sign_up}</p>
+<p class="error">{translate id=admin_cant_sign_up}</p>
 {assign var=nosignup value=true}
 {elseif !$user}
 <p>{translate id=login_to_sign_up}</p>
