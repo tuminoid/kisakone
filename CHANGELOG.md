@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next
-====
+2014.03.10:
+===========
   * Send email to players promoted from queue. GH #85.
   * Playerlimit is now mandatory, 0 is not allowed value. A TD must know how many player's
     his event can take. If unlimited player's is wanted, use 999 or such. GH #86.
