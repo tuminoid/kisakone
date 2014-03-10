@@ -5129,7 +5129,7 @@ function GetGroups($sectid)
   function GetRegisteringSoonEvents()
   {
     $now = time();
-    $twoweeks = time() + 14*24*60*60;
+    $twoweeks = time() + 21*24*60*60;
 
     return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)", "SignupStart");
   }
@@ -5139,7 +5139,7 @@ function GetGroups($sectid)
     $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
     if ($onlySome) {
       echo mysql_error();
-        $data = array_slice($data, 0, 14);
+        $data = array_slice($data, 0, 10);
     }
 
     return $data;
@@ -5155,7 +5155,7 @@ function GetGroups($sectid)
     $data = array_reverse($data);
 
     if ($onlySome) {
-        $data = array_slice($data, 0, 8);
+        $data = array_slice($data, 0, 5);
     }
 
     return $data;
