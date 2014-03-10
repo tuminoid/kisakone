@@ -195,6 +195,22 @@ function PositiveIntegerField(field, arguments, initialize) {
 
 }
 
+function OneOrMoreIntegerField(field, arguments, initialize) {
+    if (initialize) {
+    field.blur(TestField);
+    }
+    else {
+    var value = getvalue(field);
+    if (arguments == true && value == "") return true;
+    if (!isNaN(parseInt(value)) && value >= 1) return true;
+
+    {/literal}
+    return "{translate id=FormError_NotPositiveInteger escape=false}";
+    {literal}
+    }
+
+}
+
 function RadioFieldSet(field, arguments, initialize) {
     if (!initialize) {
 	var fields;

@@ -19,7 +19,7 @@ event_start     Kilpailun alku
 event_duration  Kilpailun kesto
 event_duration_days     päivä(ä)
 event_playerlimit  Pelaajamäärä
-event_playerlimit_max pelaajaa enintään (0 = ei rajaa)
+event_playerlimit_max pelaajaa enintään
 event_signup_start  Ilmoittautumisen\nalku
 event_signup_end  Ilmoittautumisen\nloppu
 event_activate  Aktivoi käyttäjille
@@ -164,7 +164,7 @@ class_maxquota      Maksimimäärä
 class_registered_now Kisassa
 class_queued_now     Jonossa
 class_quota_free     Vapaita kiintiöpaikkoja
-event_playerlimit_text Kilpailuun otetaan maksimissaan (0 = ei rajaa) pelaajaa
+event_playerlimit_text Kilpailuun otetaan maksimissaan pelaajia
 event_playerlimit_not_set Ei asetettu
 class_quota_invalid  HUOMIO! Minimikiintiöt ovat suuremmat kuin kisan maksimipelaajamäärä!
 

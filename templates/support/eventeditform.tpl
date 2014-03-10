@@ -240,7 +240,7 @@ $(document).ready(function(){
     CheckedFormField('eventform', 'level', NonEmptyField, null);
     CheckedFormField('eventform', 'start', NonEmptyField, null, {delayed: true});
     CheckedFormField('eventform', 'duration', PositiveIntegerField, null);
-    CheckedFormField('eventform', 'playerlimit', PositiveIntegerField, null);
+    CheckedFormField('eventform', 'playerlimit', OneOrMoreIntegerField, null);
     CheckedFormField('eventform', 'td', NonEmptyField, null);
     CheckedFormField('eventform', 'td', AjaxField, 'validuser', {delayed: true});
     CheckedFormField('eventform', 'official', AlwaysEmptyField, null);
