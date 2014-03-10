@@ -5,7 +5,10 @@ Kisakone versions are simply release date tags:
 
 next
 ====
-  * TBD.
+  * Send email to players promoted from queue. GH #85.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20140310.md)
+for additional actions needed.
 
 2014.03.07:
 ===========

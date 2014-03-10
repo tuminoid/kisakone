@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file includes the Email class and other support functionality
  * used for sending e-mail messages.
@@ -50,6 +51,7 @@ function GetEmailTokens()
 define('EMAIL_YOU_ARE_TD', 'email_td');
 define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
+define('EMAIL_PROMOTED_FROM_QUEUE', 'email_promoted');
 
 class Email
 {
@@ -171,7 +173,8 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
     $from = $settings['EMAIL_SENDER'];
     $mailer = $settings['EMAIL_MAILER'];
 
-    mail(
+
+    $retVal = mail(
         $user->email,
         utf8_decode($email->title),
         utf8_decode($email->text),
@@ -179,5 +182,5 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
         . "X-Mailer: " . $mailer
 
     );
-
+    return $retVal;
 }

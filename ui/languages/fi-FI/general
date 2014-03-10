@@ -163,6 +163,7 @@ admin_manage_email_text     Valitse muokattava sähköpostiviesti
 email_you_are_td           Kilpailun TD asetettu tai vaihtunut
 email_recover_password      Unohtuneen salasanan palautus
 email_remember_fees         Kilpailumaksuista muistutus
+email_promoted_from_queue   Nousit jonosta mukaan kilpailuun
 pagetitle_leaderboard       Leaderboard
 pagetitle_leaderboard_csv   PDGA tulokset CSV
 pagetitle_participant_csv   PDGA osallistujat CSV

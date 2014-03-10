@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeeliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Listing of emails
  *
@@ -31,6 +32,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $links[] = array('title' => translate('email_you_are_td'), 'id' => '', 'type' => 'email_td');
     $links[] = array('title' => translate('email_recover_password'), 'id' => '', 'type' => 'email_password');
     $links[] = array('title' => translate('email_remember_fees'), 'id' => '', 'type' => 'email_fee');
+    $links[] = array('title' => translate('email_promoted_from_queue'), 'id' => '', 'type' => 'email_promoted');
 
     $smarty->assign('fixed', $links);
 

@@ -450,6 +450,37 @@ require_once 'data/db_init.php';
       return $retValue;
    }
 
+   // Gets a User object associated with Playerid
+   function GetPlayerUser($playerid = null)
+   {
+      $dbError = InitializeDatabaseConnection();
+      if ($dbError) {
+         return $dbError;
+      }
+      if ($playerid === null)
+         return null;
+
+      $playerid = (int) $playerid;
+      $result = mysql_query(data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+                            :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
+                            FROM :User
+                            INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'
+                            "));
+
+      if (mysql_num_rows($result) === 1) {
+         while ($row = mysql_fetch_assoc($result)) {
+            $temp = new User($row['id'], $row['Username'], $row['Role'],
+                             data_GetOne($row['UserFirstname'], $row['pFN']),
+                             data_GetOne($row['UserLastname'], $row['pLN']),
+                             data_GetOne($row['UserEmail'], $row['pEM']), $playerid);
+            return $temp;
+         }
+      }
+      mysql_free_result($result);
+
+      return null;
+   }
+
    // Gets a Player object for the User by userid or null if the player was not found
    function GetUserPlayer($userid)
    {
@@ -1702,8 +1733,8 @@ function PromotePlayerFromQueue($eventId, $playerId)
       mysql_query("BEGIN TRANSACTION");
 
       // Insert into competition
-      $query = data_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, '%s');",
-                         (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], $row['SignupTimestamp']);
+      $query = data_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
+                         (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], time());
       if (!mysql_query($query)) {
          mysql_query("ROLLBACK");
 
@@ -1717,6 +1748,12 @@ function PromotePlayerFromQueue($eventId, $playerId)
          return Error::Query($query);
       }
       mysql_query("COMMIT");
+
+      $user = GetPlayerUser($playerId);
+      if ($user !== null) {
+         require_once 'core/email.php';
+         SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
+      }
    }
 
    mysql_free_result($result);
