@@ -1,4 +1,4 @@
-Upgrading to version NEXT:
+Upgrading to version 2014.02.21:
 ================================
 
 We need to add one new table and alter two tables. 
