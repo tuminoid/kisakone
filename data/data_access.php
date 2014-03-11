@@ -1706,10 +1706,12 @@ function CheckQueueForPromotions($eventId)
    $queuers = GetEventQueue($eventId, '', '');
    foreach ($queuers as $queuer) {
       $playerId = $queuer['player']->id;
-      if (CheckSignupQuota($eventId, $playerId, $queuer['classId'])) {
+      $classId = $queuer['classId'];
+
+      if (CheckSignupQuota($eventId, $playerId, $classId)) {
          $retVal = PromotePlayerFromQueue($eventId, $playerId);
-         if (!is_a($retVal, 'Error')) {
-            return $retVal;
+         if (is_a($retVal, 'Error')) {
+            error_log("Error promoting player $playerId to event $eventId at class $classId");
          }
       }
    }
@@ -1728,26 +1730,20 @@ function PromotePlayerFromQueue($eventId, $playerId)
 
    // Get data from queue
    $result = mysql_query(data_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId"));
-   if (mysql_num_rows( $result) > 0) {
+   if (mysql_num_rows($result) > 0) {
       $row = mysql_fetch_assoc($result);
-      mysql_query("BEGIN TRANSACTION");
 
       // Insert into competition
       $query = data_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
                          (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], time());
-      if (!mysql_query($query)) {
-         mysql_query("ROLLBACK");
-
+      if (mysql_query($query) === false) {
          return Error::Query($query);
       }
 
       // Remove data from queue
-      if (!mysql_query(data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId"))) {
-         mysql_query("ROLLBACK");
-
+      if (mysql_query(data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId")) === false) {
          return Error::Query($query);
       }
-      mysql_query("COMMIT");
 
       $user = GetPlayerUser($playerId);
       if ($user !== null) {
@@ -1755,7 +1751,6 @@ function PromotePlayerFromQueue($eventId, $playerId)
          SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
       }
    }
-
    mysql_free_result($result);
 
    return null;
