@@ -1736,12 +1736,12 @@ function PromotePlayerFromQueue($eventId, $playerId)
       // Insert into competition
       $query = data_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
                          (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], time());
-      if (mysql_query($query) === false) {
+      if (!mysql_query($query)) {
          return Error::Query($query);
       }
 
       // Remove data from queue
-      if (mysql_query(data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId")) === false) {
+      if (!mysql_query(data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId"))) {
          return Error::Query($query);
       }
 
