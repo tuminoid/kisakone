@@ -26,7 +26,7 @@ writable by the web server.
 
 8. Copy `config_site.php.sample` to `config_site.php` and modify the email
 address for the administration and Kisakone's name, and set the definess
-correctly for club use.
+correctly for club use, most importantly set `USE_SFL_PAYMENTS` to `false`.
 
 
 Setting up LAMP for Kisakone:
