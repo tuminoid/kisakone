@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Add some missing URL translations. GH #88.
+
 2014.03.10:
 ===========
   * Send email to players promoted from queue. GH #85.
