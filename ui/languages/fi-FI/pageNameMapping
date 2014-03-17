@@ -17,7 +17,7 @@
 :page:eventrss      page:kilpailusyote
 :page:help          page:ohje
 :page:printscorecard    page:tuloskortti
-
+:page:eventquotas   page:kiintiot
 
 :param:action       param:toiminto
 :param:showhelp     param:ohje
@@ -40,9 +40,10 @@
 :view:course        view:rata
 
 
-
 :id:currentYear     id:kuluvaVuosi
 :id:mine            id:omat
 :id:manage          id:hallinnoi
 :id:byUser          id:kayttajan
 :id:upcoming        id:tulevat
+:id:relevant        id:ajankohtaiset
+:id:past            id:paattyneet
