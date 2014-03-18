@@ -8,3 +8,4 @@ php5-cgi
 php5-fcgi
 ui/elements/uploaded/*
 /api
+ui/elements/analytics.js

@@ -42,6 +42,9 @@
       {if $autocomplete}
       <script type="text/javascript" src="{$url_base}ui/elements/jquery.autocomplete-min.js"></script>
       {/if}
+      {if $analytics}
+      <script type="text/javascript" src="{$url_base}ui/elements/analytics.js"></script>
+      {/if}
       {$extrahead}
 </head>
 <body>

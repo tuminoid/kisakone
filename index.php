@@ -25,7 +25,7 @@
  * */
 
 // Suomen Frisbeeliitto-specific functionality
-require_once 'sfl_integration.php';
+require_once 'sfl/sfl_integration.php';
 
 setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
 
@@ -41,9 +41,7 @@ if (is_callable('date_default_timezone_set')) {
 }
 
 require_once 'helpers.php';
-
 require_once './Smarty/libs/Smarty.class.php';
-
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
@@ -179,6 +177,10 @@ $pageData = InitializeSmartyVariables($smarty, $pageData);
 foreach ($smarty->get_template_vars() as $var => $value) {
    if (is_a($value, 'Error')) $pageData = $value;
 }
+
+// Add analytics js if it exists
+if (file_exists("ui/elements/analytics.js"))
+   $smarty->assign('analytics', true);
 
 // The type of the data that is being passed to the browser has to be at some point.
 // The type depends on a number of factors:
