@@ -1,0 +1,4 @@
+# This goes to /etc/nginx/sites-enabled
+upstream kisakone {
+  server 127.0.0.1:8080;
+}
