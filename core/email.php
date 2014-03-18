@@ -173,7 +173,6 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
     $from = $settings['EMAIL_SENDER'];
     $mailer = $settings['EMAIL_MAILER'];
 
-
     $retVal = mail(
         $user->email,
         utf8_decode($email->title),
@@ -182,5 +181,6 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
         . "X-Mailer: " . $mailer
 
     );
+
     return $retVal;
 }

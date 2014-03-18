@@ -40,7 +40,6 @@ if (is_callable('date_default_timezone_set')) {
    date_default_timezone_set("Europe/Helsinki");
 }
 
-require_once 'helpers.php';
 require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
@@ -462,4 +461,13 @@ function gate_AttemptLanguageDetection($pagename)
 
       closedir($dir);
    }
+}
+
+// figure out correct baseurl
+function baseURL()
+{
+    $dir = dirname($_SERVER['SCRIPT_NAME']);
+    if ($dir == "/")
+        return $dir;
+    return $dir . '/';
 }

@@ -473,6 +473,7 @@ require_once 'data/db_init.php';
                              data_GetOne($row['UserFirstname'], $row['pFN']),
                              data_GetOne($row['UserLastname'], $row['pLN']),
                              data_GetOne($row['UserEmail'], $row['pEM']), $playerid);
+
             return $temp;
          }
       }
