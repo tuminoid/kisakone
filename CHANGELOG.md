@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Add some missing URL translations. GH #88.
+  * Added option for using custom analytics. Put your analytics.js to ui/elements/. GH #90.
 
 2014.03.10:
 ===========
