@@ -1,9 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Change password dialog
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -31,9 +32,9 @@
 </p>
 
 <form method="post" class="evenform" id="regform">
-    
+
     <input type="hidden" name="formid" value="changepassword" />
-    
+
     <div>
 	{if $smarty.get.mode == recover}
 	    <p>{translate id=recovering_password_for username=$username}</p>
@@ -42,7 +43,7 @@
         {if !$adminmode}
         <input id="current" type="password" name="current" autocomplete="off" />
         {else}
-        <input id="current" type="text" disabled="disabled" value="{translate id=admin_changing_password}" />        
+        <input id="current" type="text" disabled="disabled" value="{translate id=admin_changing_password}" />
 
         {/if}
         {formerror field='current_password'}
@@ -58,12 +59,11 @@
         <input type="password" name="password2"  autocomplete="off"  />
         {formerror field='password2'}
     </div>
-    
+
     <hr />
     <div>
         <input type="submit" value="{translate id='form_accept'}" name="register" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        {* | <a href="{url page='recoverpassword'}">{translate id=forgottenpassword}</a>*}
     </div>
 </form>
 
@@ -74,14 +74,11 @@ $(document).ready(function(){
     CheckedFormField('regform', 'current', NonEmptyField, null);
     CheckedFormField('regform', 'password', NonEmptyField, null);
     CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");$
-    
+
     $("#cancelButton").click(CancelSubmit);
-    
 });
 
-
 {/literal}
-
 
 //]]>
 </script>

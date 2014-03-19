@@ -55,7 +55,6 @@ function processForm()
     }
 
     if (@$_POST['cancel']) {
-
         header("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
         die();
     }
@@ -63,14 +62,17 @@ function processForm()
 
     if (!@$_GET['id'] && !$recover) {
         $current = $_POST['current'];
-         if (CheckUserAuthentication($user->username, $current) === null) $problems['current_password'] = translate('FormError_WrongPassword');
+            if (CheckUserAuthentication($user->username, $current) === null)
+                $problems['current_password'] = translate('FormError_WrongPassword');
     }
 
     $password = $_POST['password'];
-    if ($password == '') $problems['password'] = translate('FormError_NotEmpty');
+    if ($password == '')
+        $problems['password'] = translate('FormError_NotEmpty');
 
     $password2 = $_POST['password2'];
-    if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
+    if ($password != $password2)
+        $problems['password2'] = translate('FormError_PasswordsDontMatch');
 
     if (count($problems)) {
         $error = new Error();
@@ -84,9 +86,11 @@ function processForm()
     }
 
     $e =  ChangeUserPassword($uid, $password);
-    if (is_a($e, 'Error')) return $e;
+    if (is_a($e, 'Error'))
+        return $e;
+
     if ($recover) {
-        header("Location: " . url_smarty(array('page' => 'index'), $uid));
+        header("Location: " . url_smarty(array('page' => 'login'), $uid));
     } else {
         header("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
     }

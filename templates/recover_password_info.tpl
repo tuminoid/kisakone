@@ -1,9 +1,10 @@
 {*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Password recovery info
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -31,16 +32,15 @@
 <p>{translate id=recover_password_done}</p>
 <p>{translate id=recover_password_done2}</p>
 
-<form method="get" class="evenform" action="{url page=changepassword id=$smarty.get.id mode=recover}">    
+<form method="get" class="evenform" action="{url page=changepassword id=$smarty.get.id mode=recover}">
     <div>
         <label for="token">{translate id='passwordtoken'}</label>
         <input id="token" type="text" name="token" value="" />
     </div>
-    
+
     <p>
         <input type="submit" value="{translate id=proceed}" />
-        
     </p>
 </form>
 
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

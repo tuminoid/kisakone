@@ -1,7 +1,8 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * UI backend for change password dialog
  *
@@ -35,31 +36,30 @@ function InitializeSmartyVariables(&$smarty, $error)
       $token = GetUserSecurityToken(@$_GET['id']);
 
       // If the token is incorrect, we dont even want to show the form
-
       if (!$user || $token != @$_GET['token']) {
          header("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => @$_GET['id'], 'failed' => 'yes'), $user));
+         die();
       }
 
       $smarty->assign('username', $user->username);
 
    } else {
       // Normal "change password" form
-
       $user = @$_SESSION['user'];
-      if (!$user) return error::AccessDenied();
+      if (!$user)
+          return error::AccessDenied();
 
        if (@$_GET['id']) {
-            // Only admins are allowed to change the password of other users
-           if (!IsAdmin()) return Error::AccessDenied();
+          // Only admins are allowed to change the password of other users
+          if (!IsAdmin())
+              return Error::AccessDenied();
        }
 
-       if ($error) {
+       if ($error)
            $smarty->assign('error', $error->data);
 
-       }
        $smarty->assign('adminmode', @$_GET['id'] != '');
    }
-
 }
 
 /**
@@ -68,6 +68,6 @@ function InitializeSmartyVariables(&$smarty, $error)
  */
 function getMainMenuSelection()
 {
-   if (@$_GET['mode'] == 'recover') return 'special';
-    return 'users';
+    if (@$_GET['mode'] == 'recover') return 'special';
+        return 'users';
 }

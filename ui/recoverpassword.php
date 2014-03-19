@@ -1,7 +1,8 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Password recovery dialog
  *
@@ -28,7 +29,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if ($error) $smarty->Assign('failedAlready', true);
+    if ($error)
+        $smarty->Assign('failedAlready', true);
 }
 
 /**
