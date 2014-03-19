@@ -73,6 +73,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         if (count($players) == 1) {
             // Single player, skip the listing
             header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
+            die();
         } else {
             $smarty->assign('many', $players);
         }
