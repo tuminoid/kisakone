@@ -1,7 +1,8 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event-specific page editing
  *
@@ -72,7 +73,6 @@ function processForm()
         } else {
             header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
-
         die();
     }
 

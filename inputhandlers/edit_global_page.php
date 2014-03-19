@@ -1,7 +1,8 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Global text page edit handler
  *
@@ -41,7 +42,6 @@ function processForm()
         } else {
             header("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
         }
-
         die();
     }
 
@@ -55,7 +55,6 @@ function processForm()
         }
 
         header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-
         die();
     }
 
