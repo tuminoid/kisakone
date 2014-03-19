@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file serves as the one and only interface users have for the PHP code. In fact,
  * whenever mod_rewrite is enabled, access to other php files is explicitly made
@@ -24,9 +24,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// Suomen Frisbeeliitto-specific functionality
-require_once 'sfl/sfl_integration.php';
-
 setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
 
 // Support libraries that do NOT rely on data relayed from the user
@@ -36,6 +33,8 @@ require_once 'config_site.php';
 
 // Some version of PHP 5 complain about lack of time zone data, so if we can
 // we'll set it now
+// It is also utterly important to PHP timezone to match MySQL timezone,
+// otherwise database is filled with non-sensical datestamps
 if (is_callable('date_default_timezone_set')) {
    date_default_timezone_set("Europe/Helsinki");
 }
@@ -46,7 +45,8 @@ require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
 require_once 'data/init_data.php';
 
-
+// Suomen Frisbeegolfliitto-specific functionality
+require_once 'sfl/sfl_integration.php';
 
 // Disabling caching; we have menus and such which can vary depending on user's
 // access level, so this is necessary.
