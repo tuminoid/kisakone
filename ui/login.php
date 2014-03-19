@@ -1,7 +1,8 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Stand-alone login form backend
  *
@@ -30,6 +31,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     global $user;
     if ($user) {
         header("Location: " . baseurl());
+        die();
     }
     if ($error) {
         $smarty->assign('failedAlready', true);
