@@ -269,6 +269,7 @@ event_state_done            Kilpailu ohi, tuloksia ei voi syöttää, tulokset m
 round_course        Rata
 
 player_already_participating    Kilpailija on jo mukana kilpailussa
+player_already_queueing         Kilpailija on jo jonossa
 
 result_score    Tulokset
 hole_out        Out

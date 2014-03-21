@@ -1676,10 +1676,14 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
    }
    $retValue = $signup_directly;
 
-   if ($signup_directly == true)
+   if ($signup_directly === true)
       $table = "Participation";
    else
       $table = "EventQueue";
+
+   // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
+   // and double checking that player will not be in competition table twice
+   CancelSignup($eventid, $playerid, false);
 
    $query = data_query("INSERT INTO :$table (Player, Event, Classification) VALUES (%d, %d, %d);",
                          (int) $playerid, (int) $eventid, (int) $classid);
@@ -1759,7 +1763,7 @@ function PromotePlayerFromQueue($eventId, $playerId)
 
 
 // Cancels a players signup for an event
-function CancelSignup($eventId, $playerId)
+function CancelSignup($eventId, $playerId, $check_promotion = true)
 {
     $dbError = InitializeDatabaseConnection();
     if ($dbError) {
@@ -1769,6 +1773,9 @@ function CancelSignup($eventId, $playerId)
     // Delete from event and queue
     mysql_query(data_query("DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId"));
     mysql_query(data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId"));
+
+    if ($check_promotion === false)
+      return null;
 
     // Check if we can lift someone into competition
     return CheckQueueForPromotions($eventId);
@@ -4901,12 +4908,23 @@ function GetGroups($sectid)
     echo mysql_error();
   }
 
-  function PlayerParticipating($eventid, $userid)
+  function UserParticipating($eventid, $userid)
   {
     $query = data_query("SELECT :Participation.id FROM :Participation
                         INNER JOIN :Player ON :Participation.Player = :Player.player_id
                         INNER JOIN :User ON :User.Player = :Player.player_id
                         WHERE :User.id = %d AND :Participation.Event = %d",
+                        $userid, $eventid);
+    $res = mysql_query($query);
+    return (mysql_num_rows($res) != 0);
+  }
+
+  function UserQueueing($eventid, $userid)
+  {
+    $query = data_query("SELECT :EventQueue.id FROM :EventQueue
+                        INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
+                        INNER JOIN :User ON :User.Player = :Player.player_id
+                        WHERE :User.id = %d AND :EventQueue.Event = %d",
                         $userid, $eventid);
     $res = mysql_query($query);
     return (mysql_num_rows($res) != 0);

@@ -33,7 +33,10 @@ function processForm()
     require_once 'core/user_operations.php';
 
     $godmode = false;
-    $event = GetEventDetails(@$_GET['id']);
+    $eventid = @$_GET['id'];
+    $userid = @$_GET['user'];
+    $event = GetEventDetails($eventid);
+
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('addcompetitor');
     else
@@ -44,27 +47,32 @@ function processForm()
 
     if (@$_POST['cancel']) {
         $empty = null;
-        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id']), $empty));
+        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid), $empty));
         die();
     }
 
-    if (@$_GET['user'] != 'new') {
-        // Simply selecting a user, not creating a new one
-        if (PlayerParticipating($_GET['id'], $_GET['user'])) {
+    // Simply selecting a user, not creating a new one
+    if ($userid != 'new') {
+        // Adding player to competition check only competition, queue will be erased if promoted to competition
+        if (UserParticipating($eventid, $userid))
             return translate("player_already_participating");
-        }
-        $u = GetUserDetails($_GET['user']);
+
+        // Adding player to queue checks also the queue
+        if (@$_POST['accept_queue'] && UserQueueing($eventid, $userid))
+            return translate("player_already_queueing");
+
+        $u = GetUserDetails($userid);
         $player = $u->GetPlayer();
-        $class =  GetClassDetails($_POST['class']);
+        $class = GetClassDetails($_POST['class']);
 
-        if (!$player->IsSuitableClass($class)) {
+        if (!$player->IsSuitableClass($class))
             return translate("error_invalid_class");
-        }
 
-        $retVal = SignupUser($_GET['id'], $_GET['user'], $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
+        $retVal = SignupUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
         if (is_a($retVal, 'Error'))
             return $retVal;
-        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'signup' => $retVal), $_GET));
+
+        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
         die();
     } else {
         $lastname = $_POST['lastname'];
@@ -80,8 +88,9 @@ function processForm()
             $problems['email'] = translate('FormError_InvalidEmail');
 
         $pdga = $_POST['pdga'];
-        if ($pdga == '')
+        if ($pdga == '') {
             $pdga = null;
+        }
         else {
             $num = (int) $pdga;
             if ($num <= 0)
@@ -116,14 +125,13 @@ function processForm()
     $player = $u->GetPlayer();
     $classobj = GetClassDetails($_POST['class']);
 
-    if (!$player->IsSuitableClass($classobj)) {
+    if (!$player->IsSuitableClass($classobj))
         return translate("error_invalid_class");
-    }
 
-    $retVal = SignupUser(@$_GET['id'], $u->id, $class, @$_POST['accept_queue'] ? false : $godmode);
+    $retVal = SignupUser($eventid, $u->id, $class, @$_POST['accept_queue'] ? false : $godmode);
     if (is_a($retVal, 'Error'))
         return $retVal;
 
-    header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'signup' => $retVal), $_GET));
+    header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
     die();
 }
