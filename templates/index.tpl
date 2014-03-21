@@ -55,7 +55,7 @@
         <th>{translate id='event_name' }</th>
         <th>{translate id='event_location'}</th>
         <th>{translate id='event_level'}</th>
-        <th>{translate id='event_classes'}</th>
+        <th class="classes_max_width">{translate id='event_classes'}</th>
         <th>
         {if $listtype == 1}
             {translate id='event_signup_end'}
@@ -82,7 +82,7 @@
             {/if}
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
-            <td>
+            <td class="classes_max_width">
             {foreach from=$event->GetClasses()|@array_reverse item=class}
                 {$class->name|substr:0:3|escape}
             {foreachelse}

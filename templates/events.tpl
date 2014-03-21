@@ -33,7 +33,7 @@
         <th>{sortheading field=Name id='event_name' sortType=alphabetical}</th>
         <th>{sortheading field=VenueName id='event_location' sortType=alphabetical}</th>
         <th>{sortheading field=LevelName id='event_level' sortType=alphabetical}</th>
-        <th>{sortheading field=EventClasses id='event_classes' sortType=alphabetical}</th>
+        <th class="classes_max_width">{sortheading field=EventClasses id='event_classes' sortType=alphabetical}</th>
         <th>{sortheading field=Date id='event_date' sortType=date}</th>
         <th></th>
         <th></th>
@@ -47,7 +47,7 @@
             {/if}
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
-            <td>
+            <td class="classes_max_width">
             {foreach from=$event->GetClasses()|@array_reverse item=class}
                 {$class->name|substr:0:3|escape}
             {foreachelse}

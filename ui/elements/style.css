@@ -442,3 +442,8 @@ a img {
     display: inline-block;
     margin-right: 8px;
 }
+
+.classes_max_width {
+    word-wrap: break-word;
+    max-width: 20em;
+}
