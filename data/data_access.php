@@ -4909,8 +4909,6 @@ function GetGroups($sectid)
                         WHERE :User.id = %d AND :Participation.Event = %d",
                         $userid, $eventid);
     $res = mysql_query($query);
-//if ($userid == 82) print_r(mysql_fetch_assoc($res));
-//echo mysql_num_rows($res) + 1;
     return (mysql_num_rows($res) != 0);
   }
 
@@ -4932,18 +4930,6 @@ function GetGroups($sectid)
     return $out;
   }
 
-   /* function x() {
-     Reset all round results. Debug use only
-   InitializeDatabaseConnection();
-
-   $r = mysql_query(data_query("SELECT id FROM :RoundResult"));
-   while (($row = mysql_fetch_assoc($r)) !== false) {
-      data_UpdateRoundResult($row['id']);
-   }
-   mysql_free_result($r);
-  }
-  if (@$_GET['dox']) x();
-  */
 
   function data_FinalizeResultSort($roundid, $data)
   {
