@@ -8,6 +8,7 @@ next:
   * Add some missing URL translations. GH #88.
   * Added option for using custom analytics. Put your analytics.js to ui/elements/. GH #90.
   * Password recovery process corner cases fixed. Also redirect is now proper. GH #55.
+  * TD overriding player participation could create double entry for competitor. Fixed.
 
 2014.03.10:
 ===========
