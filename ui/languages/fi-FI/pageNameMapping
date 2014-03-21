@@ -38,6 +38,7 @@
 :view:payment       view:maksu
 :view:cancelsignup  view:peruutus
 :view:course        view:rata
+:view:queue         view:jono
 
 
 :id:currentYear     id:kuluvaVuosi
