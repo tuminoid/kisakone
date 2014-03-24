@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * RSS feed for events
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -39,7 +39,7 @@
                     {include file=$filename }
                 </item>
             {/if}
-        {/foreach}        
+        {/foreach}
     </channel>
-    
+
 </rss>

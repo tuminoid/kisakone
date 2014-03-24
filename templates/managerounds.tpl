@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Round management
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -53,14 +53,14 @@
                                {if $round->starttype=='simultaneous'} checked="checked"{/if}
                                /> {translate id=simultaneous} <br />
                     </td>
-                    
+
                 </tr>
-                <tr>                   
+                <tr>
                     <td>{translate id=group_interval}</td>
                     <td><input type="text" name="{$round->id}_interval" value="{$round->interval}" /></td>
                 </tr>
-                <tr>                   
-                    
+                <tr>
+
                     <td colspan="2">
                         <input type="checkbox" name="{$round->id}_valid" {if $round->validresults}checked="checked"{/if} />
                         {translate id=round_valid}
@@ -78,10 +78,10 @@
                     </td>
                 </tr>
             </table>
-            
+
         </div>
     {/foreach}
-    
+
     <div  class="buttonarea">
         <input type="submit" value="{translate id=save}" />
         <input type="submit" name="cancel" value="{translate id=cancel}" />

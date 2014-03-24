@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Password recovery dialog
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,18 +30,18 @@
 <p>{translate id=recover_password_help}</p>
 
 <form method="post" class="evenform">
-    
+
     <input type="hidden" name="formid" value="recover_password" />
-    
+
     <div>
         <label for="username">{translate id='username_or_email'}</label>
         <input id="username" type="text" name="username" value="{$smarty.post.username|escape}" />
     </div>
-    
+
     <p>
         <input type="submit" value="{translate id=recover}" />
-        
+
     </p>
 </form>
 
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

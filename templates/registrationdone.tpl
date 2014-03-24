@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Registration done notification page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,4 +27,4 @@
 <div>
 {translate id=registration_done_main_text username=$user->username}
 </div>
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * This file is the data delivery mechanism for doing form validation using AJAX
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  Not: as inconvenient as it is, the extra line change after the comment
  end would make this fail
  * *}{$data}

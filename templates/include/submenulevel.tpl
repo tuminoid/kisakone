@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Recursively used single level of submenu
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -19,15 +19,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
- <ul class="submenu submenu{$depth}">    
+ <ul class="submenu submenu{$depth}">
     {foreach from=$items item=item}
         {if access($item.access) && $item.condition }
             <li>
                 {if !$item.selected}
                     <a href="{url arguments=$item.link}">
                 {/if}
-               
-                <span>{$item.title|escape}</span>        
+
+                <span>{$item.title|escape}</span>
                 {if !$item.selected}
                     </a>
                 {/if}
@@ -38,7 +38,7 @@
                 {/if}
             </li>{else}
         {/if}
-    
+
     {/foreach}
-    
+
 </ul>&nbsp;

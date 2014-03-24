@@ -1,5 +1,5 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Move players from one class to another within an event

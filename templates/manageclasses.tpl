@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Class management listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -48,7 +48,7 @@
                 {translate id=female}
                 {else}
                 {translate id=any}
-                
+
             {/if}
         </td>
         <td>
@@ -61,11 +61,11 @@
         <td>
             <a href="{url page=editclass id=$class->id}">{translate id=edit}</a>
         </td>
-        
+
     </tr>
 {/foreach}
 </table>
 
 <p><a href="{url page=editclass id=new}">{translate id=new_class}</a></p>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

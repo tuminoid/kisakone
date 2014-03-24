@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Email editor UI
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,7 +30,7 @@
     <table>
         {foreach from=$tokens item=ignored key=token}
         <tr>
-            {capture assign=description}email_token_{$token}{/capture}            
+            {capture assign=description}email_token_{$token}{/capture}
             <td>{$token}</td>
             <td>{translate id=$description|escape}</td>
         </tr>
@@ -60,17 +60,17 @@
 
     <div>
         <label for="title">{translate id=title}</label>
-        <input id="title" type="text" name="title" value="{$page->title|escape}" />        
-            
+        <input id="title" type="text" name="title" value="{$page->title|escape}" />
+
     </div>
-    
+
     <div>
         <label for="textcontent">{translate id=content}</label><br />
         <textarea id="textcontent" rows="20" name="textcontent" cols="80">{$page->content|escape}</textarea>
         <br />
     </div>
-    
-  
+
+
     <hr />
     <div>
         {if !$save_text}
@@ -79,9 +79,9 @@
         <input type="submit" value="{$save_text}" name="save" />
         <input id="previewbutton" type="submit" value="{translate id='form_preview'}" name="preview" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        
-       
-    </div>    
+
+
+    </div>
 
 
 
@@ -90,9 +90,9 @@
 //<![CDATA[
 {literal}
 $(document).ready(function(){
-    CheckedFormField('form', 'title', NonEmptyField, null);    
-    
-    
+    CheckedFormField('form', 'title', NonEmptyField, null);
+
+
 });
 
 

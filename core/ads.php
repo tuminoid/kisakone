@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file includes the Ad class, and other general support functionality for ads

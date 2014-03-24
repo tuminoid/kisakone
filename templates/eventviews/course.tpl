@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Course info page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,7 +25,7 @@
 </div>
 
 {foreach from=$courses key=index item=course}
-    
+
     <h3>{$course.Rounds}: {$course.Name|escape}</h3>
     <div>{$course.Description}</div>
     {if $course.Link}
@@ -34,7 +34,7 @@
     {if $course.Map}
         <img style="float: right" src="{$course.Map}" alt="{translate id=course_map}" />
     {/if}
-    
+
     <h4>{translate id=holes_title}</h4>
     <table class="narrow">
         {if true || $course.Map}
@@ -51,8 +51,8 @@
                  <td>{$hole->length}</td>
             </tr>
             {/foreach}
-            
-           
+
+
         {else}
             <tr>
                 <th>{translate id=holeNumber}</th>

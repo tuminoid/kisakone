@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Class editor UI
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,13 +27,13 @@
 <h2>{translate id=editclass_title}</h2>
 
     <input type="hidden" name="formid" value="edit_class" />
-    
+
     <div>
         <label for="Name">{translate id=name}</label>
         <input type="text" id="Name" name="Name" value="{$class->name|escape}" />
         {formerror field='Name'}
     </div>
-    
+
     <div>
         <label for="MinimumAge">{translate id=minage}</label>
         <input type="text" id="MinimumAge" name="MinimumAge" value="{$class->minAge|escape}" />
@@ -44,15 +44,15 @@
         <input type="text" id="MaximumAge" name="MaximumAge" value="{$class->maxAge|escape}" />
         {formerror field='MaximumAge'}
     </div>
-    
+
     <div>
         <label for="GenderRequirement">{translate id=gender}</label>
-        <select name="GenderRequirement" id="GenderRequirement">            
+        <select name="GenderRequirement" id="GenderRequirement">
             {html_options options=$genderOptions selected=$class->gender}
         </select>
 
     </div>
-    
+
     <div>
         <input type="checkbox" id="Available" name="Available" {if $class->available || $smarty.get.id == 'new'} checked="checked" {/if}
         />
@@ -62,8 +62,8 @@
 <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        
-    </div>    
+
+    </div>
 
 
 
@@ -74,9 +74,9 @@ $(document).ready(function(){
     CheckedFormField('form', 'Name', NonEmptyField, null);
     CheckedFormField('form', 'MinimumAge', PositiveIntegerField, true);
     CheckedFormField('form', 'MaximumAge', PositiveIntegerField, true);
-    
+
     $("#cancelButton").click(CancelSubmit);
-    
+
 });
 
 
@@ -88,7 +88,7 @@ $(document).ready(function(){
 </td><td style="border-left: 1px dotted #AAA; padding-left: 32px;">
 {if $smarty.get.id != 'new'}
     <h2>{translate id=delete_class}</h2>
-    
+
     {if $deletable}
         <p>{translate id=can_delete_class}</p>
         <p><input type="submit" name="delete" value="{translate id=delete}" /></p>
@@ -100,4 +100,4 @@ $(document).ready(function(){
 </td></tr></table>
 </form>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

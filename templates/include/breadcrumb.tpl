@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Breadcrumb bar
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,7 +29,7 @@
             {/if}
         {/foreach}
     {elseif $from.open && $from.open !== 'auto'}
-        
+
         <li><a href="{url arguments=$from.link}">{$from.title|escape}</a></li>
         <li> / </li>
         {foreach from=$from.children item=child}
@@ -39,4 +39,3 @@
             {/if}
         {/foreach}
     {/if}
-    

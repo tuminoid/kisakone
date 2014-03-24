@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Live result update javascript code
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -36,9 +36,9 @@ function initializeLiveUpdate(updateRate, eventId, roundId, changeCallback, done
 	liveDoneCallback = doneCallback;
 	liveEventId = eventId;
 	liveRound = roundId;
-	
+
 	scheduleLiveUpdate();
-	
+
 }
 
 function scheduleLiveUpdate() {
@@ -46,7 +46,7 @@ function scheduleLiveUpdate() {
 }
 
 function refreshLiveUpdateData() {
-		
+
 	jQuery.ajax({
 		cache: false,
 		data: {id: liveEventId, lastUpdate: lastUpdate, round: liveRound},
@@ -54,10 +54,10 @@ function refreshLiveUpdateData() {
 		error: liveError,
 		success: handleLiveUpdateData,
 		url: "{/literal}{url page=liveresultdata}{literal}"
-		
-		
+
+
 	});
-	
+
 
 	return true;
 
@@ -66,7 +66,7 @@ function refreshLiveUpdateData() {
 function handleLiveUpdateData(data) {
 	if (nolive) return;
 	errors = 0;
-	
+
 	lastUpdate = data.updatedAt;
 	var count = 0;
 	for (var i in data.updates) {
@@ -75,7 +75,7 @@ function handleLiveUpdateData(data) {
 	}
 	//alert(count);
 	liveDoneCallback();
-	
+
 	scheduleLiveUpdate();
 }
 

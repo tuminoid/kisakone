@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Course management listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -35,9 +35,9 @@
         <th>{translate id=copy}</th>
     </tr>
 {foreach from=$courses item=course}
-    <tr>        
+    <tr>
         <td>{$course.Name|escape}</td>
-       
+
         <td>
             {if $smarty.get.id && !$admin}
                 {if $course.Event == $smarty.get.id}
@@ -66,4 +66,4 @@
 <p><a href="{url page=editcourse id=new}">{translate id=new_course}</a></p>
 {/if}
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

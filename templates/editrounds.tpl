@@ -1,8 +1,8 @@
- {* Suomen Frisbeeliitto Kisakone
+ {* Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
- * Round editor menu ui 
- * 
+ * Round editor menu ui
+ *
  * --
  *
  * This file is part of Kisakone.

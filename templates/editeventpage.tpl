@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Event page editor UI backend. Also used for global text content
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,11 +28,11 @@ tinyMCE.init({ldelim}
 	mode : "textareas",
 	plugins : "table",
 	theme_advanced_buttons3_add : "tablecontrols",
-        theme_advanced_toolbar_location : "top", 
+        theme_advanced_toolbar_location : "top",
 
-        theme_advanced_toolbar_align : "left", 
+        theme_advanced_toolbar_align : "left",
 
-        theme_advanced_statusbar_location : "bottom", 
+        theme_advanced_statusbar_location : "bottom",
 
         theme_advanced_resizing : true
 {rdelim});
@@ -65,8 +65,8 @@ tinyMCE.init({ldelim}
     {if !$global || $custom}
     <div>
         <label for="title">{translate id=title}</label>
-        <input id="title" type="text" name="title" value="{$page->title|escape}" />        
-        
+        <input id="title" type="text" name="title" value="{$page->title|escape}" />
+
         {if $smarty.get.mode != custom && $smarty.get.mode != news}
         {capture assign=transkey}pagetitle_{$page->type}{/capture}
         {translate assign=pagetitle id=$transkey}
@@ -74,13 +74,13 @@ tinyMCE.init({ldelim}
         {/if}
     </div>
     {/if}
-    
+
     <div class="yui-skin-sam">
         <label for="textcontent">{translate id=content}</label><br />
         <textarea id="textcontent" rows="20" name="textcontent" cols="120">{$page->content|escape}</textarea>
         <br />
     </div>
-    
+
     {if $global && $smarty.get.mode == custom}
         <div>
             <label for="access">{translate id=content_access}</label><br />
@@ -91,18 +91,18 @@ tinyMCE.init({ldelim}
             </select>
         </div>
     {/if}
-  
+
     <hr />
     <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
         <input id="previewbutton" type="submit" value="{translate id='form_preview'}" name="preview" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        
+
         {if $smarty.get.content != '*'}
         <input style="margin-left: 60px;" type="submit" value="{translate id='delete'}" name="delete" />
-        
+
         {/if}
-    </div>    
+    </div>
 
 
 
@@ -113,11 +113,11 @@ tinyMCE.init({ldelim}
 {literal}
 $(document).ready(function(){
     CheckedFormField('form', 'name', NonEmptyField, null);
-    
-    
+
+
     $("#cancelButton").click(CancelSubmit);
-    
-    
+
+
 });
 
 
