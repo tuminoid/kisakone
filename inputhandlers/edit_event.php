@@ -39,11 +39,9 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-        header("Location: " . BaseURL());
-        die();
+        redirect("Location: " . BaseURL());
     } elseif (@$_POST['delete']) {
-        header("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
     }
 
     $name = $_POST['name'];
@@ -237,6 +235,5 @@ function processForm()
     CheckQueueForPromotions($eventid);
 
     $dummy = null;
-    header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
 }

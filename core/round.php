@@ -262,19 +262,16 @@ class Round
             }
 
             if (count($assign)) {
-
                 foreach ($assign as $section => $players) {
                     AssignPlayersToSection($this->id, $section, $players);
                 }
             }
 
             if (count($remove)) {
-
                 foreach ($remove as $section => $players) {
                     RemovePlayersFromRound($this->id, $players);
                 }
             }
-            //die();
             return $changes;
         }
 

@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Signs user up for an event
@@ -31,8 +31,7 @@ function processForm()
     require_once 'core/event_management.php';
 
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
     }
 
     global $user;
@@ -45,11 +44,9 @@ function processForm()
     if (!$event) return Error::NotFound('event');
 
     if ($event->approved !== null) {
-        header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
     }
 
-    // Wtf?
     $nothing = null;
 
     if (!$event->signupPossible()) {
@@ -86,10 +83,10 @@ function processForm()
     $variableNeededAsItsReference = null;
     if ($result) {
         // Show payment if signup true
-        header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result?1:0), $nothing));
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result?1:0), $nothing));
     } else {
         // Show queue if signup false
-        header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result?1:0), $nothing));
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result?1:0), $nothing));
     }
     die();
 }

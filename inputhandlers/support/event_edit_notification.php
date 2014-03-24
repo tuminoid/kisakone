@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Helped for displaying notification after various types of
  * event editing
@@ -27,11 +27,9 @@ function input_EditNotification($round = null)
     if ($round) {
         if (!$round->GroupsAvailabled()) {
             // no need for notification, just redirect
-            header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-            die();
+            redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
         }
     }
 
-    header("Location: " . url_smarty(array('page' => 'manageevent', 'notify' => true, 'id' => @$_GET['id']), $_GET));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'notify' => true, 'id' => @$_GET['id']), $_GET));
 }

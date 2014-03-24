@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Managing section start times
@@ -25,8 +25,7 @@
 function ProcessForm()
 {
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
     }
 
     $event = GetEventDetails($_GET['id']);
@@ -77,6 +76,5 @@ function ProcessForm()
         }
    }
 
-   header("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
-   die();
+   redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
 }

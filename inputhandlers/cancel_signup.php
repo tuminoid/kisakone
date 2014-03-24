@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Signup cancellation handler
@@ -29,8 +29,7 @@
 function processForm()
 {
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'event', 'view' => 'signupinfo', 'id' => @$_GET['id']), $nothing));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'event', 'view' => 'signupinfo', 'id' => @$_GET['id']), $nothing));
     }
 
     global $user;
@@ -41,13 +40,6 @@ function processForm()
     if (!$event)
         return Error::NotFound('event');
 
-    /*
-    // This is not needed, also block queue sign offs
-    if ($event->approved === null) {
-        header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
-        die();
-    }
-    */
     $nothing = null;
 
     if (!$event->signupPossible()) {
@@ -67,6 +59,5 @@ function processForm()
     }
 
     $variableNeededAsItsReference = null;
-    header("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 }

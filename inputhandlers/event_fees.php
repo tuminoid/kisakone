@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Event fee change handler
  *
@@ -61,7 +61,7 @@ function processForm()
 
     if (count($reminds)) {
         if (in_array('all', $reminds)) $reminds = GetAllToRemind($event->id);
-        //header("Location: " . url_smarty(array('page' => 'eventfeereminder', 'id' => $_GET['id'], 'users' => implode($reminds, ',')), $reminds));
+        //redirect("Location: " . url_smarty(array('page' => 'eventfeereminder', 'id' => $_GET['id'], 'users' => implode($reminds, ',')), $reminds));
         $error = new Error();
         $error->internalDescription ='redirecting, not a real error';
         $error->errorPage = 'remind';

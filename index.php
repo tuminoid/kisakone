@@ -444,8 +444,7 @@ function gate_AttemptLanguageDetection($pagename)
                 unset($bits['path']);
                 $bits['page'] = $pagename[0];
 
-                header("Location: " . url_smarty($bits, $_GET));
-                die();
+                redirect("Location: " . url_smarty($bits, $_GET));
             }
         }
 
@@ -468,6 +467,6 @@ function redirect($url)
     if (substr($url, 0, 9) == "Location:")
         header($url);
     else
-        header("Location: ".$url);
+        redirect("Location: ".$url);
     die();
 }

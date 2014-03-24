@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * UI backend for change password dialog
@@ -37,10 +37,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
       // If the token is incorrect, we dont even want to show the form
       if (!$user || $token != @$_GET['token']) {
-         header("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => @$_GET['id'], 'failed' => 'yes'), $user));
-         die();
+         redirect("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => @$_GET['id'], 'failed' => 'yes'), $user));
       }
-
       $smarty->assign('username', $user->username);
 
    } else {

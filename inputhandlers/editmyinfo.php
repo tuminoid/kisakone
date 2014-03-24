@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Edit my info ui backend
@@ -43,9 +43,7 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-
-        header("Location: " . url_smarty(array('page' => 'myinfo')));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'myinfo')));
     }
 
     $lastname = $_POST['lastname'];
@@ -103,9 +101,9 @@ function processForm()
         }
 
         if (@$_GET['id']) {
-            header("Location: " . url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
+            redirect("Location: " . url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
         } else {
-            header("Location: " . url_smarty(array('page' => 'myinfo'), $user));
+            redirect("Location: " . url_smarty(array('page' => 'myinfo'), $user));
         }
         die();
     } else {

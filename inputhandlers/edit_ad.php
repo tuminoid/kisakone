@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * AD editor input handler
  *
@@ -33,9 +33,9 @@ function processForm()
 
     if (@$_POST['cancel']) {
         if ($id) {
-            header("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
+            redirect("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
         } else {
-            header("Location: " . url_smarty(array('page' => 'ads'), $_GET));
+            redirect("Location: " . url_smarty(array('page' => 'ads'), $_GET));
         }
         die();
     }
@@ -108,9 +108,9 @@ function processForm()
         if (is_a($result, 'Error')) return $result;
 
         if ($id) {
-            header("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
+            redirect("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
         } else {
-            header("Location: " . url_smarty(array('page' => 'ads'), $_GET));
+            redirect("Location: " . url_smarty(array('page' => 'ads'), $_GET));
         }
         die();
 

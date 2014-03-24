@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * License and membership payment management
  *
@@ -69,9 +69,9 @@ function processForm()
     }
 
     if (count($reminds)) {
-        header("Location: " . url_smarty(array('page' => 'eventfeereminder', 'users' => implode($reminds, ',')), $_GET));
+        redirect("Location: " . url_smarty(array('page' => 'eventfeereminder', 'users' => implode($reminds, ',')), $_GET));
     } else {
-        header("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
+        redirect("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
     }
     die();
 

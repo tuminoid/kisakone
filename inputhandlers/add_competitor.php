@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file is the handler for "add competitor" form
@@ -47,8 +47,7 @@ function processForm()
 
     if (@$_POST['cancel']) {
         $empty = null;
-        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid), $empty));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid), $empty));
     }
 
     // Simply selecting a user, not creating a new one
@@ -71,9 +70,8 @@ function processForm()
         $retVal = SignupUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
         if (is_a($retVal, 'Error'))
             return $retVal;
+        redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
 
-        header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
-        die();
     } else {
         $lastname = $_POST['lastname'];
         if ($lastname == '')
@@ -132,6 +130,5 @@ function processForm()
     if (is_a($retVal, 'Error'))
         return $retVal;
 
-    header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
 }

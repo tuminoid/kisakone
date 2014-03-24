@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Registration screen handler
@@ -30,8 +30,7 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-        header("Location: " . BaseURL());
-        die();
+        redirect("Location: " . BaseURL());
     }
 
     $lastname = $_POST['lastname'];
@@ -100,8 +99,7 @@ function processForm()
         }
 
         $_SESSION['user'] = $newuser;
-        header("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
     }
 
     return $r;

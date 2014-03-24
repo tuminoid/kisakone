@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Deletes an event permanently
  *
@@ -29,16 +29,15 @@ function processForm()
 {
     if (!IsAdmin()) {
         return Error::AccessDenied();
-
     }
 
     if (@$_POST['cancel']) {
-
-        header("Location: " . url_smarty(array('page' => 'editevent', 'id' => @$_POST['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'editevent', 'id' => @$_POST['id']), $_GET));
     }
+
     $event = GetEventDetails(@$_POST['id']);
-    if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
     $tournament = $event->tournament;
 

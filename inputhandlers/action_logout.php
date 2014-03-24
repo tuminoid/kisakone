@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Logs user out
  *
@@ -34,6 +34,5 @@ function ProcessAction()
     setcookie('kisakone_autologin_as');
     setcookie('kisakone_autologin_key');
 
-    header("Location: " . baseurl());
-    die();
+    redirect("Location: " . baseurl());
 }
