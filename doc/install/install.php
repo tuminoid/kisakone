@@ -58,32 +58,32 @@ form();
 
 function form() {
 ?>
-<form method="POST">
+<form method="POST" id="installform">
     <h1>Database connection settings</h1>
     <table>
-        <tr><td>Hostname</td><td><input type="text" name="db_host"></td></tr>
-        <tr><td>Username</td><td><input type="text" name="db_user"></td></tr>
-        <tr><td>Password</td><td><input type="password" name="db_pass"></td></tr>
-        <tr><td>Database name</td><td><input type="text" name="db_db"></td></tr>
-        <tr><td>Table prefix</td><td><input type="text" name="db_prefix"></td></tr>
+        <tr><td>Hostname</td><td><input id="db_host" type="text" name="db_host"></td></tr>
+        <tr><td>Username</td><td><input id="db_user" type="text" name="db_user"></td></tr>
+        <tr><td>Password</td><td><input id="db_pass" type="password" name="db_pass"></td></tr>
+        <tr><td>Database name</td><td><input id="db_db" type="text" name="db_db"></td></tr>
+        <tr><td>Table prefix</td><td><input id="db_prefix" type="text" name="db_prefix"></td></tr>
     </table>
 
     <h1>Create database</h1>
     <p>Database will be created if not found with the defined prefix.</p>
     <table>
-        <tr><td colspan="2"><input type="checkbox" name="db_extralogin" /> Use different login information for creating the database</td></tr>
+        <tr><td colspan="2"><input id="db_extralogin" type="checkbox" name="db_extralogin" /> Use different login information for creating the database</td></tr>
 
-        <tr><td>Username</td><td><input type="text" name="db_admin_user"></td></tr>
-        <tr><td>Password</td><td><input type="password" name="db_admin_pass"></td></tr>
+        <tr><td>Username</td><td><input id="db_admin_user" type="text" name="db_admin_user"></td></tr>
+        <tr><td>Password</td><td><input id="db_admin_pass" type="password" name="db_admin_pass"></td></tr>
 
     </table>
     <h1>Initial Admin Account</h1>
     <table>
-    <tr><td>Username</td><td><input type="text" name="ad_user"></td></tr>
-    <tr><td>Password</td><td><input type="password" name="ad_pass"></td></tr>
-    <tr><td>First Name</td><td><input type="text" name="ad_firstname"></td></tr>
-    <tr><td>Last Name</td><td><input type="text" name="ad_lastname"></td></tr>
-    <tr><td>E-mail</td><td><input type="text" name="ad_email"></td></tr>
+    <tr><td>Username</td><td><input id="ad_user" type="text" name="ad_user"></td></tr>
+    <tr><td>Password</td><td><input id="ad_pass" type="password" name="ad_pass"></td></tr>
+    <tr><td>First Name</td><td><input id="ad_firstname" type="text" name="ad_firstname"></td></tr>
+    <tr><td>Last Name</td><td><input id="ad_lastname" type="text" name="ad_lastname"></td></tr>
+    <tr><td>E-mail</td><td><input id="ad_email" type="text" name="ad_email"></td></tr>
     </table>
 
     <h1>Miscellaneous settings</h1>
@@ -92,7 +92,7 @@ function form() {
     all the internal links will fail. If you can and do use this setting, it does allow the system to use prettier urls.
     </p>
     <p>
-        <input type="submit" value="Save">
+        <input id="formsubmit" type="submit" value="Save">
     </p>
 </form>
 <?php

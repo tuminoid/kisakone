@@ -40,8 +40,8 @@
     </div>
 
     <div>
-        <input type="checkbox" name="rememberMe" /> Muista salasana
-        <input type="submit" value="{translate id='loginbutton'}" />
+        <input id="loginRememberMe" type="checkbox" name="rememberMe" /> Muista salasana
+        <input id="loginSubmit" type="submit" value="{translate id='loginbutton'}" />
     </div>
     <div>
         <a href="{url page='register'}">{translate id=register}</a> |
@@ -52,6 +52,9 @@
     <div class="loginbox">
     <div>{translate id='loginform_loggedin_title'}</div>
     <div>{translate id='loginform_loggedin_as' user=$user->username firstname=$user->firstname lastname=$user->lastname}</div>
-    <p><a href="{url page=myinfo}">{translate id='my_info'}</a> |  <a href="{$url_base}?action=logout">{translate id='logout'}</a></p>
+    <p>
+        <a id="loginMyInfo" href="{url page=myinfo}">{translate id='my_info'}</a> |
+        <a id="logout" href="{$url_base}?action=logout">{translate id='logout'}</a>
+    </p>
     </div>
 {/if}
