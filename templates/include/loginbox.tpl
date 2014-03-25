@@ -27,7 +27,7 @@
 </div>
 <form class="loginbox hidden" action="{$url_base}" id="login_form" method="post">
     <input type="hidden" name="comingFrom" value="{$smarty.server.REQUEST_URI|escape}" />
-    <a id="loginform_x" href="" class="dialogx" ><img src="{$url_base}ui/elements/loginx2.png" alt="{translate id=close}" /></a>
+    <a id="loginform_x" href="" class="dialogx" ><img src="{$url_base}images/loginx2.png" alt="{translate id=close}" /></a>
     <input type="hidden" name="loginAt" value="{$smarty.now}" />
     <input type="hidden" name="formid" value="login" />
     <div>

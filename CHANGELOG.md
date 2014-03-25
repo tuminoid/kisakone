@@ -6,10 +6,15 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Add some missing URL translations. GH #88.
-  * Added option for using custom analytics. Put your analytics.js to ui/elements/. GH #90.
+  * Added option for using custom analytics. Put your analytics.js to js/. GH #90.
   * Password recovery process corner cases fixed. Also redirect is now proper. GH #55.
   * TD overriding player participation could create double entry for competitor. Fixed.
   * Limit width of frontpage classes td to make it look better.
+  * Organized files. Javascript to js/, images to images/, css to css/.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_next.md)
+for additional actions needed.
+
 
 2014.03.10:
 ===========

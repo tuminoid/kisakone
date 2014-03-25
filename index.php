@@ -181,7 +181,7 @@ foreach ($smarty->get_template_vars() as $var => $value) {
 }
 
 // Add analytics js if it exists
-if (file_exists("ui/elements/analytics.js"))
+if (file_exists("js/analytics.js"))
     $smarty->assign('analytics', true);
 
 // The type of the data that is being passed to the browser has to be at some point.

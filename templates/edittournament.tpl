@@ -20,7 +20,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
  {capture assign=extrahead}
-<script type="text/javascript" src="{$url_base}ui/elements/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="{$url_base}js/tiny_mce/tiny_mce.js"></script>
 
 <script type="text/javascript">
 tinyMCE.init({ldelim}

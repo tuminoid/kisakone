@@ -25,7 +25,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
       <title>{translate id=site_name}</title>
-      <link rel="stylesheet" href="{$url_base}ui/elements/style.css" type="text/css" />
+      <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
 
  <style type="text/css">{literal}
  table {

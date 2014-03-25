@@ -24,7 +24,7 @@
 input[type="text"] { min-width: 200px; }
 {/literal}</style>
 
-<script type="text/javascript" src="{$url_base}ui/elements/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="{$url_base}js/tiny_mce/tiny_mce.js"></script>
 
 <script type="text/javascript">
 tinyMCE.init({ldelim}

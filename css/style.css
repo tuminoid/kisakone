@@ -18,7 +18,7 @@ html, body, #contentcontainer, #maintr2 {
 }
 
 h2 {
-    background-image: url(h2bg.png);
+    background-image: url(../images/h2bg.png);
     background-repeat: repeat-x;
     font-family: verdana;
     font-weight: bold;
@@ -55,7 +55,7 @@ th{
     height: 130px;
     text-align: center;
     color: white;
-    background-image: url(headbg.png);
+    background-image: url(../images/headbg.png);
 }
 
 #header a {
@@ -158,7 +158,7 @@ a {
 .submenu img { border: none; }
 
 #submenucontainer {
-    background-image: url(bar2.png);
+    background-image: url(../images/bar2.png);
     background-repeat: repeat-x;
     background-color: #79997e;
 }
@@ -176,7 +176,7 @@ a {
 #mainmenu {
     background-color: #8a8a8a;
     height: 35px;
-    background-image: url(mainmenubg.png)
+    background-image: url(../images/mainmenubg.png)
 }
 
 #mainmenu li {

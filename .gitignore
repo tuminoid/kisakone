@@ -5,7 +5,7 @@
 temp*.txt
 /php5-cgi
 /php5-fcgi
-/ui/elements/uploaded/*
+/images/uploaded/*
 /api
-/ui/elements/analytics.js
+/js/analytics.js
 /favicon.ico
