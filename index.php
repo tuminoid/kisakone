@@ -102,7 +102,7 @@ gate_MapURLParameters();
 
 // Support libraries that do or might rely on data from the user.
 
-require_once 'inputmapping.php';
+require_once 'core/inputmapping.php';
 
 // Process sent form data. The function itself can be found in inputmapping.php
 $pageData = gate_ProcessInputData();
