@@ -167,11 +167,15 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
     $email = new Email($emailid);
     $email->prepare($user, $player, $event, $special);
 
-    if (!$email->text) return;
+    if (!$email->text)
+        return;
 
     global $settings;
     $from = $settings['EMAIL_SENDER'];
     $mailer = $settings['EMAIL_MAILER'];
+
+    if (!$settings['EMAIL_ENABLED'])
+        return;
 
     $retVal = mail(
         $user->email,
@@ -179,7 +183,6 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
         utf8_decode($email->text),
         "From: " . $from . "\r\n"
         . "X-Mailer: " . $mailer
-
     );
 
     return $retVal;

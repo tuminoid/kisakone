@@ -11,8 +11,9 @@ next:
   * TD overriding player participation could create double entry for competitor. Fixed.
   * Limit width of frontpage classes td to make it look better.
   * Organized files. Javascript to js/, images to images/, css to css/.
-  * Upgrade TinyMCE to latest 3.5.
-  * Drop support for non-JS sortheading, avoiding massive js-disabled bot spam.
+  * Upgrade TinyMCE to latest 3.5. GH #101.
+  * Drop support for non-JS sortheading, avoiding massive js-disabled bot spam. GH #81.
+  * Global flag for enabling or disabling sending email. GH #70.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_next.md)
 for additional actions needed.
