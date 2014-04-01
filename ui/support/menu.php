@@ -2,6 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Main menu definition
  *
@@ -29,12 +30,14 @@ function page_initializeMainMenu()
 {
     $mainmenu = array(
         array('title' => 'events', 'url' => 'events'),
-        array('title' => 'tournaments', 'url' => 'tournaments'),
-        array('title' => 'users', 'url' => 'users')
-
+        array('title' => 'tournaments', 'url' => 'tournaments')
     );
 
-    if (IsAdmin()) $mainmenu[] = array('title' => 'administration', 'url' => 'admin');
+    if (IsAdmin()) {
+        $mainmenu[] = array('title' => 'users', 'url' => 'users');
+        $mainmenu[] = array('title' => 'administration', 'url' => 'admin');
+    }
+
     return $mainmenu;
 }
 
