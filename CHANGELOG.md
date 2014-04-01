@@ -14,6 +14,7 @@ next:
   * Upgrade TinyMCE to latest 3.5. GH #101.
   * Drop support for non-JS sortheading, avoiding massive js-disabled bot spam. GH #81.
   * Global flag for enabling or disabling sending email. GH #70.
+  * Refresh visual style to match SFL new colors and looks.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_next.md)
 for additional actions needed.
