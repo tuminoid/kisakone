@@ -72,12 +72,3 @@
             {include file="include/submenu.tpl"}
         </td>
         <td id="content">
-            <ul class="breadcrumb">
-                  {if $mainmenuselection != 'unique'}
-                        {include file="include/breadcrumb.tpl" from=$submenu.$mainmenuselection}
-                  {else}
-                        <li>{$title}</li>
-                  {/if}
-            </ul>
-            <br style="clear: left" />
-
