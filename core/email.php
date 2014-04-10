@@ -133,22 +133,29 @@ class Email
 
     function Send($recipientAddress)
     {
-        if (!$this->text) return;
+        if (!$this->text)
+            return;
 
         global $settings;
         $from = $settings['EMAIL_SENDER'];
         $mailer = $settings['EMAIL_MAILER'];
+        $from_header = "$mailer <$from>";
 
-        mail(
+        if ($settings['EMAIL_ENABLED'] !== true) {
+            error_log("Email sending disabled, discarding message");
+            return;
+        }
+
+        $retval = mail(
             $recipientAddress,
             utf8_decode($this->title),
             utf8_decode($this->text),
-            "From: " . $from . "\r\n"
-            . "X-Mailer: " . $mailer
-
+            "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer,
+            "-f$from"
         );
-    }
 
+        return $retval;
+    }
 }
 
 /**
@@ -166,24 +173,5 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
     $special = array('link' => $link, 'token' => $token);
     $email = new Email($emailid);
     $email->prepare($user, $player, $event, $special);
-
-    if (!$email->text)
-        return;
-
-    global $settings;
-    $from = $settings['EMAIL_SENDER'];
-    $mailer = $settings['EMAIL_MAILER'];
-
-    if (!$settings['EMAIL_ENABLED'])
-        return;
-
-    $retVal = mail(
-        $user->email,
-        utf8_decode($email->title),
-        utf8_decode($email->text),
-        "From: " . $from . "\r\n"
-        . "X-Mailer: " . $mailer
-    );
-
-    return $retVal;
+    return $email->send($user->email);
 }
