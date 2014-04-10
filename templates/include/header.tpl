@@ -27,6 +27,7 @@
 <head>
       <title>{$title} - {translate id=site_name}</title>
       <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
+      <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
       <script type="text/javascript" src="{$url_base}js/jquery/jquery-1.11.0.min.js"></script>
       <script type="text/javascript" src="{$url_base}javascript/base"></script>
       {if $ui}
