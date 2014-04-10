@@ -38,25 +38,30 @@ function InitializeSmartyVariables(&$smarty, $error)
         $player->pdga = $_POST['pdga'];
         $user->email = $_POST['email'];
         $player->gender = $_POST['gender'];
-   } else {
-         if (@$_GET['id']) {
-            if (!IsAdmin()) return Error::AccessDenied();
+    } else {
+        if (@$_GET['id']) {
+            if (!IsAdmin())
+                return Error::AccessDenied();
 
             $getId = $_GET['id'];
-            if (is_numeric($getId)) $userid= $getId;
-            else $userid = GetUserId($getId);
+            if (is_numeric($getId))
+                $userid= $getId;
+            else
+                $userid = GetUserId($getId);
 
-             $user = GetUserDetails($userid);
+            $user = GetUserDetails($userid);
 
-         } else {
+        } else {
             $user = @$_SESSION['user'];
-         }
-         $player = $user->GetPlayer();
-   }
+        }
+        if ($user)
+            $player = $user->GetPlayer();
+    }
 
-   $smarty->assign('userdata', $user);
-   $smarty->assign('player', $player);
-   if ($player) $smarty->assign('dob', $player->birthyear . '-1-1');
+    $smarty->assign('userdata', $user);
+    $smarty->assign('player', $player);
+    if ($player)
+        $smarty->assign('dob', $player->birthyear . '-1-1');
 }
 
 /**
