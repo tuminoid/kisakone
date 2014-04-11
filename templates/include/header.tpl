@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Layout before content
  *
@@ -29,7 +29,7 @@
       <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
       <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
       <script type="text/javascript" src="{$url_base}js/jquery/jquery-1.11.0.min.js"></script>
-      <script type="text/javascript" src="{$url_base}javascript/base"></script>
+      <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
       {if $ui}
       <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
       <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-1.10.4.custom.min.css" type="text/css" />
