@@ -1629,11 +1629,11 @@ function CheckSignUpQuota($eventId, $playerId, $classId)
     $classcounts[$classId] = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
 
     // Check versus class maxquota
-    if ($maxquota > 0 && $classcounts[$classId] >= $maxquota) {
+    if ($classcounts[$classId] >= $maxquota) {
         return false;
     }
 
-    // If there is unused quota in class, allow player in directly
+    // If there is unused quota in class, allow player in
     if ($classcounts[$classId] < $minquota) {
         return true;
     }
