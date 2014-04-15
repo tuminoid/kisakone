@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Group editing
  *
@@ -24,8 +24,7 @@
 function ProcessForm()
 {
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
     }
 
     $event = GetEventDetails($_GET['id']);
@@ -71,8 +70,7 @@ function ProcessForm()
 
    SetRoundGroupsDone($round->id, (bool) @$_POST['done']);
 
-   header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-   die();
+   redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
 }
 
 function InitNewGroup($round, $section, $template, $startingHole)

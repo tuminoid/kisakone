@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Listing of emails
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -34,5 +34,5 @@
 </table>
 
 
-     
-{include file='include/footer.tpl' noad=1} 
+
+{include file='include/footer.tpl' noad=1}

@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * "Create new event" page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.

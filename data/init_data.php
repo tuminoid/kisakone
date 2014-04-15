@@ -1,7 +1,8 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Data access module initialization
  *
@@ -20,4 +21,4 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-   require_once 'data_access.php';
+require_once 'data_access.php';

@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Event-specific page editing
@@ -37,11 +37,11 @@ function processForm()
     if (@$_POST['cancel']) {
 
         if ($custom) {
-            header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
         } elseif ($news) {
-            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
-            header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
         die();
     }
@@ -67,11 +67,11 @@ function processForm()
             if (is_a($outcome, 'Error')) return $outcome;
         }
         if ($custom) {
-            header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
         } elseif ($news) {
-            header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
         } else {
-            header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
         die();
     }
@@ -122,11 +122,11 @@ function processForm()
     if (is_a($result, 'Error')) return $result;
 
     if ($custom) {
-        header("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
+        redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
     } elseif ($news) {
-        header("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
+        redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
     } else {
-        header("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
+        redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
     }
     die();
 }

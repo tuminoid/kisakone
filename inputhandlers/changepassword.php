@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Password change handler
  *
@@ -55,8 +55,7 @@ function processForm()
     }
 
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
     }
     $problems = array();
 
@@ -90,9 +89,9 @@ function processForm()
         return $e;
 
     if ($recover) {
-        header("Location: " . url_smarty(array('page' => 'login'), $uid));
+        redirect("Location: " . url_smarty(array('page' => 'login'), $uid));
     } else {
-        header("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
+        redirect("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
     }
     die();
 }

@@ -40,7 +40,7 @@ var jsOnlyCss = document.createElement("link");
 
 jsOnlyCss.setAttribute("type", "text/css");
 jsOnlyCss.setAttribute("rel", "stylesheet");
-jsOnlyCss.setAttribute("href", "{$url_base}ui/elements/javascript.css");
+jsOnlyCss.setAttribute("href", "{$url_base}css/javascript.css");
 
 // This URL is used a the basis for internal links.
 var baseUrl = "{$url_base}";

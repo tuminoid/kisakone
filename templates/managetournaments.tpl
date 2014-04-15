@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Tournament management listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -29,18 +29,18 @@
         <th>{translate id=name}</th>
         <th>{translate id=year}</th>
         <th>{translate id=scorecalculation}</th>
-        
+
         <th>{translate id=available}</th>
         <th>{translate id=edit}</th>
     </tr>
 {foreach from=$tournaments item=tournament}
     <tr>
         <td>{$tournament->name|escape}</td>
-        <td>{$tournament->year}</td>        
+        <td>{$tournament->year}</td>
         <td>{assign var=method  value=$tournament->GetScoreCalculation()}
-            
+
             {$method->name}</td>
-       
+
         <td>
             {if $tournament->available}
             {translate id=yes!}
@@ -51,7 +51,7 @@
         <td>
             <a href="{url page=edittournament id=$tournament->id}">{translate id=edit}</a>
         </td>
-        
+
         <td>{$item.date|date_format:"%d.%m.%Y %h:%i%s"}</td>
         <td>{$item.summary|escape}</td>
     </tr>
@@ -60,4 +60,4 @@
 
 <p><a href="{url page=edittournament id=new}">{translate id=new_tournament}</a></p>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

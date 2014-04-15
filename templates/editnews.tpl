@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * News editor listing ui
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -28,7 +28,7 @@
 <table class="oddrows">
 {foreach from=$news item=item}
     <tr>
-        <td><a href="{url page=editeventpage mode=news id=$smarty.get.id content=$item->id}">{$item->title|escape}</a></td>        
+        <td><a href="{url page=editeventpage mode=news id=$smarty.get.id content=$item->id}">{$item->title|escape}</a></td>
         <td>{$item->date|date_format:"%d.%m.%Y %H:%M:%S"}</td>
         <td>{$item->content|escape}</td>
     </tr>
@@ -37,4 +37,4 @@
 
 <p><a href="{url page=editeventpage id=$smarty.get.id content=* mode=news}">{translate id=new_news}</a></p>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

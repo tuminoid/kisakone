@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Level editing/creation
  *
@@ -35,16 +35,15 @@ function processForm()
     $nothing = null;
     if (@$_POST['cancel']) {
 
-        header("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
     }
 
     if (@$_POST['delete']) {
         $outcome = DeleteLevel($_GET['id']);
-        if (is_a($outcome, 'Error')) return $outcome;
+        if (is_a($outcome, 'Error'))
+            return $outcome;
 
-        header("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
     }
 
     $name = $_POST['name'];
@@ -78,6 +77,5 @@ function processForm()
     }
 
     $variableNeededAsItsReference = null;
-    header("Location: " . url_smarty(array('page' => 'managelevels'), $variableNeededAsItsReference));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'managelevels'), $variableNeededAsItsReference));
 }

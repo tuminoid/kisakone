@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Course editor UI
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -24,7 +24,7 @@
 input[type="text"] { min-width: 200px; }
 {/literal}</style>
 
-<script type="text/javascript" src="{$url_base}ui/elements/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="{$url_base}js/tiny_mce/tiny_mce.js"></script>
 
 <script type="text/javascript">
 tinyMCE.init({ldelim}
@@ -32,16 +32,16 @@ tinyMCE.init({ldelim}
 	mode : "textareas",
 	plugins : "table",
 	theme_advanced_buttons3_add : "tablecontrols",
-        theme_advanced_toolbar_location : "top", 
+        theme_advanced_toolbar_location : "top",
 
-        theme_advanced_toolbar_align : "left", 
+        theme_advanced_toolbar_align : "left",
 
-        theme_advanced_statusbar_location : "bottom", 
+        theme_advanced_statusbar_location : "bottom",
 
         theme_advanced_resizing : true
 {rdelim});
 </script>
-{/capture} 
+{/capture}
 {translate assign=title id=editcourse_title}
 {include file='include/header.tpl' title=$title}
 
@@ -67,19 +67,19 @@ tinyMCE.init({ldelim}
         <input type="submit" name="cancel" value="{translate id=cancel}" />
 	{if !$warning}<input type="submit" style="margin-left: 200px" name="delete" value="{translate id=delete}" />{/if}
     </div>
-    
+
     <div class="round">
         <h2>{translate id=course}</h2>
         <table class="narrow">
-            <tr>                
+            <tr>
                 <td>{translate id=name}</td>
                 <td><input type="text" name="name" value="{$course.Name|escape}" /></td>
             </tr>
-            <tr>                
+            <tr>
                 <td>{translate id=map_url}</td>
                 <td><input type="text" name="map" value="{$course.Map|escape}" /></td>
             </tr>
-            <tr>                
+            <tr>
                 <td>{translate id=link}</td>
                 <td><input type="text" name="link" value="{$course.Link|escape}" /></td>
             </tr>
@@ -98,13 +98,13 @@ tinyMCE.init({ldelim}
                             <td>{translate id=hole_number}</td>
                             <td>{translate id=par}</td>
                             <td>{translate id=hole_length}</td>
-                        </tr>                        
+                        </tr>
                         {foreach from=$holes item=hole}
                         <tr>
                             <td>
-                                
+
                                 {$hole->holeNumber}
-                                                                
+
                             </td>
                             <td>
                                 <input type="text" size="4" name="h_{$hole->holeNumber}_{$hole->id}_par" value="{$hole->par}" />
@@ -115,14 +115,14 @@ tinyMCE.init({ldelim}
                         </tr>
                         {/foreach}
                     </table>
-                    
+
                  </td>
             </tr>
         </table>
-        
+
     </div>
-    
-    
+
+
     <div  class="buttonarea">
         <input type="submit" value="{translate id=save}" />
         <input type="submit" name="cancel" value="{translate id=cancel}" />
@@ -133,4 +133,4 @@ tinyMCE.init({ldelim}
 
 {/if}
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

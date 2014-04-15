@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Event main page -- this contains all the other user-visible pages
- * 
+ *
  * --
  *
  * This file is part of Kisakone.

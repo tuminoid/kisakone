@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Changing classes of signups for an event
@@ -37,8 +37,7 @@ function processForm()
         return Error::AccessDenied('eventclasses');
     }
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $_GET['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $_GET['id']), $_GET));
     }
     $failures = false;
 

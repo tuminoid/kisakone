@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Notification page for having completed user edit
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,4 +22,4 @@
 {translate assign=title id=user_edit_done}
 {include file='include/header.tpl'}
 <p>{translate id=user_edit_done_main_text}</p>
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Access management form handler
  *
@@ -55,6 +55,5 @@ function processForm()
         }
     }
 
-    header("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
 }

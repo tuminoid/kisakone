@@ -1,6 +1,6 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file contains the TextContent class. TextContent is used for nearly

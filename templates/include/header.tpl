@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Layout before content
  *
@@ -26,24 +26,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
       <title>{$title} - {translate id=site_name}</title>
-      <link rel="stylesheet" href="{$url_base}ui/elements/style.css" type="text/css" />
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-1.11.0.min.js"></script>
-      <script type="text/javascript" src="{$url_base}javascript/base"></script>
+      <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
+      <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
+      <script type="text/javascript" src="{$url_base}js/jquery/jquery-1.11.0.min.js"></script>
+      <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
       {if $ui}
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.js"></script>
-      <link rel="stylesheet" href="{$url_base}ui/elements/jquery/jquery-ui-1.10.4.custom.min.css" type="text/css" />
+      <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+      <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-1.10.4.custom.min.css" type="text/css" />
       <meta http-equiv="Content-Type" content="{$contentType}" />
       {/if}
       {if $timepicker}
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-timepicker-addon.min.js"></script>
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery/jquery-ui-sliderAccess.js"></script>
-      <link rel="stylesheet" href="{$url_base}ui/elements/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
+      <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.js"></script>
+      <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-sliderAccess.js"></script>
+      <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
       {/if}
       {if $autocomplete}
-      <script type="text/javascript" src="{$url_base}ui/elements/jquery.autocomplete-min.js"></script>
+      <script type="text/javascript" src="{$url_base}js/jquery.autocomplete-min.js"></script>
       {/if}
       {if $analytics}
-      <script type="text/javascript" src="{$url_base}ui/elements/analytics.js"></script>
+      <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
       {/if}
       {$extrahead}
 </head>
@@ -58,7 +59,7 @@
             {* Disabled from normal use as we only have a single language *}
             {include file='include/languagebar.tpl'}
       {/if}
-      <img id="sitelogo" src="{$url_base}ui/elements/sitelogo.png" alt="{translate id=site_name}" />
+      <img id="sitelogo" src="{$url_base}images/sitelogo.png" alt="{translate id=site_name}" />
 
       <h1 id="sitename">{translate id=site_name_long}</h1>
       <div id="pagename">{$title}</div>
@@ -72,12 +73,3 @@
             {include file="include/submenu.tpl"}
         </td>
         <td id="content">
-            <ul class="breadcrumb">
-                  {if $mainmenuselection != 'unique'}
-                        {include file="include/breadcrumb.tpl" from=$submenu.$mainmenuselection}
-                  {else}
-                        <li>{$title}</li>
-                  {/if}
-            </ul>
-            <br style="clear: left" />
-

@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Layout after content
- * 
+ *
  * --
  *
  * This file is part of Kisakone.

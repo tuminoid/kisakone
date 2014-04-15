@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Ad banner
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -22,5 +22,5 @@
 <div id="adbanner">
 
 {if $ad}{$ad->Render()}{/if}
-    
+
 </div>

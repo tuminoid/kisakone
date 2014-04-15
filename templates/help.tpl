@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Help
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -45,7 +45,7 @@ $("document").ready(function() {
    $("#helplink").parent().remove();
    $("#helpcontainer").remove();
    DisplayHelp = DisplayHelp_Local;
-    
+
 });
 
 function DisplayHelp_Local(helpfile) {

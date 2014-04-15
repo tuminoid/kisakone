@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Round editing
  *
@@ -24,8 +24,7 @@
 function processForm()
 {
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'editrounds', 'id' => @$_GET['id']), $_POST));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'editrounds', 'id' => @$_GET['id']), $_POST));
     }
 
     $event = GetEventDetails(@$_GET['id']);

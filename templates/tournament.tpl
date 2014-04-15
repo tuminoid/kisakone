@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Tournament details page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -33,7 +33,7 @@
         <tr><td>{translate id=tournament_participants}</td><td>{$tournament->GetNumParticipants()}</td></tr>
         <tr><td>{translate id=tournament_events_held}</td><td>
         {$tournament->GetEventsHeld()} / {$tournament->GetNumEvents()}
-            
+
         </td></tr>
         <tr><td>{translate id=tournament_level}</td><td>
             {assign var=level value=$tournament->GetLevel()}
@@ -45,8 +45,8 @@
             {assign var=scm value=$tournament->GetScoreCalculation()}
             {$scm->name}
             </td></tr>
-        
-    
+
+
 </table>
 
 <h2>{translate id=tournament_events}</h2>
@@ -70,10 +70,10 @@
                     {if $event->management == '' && $event->signupState == 'available'}<a href="{url page='signup' id=$event->id}">{translate id=event_signup}</a>
                         <span class="note">{translate id=signup_by_start} {$event->signupend|date_format:"%d.%m.%Y %h:%i%s"} {translate id=signup_by_end}</span>
                     {/if}
-                    
+
                     {if $event->signupState == 'signedup'}<a href="{url page='cancelsignup' id=$event->id}">{translate id=event_cancel_signup}</a>{/if}
                     {if $event->signupState == 'accepted'}<a href="{url page='cancelsignup' id=$event->id}">{translate id=event_cancel_signup}</a>{/if}
-                   
+
                     {if $event->management == 'td' || $event->management == 'admin'}
                         <a href="{url page='manageevent' id=$event->id}">{translate id=event_manage}</a>
                     {/if}
@@ -104,11 +104,11 @@
         <th rowspan="2">{translate id=tournament_pos}</th>
         <th rowspan="2">{translate id=tournament_part_name}</th>
         <th rowspan="2">{translate id=pdga}</th>
-        
-        
-        
+
+
+
         <th colspan="{$tournament->GetNumEvents()}">{translate id=tournament_event_positions}</th>
-        
+
         <th rowspan="2">{translate id=tournament_overall}</th>
         {if $edit}
         <th rowspan="2">{translate id=tie_breaker}</th>
@@ -117,25 +117,25 @@
     <tr>
         {foreach from=$tournament->GetEvents() item=ignored key=index}
             {math assign=num equation="x+1" x=$index}
-            <th>{translate id=tournament_event_score event=$num}</th>        
+            <th>{translate id=tournament_event_score event=$num}</th>
         {/foreach}
-    
+
     </tr>
-    
+
     {foreach from=$participants item=part}
     <tr>
         <td>{$part.Standing}</td>
         <td><a href="{url page=user id=$part.Username}">{$part.FirstName|escape} {$part.LastName}</a></td>
         <td>{$part.PDGANumber}</td>
         {foreach from=$tournament->GetEvents() item=event key=index}
-            {assign var=eventid value=$event->id}        
+            {assign var=eventid value=$event->id}
             {assign var=result value=$part.Results[$eventid]}
             {assign var=score value=$result.Score}
             {if !$score}<td>-</td>
             {else}<td>{math equation="x / 10" x=$score}</td>
             {/if}
         {/foreach}
-        
+
         {if is_numeric($part.OverallScore)}
         <td>{math equation="x/10" x=$part.OverallScore}</td>
             {else}<td></td>
@@ -143,10 +143,10 @@
         {if $edit}
             <td><input type="text" value="{$part.TieBreaker}" name="tb_{$part.PlayerId}" /></td>
         {/if}
-        
+
     </tr>
     {/foreach}
-    
+
 
 {/foreach}
 </table>

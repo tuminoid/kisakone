@@ -1,10 +1,10 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * If event is locked, this page shows error message telling edits aren't possible.
  * If JS is enabled, editing controls are also disabled
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,10 +30,10 @@
         $("select").each(function(){this.disabled=true;});
         $("button").each(function(){this.disabled=true;});
     });
-    
+
     {/literal}
-    
-    
+
+
     //]]>
-    </script> 
+    </script>
 {/if}

@@ -1,6 +1,6 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Additional smarty template functions
@@ -181,7 +181,7 @@ function initializeGetFormFields_Smarty($params, &$smarty)
 
 /**
  * Smarty function, that can be used for providing a sortable heading field for a table.
-
+ *
  * @param array $params String token for the link text is provided at the key 'id'.
  * @param Smarty $smarty Reference to the smarty object this function was called from.
  */
@@ -234,7 +234,7 @@ CODE;
 
     $url = htmlentities(url_smarty($data, $data));
 
-    return "$prefix<a class=\"SortHeading\" href=\"$url\">" . translate($params['id']) . "</a>";
+    return "$prefix<a class=\"SortHeading\" href=\"#\">" . translate($params['id']) . "</a>";
 }
 
 

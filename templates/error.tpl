@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Error display page
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -44,4 +44,4 @@
 
 {/if}
 
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

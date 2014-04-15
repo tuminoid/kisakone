@@ -1,11 +1,11 @@
-Smarty/templates_c/*
+/Smarty/templates_c/*
 /config.php
 /config_email.php
 /config_site.php
 temp*.txt
-.htaccess
-php5-cgi
-php5-fcgi
-ui/elements/uploaded/*
+/php5-cgi
+/php5-fcgi
+/images/uploaded/*
 /api
-ui/elements/analytics.js
+/js/analytics.js
+/favicon.ico

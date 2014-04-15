@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Access management page (ban, user removal)
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -24,11 +24,11 @@
 
 <form method="get" class="usersform" action="{url page=manageaccess}">
     {initializeGetFormFields  search=false }
-    <div class="formelements">        
+    <div class="formelements">
          <p>{translate id=users_searchhint} </p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
-    </div>    
+    </div>
 </form>
 
 <div class="SearchStatus" />
@@ -43,13 +43,13 @@
           <th>{sortheading field=1 id=user_ban sortType=checkboxchecked}</th>
           {*<th>{translate id=permanent_removal}</th> removal not supported at this time *}
        </tr>
-        
-            
+
+
        {foreach from=$users item=user}
-          {assign var=userid value=$user.user->id}          
+          {assign var=userid value=$user.user->id}
          <tr>
             <td><a href="{url page="user" id="$userid"}">{$user.user->fullname|escape}</a></td>
-            
+
              <td>{$user.player->pdga|escape}</td>
              <td><a href="{url page="user" id="$userid"}">{$user.user->username|escape}</a></td>
              <td>
@@ -61,7 +61,7 @@
                 <input type="checkbox" name="delete_{$userid}" /> {translate id=user_remove}
              </td>            *}
          </tr>
-       {/foreach}     
+       {/foreach}
     </table>
     <p style="clear: both;">
         <input type="submit" value="{translate id=form_save}" />
@@ -76,9 +76,9 @@
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('userTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );   
+                );
     $($(".SortHeading").get(0)).click();
-    
+
 });
 
 

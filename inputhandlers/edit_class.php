@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Class editor input handler
  *
@@ -27,18 +27,16 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-
         $empty = null;
-        header("Location: " . url_smarty(array('page' => 'manageclasses'), $empty));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageclasses'), $empty));
     }
 
     if (@$_POST['delete']) {
         $outcome = DeleteClass($_GET['id']);
-        if (is_a($outcome, 'Error')) return $outcome;
+        if (is_a($outcome, 'Error'))
+            return $outcome;
 
-        header("Location: " . url_smarty(array('page' => 'manageclasses'), $_POST));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageclasses'), $_POST));
     }
 
     $name = $_POST['Name'];
@@ -81,6 +79,5 @@ function processForm()
     }
 
     $variableNeededAsItsReference = null;
-    header("Location: " . url_smarty(array('page' => 'manageclasses'), $variableNeededAsItsReference));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manageclasses'), $variableNeededAsItsReference));
 }

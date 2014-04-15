@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Login box/login information
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -23,13 +23,13 @@
 <div class="loginbox" id="login_panel">
     <a id="login_link" href="{url page='login'}">{translate id=login}</a> |
     <a href="{url page='register'}">{translate id=register}</a>
- 
+
 </div>
 <form class="loginbox hidden" action="{$url_base}" id="login_form" method="post">
     <input type="hidden" name="comingFrom" value="{$smarty.server.REQUEST_URI|escape}" />
-    <a id="loginform_x" href="" class="dialogx" ><img src="{$url_base}ui/elements/loginx2.png" alt="{translate id=close}" /></a>
+    <a id="loginform_x" href="" class="dialogx" ><img src="{$url_base}images/loginx2.png" alt="{translate id=close}" /></a>
     <input type="hidden" name="loginAt" value="{$smarty.now}" />
-    <input type="hidden" name="formid" value="login" />    
+    <input type="hidden" name="formid" value="login" />
     <div>
         <label for="loginUsernameInput">{translate id='username'}</label>
         <input type="text" name="username" id="loginUsernameInput" />
@@ -38,10 +38,10 @@
         <label for="loginPassword">{translate id='password'}</label>
         <input type="password" id="loginPassword" name="password" />
     </div>
-    
+
     <div>
-        <input type="checkbox" name="rememberMe" /> Muista salasana
-        <input type="submit" value="{translate id='loginbutton'}" />                
+        <input id="loginRememberMe" type="checkbox" name="rememberMe" /> Muista salasana
+        <input id="loginSubmit" type="submit" value="{translate id='loginbutton'}" />
     </div>
     <div>
         <a href="{url page='register'}">{translate id=register}</a> |
@@ -52,7 +52,9 @@
     <div class="loginbox">
     <div>{translate id='loginform_loggedin_title'}</div>
     <div>{translate id='loginform_loggedin_as' user=$user->username firstname=$user->firstname lastname=$user->lastname}</div>
-    <p><a href="{url page=myinfo}">{translate id='my_info'}</a> |  <a href="{$url_base}?action=logout">{translate id='logout'}</a></p>
+    <p>
+        <a id="loginMyInfo" href="{url page=myinfo}">{translate id='my_info'}</a> |
+        <a id="logout" href="{$url_base}?action=logout">{translate id='logout'}</a>
+    </p>
     </div>
 {/if}
-    

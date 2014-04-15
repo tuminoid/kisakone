@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Level management listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -26,7 +26,7 @@
 
 <table class="oddrows narrow">
     <tr>
-        <th>{translate id=name}</th>        
+        <th>{translate id=name}</th>
         <th>{translate id=scorecalculation}</th>
         <th>{translate id=available}</th>
 
@@ -46,11 +46,11 @@
         <td>
             <a href="{url page=editlevel id=$class->id}">{translate id=edit}</a>
         </td>
-        
+
     </tr>
 {/foreach}
 </table>
 
 <p><a href="{url page=editlevel id=new}">{translate id=new_level}</a></p>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

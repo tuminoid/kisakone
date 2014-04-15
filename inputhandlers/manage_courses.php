@@ -1,7 +1,7 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Course editor input handler
  *
@@ -25,9 +25,9 @@ function processForm()
     require_once 'core/hole.php';
     if (@$_POST['cancel']) {
         if (@$_GET['event']) {
-            header("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
+            redirect("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
         } else {
-            header("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
+            redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
         }
         die();
     }
@@ -62,8 +62,7 @@ function processForm()
                 return translate("cant_delete_this_course");
             } else {
                 DeleteCourse($course['id']);
-                header("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
-                die();
+                redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
             }
         }
         SaveCourse($course);
@@ -76,8 +75,7 @@ function processForm()
         if (@$_GET['event']) $course['Event'] = $_GET['event'];
 
         if (@$_POST['delete']) {
-            header("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
-            die();
+            redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
         }
 
         $course['id'] = null;
@@ -127,9 +125,9 @@ function processForm()
     }
 
         if (@$_GET['event']) {
-            header("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
+            redirect("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
         } else {
-            header("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
+            redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
         }
         die();
 }

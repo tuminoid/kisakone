@@ -21,12 +21,11 @@ in the example that would be `http://example.com/kisakone/doc/install/install.ph
 6. It is recommended, although not strictly necessary to prevent the web
 server from writing to `config.php` again.
 
-7. The directory `ui/elements/uploaded` and `Smarty/templetes_c` needs to be
+7. The directory `images/uploaded` and `Smarty/templetes_c` needs to be
 writable by the web server.
 
 8. Copy `config_site.php.sample` to `config_site.php` and modify the email
-address for the administration and Kisakone's name, and set the definess
-correctly for club use, most importantly set `USE_SFL_PAYMENTS` to `false`.
+address for the administration and Kisakone's name.
 
 
 Setting up LAMP for Kisakone:

@@ -1,6 +1,6 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file defines the File class as well as file management functionality
@@ -38,7 +38,7 @@ class File
 }
 
 /**
- * This function stores (the sole) uploaded image in the ui/elements/uploaded
+ * This function stores (the sole) uploaded image in the images/uploaded
  * folder. ID of the created File record is returned on success.
  */
 function StoreUploadedImage($type)
@@ -63,7 +63,7 @@ function StoreUploadedImage($type)
 
     $displayName = core_GetUniqueFileDisplayName($original_name, $type);
 
-    copy($current_name, "ui/elements/uploaded/" . $desired_name);
+    copy($current_name, "images/uploaded/" . $desired_name);
 
     return CreateFileRecord($desired_name, $displayName, $type);
 }
@@ -117,7 +117,7 @@ function core_GetExtension($filename)
 
 function core_ChooseUploadFilename($extension)
 {
-    $dir = "ui/elements/uploaded/";
+    $dir = "images/uploaded/";
     do {
         $filename = core_GenerateFilename();
         $fullname = $dir . $filename . $extension;

@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Creates an admin or another manager user
  *
@@ -30,9 +30,7 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-
-        header("Location: " . BaseURL());
-        die();
+        redirect("Location: " . BaseURL());
     }
 
     if (!IsAdmin()) return Error::AccessDenied();

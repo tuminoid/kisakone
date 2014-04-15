@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Level editor UI
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -27,21 +27,21 @@
 <h2>{translate id=editlevel_title}</h2>
 
     <input type="hidden" name="formid" value="edit_level" />
-    
+
     <div>
         <label for="name">{translate id=name}</label>
         <input id="name" type="text" name="name" value="{$level.name|escape}" />
         {formerror field='name'}
     </div>
-    
+
     <div>
         <label for="scoreCalculationMethod">{translate id=scorecalculation}</label>
-        <select id="scoreCalculationMethod" name="scoreCalculationMethod">            
+        <select id="scoreCalculationMethod" name="scoreCalculationMethod">
             {html_options options=$scoreOptions selected=$level.scoreCalculationMethod}
         </select>
     </div>
-    
-    
+
+
     <div>
         <input type="checkbox" id="available" name="available" {if $level.available || $smarty.get.id == 'new'} checked="checked" {/if}
         />
@@ -51,8 +51,8 @@
 <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        
-    </div>    
+
+    </div>
 
 
 
@@ -61,9 +61,9 @@
 {literal}
 $(document).ready(function(){
     CheckedFormField('form', 'Name', NonEmptyField, null);
-    
+
     $("#cancelButton").click(CancelSubmit);
-    
+
 });
 
 
@@ -75,7 +75,7 @@ $(document).ready(function(){
 </td><td style="border-left: 1px dotted #AAA; padding-left: 32px;">
 {if $smarty.get.id != 'new'}
     <h2>{translate id=delete_level}</h2>
-    
+
     {if $deletable}
         <p>{translate id=can_delete_level}</p>
         <p><input type="submit" name="delete" value="{translate id=delete}" /></p>
@@ -87,4 +87,4 @@ $(document).ready(function(){
 </td></tr></table>
 </form>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

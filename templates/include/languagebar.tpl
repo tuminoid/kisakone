@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Language selection bar (not in use)
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,12 +25,12 @@
         float: right;
         text-align: center;
         width: auto !important;
-        
+
     }
-    
+
     .languagebar td {
         vertical-align: middle;
-        
+
     }
 {/literal}</style>
 <table class="languagebar">
@@ -47,4 +47,4 @@
     <a href="?action=set_language&amp;language=sv">{translate id=language-sv}</a>
 {/if}
 </td><td><a href="?action=set_language&amp;language=RESET">[RESET_LANGUAGE]</a></td>
-</tr></table>   
+</tr></table>

@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * Global page listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -44,10 +44,10 @@
     {/foreach}
 </table>
 
-    
+
 
 <p>
     <a href="{url page=sitecontent id=* mode=custom}">{translate id=new_page}</a>
 </p>
-     
-{include file='include/footer.tpl' noad=1} 
+
+{include file='include/footer.tpl' noad=1}

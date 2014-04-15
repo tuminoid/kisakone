@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * This file includes the Ad class, and other general support functionality for ads
@@ -167,8 +167,6 @@ class Ad
     function RenderDefault()
     {
         if ($this->contentId == 'default') {
-            // Ad being told to render itself
-            //return sprintf('<img src="%s" />', baseurl() . "ui/elements/placeholderAd.png");
             return '';
         } else {
             $ad = GetAd($this->event, 'default');
@@ -212,7 +210,7 @@ class Ad
         if ($this->imageReference) {
             require_once 'core/files.php';
             $file = GetFile($this->imageReference);
-            $image = baseurl() . "ui/elements/uploaded/" . $file->filename;
+            $image = baseurl() . "images/uploaded/" . $file->filename;
         } else {
             $image = $this->imageURL;
         }

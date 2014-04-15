@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Custom event page listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -31,7 +31,7 @@
         </li>
         {foreachelse}
         <li>{translate id=no_content}</li>
-        
+
     {/foreach}
 </ul>
 

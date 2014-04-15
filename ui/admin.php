@@ -1,6 +1,6 @@
 <?php
 /**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * This file is blank UI placeholder for main admin page

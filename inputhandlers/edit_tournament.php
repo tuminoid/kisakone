@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  *
  * Tournament editing/creation
  *
@@ -33,17 +33,14 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-
-        header("Location: " . url_smarty(array('page' => 'managetournaments')));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'managetournaments')));
     }
 
     if (@$_POST['delete']) {
         $outcome = DeleteTournament($_GET['id']);
-        if (is_a($outcome, 'Error')) return $outcome;
-
-        header("Location: " . url_smarty(array('page' => 'managetournaments'), $outcome));
-        die();
+        if (is_a($outcome, 'Error'))
+            return $outcome;
+        redirect("Location: " . url_smarty(array('page' => 'managetournaments'), $outcome));
     }
 
     $name = $_POST['name'];
@@ -81,6 +78,5 @@ function processForm()
     if (is_a($result, 'Error')) return $result;
 
     $variableNeededAsItsReference = null;
-    header("Location: " . url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));
 }

@@ -36,8 +36,7 @@ function processForm()
         return Error::AccessDenied('eventquotas');
 
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $_GET));
     }
     $failures = false;
 
@@ -59,6 +58,5 @@ function processForm()
     CheckQueueForPromotions($event->id);
 
     $dummy = null;
-    header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
 }

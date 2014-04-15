@@ -1,7 +1,7 @@
 <?php
 /*
- * Suomen Frisbeeliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Suomen Frisbeegolfliitto Kisakone
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Splitting classes into sections
@@ -25,38 +25,40 @@
 function ProcessForm()
 {
     if (@$_POST['cancel']) {
-        header("Location: " . url_smarty(array('page' => 'editrounds', 'id' => @$_GET['id']), $_GET));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'editrounds', 'id' => @$_GET['id']), $_GET));
     }
 
     $event = GetEventDetails($_GET['id']);
 
-   if (!$event) return Error::NotFound('event');
+    if (!$event)
+      return Error::NotFound('event');
 
-     if ($event->resultsLocked) return Error::AccessDenied();
+    if ($event->resultsLocked)
+      return Error::AccessDenied();
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
     }
+
     if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
 
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
 
-   $newIds = array();
+    $newIds = array();
 
-   foreach ($_POST as $key => $item) {
+    foreach ($_POST as $key => $item) {
         if (substr($key, 0, 8) == "base_c_n") {
             if ($item == "") $item = null;
             $newIds[substr($key, 7)] = CreateSection($round->id, $item, @$_POST["cname_" . substr($key, 7)]);
 
         }
 
-   }
+    }
 
-   $confirmedSections = array();
+    $confirmedSections = array();
 
-   foreach ($_POST as $key => $item) {
+    foreach ($_POST as $key => $item) {
         if (substr($key, 0, 6) == "cname_") {
             $id = substr($key, 6);
 
@@ -76,8 +78,8 @@ function ProcessForm()
 
    }
 
-   $assign = array();
-   foreach ($_POST as $key => $item) {
+    $assign = array();
+    foreach ($_POST as $key => $item) {
         if (substr($key, 0, 1) == "p") {
             $pid = substr($key, 1);
             $gid = substr($item, 2);
@@ -90,18 +92,15 @@ function ProcessForm()
             if (!isset($assign[$gid])) $assign[$gid] = array();
             $assign[$gid][] = $pid;
         }
-   }
+    }
 
-   ResetRound($round->id, 'players');
+    ResetRound($round->id, 'players');
 
-   foreach ($assign as $sectId => $players) {
-
+    foreach ($assign as $sectId => $players) {
         AssignPlayersToSection($round->id, $sectId, $players );
-   }
+    }
 
-   RemoveEmptySections($round->id);
+    RemoveEmptySections($round->id);
 
-   header("Location: " . url_smarty(array('page' => 'starttimes', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
-   die();
-
+    redirect("Location: " . url_smarty(array('page' => 'starttimes', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
 }

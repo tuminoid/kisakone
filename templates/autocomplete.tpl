@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Means for relaying autocomplete data to the UI. Format is JSON.
- * 
+ *
  * --
  *
  * This file is part of Kisakone.

@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Event management menu (official version)
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -35,4 +35,4 @@
 {/foreach}
 </ul>
 
-{include file='include/footer.tpl' noad=1} 
+{include file='include/footer.tpl' noad=1}

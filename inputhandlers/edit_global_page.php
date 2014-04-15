@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Global text page edit handler
@@ -38,9 +38,9 @@ function processForm()
     if (@$_POST['cancel']) {
 
         if (!$email) {
-            header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
         } else {
-            header("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
+            redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
         }
         die();
     }
@@ -54,8 +54,7 @@ function processForm()
             if (is_a($outcome, 'Error')) return $outcome;
         }
 
-        header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
     }
 
     $title = @$_POST['title'];
@@ -113,9 +112,9 @@ function processForm()
     if (is_a($result, 'Error')) return $result;
 
     if (!$email) {
-        header("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
+        redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
     } else {
-        header("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
+        redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
     }
     die();
 }

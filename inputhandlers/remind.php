@@ -22,9 +22,7 @@ function processForm()
     if (!IsAdmin() && $event->management !='td') return Error::AccessDenied();
 
     if (@$_POST['cancel']) {
-
-        header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $custom));
-        die();
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $custom));
     }
 
     $title = @$_POST['title'];
@@ -52,8 +50,7 @@ function processForm()
         return $evp;
     }
 
-    header("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $custom));
-    die();
+    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $custom));
 }
 
 function input_emails($recipientlist, $mail, $event)

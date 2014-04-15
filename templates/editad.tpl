@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * AD editor UI
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -37,7 +37,7 @@ select, input[type="text"], input[type="file"] {
     {capture assign=locid}ad_location_{$ad->contentId}{/capture}
 {/if}
         {translate assign=typetext id=$locid}
-    
+
 <p>{translate id=ad_inline_help adtype=$typetext}</p>
 
 <div class="nojs">
@@ -61,39 +61,39 @@ select, input[type="text"], input[type="file"] {
         {/if}
         <li><input type="radio" name="ad_type" {if $ad->type =='default'}checked="checked"{/if}
         value="default" class="ad_type_selector" /> {translate id=ad_type_default}</li>
-        
+
         <li><input type="radio" name="ad_type" {if $ad->type =='imageandlink'}checked="checked"{/if}
         value="imageandlink" class="ad_type_selector" /> {translate id=ad_type_imageandlink}</li>
-        
+
         <li><input type="radio" name="ad_type" {if $ad->type =='html'}checked="checked"{/if}
         value="html" class="ad_type_selector" /> {translate id=ad_type_html}</li>
-        
+
         <li><input type="radio" name="ad_type" {if $ad->type =='reference'}checked="checked"{/if}
         value="reference" class="ad_type_selector" /> {translate id=ad_type_reference}</li>
-        
+
         <li><input type="radio" name="ad_type" {if $ad->type =='disabled'}checked="checked"{/if}
         value="disabled" class="ad_type_selector" /> {translate id=ad_type_disabled}</li>
     </ul>
-    
+
     <h2>{translate id=ad_details_heading}</h2>
     <div class="ad_details" id="add_eventdefault">
         <p>{translate id=ad_eventdefault_description}</p>
     </div>
-    
+
     <div class="ad_details" id="add_default">
         <p>{translate id=ad_default_description}</p>
     </div>
-    
+
     <div class="ad_details" id="add_disabled">
         <p>{translate id=ad_disabled_description}</p>
     </div>
-    
+
     <div class="ad_details" id="add_html">
         <p>{translate id=ad_html_description}</p>
         <textarea name="html" cols="80" rows="10">{if $ad->type == 'html'}{$ad->longData|escape}{/if}</textarea>
-    
+
     </div>
-    
+
     <div class="ad_details" id="add_imageandlink">
         <p>{translate id=ad_imageandlink_description}</p>
         <table class="narrow">
@@ -105,7 +105,7 @@ select, input[type="text"], input[type="file"] {
                 <td rowspan="2">
                     <input type="radio" name="image_type" value="internal"
                             {if $ad->imageReference !== null}checked="checked"{/if}/></td>
-                <td>{translate id=ad_select}</td>            
+                <td>{translate id=ad_select}</td>
             </tr>
             <tr><td>
                 <select  class="selectRadioOnChange" name="image_ref">
@@ -125,7 +125,7 @@ select, input[type="text"], input[type="file"] {
                 </td></tr>
         </table>
     </div>
-    
+
     <div class="ad_details" id="add_reference">
         {assign var=ref_sel value=false}
         {if $ad->type == 'reference'}
@@ -136,7 +136,7 @@ select, input[type="text"], input[type="file"] {
         <ul class="nobullets">
             {foreach from=$globalReferenceOptions item=a}
             {capture assign=locid}ad_location_{$a}{/capture}
-            
+
                 <li><input type="radio" name="ad_ref" value="{$a}"
                            {if $a == $ref_sel}checked="checked"{/if}
                            /> {translate id=$locid}</li>
@@ -148,62 +148,62 @@ select, input[type="text"], input[type="file"] {
                 <ul class="nobullets">
                 {foreach from=$eventReferenceOptions item=a}
                 {capture assign=locid}ad_event_location_{$a}{/capture}
-                
+
                     <li><input type="radio" name="ad_ref" value="e-{$a}"
                                {capture assign=ea}e-{$a}{/capture}
-                               
+
                                {if $ea == $ref_sel}checked="checked"{/if}
                                /> {translate id=$locid}</li>
                 {/foreach}
             </ul>
             </td>
         {/if}
-        
+
         </tr></table>
     </div>
-    
+
     <hr />
     <input type="submit" value="{translate id=save}" />
     <input type="submit" value="{translate id=preview}" name="preview" />
     <input type="submit" value="{translate id=cancel}" name="cancel" />
-    
-    
+
+
     <script type="text/javascript">
     //<![CDATA[
     {literal}
     $(document).ready(function(){
         $(".ad_details").hide();
         $(".ad_type_selector").click(changeType);
-        
+
         var newel = document.getElementById("add_{/literal}{$ad->type}{literal}");
         //alert("add_" +  this.name);
         selected = newel;
         $(newel).show();
-        
+
         $(".selectRadioOnChange").change(selectPreviousRadio);
         $("input.selectRadioOnChange").keyup(selectPreviousRadioOnChange);
         //$(".selectRadioOnChange").keydown(selectPreviousRadio);
     });
-    
+
     var lt = null;
-    
+
     // Usage: When the value of an input is changed, the radio box before it gets selected
-    function selectPreviousRadioOnChange() {        
+    function selectPreviousRadioOnChange() {
         if (lt != null){
             if (this.value != lt) {
                 lt = this.value;
                 this.sp = selectPreviousRadio;
-                this.sp();                
+                this.sp();
             }
         } else {
             lt = this.value;
         }
-        
+
     }
-    
+
     // Selects the radio button before the current input
     function selectPreviousRadio() {
-        
+
         var prev =this.parentNode.parentNode.previousSibling;
         while (!prev.tagName) prev = prev.previousSibling;
         var input = $(prev).find("input").get(0)
@@ -211,24 +211,24 @@ select, input[type="text"], input[type="file"] {
         //$("input[name='" + name + "']").each(function(){this.checked = false;});
         input.checked = true;
     }
-    
+
     var selected = null;
-    
+
     // Closes the current ad panel and displays the one matching the new type selection
     function changeType() {
         if (!this.name) return;
         if (selected) $(selected).hide();
-        
+
         var newel = document.getElementById("add_" + this.value);
         //alert("add_" +  this.name);
         selected = newel;
         $(newel).show();
-        
+
     }
-    
+
     {/literal}
-    
-    
+
+
     //]]>
     </script>
     </form>

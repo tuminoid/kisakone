@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * New event creation handler
@@ -33,8 +33,7 @@ function processForm()
     $problems = array();
 
     if (@$_POST['cancel']) {
-        header("Location: " . BaseURL());
-        die();
+        redirect("Location: " . BaseURL());
     }
 
     $name = $_POST['name'];
@@ -179,6 +178,5 @@ function processForm()
     require_once 'core/email.php';
     SendEmail(EMAIL_YOU_ARE_TD, $td, GetEventDetails($result));
 
-    header("Location: " . BaseURL() . "events");
-    die();
+    redirect("Location: " . BaseURL() . "events");
 }

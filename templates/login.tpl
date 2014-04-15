@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmõ
  *
  * Stand-alone login form
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -30,10 +30,10 @@
 {/if}
 
 <form method="post" class="evenform">
-    
+
     <input type="hidden" name="formid" value="login" />
     <input type="hidden" name="loginAt" value="{$smarty.now}" />
-    
+
     <div>
         <label for="f_username">{translate id='username'}</label>
         <input id="f_username" type="text" name="username" value="{$smarty.post.username|escape}" />
@@ -42,9 +42,9 @@
         <label for="f_password">{translate id='password'}</label>
         <input id="f_password" type="password" name="password" />
     </div>
-    
-    <div>        
-        <input type="submit" value="{translate id='loginbutton'}" />                
+
+    <div>
+        <input type="submit" value="{translate id='loginbutton'}" />
     </div>
     <div>
     <input type="checkbox" name="rememberMe" /> Muista salasana
@@ -55,4 +55,4 @@
     </p>
 </form>
 
-{include file='include/footer.tpl'} 
+{include file='include/footer.tpl'}

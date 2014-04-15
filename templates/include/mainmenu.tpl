@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmº
  *
  * Main menu
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -25,13 +25,13 @@
     {section name=menuitem loop=$mainmenu}
     <li {if $mainmenuselection eq $mainmenu[menuitem].title} class="selected"{/if}>
         <a
-           href="{url page=$mainmenu[menuitem].url}">{translate id=$mainmenu[menuitem].title}</a> 
+           href="{url page=$mainmenu[menuitem].url}">{translate id=$mainmenu[menuitem].title}</a>
     </li>
     {/section}
-    {* help disabled due to there being no help files 
+    {* help disabled due to there being no help files
     <li style="float: right; border-left: 1px outset gray; border-right: 1px outset gray; margin: 2px; height: 28px;" >
-        
-        <a id="helplink" href="{url extend_current=true showhelp=1}"><span id="helpfile" style="display: none">{$helpfile|escape}</span>            
-            {translate id=mainmenu_help}</a> 
+
+        <a id="helplink" href="{url extend_current=true showhelp=1}"><span id="helpfile" style="display: none">{$helpfile|escape}</span>
+            {translate id=mainmenu_help}</a>
     </li>*}
 </ul>

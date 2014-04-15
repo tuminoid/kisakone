@@ -1,9 +1,9 @@
 {*
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
  *
  * User listing
- * 
+ *
  * --
  *
  * This file is part of Kisakone.
@@ -24,11 +24,11 @@
 
 <form method="get" class="usersform" action="{url page=users}">
     {initializeGetFormFields  search=false }
-    <div class="formelements">        
+    <div class="formelements">
          <p>{translate id=users_searchhint} </p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
-    </div>    
+    </div>
 </form>
 <hr style="clear: both;" />
 <div class="SearchStatus" />
@@ -38,26 +38,26 @@
       <th>{sortheading field=name id=users_name sortType=alphabetical}</th>
       <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
       <th>{sortheading field=Username id=users_id sortType=alphabetical}</th>
-      
+
    </tr>
 
    {foreach from=$users item=user}
-      
+
       {assign var=player value=$user->GetPlayer()}
       {if $user->username == null || strpos($user->username, '/') !== false}
         {capture assign=url}{url page="user" id=$user->id}{/capture}
         {else}
         {capture assign=url}{url page="user" id=$user->username}{/capture}
         {/if}
-      
+
      <tr>
         <td><a href="{$url}">{$user->firstname|escape} {$user->lastname|escape}</a></td>
-        
+
          <td>{$player->pdga|escape}</td>
          <td><a href="{$url}">{$user->username|escape}</a></td>
-         
+
      </tr>
-   {/foreach}     
+   {/foreach}
 </table>
 
 <div class="SearchStatus" />
@@ -68,9 +68,9 @@
 $(document).ready(function(){
     TableSearch(document.getElementById('searchField'), document.getElementById('userTable'),
                 {/literal}"{translate id=No_Search_Results}"{literal}
-                );   
+                );
     $($(".SortHeading").get(0)).click();
-    
+
 });
 
 

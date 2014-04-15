@@ -1,9 +1,9 @@
 {**
- * Suomen Frisbeeliitto Kisakone
+ * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
  *
  * Confirmation dialog for deleting an event
- * 
+ *
  * --
  *
  * This file is part of Kisakone.

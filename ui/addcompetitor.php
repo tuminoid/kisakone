@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmï¿½
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file is the UI backend for adding competitors to an event
@@ -72,8 +72,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $players = GetPlayerUsers($query);
         if (count($players) == 1) {
             // Single player, skip the listing
-            header("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
-            die();
+            redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
         } else {
             $smarty->assign('many', $players);
         }
