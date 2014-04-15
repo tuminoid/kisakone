@@ -16,10 +16,7 @@ next:
   * Global flag for enabling or disabling sending email. GH #70.
   * Add apple-touch-icon.png for Apple device bookmarks etc.
   * Fix javascript/base loading error without mod_rewrite.
-
-Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_next.md)
-for additional actions needed.
-
+  * Registration will not fail with E_STRICT. GH #102.
 
 2014.03.10:
 ===========
