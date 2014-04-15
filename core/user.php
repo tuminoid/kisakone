@@ -235,7 +235,7 @@ class user
      *
      * Returns true if the username is valid, otherwise returns false.
      */
-    function IsValidUsername($username)
+    static function IsValidUsername($username)
     {
 
         $retVal = false;
