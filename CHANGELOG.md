@@ -10,6 +10,14 @@ next:
   * Password recovery process corner cases fixed. Also redirect is now proper. GH #55.
   * TD overriding player participation could create double entry for competitor. Fixed.
   * Limit width of frontpage classes td to make it look better.
+  * Organized files. Javascript to js/, images to images/, css to css/.
+  * Upgrade TinyMCE to latest 3.5. GH #101.
+  * Drop support for non-JS sortheading, avoiding massive js-disabled bot spam. GH #81.
+  * Global flag for enabling or disabling sending email. GH #70.
+  * Refresh visual style to match SFL new colors and looks.
+  * Add apple-touch-icon.png for Apple device bookmarks etc.
+  * Fix javascript/base loading error without mod_rewrite.
+  * Registration will not fail with E_STRICT. GH #102.
 
 2014.03.10:
 ===========
