@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2014.04.15:
+===========
   * Add some missing URL translations. GH #88.
   * Added option for using custom analytics. Put your analytics.js to js/. GH #90.
   * Password recovery process corner cases fixed. Also redirect is now proper. GH #55.
