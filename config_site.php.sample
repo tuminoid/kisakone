@@ -23,7 +23,7 @@
 
 // Email setup
 global $settings;
-$settings['EMAIL_ENABLED'] = false;
+$settings['EMAIL_ENABLED'] = true;
 $settings['EMAIL_SENDER'] = "no-reply@kisakone.localhost";
 $settings['EMAIL_MAILER'] = "Kisakone localhost";
 
