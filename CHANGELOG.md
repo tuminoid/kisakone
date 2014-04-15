@@ -18,6 +18,9 @@ Kisakone versions are simply release date tags:
   * Fix javascript/base loading error without mod_rewrite.
   * Registration will not fail with E_STRICT. GH #102.
 
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20140415.md)
+for additional actions needed.
+
 2014.03.10:
 ===========
   * Send email to players promoted from queue. GH #85.
