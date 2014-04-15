@@ -40,6 +40,6 @@ define("LICENSE_MEMBERSHIP", 1);
 define("LICENSE_A", 2);
 define("LICENSE_B", 6);
 
-# php 5.3 spits out deprecation warnings without this
+// php 5.3 spits out deprecation warnings without this
 error_reporting(E_ERROR);
 
