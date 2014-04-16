@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * This file contains the TextContent class. TextContent is used for nearly
  * all user-entered content.
@@ -73,9 +74,9 @@ class TextContent
     }
 
     /**
-     Prepares the content for use in a page. After call, use the formattedText variable.
-     Not used by email
-    */
+     * Prepares the content for use in a page. After call, use the formattedText variable.
+     * Not used by email
+     */
     function FormatText($disableXHTML = true)
     {
         $this->formattedText = $this->content;
@@ -89,9 +90,9 @@ class TextContent
 }
 
 /**
- This function returns global text content based on its content id. If $searchByTitle is
- set to true, and no content matches the id, $contentId is assumed to be the title
- of the page and it's searched as such.
+ * This function returns global text content based on its content id. If $searchByTitle is
+ * set to true, and no content matches the id, $contentId is assumed to be the title
+ * of the page and it's searched as such.
  */
 function GetGlobalTextContent($contentId, $searchByTitle = false)
     {

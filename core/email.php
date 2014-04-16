@@ -85,9 +85,10 @@ class Email
     */
     function Prepare($user, $player, $event, $special)
     {
-        if (!$this->textcontent) return;
-        $tokens = GetEmailTokens();
+        if (!$this->textcontent)
+            return;
 
+        $tokens = GetEmailTokens();
         $text = $this->textcontent->content;
 
         $from = array();
@@ -99,25 +100,36 @@ class Email
 
             switch ($object) {
                 case 'event':
-                    if (!$event) $value = '';
+                    if (!$event)
+                        $value = '';
                     else {
                         if (substr($field, -2) == '/d') {
                             $field = substr($field, 0, -2);
                             $date = true;
-                        } else $date = false;
+                        } else
+                            $date = false;
                         $value = $event->$field;
-                        if (!is_object($event)) echo print_r($event);
-                        if ($date) $value = date('d.m.Y', $value);
+                        if (!is_object($event))
+                            echo print_r($event, true);
+                        if ($date)
+                            $value = date('d.m.Y', $value);
                     }
                     break;
+
                 case 'player':
-                    if (!$player) $value = '';
-                    else $value = $player->$field;
+                    if (!$player)
+                        $value = '';
+                    else
+                        $value = $player->$field;
                     break;
+
                 case 'user':
-                    if (!$user) $value = '';
-                    else $value = $user->$field;
+                    if (!$user)
+                        $value = '';
+                    else
+                        $value = $user->$field;
                     break;
+
                 case 'special':
                     $value = @$special[$field];
                     break;
@@ -133,8 +145,9 @@ class Email
 
     function Send($recipientAddress)
     {
-        if (!$this->text)
+        if (!$this->text) {
             return;
+        }
 
         global $settings;
         $from = $settings['EMAIL_SENDER'];

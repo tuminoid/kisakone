@@ -333,7 +333,7 @@ class user
             $url = "http://" . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
 
-        SendEmail('email_password', $this->id, null, $url, $token);
+        SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
 
     }
 
