@@ -1626,15 +1626,15 @@ function CheckSignUpQuota($eventId, $playerId, $classId)
     // Calculate some limits and counts
     list($minquota, $maxquota) = GetEventClassQuota($eventId, $classId);
     $classcounts = GetEventParticipantCounts($eventId);
-    $classcounts[$classId] = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
+    $classcount = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
 
     // Check versus class maxquota
-    if ($classcounts[$classId] >= $maxquota) {
+    if ($classcount >= $maxquota) {
         return false;
     }
 
     // If there is unused quota in class, allow player in
-    if ($classcounts[$classId] < $minquota) {
+    if ($classcount < $minquota) {
         return true;
     }
 
@@ -1646,7 +1646,8 @@ function CheckSignUpQuota($eventId, $playerId, $classId)
         foreach ($quotas as $idx => $quota) {
             $cquota = $quota['MinQuota'];
             $ccount = (isset($classcounts[$quota['id']]) ? $classcounts[$quota['id']] : 0);
-            $cunused = $cquota[0] - $ccount;
+            $cunused = $cquota - $ccount;
+
             if ($cunused > 0)
                 $unusedQuota += $cunused;
         }
