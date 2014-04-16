@@ -1754,7 +1754,10 @@ function PromotePlayerFromQueue($eventId, $playerId)
       $user = GetPlayerUser($playerId);
       if ($user !== null) {
          require_once 'core/email.php';
+         error_log("Sending email to ".print_r($user, true));
          SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
+      } else {
+         error_log("Cannot send promotion email: user !== null failed, playerId = ".$playerId);
       }
    }
    mysql_free_result($result);
@@ -2094,9 +2097,7 @@ return $retValue;
    }
 
 function GetTextContentByEvent($eventid, $type)
-   {
-
-
+{
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
          return $dbError;
