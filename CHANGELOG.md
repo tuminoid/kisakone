@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2014.04.16:
+===========
+  * Fix a bug in quota checking, allowing players over quota for their class.
+
 2014.04.15:
 ===========
   * Add some missing URL translations. GH #88.
