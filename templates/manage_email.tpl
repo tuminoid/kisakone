@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Listing of emails
  *
@@ -28,7 +29,6 @@
         <tr>
             <td>{$link.title|escape}</td>
             <td><a href="{url page=editemail id=$link.type}">{translate id=edit}</a></td>
-            <td><a href="{url page=editemail id=$link.type} preview=1">{translate id=preview}</a></td>
         </tr>
     {/foreach}
 </table>

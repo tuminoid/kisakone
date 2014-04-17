@@ -2096,8 +2096,8 @@ return $retValue;
       return $retValue;
    }
 
-function GetTextContentByEvent($eventid, $type)
-{
+   function GetTextContentByEvent($eventid, $type)
+   {
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
          return $dbError;
