@@ -28,6 +28,9 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    if (!IsAdmin())
+        return Error::AccessDenied();
+
     $links = array();
     $links[] = array('title' => translate('email_you_are_td'), 'id' => '', 'type' => 'email_td');
     $links[] = array('title' => translate('email_recover_password'), 'id' => '', 'type' => 'email_password');
@@ -35,8 +38,6 @@ function InitializeSmartyVariables(&$smarty, $error)
     $links[] = array('title' => translate('email_promoted_from_queue'), 'id' => '', 'type' => 'email_promoted');
 
     $smarty->assign('fixed', $links);
-
-    if (!IsAdmin()) return Error::AccessDenied();
 }
 
 /**
