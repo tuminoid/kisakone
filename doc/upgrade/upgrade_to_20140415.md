@@ -33,5 +33,6 @@ Email is disabled without config change
 =======================================
 
 A new config option `$settings['EMAIL_ENABLED'] = true;` has been added to `config_site.php.sample`.
-If it is not present, any email will not be sent. Set it to `true` to enable email sending again.
+You need to add it to your `config_site.php` by hand. If it is not present, any email will NOT be sent.
+You may also set it to `false` to explicitly disable email sending.
 
