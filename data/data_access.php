@@ -2801,7 +2801,7 @@ function GetEventQueueCounts($eventId)
                   INNER JOIN :EventQueue ON :EventQueue.Player = :Player.player_id AND :EventQueue.Event = ".$eventId ."
                   INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
                   WHERE %s
-                  ORDER BY SignupTimestamp ASC
+                  ORDER BY SignupTimestamp ASC, :EventQueue.id ASC
                   ";
 
    $query = data_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
