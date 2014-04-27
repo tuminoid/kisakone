@@ -1430,7 +1430,7 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
 
         $r_event = (int) $eventid;
         $r_course = null;
-        $r_starttype = "sequential";
+        $r_starttype = "simultaneous";
         $r_starttime = (int) $date;
         $r_interval = 10;
         $r_validresults = 1;
@@ -2801,7 +2801,7 @@ function GetEventQueueCounts($eventId)
                   INNER JOIN :EventQueue ON :EventQueue.Player = :Player.player_id AND :EventQueue.Event = ".$eventId ."
                   INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
                   WHERE %s
-                  ORDER BY SignupTimestamp ASC
+                  ORDER BY SignupTimestamp ASC, :EventQueue.id ASC
                   ";
 
    $query = data_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));

@@ -2,7 +2,7 @@
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
- * Move players from one class to another within an event
+ * Set and show quotas (player limits) for events
  *
  * --
  *
@@ -20,12 +20,13 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
 {translate id='classquotas_title' assign='title'}
-{include file='include/header.tpl' }
+{include file='include/header.tpl' ui=1 tooltip=1}
 {if $error}
 <p class="error">{$error}</p>
 {/if}
 
 {assign var="min" value="0"}
+{assign var="max" value="0"}
 {assign var="reg" value="0"}
 {assign var="que" value="0"}
 {assign var="fre" value="0"}
@@ -43,11 +44,11 @@
   <table id="classLimitTable">
     <tr>
       <th>{translate id=class}</th>
-      <th>{translate id=class_minquota}</th>
-      <th>{translate id=class_maxquota}</th>
-      <th>{translate id=class_registered_now}</th>
-      <th>{translate id=class_queued_now}</th>
-      <th>{translate id=class_quota_free}</th>
+      <th><a href="#" title="{translate id=quota_help_reserved}">{translate id=class_minquota}</a></th>
+      <th><a href="#" title="{translate id=quota_help_maximum}">{translate id=class_maxquota}</a></th>
+      <th><a href="#" title="{translate id=quota_help_registered}">{translate id=class_registered_now}</a></th>
+      <th><a href="#" title="{translate id=quota_help_queued}">{translate id=class_queued_now}</a></th>
+      <th><a href="#" title="{translate id=quota_help_freequota}">{translate id=class_quota_free}</a></th>
     </tr>
 
     {foreach from=$quotas item=quota}
@@ -57,6 +58,7 @@
       {if $free <= 0} {assign var="free" value="0"} {/if}
 
       {math assign="min" equation="x + y" x=$min y=$quota.MinQuota}
+      {math assign="max" equation="x + y" x=$max y=$quota.MaxQuota}
       {math assign="reg" equation="x + y" x=$reg y=$count}
       {math assign="que" equation="x + y" x=$que y=$queue}
       {math assign="fre" equation="x + y" x=$fre y=$free}
@@ -92,7 +94,7 @@
     <tr>
       <th>{translate id=total}</th>
       <th>{$min}</th>
-      <th>-</th>
+      <th>{if $max >= 999}-{else}{$max}{/if}</th>
       <th>{$reg}</th>
       <th>{$que}</th>
       <th>{$fre}</th>
@@ -111,6 +113,33 @@
     <input name="cancel" type="submit" value="{translate id=form_cancel}" />
   </p>
 </form>
+{/if}
+
+{if $allow_edit}
+
+<h2>{translate id=faq}</h2>
+
+<h3>{translate id=quota_help_basics_title}</h3>
+<p>{translate id=quota_help_basics}</p>
+
+<h3>{translate id=quota_help_promotion_title}</h3>
+<p>{translate id=quota_help_promotion}</p>
+
+<h3>{translate id=quota_help_wildcard_title}</h3>
+<p>{translate id=quota_help_wildcard}</p>
+
+<h3>{translate id=quota_help_pool_title}</h3>
+<p>{translate id=quota_help_pool}</p>
+
+<h3>{translate id=quota_help_promotionlock_title}</h3>
+<p>{translate id=quota_help_promotionlock}</p>
+
+<h3>{translate id=quota_help_promoting_title}</h3>
+<p>{translate id=quota_help_promoting}</p>
+
+<h3>{translate id=quota_help_who_title}</h3>
+<p>{translate id=quota_help_who}</p>
+
 {/if}
 
 {include file='include/footer.tpl' noad=true}

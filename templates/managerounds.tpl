@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
  *
  * Round management
  *
@@ -47,11 +48,11 @@
                 <tr>
                     <td>{translate id=starttype}</td>
                     <td>
-                        <input type="radio" name="{$round->id}_starttype" value="sequential"
-                               {if $round->starttype=='sequential'} checked="checked"{/if} /> {translate id=sequential} <br />
                         <input type="radio" name="{$round->id}_starttype" value="simultaneous"
                                {if $round->starttype=='simultaneous'} checked="checked"{/if}
                                /> {translate id=simultaneous} <br />
+                        <input type="radio" name="{$round->id}_starttype" value="sequential"
+                               {if $round->starttype=='sequential'} checked="checked"{/if} /> {translate id=sequential} <br />
                     </td>
 
                 </tr>

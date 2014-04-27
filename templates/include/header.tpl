@@ -43,6 +43,9 @@
       {if $autocomplete}
       <script type="text/javascript" src="{$url_base}js/jquery.autocomplete-min.js"></script>
       {/if}
+      {if $tooltip}
+      {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
+      {/if}
       {if $analytics}
       <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
       {/if}

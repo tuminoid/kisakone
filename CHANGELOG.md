@@ -3,6 +3,12 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Make simultaneous start type default. GH #110.
+  * Players with identical signup time are correctly ordered. GH #109.
+  * Write lots of help for quotas and queues. GH #104.
+
 2014.04.16:
 ===========
   * Fix a bug in quota checking, allowing players over quota for their class.
