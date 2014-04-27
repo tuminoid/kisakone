@@ -26,6 +26,7 @@
 {/if}
 
 {assign var="min" value="0"}
+{assign var="max" value="0"}
 {assign var="reg" value="0"}
 {assign var="que" value="0"}
 {assign var="fre" value="0"}
@@ -57,6 +58,7 @@
       {if $free <= 0} {assign var="free" value="0"} {/if}
 
       {math assign="min" equation="x + y" x=$min y=$quota.MinQuota}
+      {math assign="max" equation="x + y" x=$max y=$quota.MaxQuota}
       {math assign="reg" equation="x + y" x=$reg y=$count}
       {math assign="que" equation="x + y" x=$que y=$queue}
       {math assign="fre" equation="x + y" x=$fre y=$free}
@@ -92,7 +94,7 @@
     <tr>
       <th>{translate id=total}</th>
       <th>{$min}</th>
-      <th>-</th>
+      <th>{if $max >= 999}-{else}{$max}{/if}</th>
       <th>{$reg}</th>
       <th>{$que}</th>
       <th>{$fre}</th>
