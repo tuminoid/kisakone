@@ -20,7 +20,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
 {translate id='classquotas_title' assign='title'}
-{include file='include/header.tpl' }
+{include file='include/header.tpl' ui=1 tooltip=1}
 {if $error}
 <p class="error">{$error}</p>
 {/if}
@@ -43,11 +43,11 @@
   <table id="classLimitTable">
     <tr>
       <th>{translate id=class}</th>
-      <th>{translate id=class_minquota}</th>
-      <th>{translate id=class_maxquota}</th>
-      <th>{translate id=class_registered_now}</th>
-      <th>{translate id=class_queued_now}</th>
-      <th>{translate id=class_quota_free}</th>
+      <th><a href="#" title="{translate id=quota_help_reserved}">{translate id=class_minquota}</a></th>
+      <th><a href="#" title="{translate id=quota_help_maximum}">{translate id=class_maxquota}</a></th>
+      <th><a href="#" title="{translate id=quota_help_registered}">{translate id=class_registered_now}</a></th>
+      <th><a href="#" title="{translate id=quota_help_queued}">{translate id=class_queued_now}</a></th>
+      <th><a href="#" title="{translate id=quota_help_freequota}">{translate id=class_quota_free}</a></th>
     </tr>
 
     {foreach from=$quotas item=quota}
@@ -111,6 +111,33 @@
     <input name="cancel" type="submit" value="{translate id=form_cancel}" />
   </p>
 </form>
+{/if}
+
+{if $allow_edit}
+
+<h2>{translate id=faq}</h2>
+
+<h3>{translate id=quota_help_basics_title}</h3>
+<p>{translate id=quota_help_basics}</p>
+
+<h3>{translate id=quota_help_promotion_title}</h3>
+<p>{translate id=quota_help_promotion}</p>
+
+<h3>{translate id=quota_help_wildcard_title}</h3>
+<p>{translate id=quota_help_wildcard}</p>
+
+<h3>{translate id=quota_help_pool_title}</h3>
+<p>{translate id=quota_help_pool}</p>
+
+<h3>{translate id=quota_help_promotionlock_title}</h3>
+<p>{translate id=quota_help_promotionlock}</p>
+
+<h3>{translate id=quota_help_promoting_title}</h3>
+<p>{translate id=quota_help_promoting}</p>
+
+<h3>{translate id=quota_help_who_title}</h3>
+<p>{translate id=quota_help_who}</p>
+
 {/if}
 
 {include file='include/footer.tpl' noad=true}

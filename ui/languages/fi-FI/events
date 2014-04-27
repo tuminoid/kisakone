@@ -349,3 +349,40 @@ signature_column        Sarake
 signature_row           Rivi
 update                  Päivitä
 scorecard_perpage       Kortteja kullakin sivulla
+faq                     Usein kysyttyjä kysymyksiä
+
+quota_help_reserved_title Mitä tarkoittaa "varatut paikat"?
+quota_help_reserved     "Varatut paikat" tarkoittaa kyseiselle luokalle varattuja paikkoja, joihin ei voi ilmoittautua muissa luokissa pelaavat.
+
+quota_help_maximum_title Mitä tarkoittaa "Maksimimäärä"?
+quota_help_maximum      "Maksimimäärä" tarkoittaa pelaajamäärää, jota enempää pelaajia ei oteta kyseiseen luokkaan. Oletuksena luokalla ei ole rajaa (näkyy "-", ja TD:lle 999).
+
+quota_help_registered_title Mitä tarkoittaa "Kisassa"?
+quota_help_registered "Kisassa" tarkoittaa kilpailuun onnistuneesti ilmoittautuneita pelaajia. He ovat listattuna "Kilpailijat" sivulla.
+
+quota_help_queued_title Mitä tarkoittaa "Jonossa"?
+quota_help_queued      "Jonossa" olijat eivät ole mukana kilpailussa, vaan odottavat paikan vapautumista jonossa. He ovat listattuna "Kilpailijat -> Jono" sivulla.
+
+quota_help_freequota_title Mitä tarkoittaa "Vapaita kiintiöpaikkoja"?
+quota_help_freequota   "Vapaita kiintiöpaikkoja" tarkoittaa jäljellä olevia varattuja paikkoja kyseiselle luokalle. Näihin luokkiin ilmoittautuva pääsee suoraan mukaan kilpailuun vaikka muissa luokissa olisikin jonoja (ellei kisan kokonaispelaajamäärä ole täyttynyt esim villien korttien myötä).
+
+quota_help_basics_title Miten kiintiöt toimivat?
+quota_help_basics       Kiintiöilla voidaan sekä varata paikkoja että rajoittaa pelaajamääriä luokittain. Kilpailijat jotka eivät mahdu kiintiöiden ja rajoitusten puitteissa kilpailuun, menevät automaattisesti jonoon.
+
+quota_help_promotion_title Miten jonoista noustaan?
+quota_help_promotion    Jonoista noustaan automaattisesti kisaan kun seuraavat säännöt toteutuvat: 1) Kisan kokonaispelaajamäärä ei ylity 2) Luokan pelaajamäärä ei ylity 3) Kisassa on varaamattomia paikkoja.
+
+quota_help_wildcard_title Miten varaan villejä kortteja?
+quota_help_wildcard     Villeille korteille voi jättää tilaa kahdella tavalla: Voit asettaa kilpailun kokonaispelaajamäärän villien korttien verran alemmaksi (esim 90 pelaajan sijasta 80 => 10 villiä korttia), tai voit asettaa luokan maksimipelaajamäärän villien korttien verran varattujen paikkojen alle (varattuja paikkoja 72, maksimi 62 => luokassa 10 villiä korttia).
+
+quota_help_pool_title   Miten toimin useamman lohkon kilpailussa?
+quota_help_pool         Useamman lohkon kilpailut ovat lievästi hankalia. Sinun pitää pitää esim A-poolin varatut paikat sekä luokan maksimikoko voimassa koko ilmoittautumisen ajan, ettei niille vahingossa nouse väärään luokkaa kuuluvia. Esimerkiksi: A-lohkossa pelaa MPO, ja muut luokat pelaavat B-lohkossa. Luokalle MPO pitää asettaa varattuja paikkoja 72, sekä maksimiksi 72. Muut ryhmät voit asettaa kuten haluat. Poistaessasi varattuja kiintiöitä, A-lohkon kiintiöihin ei saa koskea, ja muut asetetaan 0 ja 999, joka vapauttaa rajoitukset luokilta ja täyttää ne jonosta ilmoittautumisjärjestyksessä.
+
+quota_help_promotionlock_title Miten voin lukita jonon?
+quota_help_promotionlock Aseta luokan kokonaispelaajamääräksi 0. Silloin sinne ei voi nousta, ja luokan jono on lukittunut. Tee tämä siinä kohtaa kun et halua jonon toimivan enää automaattisesti. Voit nostaa pelaajia käsin "Lisää pelaaja" toiminnon avulla. Ole tarkkana, että nostat oikean pelaajan kisaan varmistamalla että käyttäjänimi (ei oikea nimi!) on sama jonossa olijalla ja "Lisää pelaaja" toiminnossa.
+
+quota_help_promoting_title Miten vapautan kiintiöitä oikeaoppisesti?
+quota_help_promoting     Kaikki toimenpiteet jotka muokkaavat kiintiöitä aiheuttavat tarkastuksen jonossa olijoiden nostamiseksi. Tämä tarkoittaa sitä että muutokset luokkien kiintiöihin pitää tehdä yhdellä tallennuksella. Muussa tapauksessa jonosta ei välttämättä nousta oikeassa järjestyksessä. Esimerkiksi kiintiöiden poistossa, aseta kaikkien vapautettavien luokkien rajat yhdellä kertaa oikeiksi, ja paina sitten "Tallenna".
+
+quota_help_who_title     Miten näen kuka nousi jonosta?
+quota_help_who           Mene "Maksut" sivulle ja järjestä pelaajat ilmoittautumisajan mukaan. Jonosta nousseiden ilmoittautumisajaksi tulee se hetki kun he nousivat kilpailuun.
