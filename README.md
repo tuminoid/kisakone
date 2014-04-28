@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/tuminoid/kisakone.png?label=ready&title=Ready)](https://waffle.io/tuminoid/kisakone)
 Kisakone
 ========
 
