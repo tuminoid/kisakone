@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Update tournament point distribution per 2014 tour rules. GH #3.
+  * Upgrade Smarty to 2.6.28 (last 2.6 series). GH #114.
 
 2014.04.27:
 ===========
