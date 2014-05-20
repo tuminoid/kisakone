@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Update tournament point distribution per 2014 tour rules. GH #3.
+
 2014.04.27:
 ===========
   * Make simultaneous start type default. GH #110.
