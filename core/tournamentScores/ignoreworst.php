@@ -48,10 +48,12 @@ class scorecalc_tournament_ignoreworst
                 }
                 $s =  (int) $event['TournamentPoints'];
                 $score += $s;
-                if ($minScore === null || $s < $minScore) $minScore = $s;
+                if ($minScore === null || $s < $minScore)
+                    $minScore = $s;
             }
 
-            if (count($pdetails['Events'])  <$numEvents) $minScore = 0;
+            if (count($pdetails['Events']) < $numEvents)
+                $minScore = 0;
 
             $score -= $minScore; // ignore lowest
 
@@ -69,39 +71,39 @@ class scorecalc_tournament_ignoreworst
         $events = $tournament->GetEvents();
         $this->numEvents = count($events);
         $this->AssignScores($data, count($events));
-        usort($data ,array($this, 'tournament_sort'));
+        usort($data, array($this, 'tournament_sort'));
 
         // Ensure top 3 aren't tied (if possible)
         $this->BreakTop3Ties($data);
 
-        $last_by_class = array();
+        // Assign a standing to everybody
+        $previous_player = array();
+        $counters = array();
+        foreach ($data as $player) {
+            $player_class = $player['Classification'];
+            $player_score = $player['OverallScore'];
+            $player_tiebreak = $player['TieBreaker'];
+            if (!$player_class)
+                continue;
 
-        // Assign standing to everyone
-        foreach ($data as $item) {
-            $class = $item['Classification'];
-            if (!isset($last_by_class[$class])) {
-                $standing = 1;
+            if (!isset($previous_player[$player_class])) {
+                $player['Standing'] = 1;
+                $counters[$player_class] = 1;
             } else {
-                $last = $last_by_class[$class];
-                if ($last['OverallScore'] == $item['OverallScore'] && $last['TieBreaker'] == $item['TieBreaker']) {
-                    $standing = $last['Standing'];
+                $prev_player = $previous_player[$player_class];
+                $prev_score = $prev_player['OverallScore'];
+                $prev_tiebreak = $prev_player['TieBreaker'];
+                $counters[$player_class]++;
 
-                    $item['Skipped'] = (int) @$last['Skipped'] + 1;
+                if (($player_score != $prev_score) || ($player_tiebreak != $prev_tiebreak)) {
+                    $player['Standing'] = $counters[$player_class];
                 } else {
-                    $standing = $last['Standing'] + (int) @$last['Skipped'] + 1;
+                    $player['Standing'] = $prev_player['Standing'];
                 }
             }
 
-            if ($standing != $item['Standing']) {
-                $item['changed'] = true;
-                $item['Standing'] = $standing;
-            }
-
-            $last_by_class[$class] = $item;
-
-            if (@$item['changed']) {
-                SaveTournamentStanding($item);
-            }
+            $previous_player[$player_class] = $player;
+            SaveTournamentStanding($player);
         }
     }
 
@@ -113,7 +115,9 @@ class scorecalc_tournament_ignoreworst
         // Get potentials for top 3 positions for each class
         foreach ($data as $id => $item) {
             $top3 = @$top3byclass[$item['Classification']];
-            if (!is_array($top3)) $top3 = array();
+
+            if (!is_array($top3))
+                $top3 = array();
             if (count($top3) >= 3) {
                 $done = true;
                 $last = $top3[count($top3) - 1];
@@ -122,7 +126,8 @@ class scorecalc_tournament_ignoreworst
                         $done = false;
                     }
                 }
-                if ($done) break;
+                if ($done)
+                    break;
             }
             $item['original_index'] = $id;
             $top3[] = $item;
@@ -135,11 +140,12 @@ class scorecalc_tournament_ignoreworst
                 $last = -1;
                 $allok = true;
                 foreach ($top3 as $item) {
-                    if ($item['OverallScore'] == $last) $allok = false;
+                    if ($item['OverallScore'] == $last)
+                        $allok = false;
                     $last = $item['OverallScore'];
-
                 }
-                if ($allok ) continue;
+                if ($allok)
+                    continue;
             }
 
             foreach ($top3 as $key => $item) {
@@ -152,13 +158,11 @@ class scorecalc_tournament_ignoreworst
 
             $last = null;
             foreach ($top3 as $key => $item) {
-
                 if ($last && $this->top3_sort($last, $item) == 0) {
                     // Could not determine which one is better, true tie
                     $item['TieBreaker'] = $last['TieBreaker'];
                 } else {
-
-                    $item['TieBreaker'] = $key  + 99;
+                    $item['TieBreaker'] = /*$key*/ $item['TieBreaker'] + 99;
                 }
 
                 $data[$item['original_index']] = $item;
@@ -177,7 +181,8 @@ class scorecalc_tournament_ignoreworst
         if ($as < $bs) return 1;
 
         if ($a['TieBreaker'] != $b['TieBreaker']) {
-            if ($a['TieBreaker'] < $b['TieBreaker']) return -1;
+            if ($a['TieBreaker'] < $b['TieBreaker'])
+                return -1;
             return 1;
         }
 
@@ -190,11 +195,14 @@ class scorecalc_tournament_ignoreworst
         $as = $a['OverallScore'];
         $bs = $b['OverallScore'];
 
-        if ($as > $bs) return -1;
-        if ($as < $bs) return 1;
+        if ($as > $bs)
+            return -1;
+        if ($as < $bs)
+            return 1;
 
         if ($a['OTieBreaker'] != $b['OTieBreaker']) {
-            if ($a['OTieBreaker'] < $b['OTieBreaker']) return -1;
+            if ($a['OTieBreaker'] < $b['OTieBreaker'])
+                return -1;
             return 1;
         }
 
@@ -203,7 +211,8 @@ class scorecalc_tournament_ignoreworst
         $wb = @$b['Positions'][1];
 
         if ($wa != $wb) {
-            if ($wa > $wb) return -1;
+            if ($wa > $wb)
+                return -1;
             return 1;
         }
 
@@ -217,15 +226,12 @@ class scorecalc_tournament_ignoreworst
             $bv = @$b['Positions'][$key];
 
             if ($av != $bv) {
-
-                if ($av > $bp) return -1;
+                if ($av > $bv)
+                    return -1;
                 return 1;
             }
-
         }
-
         return 0;
-
     }
 
     // Number of positions the player has had;
@@ -234,12 +240,16 @@ class scorecalc_tournament_ignoreworst
     {
         $positions = array();
         foreach ($row['Events'] as $event) {
-            if (!$event['EventStanding']) continue;
+            if (!$event['EventStanding'])
+                continue;
             $positions[] = $event['EventStanding'];
         }
-        sort($positions);
-        $last = $positions[count($positions) - 1];
-        if ($last != 1) unset($positions[count($positions) - 1]);
+        if (count($positions)) {
+            sort($positions);
+            $last = $positions[count($positions) - 1];
+            if ($last != 1)
+                unset($positions[count($positions) - 1]);
+        }
         return array_count_values($positions);
     }
 
