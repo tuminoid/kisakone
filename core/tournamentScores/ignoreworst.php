@@ -42,6 +42,9 @@ class scorecalc_tournament_ignoreworst
             $score = 0;
             $minScore = null;
             foreach ($pdetails['Events'] as $event) {
+                if (!$event['ResultsLocked']) {
+                    continue;
+                }
                 $s =  (int) $event['TournamentPoints'];
                 $score += $s;
                 if ($minScore === null || $s < $minScore) $minScore = $s;
