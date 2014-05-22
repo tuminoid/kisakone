@@ -104,11 +104,7 @@
         <th rowspan="2">{translate id=tournament_pos}</th>
         <th rowspan="2">{translate id=tournament_part_name}</th>
         <th rowspan="2">{translate id=pdga}</th>
-
-
-
         <th colspan="{$tournament->GetNumEvents()}">{translate id=tournament_event_positions}</th>
-
         <th rowspan="2">{translate id=tournament_overall}</th>
         {if $edit}
         <th rowspan="2">{translate id=tie_breaker}</th>
@@ -125,7 +121,7 @@
     {foreach from=$participants item=part}
     <tr>
         <td>{$part.Standing}</td>
-        <td><a href="{url page=user id=$part.Username}">{$part.FirstName|escape} {$part.LastName}</a></td>
+        <td><a href="{url page=user id=$part.Username}">{$part.FirstName|escape} {$part.LastName|escape}</a></td>
         <td>{$part.PDGANumber}</td>
         {foreach from=$tournament->GetEvents() item=event key=index}
             {assign var=eventid value=$event->id}
@@ -143,10 +139,8 @@
         {if $edit}
             <td><input type="text" value="{$part.TieBreaker}" name="tb_{$part.PlayerId}" /></td>
         {/if}
-
     </tr>
     {/foreach}
-
 
 {/foreach}
 </table>
