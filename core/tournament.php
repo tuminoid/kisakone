@@ -107,9 +107,9 @@ class Tournament
     {
         static $cache = array();
 
-        if (!@$cache[$this->id]) $cache[$this->id] = GetTournamentEvents($this->id);
+        if (!@$cache[$this->id])
+            $cache[$this->id] = GetTournamentEvents($this->id);
         return $cache[$this->id];
-
     }
 
     /**
@@ -125,12 +125,14 @@ class Tournament
     function GetResultsByClass()
     {
         $results = $this->GetResults();
-        if (is_a($results,' Error')) return $results;
+        if (is_a($results,' Error'))
+            return $results;
 
         $out = array();
         foreach ($results as $result) {
             $class = $result['ClassName'];
-            if (!isset($out[$class])) $out[$class] = array();
+            if (!isset($out[$class]))
+                $out[$class] = array();
             $out[$class][] = $result;
         }
         uasort($out, 'core_sort_by_count');
@@ -145,8 +147,9 @@ class Tournament
 function UpdateTournamentPoints($tournamentId)
 {
     $tournament = GetTournamentDetails($tournamentId);
-    if (!$tournament) return;
-    $sc = $tournament->GetScoreCalculation();
+    if (!$tournament)
+        return;
 
+    $sc = $tournament->GetScoreCalculation();
     $sc->UpdateTournamentPoints($tournamentId, $tournament);
 }
