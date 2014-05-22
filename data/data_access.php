@@ -591,11 +591,8 @@ require_once 'data/db_init.php';
    function GetTournamentEvents($tournamentId)
    {
       $tournamentId = (int) $tournamentId;
-
       $conditions = ":Event.Tournament = $tournamentId";
-
       return data_GetEvents($conditions);
-
    }
 
    // Gets the number of people who have signed up for a tournament
@@ -4861,7 +4858,8 @@ function GetGroups($sectid)
                         ", $tid);
     $results = mysql_query($query);
 
-    if (!$results) return Error::Query($results);
+    if (!$results)
+      return Error::Query($results);
 
     $lastrow = null;
     $out = array();
@@ -4888,12 +4886,13 @@ function GetGroups($sectid)
 
   function SaveTournamentStanding($item)
   {
-    if ((int) $item['PID'] == 0) return;
+    if ((int) $item['PID'] == 0)
+      return;
+
     if (!$item['TSID']) {
         $query = data_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
                             VALUES (%d, %d, 0, NULL)", $item['PID'], $item['TID']);
         mysql_query($query);
-
         echo mysql_error();
     }
 
