@@ -223,7 +223,6 @@ function processForm()
     if (is_a($result, 'Error'))
         return $result;
 
-    GetEventDetails("clear_cache");
     UpdateEventResults($eventid);
 
     require_once 'core/tournament.php';

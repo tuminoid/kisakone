@@ -105,11 +105,7 @@ class Tournament
     */
     function GetEvents()
     {
-        static $cache = array();
-
-        if (!@$cache[$this->id])
-            $cache[$this->id] = GetTournamentEvents($this->id);
-        return $cache[$this->id];
+        return GetTournamentEvents($this->id);
     }
 
     /**
@@ -117,9 +113,7 @@ class Tournament
     */
     function GetResults()
     {
-        $results = GetTournamentResults($this->id);
-
-        return $results;
+        return GetTournamentResults($this->id);
     }
 
     function GetResultsByClass()

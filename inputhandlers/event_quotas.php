@@ -54,7 +54,6 @@ function processForm()
     }
 
     // Promote queuers if playerlimit changed
-    GetEventDetails("clear_cache");
     CheckQueueForPromotions($event->id);
 
     $dummy = null;

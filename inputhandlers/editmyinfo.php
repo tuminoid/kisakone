@@ -91,7 +91,6 @@ function processForm()
     $result = EditUserInfo($uid, $email, $firstname, $lastname, $gender, $pdga, $dobYear );
     if (!is_a($result, 'Error')) {
         if (!$username) {
-            $user->playerCache = null;
             $user->birthyear = $dobYear;
             $user->gender = $gender;
             $user->lastname = $lastname;

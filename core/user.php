@@ -63,8 +63,6 @@ class user
     var $birthyear; // Player class attribute, repeated here for convenience
     var $password;  // password as md5 hash
 
-    var $playerCache;
-
     /** ************************************************************************
      * Class constructor
      */
@@ -76,8 +74,10 @@ class user
                    $email = "",
                    $player = "none")
     {
-        if ($email && $player === 'none') die('Invalid user initialization' . print_r(debug_backtrace()));
-        if ($player === 'none') $player = null;
+        if ($email && $player === 'none')
+            die('Invalid user initialization' . print_r(debug_backtrace()));
+        if ($player === 'none')
+            $player = null;
         $this->id = $id;
         $this->username = $uname;
         $this->SetRole( $role);
@@ -311,8 +311,7 @@ class user
     function GetPlayer()
     {
         require_once 'core/player.php';
-        if (!is_a($this->playerCache, 'Player')) $this->playerCache = GetUserPlayer( $this->id);
-        return $this->playerCache;
+        return GetUserPlayer($this->id);
     }
 
     /** ************************************************************************

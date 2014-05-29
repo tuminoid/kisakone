@@ -627,18 +627,6 @@ require_once 'data/db_init.php';
    // Gets an Event object by ID or null if the event was not found
    function GetEventDetails($eventid)
    {
-      // Often this method is called for the same event from many places. This is
-    // a bit of a problem, so we'll cache the results to avoid unnecessary database access.
-      static $cache;
-      if ($eventid == "clear_cache") {
-         $cache = array();
-
-         return;
-      }
-
-      if (!is_array($cache))
-         $cache = array();
-
       if (empty($eventid)) {
          return null;
       }
@@ -694,7 +682,6 @@ require_once 'data/db_init.php';
          $retValue = new Event($row);
       }
 
-      $cache[$id] = $retValue;
       mysql_free_result($result);
 
       return $retValue;

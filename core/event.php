@@ -178,9 +178,7 @@ class Event
      */
     function GetRounds()
     {
-        static $cache = array();
-        if (!isset($cache[$this->id])) $cache[$this->id] = GetEventRounds( $this->id);
-        return $cache[$this->id];
+        return GetEventRounds( $this->id);
     }
 
     /** ************************************************************************
@@ -686,10 +684,6 @@ function core_SortResults($a, $b)
  */
 function core_AveragePlusMinus($entry)
 {
-    static $cache=  array();
-    if (@$cache[$entry['id']]) {
-        return $cache[$entry['id']];
-    }
     global $holes;
     $totalResult = 0;
     $totalPar = 0;
@@ -706,9 +700,9 @@ function core_AveragePlusMinus($entry)
         $totalResult += $round['Penalty'];
     }
 
-    if ($totalPar == 0) return 0;
+    if ($totalPar == 0)
+        return 0;
     $avg = $totalResult / $totalPar;
-    $cache[$entry['id']] = $avg;
 
     return $avg;
 }
