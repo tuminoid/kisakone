@@ -3,6 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Remove all internal caching mechanisms. We can handle that little extra load. Internal
+    caching just creates all kinds of little inconsistencies.
+
 2014.05.25:
 ===========
   * Update tournament point distribution per 2014 tour rules. GH #3.
