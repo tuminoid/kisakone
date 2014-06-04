@@ -10,8 +10,8 @@ through the web server you intend to use. This should be the final location as w
 2. You need to make sure `config.php` in the installation root directory can be
 written to by the web server.
 
-3. Have a database available in mysql, or create one for Kisakone. Installation
-process will not create one for you.
+3. Have a database available in mysql, or insert admin credentials to allow
+install script to create one for Kisakone.
 
 4. Access the page `doc/install/install.php` in the installation root using your browser,
 in the example that would be `http://example.com/kisakone/doc/install/install.php`
@@ -79,6 +79,5 @@ Steps to run development on vagrantup:
 5. Webroot is set to `/kisakone`, which is shared from Kisakone folder from your host,
    so you can edit files your host with your favourite editor and it is synced
    to vagrant automatically.
-6. Create database in mysql, mysql pass is `pass`
-7. Go to Kisakone installation guide on top of this file.
-8. Hack & enjoy.
+6. Go to Kisakone installation guide on top of this file.
+7. Hack & enjoy.
