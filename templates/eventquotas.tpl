@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Set and show quotas (player limits) for events
  *

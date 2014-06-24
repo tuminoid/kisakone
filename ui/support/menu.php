@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm§
- * Copyright 2014 Tuomo Tanskanen <tumi@tumi.fi>
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Main menu definition
  *

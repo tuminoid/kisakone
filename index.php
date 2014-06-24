@@ -2,7 +2,7 @@
 /**
 * Suomen Frisbeegolfliitto Kisakone
 * Copyright 2009-2010 Kisakone projektiryhmä
-* Copyright 2013-2014 Tuomo Tanskanen <tumi@tumi.fi>
+* Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
 *
 * This file serves as the one and only interface users have for the PHP code. In fact,
 * whenever mod_rewrite is enabled, access to other php files is explicitly made
