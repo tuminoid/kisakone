@@ -241,6 +241,11 @@ CREATE TABLE :Participation
   DidNotFinish TINYINT NOT NULL,
   SignupTimestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   TournamentPoints INT NULL,
+  -- added Jul'14
+  Rating INT DEFAULT 0 NOT NULL,
+  Official INT DEFAULT 0 NOT NULL,
+  Club VARCHAR(60) DEFAULT "" NOT NULL,
+  -- by Tumi
   PRIMARY KEY(id),
   FOREIGN KEY (Player) REFERENCES :Player(player_id),
   FOREIGN KEY (Event) REFERENCES :Event(id),
@@ -377,6 +382,11 @@ CREATE TABLE :EventQueue (
   Player SMALLINT NOT NULL,
   Classification INT NOT NULL,
   SignupTimestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  -- added Jul'14
+  Rating INT DEFAULT 0 NOT NULL,
+  Official INT DEFAULT 0 NOT NULL,
+  Club VARCHAR(60) DEFAULT "" NOT NULL,
+  -- by Tumi
   PRIMARY KEY (id),
   FOREIGN KEY (Event) REFERENCES :Event(id),
   FOREIGN KEY (Player) REFERENCES :Player(player_id),
