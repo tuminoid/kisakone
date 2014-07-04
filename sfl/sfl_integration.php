@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto.
  *
@@ -56,16 +56,6 @@ function SFL_FeesPaidForYear($user, $year)
     $membership = $aLicense = $bLicense = $pdgaFound = false;
 
     while (($row = mysql_fetch_assoc($result)) !== false) {
-/*
-        // useless code afaik
-        if ($row['pdga']) {
-            $pdgaFound = true;
-        } else {
-            if ($pdgaFound)
-                continue;
-        }
-*/
-
         if ($row['license'] >= LICENSE_MEMBERSHIP) $membership = true;
         if ($row['license'] == LICENSE_A) $aLicense = true;
         if ($row['license'] == LICENSE_B) $bLicense = true;
