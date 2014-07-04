@@ -21,18 +21,24 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// Email setup
+/*
+ * EMAIL
+ * Set enabled to true to send emails about certain actions
+ */
 global $settings;
 $settings['EMAIL_ENABLED'] = true;
 $settings['EMAIL_SENDER'] = "no-reply@kisakone.localhost";
 $settings['EMAIL_MAILER'] = "Kisakone localhost";
 
-// Ignore payment checks (even from Kisakone DB)
-// Return as if everything is paid (useful for clubs, debug etc)
-define("IGNORE_PAYMENTS", true);
 
-// Do we use payment checks from SFL Jäsenrekisteri
-// Set to 'false' for club use, to fallback to payment checks within Kisakone DB
+/*
+ * SFL INTEGRATION
+ * By default, all license payment mechanisms are disabled.
+ * If you enable payments, they will be handled internally by Kisakone.
+ * If you enable SFL Payments, Kisakone will try to access SFL Jäsenrekisteri
+ * for data, which fails unless you are the SFL.
+ */
+define("IGNORE_PAYMENTS", true);
 define("USE_SFL_PAYMENTS", false);
 
 // defines for licences, mandated by SFL membership database
@@ -40,6 +46,16 @@ define("LICENSE_MEMBERSHIP", 1);
 define("LICENSE_A", 2);
 define("LICENSE_B", 6);
 
+
+/*
+ * PDGA STUFF
+ * If you have a PDGA API access, then enable this setting and enter your credentials
+ * Otherwise, everything just slows down and your host probably gets a ban to pdga.com
+ */
+$settings["PDGA_ENABLED"] = false;
+$settings["PDGA_USERNAME"] = "";
+$settings["PDGA_PASSWORD"] = "";
+
+
 // php 5.3 spits out deprecation warnings without this
 error_reporting(E_ERROR);
-
