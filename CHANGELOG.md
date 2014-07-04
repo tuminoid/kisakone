@@ -7,6 +7,10 @@ next:
 =====
   * Remove all internal caching mechanisms. We can handle that little extra load. Internal
     caching just creates all kinds of little inconsistencies.
+  * Add PDGA API. GH #82.
+  * Add club support. GH #27.
+  * Add rating limits for registration. GH #7.
+  * Add player status limits for registration. GH #7.
 
 2014.05.25:
 ===========
