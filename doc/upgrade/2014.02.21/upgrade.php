@@ -1,11 +1,23 @@
 <?php
-/* Upgrade your database to version 2014.02.15
+/* Upgrade your database to version 2014.04.21
  *
- * Run this from command line, while in 2014.02.15 ugprade directory.
+ * Run this from command line, while in 2014.04.21 ugprade directory.
  */
 
 require_once('../../../config.php');
-require_once('../../../data/db_init.php');
+
+function InitializeDatabaseConnection()
+{
+  $retValue = null;
+  global $settings;
+  $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+
+  if (!($con && @mysql_select_db($settings['DB_DB']))) {
+    die("Unable to connect to DB...");
+  }
+
+  return $retValue;
+}
 
 function Upgrade() {
   global $settings;
@@ -22,8 +34,7 @@ function Upgrade() {
     $query = str_replace(':', $prefix, $query);
     if (!mysql_query($query)) {
       echo $query, "<br>";
-      echo mysql_error(), "\n";
-      return false;
+      die(mysql_error() . "\n");
     }
   }
   return true;
