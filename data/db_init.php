@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Data access module. Access the database server directly.
+ * Data access module. Init database connections.
  *
  * --
  *
@@ -22,19 +22,19 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-   // Connects to the database
-   function InitializeDatabaseConnection()
-   {
-      $retValue = null;
-      global $settings;
-      $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+// Connects to the database
+function InitializeDatabaseConnection()
+{
+  $retValue = null;
+  global $settings;
+  $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
 
-      if (!($con && @mysql_select_db($settings['DB_DB']))) {
-         $retValue = new Error();
-         $retValue->isMajor = true;
-         $retValue->title = 'error_db_connection';
-         $retValue->description = translate('error_db_connection_description');
-      }
+  if (!($con && @mysql_select_db($settings['DB_DB']))) {
+    $retValue = new Error();
+    $retValue->isMajor = true;
+    $retValue->title = 'error_db_connection';
+    $retValue->description = translate('error_db_connection_description');
+  }
 
-      return $retValue;
-   }
+  return $retValue;
+}
