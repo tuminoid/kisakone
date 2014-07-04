@@ -9,3 +9,4 @@ temp*.txt
 /api
 /js/analytics.js
 /favicon.ico
+/*.sublime-*
