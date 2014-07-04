@@ -48,6 +48,10 @@ require_once 'data/init_data.php';
 // Suomen Frisbeegolfliitto-specific functionality
 require_once 'sfl/sfl_integration.php';
 
+// PDGA API if enabled
+if ($settings['PDGA_ENABLED'])
+    require_once 'sfl/pdga_integration.php';
+
 // Disabling caching; we have menus and such which can vary depending on user's
 // access level, so this is necessary.
 header("Cache-Control: no-cache, must-revalidate");
