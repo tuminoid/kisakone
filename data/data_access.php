@@ -638,9 +638,6 @@ require_once 'data/db_init.php';
       $retValue = null;
       $id = (int) $eventid;
 
-      if (array_key_exists($id, $cache))
-         return $cache[$id];
-
       global $user;
       if ($user) {
          $uid = $user->id;
