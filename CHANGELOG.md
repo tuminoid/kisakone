@@ -13,6 +13,9 @@ next:
   * TODO: Add player status limits for registration. GH #7.
   * Tournament levels, divisions and leagues are available only when enabled in admin side.
     This allows retiring unused levels without breaking history. GH #77.
+  * Players without PDGA number are now easy to add. GH #34.
+  * Player's license status is shown to TD when adding a competitor, so its much harder to add
+    someone without proper licenses. GH #25.
 
 2014.05.25:
 ===========
