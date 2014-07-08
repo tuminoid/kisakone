@@ -28,21 +28,22 @@ function page_InitializeEventFormData(&$smarty, $creatingNew)
     $tournaments = GetTournaments(null, $creatingNew);
     $tournamentOptions = array();
 
-    foreach ($tournaments as $tournament) {
-        $tournamentOptions[$tournament->id] = $tournament->name;
-    }
+    foreach ($tournaments as $tournament)
+        if ($tournament->available)
+            $tournamentOptions[$tournament->id] = $tournament->name;
     $smarty->assign('tournament_options', $tournamentOptions);
 
     $levelList = GetLevels($creatingNew);
     $levels = array();
     foreach ($levelList as $level)
-      $levels[$level->id] = $level->name;
+        if ($level->available)
+            $levels[$level->id] = $level->name;
+    $smarty->assign('level_options', $levels);
 
     $classList = GetClasses($creatingNew);
     $classes = array();
     foreach($classList as $class)
-      $classes[$class->id] = $class->name;
-
-    $smarty->assign('level_options', $levels);
+        if ($class->available)
+            $classes[$class->id] = $class->name;
     $smarty->assign('class_options', $classes);
 }
