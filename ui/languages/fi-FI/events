@@ -19,7 +19,7 @@ event_start     Kilpailun alku
 event_duration  Kilpailun kesto
 event_duration_days     päivä(ä)
 event_playerlimit  Pelaajamäärä
-event_playerlimit_max pelaajaa enintään (ilman villejä kortteja)
+event_playerlimit_max pelaajaa enintään
 event_signup_start  Ilmoittautuminen\nalkaa
 event_signup_end  Ilmoittautuminen\nloppuu
 event_activate  Aktivoi käyttäjille
