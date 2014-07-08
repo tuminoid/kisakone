@@ -53,6 +53,10 @@ reg_termsandconditions Käyttöehdot
 termsandconditions <HTML>Olen lukenut ja hyv&auml;ksyn {link}
 termsandconditionslinktitle käyttöehdot
 reg_finalize    Vahvista rekisteröityminen
+license_status_header  Lisenssitilanne
+license_status         Onko pelaajalla kilpailuun vaaditut lisenssit
+licenses_ok            Lisenssit ovat kunnossa!
+licenses_fail          Lisenssit eivät ole kunnossa! Voit lisätä pelaajan kilpailuun vain jos kyseessä on ulkomaalainen pelaaja, jolla on voimassaoleva PDGA-jäsenyys!
 
 
 user_ban    Estä käyttö

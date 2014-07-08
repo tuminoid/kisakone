@@ -30,6 +30,8 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     $event = GetEventDetails(@$_GET['id']);
+    $user = @$_GET['user'];
+    $player = @$_GET['player'];
 
     if (!$event)
         return Error::NotFound('event');
@@ -40,9 +42,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('addcompetitor');
 
-    if (@$_GET['user']) {
+    if ($user) {
         // User has been selected; show edit/confirmation form
-
         $classes = $event->GetClasses();
         $classOptions = array();
 
@@ -52,23 +53,37 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $smarty->assign('classOptions', $classOptions);
 
-        $uid = @$_GET['user'];
-        if ($uid == 'new') {
+        if ($user == 'new') {
             // We don't have an existing user, activate edit mode and initialize
             // the fields from an empty user
             $smarty->assign('userdata', new User());
             $smarty->assign('edit', true);
         } else {
-            $smarty->assign('userdata', GetUserDetails($_GET['user'] ));
+            $smarty->assign('userdata', GetUserDetails($user));
         }
-    } elseif (@$_GET{'op_s'} || @$_GET['player']) {
-        // "Search" button has been pressed
 
-        $query = @$_GET['player'];
+        // Get user's license status for TD to view
+        list($alicense, $membership, $blicense) = SFL_FeesPaidForYear($user, date("Y"));
+
+        if ($alicense)
+            $license_ok = true;
+        else {
+            $fees = $event->FeesRequired();
+            if ($fees === LICENSE_A)
+                $license_ok = false;
+            elseif ($fees === LICENSE_B && $blicense)
+                $license_ok = true;
+            else
+                $license_ok = false;
+        }
+        $smarty->assign('licenses_ok', $license_ok);
+
+    } elseif (@$_GET['op_s'] || $player) {
+        // "Search" button has been pressed
 
         // Due to autocomplete we have some extra characters which cause the search
         // to fail, remove them
-        $query = preg_replace("/[\(\),]/", "", $query);
+        $query = preg_replace("/[\(\),]/", "", $player);
         $players = GetPlayerUsers($query);
         if (count($players) == 1) {
             // Single player, skip the listing

@@ -142,13 +142,11 @@ $(document).ready(function(){
 
      <div style="margin-top: 8px">
         <label>{translate id='dob'}</label>
-
-
         {translate id='year_default' assign='year_default'}
         {if $edit}
         {html_select_date time=0-0-0 field_order=DMY month_format=%m
-        prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
-        all_extra='style="min-width: 0"' }
+            prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
+            all_extra='style="min-width: 0"' }
         {else}
         <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
         {/if}
@@ -168,7 +166,10 @@ $(document).ready(function(){
         {formerror field='class'}
      </div>
 
-
+    <h2>{translate id='license_status_header'}</h2>
+    <div>
+        {if $licenses_ok}<div class="searcharea">{translate id='licenses_ok'}</div>{else}<div class="error">{translate id='licenses_fail'}</div>{/if}
+    </div>
 
     <h2>{translate id='reg_finalize'}</h2>
     <div>
