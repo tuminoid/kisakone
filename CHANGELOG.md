@@ -8,9 +8,6 @@ next:
   * Remove all internal caching mechanisms. We can handle that little extra load. Internal
     caching just creates all kinds of little inconsistencies.
   * Add PDGA API. GH #82.
-  * TODO: Add club support. GH #27.
-  * TODO: Add rating limits for registration. GH #7.
-  * TODO: Add player status limits for registration. GH #7.
   * Tournament levels, divisions and leagues are available only when enabled in admin side.
     This allows retiring unused levels without breaking history. GH #77.
   * Players without PDGA number are now easy to add. GH #34.
