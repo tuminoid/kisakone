@@ -256,14 +256,17 @@ require_once 'data/db_init.php';
 
    // Returns an array of User objects for users who are also Players
    // (optionally filtered by search conditions provided in $query)
-   function GetPlayerUsers($query = '', $sortOrder = '')
+   function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
    {
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
          return $dbError;
       }
       $retValue = array();
-      $searchConditions = data_ProduceSearchConditions($query, array('Username', 'pdga', 'UserFirstname', 'UserLastname'));
+      if ($with_pdga_number)
+         $searchConditions = data_ProduceSearchConditions($query, array('Username', 'pdga', 'UserFirstname', 'UserLastname'));
+      else
+         $searchConditions = data_ProduceSearchConditions($query, array('Username', 'UserFirstname', 'UserLastname'));
 
       $query = (data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player FROM :User
                                        INNER JOIN :Player ON :Player.player_id = :User.Player

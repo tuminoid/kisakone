@@ -81,10 +81,16 @@ function InitializeSmartyVariables(&$smarty, $error)
     } elseif (@$_GET['op_s'] || $player) {
         // "Search" button has been pressed
 
-        // Due to autocomplete we have some extra characters which cause the search
-        // to fail, remove them
+        // Due to autocomplete we have some extra characters which cause the search to fail, remove them
+        if (substr($player, -4, 4) == ", 0)") {
+            $has_pdga_number = false;
+            $player = str_replace(", 0)", ")", $player);
+        }
+        else
+            $has_pdga_number = true;
+
         $query = preg_replace("/[\(\),]/", "", $player);
-        $players = GetPlayerUsers($query);
+        $players = GetPlayerUsers($query, '', $has_pdga_number);
         if (count($players) == 1) {
             // Single player, skip the listing
             redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
