@@ -53,7 +53,7 @@ function SFL_FeesPaidForYear($user, $year)
         return array(false, false, false);
     }
 
-    $membership = $aLicense = $bLicense = $pdgaFound = false;
+    $membership = $aLicense = $bLicense = false;
 
     while (($row = mysql_fetch_assoc($result)) !== false) {
         if ($row['license'] >= LICENSE_MEMBERSHIP) $membership = true;
