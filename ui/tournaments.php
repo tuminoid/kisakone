@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament listing page
  *
@@ -28,14 +29,13 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     $year = @$_GET['id'];
-    if (!$year) $year = date('Y');
+    if (!$year)
+        $year = date('Y');
     $year = (int) $year;
 
     $tournaments = GetTournaments($year);
-
     $smarty->assign('tournaments', $tournaments);
     $smarty->assign('year', $year);
-
 }
 
 /**
