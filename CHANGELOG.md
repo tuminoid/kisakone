@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2014.07.17:
+===========
   * Remove all internal caching mechanisms. We can handle that little extra load. Internal
     caching just creates all kinds of little inconsistencies.
   * Add PDGA API. GH #82.
