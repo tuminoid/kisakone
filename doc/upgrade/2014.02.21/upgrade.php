@@ -1,7 +1,7 @@
 <?php
-/* Upgrade your database to version 2014.04.21
+/* Upgrade your database to version 2014.02.21
  *
- * Run this from command line, while in 2014.04.21 ugprade directory.
+ * Run this from command line, while in 2014.02.21 ugprade directory.
  */
 
 require_once('../../../config.php');
