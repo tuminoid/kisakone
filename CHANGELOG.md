@@ -13,6 +13,7 @@ next:
   * Players without PDGA number are now easy to add. GH #34.
   * Player's license status is shown to TD when adding a competitor, so its much harder to add
     someone without proper licenses. GH #25.
+  * Fix tournament point scoring. GH #136.
 
 2014.05.25:
 ===========
