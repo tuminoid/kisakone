@@ -40,19 +40,20 @@ class scorecalc_tournament_ignoreworst
      function AssignScores(&$data, $numEvents)
      {
         foreach ($data as $pid => $pdetails) {
-            $score = 0;
+            $score = $playerEvents = 0;
             $minScore = null;
             foreach ($pdetails['Events'] as $event) {
                 if (!$event['ResultsLocked']) {
                     continue;
                 }
-                $s =  (int) $event['TournamentPoints'];
+                $playerEvents++;
+                $s = (int) $event['TournamentPoints'];
                 $score += $s;
                 if ($minScore === null || $s < $minScore)
                     $minScore = $s;
             }
 
-            if (count($pdetails['Events']) < $numEvents)
+            if ($playerEvents < $numEvents)
                 $minScore = 0;
 
             $score -= $minScore; // ignore lowest
