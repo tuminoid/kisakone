@@ -65,16 +65,20 @@ function InitializeSmartyVariables(&$smarty, $error)
         // Get user's license status for TD to view
         list($alicense, $membership, $blicense) = SFL_FeesPaidForYear($user, date("Y"));
 
-        if ($alicense)
+        if ($alicense) {
             $license_ok = true;
+        }
         else {
             $fees = $event->FeesRequired();
-            if ($fees === LICENSE_A)
+            if ($fees == LICENSE_A) {
                 $license_ok = false;
-            elseif ($fees === LICENSE_B && $blicense)
+            }
+            elseif ($fees == LICENSE_B && $blicense) {
                 $license_ok = true;
-            else
+            }
+            else {
                 $license_ok = false;
+            }
         }
         $smarty->assign('licenses_ok', $license_ok);
 
