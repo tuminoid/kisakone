@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2014.08.06:
+===========
+  * Fix erroneous warnings about players missing a license when they actually haec B-licenses. GH #138.
+
 2014.07.17:
 ===========
   * Remove all internal caching mechanisms. We can handle that little extra load. Internal
