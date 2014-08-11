@@ -10,3 +10,4 @@ temp*.txt
 /js/analytics.js
 /favicon.ico
 /*.sublime-*
+*.tumi
