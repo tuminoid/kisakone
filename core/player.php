@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Player class.
  *
@@ -191,33 +192,19 @@ class Player
      */
     function IsSuitableClass($class)
     {
-        if (!$class) return false;
+        if (!$class)
+            return false;
         $age = date('Y') - $this->birthyear;
 
         $problems = 0;
+        if ($class->gender && $class->gender != $this->gender)
+            $problems++;
+        if ($class->minAge && $class->minAge > $age)
+            $problems++;
+        if ($class->maxAge && $class->maxAge < $age)
+            $problems++;
 
-        if ($class->gender && $class->gender != $this->gender) $problems++;
-        if ($class->minAge && $class->minAge > $age) $problems++;
-        if ($class->maxAge && $class->maxAge < $age) $problems++;
         return $problems == 0;
-
-    }
-
-    function LicenseFeesPaid()
-    {
-        $data = GetFeePayments(true, null, null, $this->id);
-
-        $item = $data[0];
-
-        return $item['licensefees'];
-    }
-
-    function MembershipFeesPaid()
-    {
-        $data = GetFeePayments(true, null, null, $this->id);
-        $item = $data[0];
-
-        return $item['membershipfees'];
     }
 }
 
