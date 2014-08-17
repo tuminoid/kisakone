@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Tool which can merge users. GH #115.
+
 2014.08.06:
 ===========
   * Fix erroneous warnings about players missing a license when they actually haec B-licenses. GH #138.
