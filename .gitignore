@@ -11,3 +11,4 @@ temp*.txt
 /favicon.ico
 /*.sublime-*
 *.tumi
+stellar.yaml
