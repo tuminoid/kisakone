@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Group editor
  *
@@ -28,55 +29,62 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   language_include('errors');
-   $event = GetEventDetails($_GET['id']);
+    language_include('errors');
+    $event = GetEventDetails($_GET['id']);
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied('eventfees');
     }
 
-    if ($event->resultsLocked) $smarty->assign('locked' , true);
+    if ($event->resultsLocked) {
+        $smarty->assign('locked' , true);
+    }
 
-   if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
-   if (!@$_REQUEST['round']) {
-      require_once 'ui/support/roundselection.php';
+    if (!@$_REQUEST['round'] && @$_GET['round']) {
+        $_REQUEST['round'] = $_GET['round'];
+    }
 
-      return page_SelectRound($event, $smarty);
-   }
+    if (!@$_REQUEST['round']) {
+        require_once 'ui/support/roundselection.php';
+        return page_SelectRound($event, $smarty);
+    }
 
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if (!$round || $round->eventId != $event->id) {
+        return Error::Notfound('round');
+    }
 
-   if (@$_GET['regenerate']) {
-      $round->RegenerateGroups();
-      redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
-   } else {
-      if ($round->InitializeGroups ()) {
-         $smarty->assign('suggestRegeneration', true);
-      }
-   }
+    if (@$_GET['regenerate']) {
+        $round->RegenerateGroups();
+        redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
 
-   $smarty->assign('round', $round);
-   $smarty->assign('data', GetSections($round->id));
+    } else {
+        if ($round->InitializeGroups()) {
+            $smarty->assign('suggestRegeneration', true);
+        }
+    }
 
-   if ($round->starttype == 'simultaneous') {
-      $holes = $round->GetHoles();
-      $smarty->assign('numHoles', count($holes));
-   }
+    $smarty->assign('round', $round);
+    $smarty->assign('data', GetSections($round->id));
+
+    if ($round->starttype == 'simultaneous') {
+        $holes = $round->GetHoles();
+        $smarty->assign('numHoles', count($holes));
+    }
 }
 
 /**
- * Determines which main menu option this page falls under.
- * @return String token of the main menu item text.
- */
+* Determines which main menu option this page falls under.
+* @return String token of the main menu item text.
+*/
 function getMainMenuSelection()
 {
     return 'events';
 }
 
+/** WTF? */
 function GetPlayersByGroup($class)
 {
-   die();
-
-   return array();
+    die();
+    return array();
 }

@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Section class.
  *
@@ -39,7 +40,7 @@ class Section
      */
     function Section($row)
     {
-      $this->id = $row['id'];
+        $this->id = $row['id'];
         $this->name = $row['Name'];
         $this->classification = $row['Classification'];
         $this->round = $row['Round'];
@@ -55,9 +56,10 @@ class Section
     {
         if ($this->classification) {
             $class = GetClassDetails($this->classification);
-
             return $class->name;
-        } else return translate('combined_group_name');
+        } else {
+            return translate('combined_group_name');
+        }
     }
 
     /**
@@ -66,20 +68,13 @@ class Section
     function getPlayers()
     {
         static $data = array();
-        if (isset($data[$this->id])) return $data[$this->id];
+        if (isset($data[$this->id])) {
+            return $data[$this->id];
+        }
         $data[$this->id] = GetSectionMembers($this->id);
 
         return $data[$this->id];
     }
-/*
-  Seems to be obsolete remnant of old code
-    function GetBaseName()
-    {
-        if (!$this->parent) return $this->name;
-        $p = GetClassDetails($this->parent);
-
-        return $p->name;
-    }*/
 
     // Returns the number of groups this section can form
     function EstimateNumberOfGroups()
@@ -107,36 +102,30 @@ class Section
     function InitializeGroups($round, &$start, &$changes)
     {
         $players = $this->GetPlayers();
-        //$players = array_reverse($players);
-        //print_r($players);
         if ($this->startTime && $round->starttype == 'sequential') {
             $start = $this->startTime;
         }
-        $playersById = array();
-        foreach($players as $player) $playersById[$player['PlayerId']] = $player;
 
+        $playersById = array();
+        foreach($players as $player) {
+            $playersById[$player['PlayerId']] = $player;
+        }
 
         $groups = GetGroups($this->id);
-
-
         foreach ($groups as $group) {
             foreach ($group['People'] as $player) {
                 unset($playersById[$player['PlayerId']]);
-
             }
 
             if ($this->AdjustStart($group, $start, $round)) {
                 $changes = true;
-
             }
         }
 
         core_UpdateGroups($groups);
-
-         $this->CreateGroupsFor($playersById, $start, $round);
+        $this->CreateGroupsFor($playersById, $start, $round);
 
         return $changes || count($playersById);
-
     }
 
     /**
@@ -145,7 +134,9 @@ class Section
     */
     function CreateGroupsFor($players, &$start, &$round)
     {
-        if (!count($players)) return;
+        if (!count($players))
+            return;
+
         $GLOBALS['RemovePlayersDefinedforAnySectionRound'] = array($round->id, $this->id);
         $players = array_filter($players, 'RemovePlayersDefinedforAnySection');
         if ($round->IsFirstRound() ) {
@@ -153,7 +144,6 @@ class Section
         }
 
         $groupsizes = core_GetGroupSizes(count($players));
-
         foreach ($groupsizes as $size => $groups) {
             while ($groups--) {
                 $group = array(
@@ -172,7 +162,6 @@ class Section
                 $this->AdjustStart($group, $start, $round);
                 $group['People'] = array_reverse($group['People']);
                 InsertGroup($group);
-
             }
         }
     }
@@ -186,55 +175,49 @@ class Section
     {
         global $running_group_number;
         $changes = false;
-        if (!$running_group_number) $running_group_number = 1;
-
-        //echo "$group[PoolNumber] = $running_group_number;<br>";
+        if (!$running_group_number)
+            $running_group_number = 1;
 
         if ($group['PoolNumber'] != $running_group_number) {
-
             $group['PoolNumber'] = $running_group_number;
             $changes = true;
-
         }
         $running_group_number++;
 
         switch ($round->starttype) {
             case 'simultaneous':
-
                 if ($group['StartingHole'] != $start) {
                     $group['StartingHole'] = $start;
-
                     $changes = true;
-
                 }
                 $start = $start + 1;
                 if ($group['StartingTime'] != $round->starttime) {
                     $group['StartingTime'] = $round->starttime;
-
                     $changes = true;
                 }
                 break;
+
             case 'sequential':
-
                 if ($group['StartingTime'] != $start) {
-
                     $group['StartingTime'] = $start;
                     $changes = true;
-
                 }
                 if ($group['StartingHole'] != null) {
                     $group['StartingHole'] = null;
                     $changes = true;
-
                 }
 
                 $start = $start + $round->interval * 60;
                 break;
+
             default:
                 fail();
         }
 
-        if ($changes) $group['changed'] = true;
+        if ($changes) {
+            $group['changed'] = true;
+        }
+
         return $changes;
     }
 }
@@ -245,16 +228,18 @@ class Section
 function core_GetGroupSizes($people)
 {
     $groupsof  = array(3 => 0, 4 => 0, 5 => 0);
+
     switch ($people) {
         case 6:
             $groupsof[3] = 2;
             break;
+
         case 9:
             $groupsof[4] = 1;
             $groupsof[5] = 1;
             break;
-        default:
 
+        default:
             if ($people <= 5) {
                 $groupsof[$people] = 1;
             } else {
@@ -271,9 +256,7 @@ function core_GetGroupSizes($people)
                 }
                 $groupsof[4] = $four;
                 $groupsof[3] = $three;
-
             }
-
     }
 
     return $groupsof;
@@ -285,6 +268,5 @@ function core_UpdateGroups($groups)
         if (isset($group['changed'])) {
             UpdateGroup($group);
         }
-
     }
 }

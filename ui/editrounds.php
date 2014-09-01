@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Round editor menu ui backend
  *
@@ -29,8 +30,12 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');
-    if (!IsAdmin() && $event->management !='td') return Error::AccessDenied();
+    if (!$event) {
+        return Error::NotFound('event');
+    }
+    if (!IsAdmin() && $event->management !='td') {
+        return Error::AccessDenied();
+    }
 
     $smarty->assign('rounds', $event->GetRounds());
 }

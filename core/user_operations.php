@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains functionality for managing users
  *
@@ -39,12 +40,11 @@ require_once 'core/player.php';
  */
 
 function RegisterPlayer($username, $password, $email, $firstname, $lastname,
-                         $gender, $pdga , $birthyear)
+                        $gender, $pdga , $birthyear)
 {
-
     $err = null;
 
-    if ( isset( $gender)) {
+    if (isset($gender)) {
         if ('male' == $gender) {
             $gender = PLAYER_GENDER_MALE;
         } elseif ('female' == $gender) {
@@ -52,40 +52,38 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname,
         }
     }
 
-    $player = new Player( null, $pdga, $gender, $birthyear, $firstname, $lastname, $email);
-
+    $player = new Player(null, $pdga, $gender, $birthyear, $firstname, $lastname, $email);
     $err = $player->ValidatePlayer();
-    if ( !isset( $err)) {
-        $player = SetPlayerDetails( $player);
-        if ( is_a( $player, "Error")) {
+    if (!isset($err)) {
+        $player = SetPlayerDetails($player);
+        if (is_a( $player, "Error")) {
             return $player;
         }
+
     } else {
         return $err;
     }
 
-    $user = new User( null, $username, USER_ROLE_PLAYER,
-                      $firstname, $lastname, $email, $player->id);
+    $user = new User(null, $username, USER_ROLE_PLAYER,
+                     $firstname, $lastname, $email, $player->id);
     $err = $user->ValidateUser();
-
-    if ( !isset( $err)) {
+    if (!isset( $err)) {
         if ($user->username !== null) {
-            $err = $user->SetPassword( $password);
+            $err = $user->SetPassword($password);
         }
 
-        if ( !isset( $err)) {
-            $user = SetUserDetails( $user);
-            if ( is_a( $user, "Error")) {
+        if (!isset($err)) {
+            $user = SetUserDetails($user);
+            if (is_a( $user, "Error")) {
                 $err = $user;
                 $user = null;
             }
         }
     }
 
-    if ($err) return $err;
+    if ($err) {
+        return $err;
+    }
+
     return $user;
 }
-
-/* ****************************************************************************
- * End of file
- * */

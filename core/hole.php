@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Hole class definition.
  *
@@ -32,10 +33,9 @@ class Hole
 
     function Hole($data)
     {
-         foreach ($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $fieldName = core_ProduceFieldName($key);
             $this->$fieldName = $value;
         }
     }
-
 }

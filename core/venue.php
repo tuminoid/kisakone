@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains Venue class.
  *
@@ -34,17 +35,12 @@ class Venue
      * Class constructor
      */
     function Venue($id = null,
-                    $name = "",
-                    $location = "")
+                   $name = "",
+                   $location = "")
     {
         $this->id = $id;
         $this->name = $name;
         $this->location = $location;
-
         return;
     }
 }
-
-/* ****************************************************************************
- * End of file
- * */
