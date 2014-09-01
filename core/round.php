@@ -250,6 +250,8 @@ class Round
             foreach ($data as $classname => $participants) {
                 foreach (array_reverse($participants) as $participant) {
                     $result = $participant['CumulativeTotal'];
+
+                    // If player has score and did not DNF/DNS
                     if ($result != 0 && !$participant['DidNotFinish']) {
                         if (!$this->Participating($participant['PlayerId'])) {
                             $class = $participant['Classification'];
@@ -262,6 +264,7 @@ class Round
                             $changes = true;
                         }
 
+                    // Player has DNS/DNF, remove him
                     } else {
                         $class = $participant['Classification'];
                         $s = $sections[$class];
