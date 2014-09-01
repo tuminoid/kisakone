@@ -165,17 +165,16 @@
                         <tbody>
                             {assign var=nump value=0}
                             {foreach from=$group.People item=player}
-                            {math assign=nump equation="x + 1" x=$nump}
-                            <tr class="tag_person">
-                                <td style="min-width: 180px;">
-                                    <input type="hidden" name="e[]" value="pid{$player.PlayerId|escape}" />
-                                    <span>{$player.LastName|escape}
-                                    {$player.FirstName|escape}</span></td>
-                                <td>{counter}</td>
-                                <td>{$player.Classification|escape}</td>
-                            </tr>
-
-
+                                {math assign=nump equation="x + 1" x=$nump}
+                                <tr class="tag_person">
+                                    <td>{counter}</td>
+                                    <td style="min-width: 180px;">
+                                        <input type="hidden" name="e[]" value="pid{$player.PlayerId|escape}" />
+                                        <span>{$player.LastName|escape} {$player.FirstName|escape}</span>
+                                    </td>
+                                    <td>{$player.Classification|escape|substr:0:3}</td>
+                                    <td>{$player.OverallResult}</td>
+                                </tr>
                             {/foreach}
                             {if $nump < 1}<tr class="filler"><td>-</td></tr>{/if}
                             {if $nump < 2}<tr class="filler"><td>-</td></tr>{/if}

@@ -4255,7 +4255,7 @@ function GetGroups($sectid)
             SELECT
                :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
                :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.PoolNumber,
-               :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification
+               :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification, :Participation.OverallResult
                FROM :StartingOrder
                INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
                INNER JOIN :User ON :Player.player_id = :User.Player
