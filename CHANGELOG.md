@@ -5,7 +5,9 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * Tool which can merge users. GH #115.
+  * Tool which can merge users (from commandline). GH #115.
+  * Order of players in a group is now sorted by OverallScore. GH #132.
+  * Total score is displayed when creating groups for each player. GH #125.
 
 2014.08.06:
 ===========
