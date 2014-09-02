@@ -8,6 +8,7 @@ next:
   * Tool which can merge users (from commandline). GH #115.
   * Order of players in a group is now sorted by OverallScore. GH #132.
   * Total score is displayed when creating groups for each player. GH #125.
+  * Fix URL of quotas (Kiintiöt) to look like any other URL. GH #147.
 
 2014.08.06:
 ===========
