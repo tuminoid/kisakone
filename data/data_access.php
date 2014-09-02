@@ -3471,7 +3471,7 @@ function SaveTextContent($page)
       $retValue = array();
       $query = "SELECT :Player.player_id PlayerId, :User.UserFirstName, :User.UserLastName, :Player.pdga PDGANumber,
                     :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, :Classification.Name Classification,
-                       SM.id as MembershipId
+                       SM.id as MembershipId, :Participation.OverallResult
                     FROM :User
                     INNER JOIN :Player ON :User.Player = :Player.player_id
                     INNER JOIN :Participation ON :Player.player_id = :Participation.Player
@@ -4264,7 +4264,7 @@ function GetGroups($sectid)
                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                WHERE :StartingOrder.`Section` = %d
-               ORDER BY PoolNumber",
+               ORDER BY PoolNumber, OverallResult",
                $sectid);
 
       $res = mysql_query($query);

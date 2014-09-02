@@ -139,7 +139,7 @@ class Section
 
         $GLOBALS['RemovePlayersDefinedforAnySectionRound'] = array($round->id, $this->id);
         $players = array_filter($players, 'RemovePlayersDefinedforAnySection');
-        if ($round->IsFirstRound() ) {
+        if ($round->IsFirstRound()) {
             shuffle($players);
         }
 
@@ -165,7 +165,6 @@ class Section
             }
         }
     }
-
 
     /**
      * Adjust the stating time and/or hole of the given group to match what it's
