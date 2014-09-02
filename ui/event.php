@@ -58,7 +58,6 @@ function InitializeSmartyVariables(&$smarty, $error)
          $view = 'index';
 
          list($ci_html, $ci_js) = page_ObfuscateContactInfo($event->contactInfo);
-
          $smarty->assign('news', $event->GetNews(0, 5));
          $smarty->assign('contactInfoHTML', $ci_html);
          $smarty->assign('contactInfoJS', $ci_js);
@@ -82,17 +81,25 @@ function InitializeSmartyVariables(&$smarty, $error)
          break;
 
       case 'competitors':
+         $view = 'competitors';
          language_include('users');
          $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
          $smarty->assign('participants', $participants);
-         $view = 'competitors';
          break;
 
       case 'queue':
+         $view = 'queue';
          language_include('users');
          $queue = $event->GetQueue(@$_GET['sort'], @$_GET['search']);
          $smarty->assign('queue', $queue);
-         $view = 'queue';
+         break;
+
+      case 'quotas':
+         $view = 'quotas';
+         $smarty->assign('playerlimit', $event->playerLimit);
+         $smarty->assign('quotas', GetEventQuotas($event->id));
+         $smarty->assign('counts', GetEventParticipantCounts($event->id));
+         $smarty->assign('queues', GetEventQueueCounts($event->id));
          break;
 
       case 'schedule':

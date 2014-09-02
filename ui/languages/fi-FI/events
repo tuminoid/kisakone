@@ -88,6 +88,7 @@ pagetitle_index     Yleistiedot
 pagetitle_results   Tulokset
 pagetitle_competitors   Kilpailijat
 pagetitle_queue         Jono
+pagetitle_quotas        Kiintiöt
 pagetitle_schedule      Aikataulu
 pagetitle_course        Rata
 pagetitle_signupinfo       Ilmoittautuminen

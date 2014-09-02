@@ -168,7 +168,7 @@ function page_getSubMenu()
             array('title' => translate('event_competitors'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'competitors'), 'access' => null, 'children' => array(
                 array('title' => translate('event_queue'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'queue'), 'access' => null, 'children' => array()),
             )),
-            array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'eventquotas', 'id' => $id, 'view' => 1), 'access' => null, 'children' => array()),
+            array('title' => translate('event_quotas'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'quotas'), 'access' => null, 'children' => array()),
             array('title' => translate('event_course'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'course'), 'access' => null, 'children' => array()),
             array('title' => translate('event_schedule'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'schedule'), 'access' => null, 'children' => array()),
             array('title' => translate('event_signup_info'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'signupinfo'), 'access' => null, 'children' => array(
@@ -197,7 +197,7 @@ function page_getSubMenu()
                     array('title' => translate('remind'), 'link' => array('page' => 'remind'), 'access' => null, 'children' => array(), 'condition' => PageIs('remind'))
                 )),
                 array('title' => translate('edit_event_classes'), 'link' => array('page' => 'eventclasses', 'id' => $id), 'access' => null, 'children' => array()),
-                array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'eventquotas', 'id' => $id), 'access' => null, 'children' => array(), 'condition' => @$_GET['view'] != 1),
+                array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'editquotas', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_pages'), 'link' => array('page' => 'editeventpages', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('event_info'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index'), 'access' => null, 'children' => array()),
                     array('title' => translate('event_info_schedule'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index_schedule'), 'access' => null, 'children' => array()),

@@ -39,6 +39,7 @@ event_results       Tulokset
 event_live_results  Live-seuranta
 event_competitors   Kilpailijat
 event_queue         Jono
+event_quotas        Kiintiöt
 event_schedule      Aikataulu
 event_course        Rata
 event_signup_info   Ilmoittautuminen

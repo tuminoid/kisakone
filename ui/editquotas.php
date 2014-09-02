@@ -31,9 +31,9 @@ function InitializeSmartyVariables(&$smarty, $error)
     $event = GetEventDetails($_GET['id']);
     $view = isset($_GET['view']) ? $_GET['view'] : 0;
 
-    if (IsAdmin() || $event->management == 'td')
-        if ($view == 0)
-            $smarty->assign('allow_edit', true);
+    if (!IsAdmin() && $event->management != 'td') {
+        return Error::AccessDenied('eventfees');
+    }
 
     $smarty->assign('playerlimit', $event->playerLimit);
     $smarty->assign('quotas', GetEventQuotas($event->id));
