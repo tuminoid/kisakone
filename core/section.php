@@ -82,10 +82,13 @@ class Section
         $all = $this->getPlayers(@$_GET['id']);
 
         $num = count($all);
-        if ($num == 5) return 1;
-        if ($num == 9) return 2;
+        if ($num == 5) {
+            return 1;
+        }
+        if ($num == 9) {
+            return 2;
+        }
         return ceil($num / 4);
-
     }
 
     /**
@@ -242,13 +245,13 @@ function core_GetGroupSizes($people)
             if ($people <= 5) {
                 $groupsof[$people] = 1;
             } else {
-                $four = floor( $people / 4);
+                $four = floor($people / 4);
                 $three = $people % 4 ? 1 : 0;
 
                 while ($four * 4 + $three * 3 != $people) {
-
                     if ($four * 4 + $three * 3 > $people) {
                         $four--;
+
                     } else {
                         $three++;
                     }

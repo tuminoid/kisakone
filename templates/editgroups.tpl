@@ -173,7 +173,7 @@
                                         <span>{$player.LastName|escape} {$player.FirstName|escape}</span>
                                     </td>
                                     <td>{$player.Classification|escape|substr:0:3}</td>
-                                    <td>{$player.OverallResult}</td>
+                                    {if $player.OverallResult > 0}<td>{$player.OverallResult}</td>{/if}
                                 </tr>
                             {/foreach}
                             {if $nump < 1}<tr class="filler"><td>-</td></tr>{/if}

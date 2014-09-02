@@ -35,13 +35,16 @@
     {foreach from=$rounds key=index item=round}
         {math assign=num equation="x+1" x=$index}
         <h3>{translate id=round_title number=$num}</h3>
+
         <div>{$round->starttime|date_format:"%d.%m.%Y"}</div>
         {capture assign=start}{$round->starttime|date_format:"%H:%M"}{/capture}
+
         {if $round->starttype == 'sequential'}
             <p>{translate id=sequential_start time=$start}</p>
         {elseif $round->starttype == 'simultaneous'}
             <p>{translate id=simultaneous_start time=$start}</p>
         {/if}
+
         {if $round->groupsAvailable()}
             {assign var=group value=$round->GetUserGroup()}
             {if $group && $round->groupsFinished !== null}
@@ -54,13 +57,9 @@
                 <table class="narrow">
                 {foreach from=$group item=player}
                     <tr>
-
-                        <td>
-                            {$player.LastName|escape} {$player.FirstName|escape}
-                        </td>
-                        <td>
-                            {$player.ClassificationName}
-                        </td>
+                        <td>{$player.LastName|escape} {$player.FirstName|escape}</td>
+                        <td>{$player.ClassificationName}</td>
+                        {if $group.OverallResult > 0}<td>{$group.OverallResult}</td>{/if}
                     </tr>
                 {/foreach}
                 </table>
@@ -93,24 +92,21 @@
             {/if}
 
             {if $group.UserId == $user->id}
-            <tr class="selected">
-            { else}
-            <tr>
-                {/if}
+                <tr class="selected">
+            {else}
+                <tr>
+            {/if}
                 <td>{$group.PoolNumber}</td>
                 <td>
                     {if $round->starttype == 'simultaneous'}
-                    {translate id=your_group_starting_hole hole=$group.StartingHole}
+                        {translate id=your_group_starting_hole hole=$group.StartingHole}
                     {else}
-                    {$group.StartingTime|date_format:"%H:%M"}
+                        {$group.StartingTime|date_format:"%H:%M"}
                     {/if}
                 </td>
-                <td>
-                    {$group.LastName|escape} {$group.FirstName|escape}
-                </td>
-                <td>
-                    {$group.ClassificationName}
-                </td>
+                <td>{$group.LastName|escape} {$group.FirstName|escape}</td>
+                <td>{$group.ClassificationName}</td>
+                {if $group.OverallResult > 0}<td>{$group.OverallResult}</td>{/if}
             </tr>
         {/foreach}
     </table>

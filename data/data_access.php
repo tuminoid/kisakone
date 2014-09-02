@@ -4537,7 +4537,7 @@ function GetGroups($sectid)
   function GetRoundGroups($roundid)
   {
     $query = data_query("SELECT PoolNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
-                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
+                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
                      FROM :StartingOrder
                      INNER JOIN :Section ON :Section.id = :StartingOrder.Section
                      INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
@@ -4545,7 +4545,6 @@ function GetGroups($sectid)
                      INNER JOIN :User ON :User.Player = :Player.player_id
                      INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                      INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-
                      WHERE `:Round`.id = %d
                      ORDER BY PoolNumber, :StartingOrder.id
 
