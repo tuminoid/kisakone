@@ -3276,6 +3276,7 @@ function SaveTextContent($page)
 
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
+         error_log(print_r($dbError, true));
          return $dbError;
       }
 
@@ -3304,19 +3305,23 @@ function SaveTextContent($page)
                             ";
 
       $query = data_query($query);
-
       $result = mysql_query($query);
 
-      if (!$result) return Error::Query($query);
+      if (!$result) {
+         error_log(print_r(Error::Query($query), true));
+         return Error::Query($query);
+      }
+
       $penalties = array();
       if (mysql_num_rows($result) > 0) {
-
          $index = 1;
          $lastrow = null;
          while ($row = mysql_fetch_assoc($result)) {
 
             if (!$lastrow || @$lastrow['PlayerId'] != $row['PlayerId']) {
-                if ($lastrow) $retValue[] = $lastrow;
+                if ($lastrow) {
+                  $retValue[] = $lastrow;
+                }
                 $lastrow = $row;
                 $lastrow['Results'] = array();
                 $lastrow['TotalCompleted'] = 0;
@@ -3328,13 +3333,13 @@ function SaveTextContent($page)
             $lastrow['Results'][$row['RoundId']] = $row;
 
          }
-         if ($lastrow) $retValue[] = $lastrow;
+         if ($lastrow) {
+            $retValue[] = $lastrow;
+         }
       }
-
       usort($retValue, 'data_sort_leaderboard');
 
-            mysql_free_result($result);
-
+      mysql_free_result($result);
       return $retValue;
    }
 

@@ -180,7 +180,9 @@ function InitializeSmartyVariables(&$smarty, $error)
 
       case 'leaderboard':
          $view = 'leaderboard';
-         $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
+         $results_tmp = GetEventResultsWithoutHoles($event->id);
+         $results = pdr_GroupByClasses($results_tmp);
+
          $scoresAssigned = null;
          foreach ($results as $class) {
             foreach ($class as $item) {
