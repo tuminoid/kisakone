@@ -9,13 +9,13 @@
 #
 # Usage: ./combine.sh <player id which stays> <player id which is merged and then deleted>,<second id>,<third id>,...
 #
-# Please use only if you know what you're doing. Take backups. 
+# Please use only if you know what you're doing. Take backups.
 # May cause irreversible mess into your user db if wrong id's are used!
 #
 
 set -e
 
-if [ $# -lt 2 ]; then 
+if [ $# -lt 2 ]; then
   echo "error: usage: $0 new_id old_id1,[old_id2, ...]"
   exit 1
 fi
