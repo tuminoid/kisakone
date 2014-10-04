@@ -1,4 +1,4 @@
-Upgrading to version 2014.07.xx:
+Upgrading to version 2014.10.xx:
 ================================
 
 We need to alter two tables. 

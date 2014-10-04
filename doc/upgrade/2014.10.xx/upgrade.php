@@ -1,9 +1,4 @@
 <?php
-/* Upgrade your database to version 2014.07.xx
- *
- * Run this from command line, while in 2014.07.xx ugprade directory.
- */
-
 require_once('../../../config.php');
 
 function InitializeDatabaseConnection()

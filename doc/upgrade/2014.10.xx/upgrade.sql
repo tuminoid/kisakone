@@ -1,6 +1,6 @@
 
--- SQL migration from versions 2014.07.xx and earlier
--- Use the upgrade script upgrade_201407xx.php!
+-- SQL migration from versions 2014.10.xx and earlier
+-- Use the upgrade script upgrade_201410xx.php!
 
 ALTER TABLE :Participation ADD Rating INT DEFAULT 0 NOT NULL AFTER TournamentPoints;
 ALTER TABLE :Participation ADD Official INT DEFAULT 0 NOT NULL AFTER Rating;
