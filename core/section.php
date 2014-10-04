@@ -151,7 +151,7 @@ class Section
             while ($groups--) {
                 $group = array(
                     'StartingTime' => 0,
-                    'PoolNumber' => 0,
+                    'GroupNumber' => 0,
                     'Section' => $this->id,
                     'StartingHole' => null,
                     'People' => array()
@@ -180,8 +180,8 @@ class Section
         if (!$running_group_number)
             $running_group_number = 1;
 
-        if ($group['PoolNumber'] != $running_group_number) {
-            $group['PoolNumber'] = $running_group_number;
+        if ($group['GroupNumber'] != $running_group_number) {
+            $group['GroupNumber'] = $running_group_number;
             $changes = true;
         }
         $running_group_number++;

@@ -3106,7 +3106,7 @@ function SaveTextContent($page)
 
       $query = "SELECT :Player.player_id as PlayerId, :Player.firstname FirstName, :Player.lastname LastName, :Player.pdga PDGANumber,
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
-                    :StartingOrder.PoolNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus, Completed,
+                    :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus, Completed,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber, :RoundResult.PlusMinus RoundPlusMinus,
                     :Classification.Name ClassName, CumulativePlusminus, CumulativeTotal, :RoundResult.DidNotFinish,
                     :Classification.id Classification
@@ -3129,7 +3129,7 @@ function SaveTextContent($page)
       switch ($sortedBy) {
 
         case 'group':
-            $query .= "ORDER BY :StartingOrder.PoolNumber, :StartingOrder.id";
+            $query .= "ORDER BY :StartingOrder.GroupNumber, :StartingOrder.id";
             break;
         case 'results':
         case 'resultsByClass':
@@ -3204,7 +3204,7 @@ function SaveTextContent($page)
 
       $query = "SELECT :Participation.*, player_id as PlayerId, :Player.firstname FirstName, :Player.lastname LastName, :Player.pdga PDGANumber,
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
-                    :StartingOrder.PoolNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
+                    :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
                     :Classification.Name ClassName,
                     TournamentPoints, :Round.id RoundId,
@@ -3283,7 +3283,7 @@ function SaveTextContent($page)
 
       $query = "SELECT :Participation.*, player_id as PlayerId, :Player.firstname FirstName, :Player.lastname LastName, :Player.pdga PDGANumber,
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
-                    :StartingOrder.PoolNumber, CumulativePlusminus, Completed  ,
+                    :StartingOrder.GroupNumber, CumulativePlusminus, Completed  ,
                     :Classification.Name ClassName, PlusMinus, :StartingOrder.id StartId,
                     TournamentPoints, :Round.id RoundId,
                     :Participation.Standing
@@ -4256,7 +4256,7 @@ function GetGroups($sectid)
       $query = data_query("
             SELECT
                :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
-               :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.PoolNumber,
+               :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
                :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification, :Participation.OverallResult
                FROM :StartingOrder
                INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
@@ -4266,7 +4266,7 @@ function GetGroups($sectid)
                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                WHERE :StartingOrder.`Section` = %d
-               ORDER BY PoolNumber, OverallResult",
+               ORDER BY GroupNumber, OverallResult",
                $sectid);
 
       $res = mysql_query($query);
@@ -4281,14 +4281,13 @@ function GetGroups($sectid)
       while (($row = mysql_fetch_assoc($res)) !== false) {
          $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
          $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
-         if ($row['PoolNumber'] != $current) {
+         if ($row['GroupNumber'] != $current) {
             if (count($group))
                $out[] = $group;
-
             $group = $row;
             $group['People'] = array();
-            $current = $row['PoolNumber'];
-            $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['PoolNumber']);
+            $current = $row['GroupNumber'];
+            $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['GroupNumber']);
 
             if ($row['StartingHole']) {
                $group['DisplayName'] = $row['StartingHole'];
@@ -4311,12 +4310,12 @@ function GetGroups($sectid)
   {
    foreach ($group['People'] as $player) {
       $query = data_query("INSERT INTO :StartingOrder
-                       (Player, StartingTime, StartingHole, PoolNumber, Section)
+                       (Player, StartingTime, StartingHole, GroupNumber, Section)
                      VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
                      $player['PlayerId'],
                      $group['StartingTime'],
                      esc_or_null($group['StartingHole'], 'int'),
-                     $group['PoolNumber'],
+                     $group['GroupNumber'],
                      $group['Section']);
       mysql_query($query);
       echo mysql_error();
@@ -4326,12 +4325,12 @@ function GetGroups($sectid)
   function InsertGroupMember($data)
   {
    $query = data_query("INSERT INTO :StartingOrder
-                    (Player, StartingTime, StartingHole, PoolNumber, Section)
+                    (Player, StartingTime, StartingHole, GroupNumber, Section)
                     VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
                     $data['Player'],
                     $data['StartingTime'],
                     esc_or_null($data['StartingHole'], 'int'),
-                    $data['PoolNumber'],
+                    $data['GroupNumber'],
                     $data['Section']);
    mysql_query($query);
    echo mysql_error();
@@ -4541,7 +4540,7 @@ function GetGroups($sectid)
 
   function GetRoundGroups($roundid)
   {
-    $query = data_query("SELECT PoolNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
+    $query = data_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
                      FROM :StartingOrder
                      INNER JOIN :Section ON :Section.id = :StartingOrder.Section
@@ -4551,7 +4550,7 @@ function GetGroups($sectid)
                      INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                      INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                      WHERE `:Round`.id = %d
-                     ORDER BY PoolNumber, :StartingOrder.id
+                     ORDER BY GroupNumber, :StartingOrder.id
 
                      ", $roundid);
     $res = mysql_query($query);
@@ -4569,7 +4568,7 @@ function GetGroups($sectid)
 
   function GetSingleGroup($roundid, $playerid)
   {
-    $query = data_query("SELECT :StartingOrder.PoolNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+    $query = data_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder
@@ -4580,9 +4579,9 @@ function GetGroups($sectid)
                      INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                      INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                      INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section
-                                                          AND :StartingOrder.PoolNumber = BaseGroup.PoolNumber)
+                                                          AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
                      WHERE `:Round`.id = %d AND BaseGroup.Player = %d
-                     ORDER BY PoolNumber, :StartingOrder.id
+                     ORDER BY GroupNumber, :StartingOrder.id
 
                      ", $roundid, $playerid);
     $res = mysql_query($query);
@@ -4598,9 +4597,9 @@ function GetGroups($sectid)
 
   }
 
-  function GetSingleGroupByPN($roundid, $poolNumber)
+  function GetSingleGroupByPN($roundid, $groupNumber)
   {
-    $query = data_query("SELECT :StartingOrder.PoolNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
+    $query = data_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder
@@ -4610,10 +4609,10 @@ function GetGroups($sectid)
                      INNER JOIN :User ON :User.Player = :Player.player_id
                      INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                      INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                     WHERE `:Round`.id = %d AND PoolNumber = %d
-                     ORDER BY PoolNumber, :StartingOrder.id
+                     WHERE `:Round`.id = %d AND GroupNumber = %d
+                     ORDER BY GroupNumber, :StartingOrder.id
 
-                     ", $roundid, $poolNumber);
+                     ", $roundid, $groupNumber);
     $res = mysql_query($query);
     echo mysql_error();
     if (!$res) return Error::Query($query);
@@ -4629,7 +4628,7 @@ function GetGroups($sectid)
 
   function GetUserGroupSummary($eventid, $playerid)
   {
-    $query = data_query("SELECT :StartingOrder.PoolNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+    $query = data_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName, :Round.GroupsFinished,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder

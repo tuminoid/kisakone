@@ -123,7 +123,7 @@
 
    <h1>{$event->name}, {$event->venue} {$event->fulldate}</h1>
    <h3>{translate id=round_number    number=$round->roundNumber}, {$round->starttime|date_format:"%d.%m.%Y"}</h3>
-   <h3>{translate id=group_number number=$firstgroup.PoolNumber},
+   <h3>{translate id=group_number number=$firstgroup.GroupNumber},
    {if $round->starttype=='sequential'}
       {capture assign=groupstart}{$firstgroup.StartingTime|date_format:"%H:%M"}{/capture}
       {translate id=group_starting start=$groupstart}

@@ -299,7 +299,7 @@ CREATE TABLE :StartingOrder
   `Section` INT NOT NULL,
   StartingTime DATETIME NOT NULL,
   StartingHole TINYINT,
-  PoolNumber SMALLINT NOT NULL,
+  GroupNumber SMALLINT NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY (Player) REFERENCES :Player(player_id),
   FOREIGN KEY (`Section`) REFERENCES `:Section`(id)

@@ -1,8 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
- *
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  * Group editing
  *
  * --
@@ -77,7 +77,7 @@ function InitNewGroup($round, $section, $template, $startingHole)
 {
         if (!$template) {
             $template = array(
-                'PoolNumber' => 0,
+                'GroupNumber' => 0,
                 'StartingTime' => $round->starttime - $round->interval * 60,
                 'StartingHole' => null,
                 'Section' => null,
@@ -102,7 +102,7 @@ function InitNewGroup($round, $section, $template, $startingHole)
                 fail();
 
         }
-        $template['PoolNumber']++;
+        $template['GroupNumber']++;
 
         return $template;
 

@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Result entering UI backend
  *
@@ -55,13 +56,13 @@ function InitializeSmartyVariables(&$smarty, $error)
    // Grouping results by the groups of the participants
 
    $last = null;
-   $poolNum = -1;
+   $groupNum = -1;
    foreach ($results as $result) {
-      if ($result['PoolNumber'] != $poolNum) {
-         if ($poolNum != -1) {
-            $groupResults[$poolNum] = $last;
+      if ($result['GroupNumber'] != $groupNum) {
+         if ($groupNum != -1) {
+            $groupResults[$groupNum] = $last;
          }
-         $poolNum = $result['PoolNumber'];
+         $groupNum = $result['GroupNumber'];
          $last = array($result);
       } else {
          $last[] = $result;
@@ -70,7 +71,7 @@ function InitializeSmartyVariables(&$smarty, $error)
    }
 
    if ($last) {
-      $groupResults[$poolNum] = $last;
+      $groupResults[$groupNum] = $last;
    }
 
    $smarty->assign('results', $groupResults);

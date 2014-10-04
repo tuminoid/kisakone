@@ -143,7 +143,7 @@
 
         {foreach from=$group item=result key=memberInd}
             <tr class="resultrow player_{$result.playerId}">
-                <td>{$result.PoolNumber}</td>
+                <td>{$result.GroupNumber}</td>
                 <td>{$result.FirstName|escape} {$result.LastName|escape}</td>
                 <td>{$result.PDGANumber}</td>
                 <td></td>

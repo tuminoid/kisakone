@@ -88,8 +88,8 @@
     <table>
         {assign var=lastGroup value=-1}
         {foreach from=$round->GetAllGroups() item=group}
-            {if $group.PoolNumber != $lastGroup}
-                {assign var=lastGroup value=$group.PoolNumber}
+            {if $group.GroupNumber != $lastGroup}
+                {assign var=lastGroup value=$group.GroupNumber}
                 <tr><td>&nbsp;</td></tr>
             {/if}
 
@@ -98,7 +98,7 @@
             {else}
                 <tr>
             {/if}
-                <td>{$group.PoolNumber}</td>
+                <td>{$group.GroupNumber}</td>
                 <td>
                     {if $round->starttype == 'simultaneous'}
                         {math assign="holeIndex" equation="x-y" x=$group.StartingHole y=1}

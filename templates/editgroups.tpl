@@ -152,7 +152,7 @@
             {foreach from=$section->GetGroups() item=group}
             <li style="clear: right;" class="toplist">
                 <div class="tag_group">
-                    {translate id=group_number number=$group.PoolNumber},
+                    {translate id=group_number number=$group.GroupNumber},
                     {if $round->starttype == 'simultaneous'}
                         <span class="dispname">{$holes[$group.DisplayName]->holeText}</span>
                         <button style="float: right" class="change_hole">{translate id=change_hole}</button>

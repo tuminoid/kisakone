@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Printable score card
  *
@@ -75,10 +76,10 @@ function pdr_GroupByGroup($data)
    $currentGroup = array();
    $currentNum = -1;
    foreach ($data as $row) {
-      if ($row['PoolNumber'] != $currentNum) {
+      if ($row['GroupNumber'] != $currentNum) {
          if (count($currentGroup)) $out[] = $currentGroup;
          $currentGroup = array();
-         $currentNum = $row['PoolNumber'];
+         $currentNum = $row['GroupNumber'];
       }
 
       $currentGroup[] = $row;
