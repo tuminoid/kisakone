@@ -3,6 +3,12 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Display results for players without payments (workaround for messing players). Players are not
+      able to get into results page without paying as group creation is prevented without payment. GH #152.
+  * Fix finding players without PDGA numbers in enter results page. GH #146.
+
 2014.09.22:
 ===========
   * Tool which can merge users (from commandline). GH #115.
