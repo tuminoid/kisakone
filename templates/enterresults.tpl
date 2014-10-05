@@ -299,41 +299,53 @@
         var results = 0;
 
         var words = text.split(' ');
-        //alert(text);
         if (text != "") {
             var row = $("#result_table tr").get(0);
             while (row) {
-
                 if (row.tagName && row.tagName.match(/TR/i)) {
                     var tds = $(row).find("td");
                     var fine = true;
                     for (var i = 0; i < words.length; ++i) {
                         var word = words[i];
-                        var nametd = tds.get(1);
-                        var pdgatd = tds.get(2);
 
-                        if (!nametd || !pdgatd) {
-                            fine = false;
-                            break;
+                        // Try match PDGA numbers
+                        if (word.match(/\d+/)) {
+                            var pdgatd = tds.get(2);
+                            if (!pdgatd) {
+                                fine = false;
+                                break;
+                            }
+
+                            var pdga = pdgatd.textContent || pdgatd.innerText;
+                            if (!pdga) {
+                                fine = false;
+                                break;
+                            }
+
+                            if (!pdga.match(new RegExp(word, "i"))) {
+                                fine = false;
+                                break;
+                            }
                         }
+                        // Try match names
+                        else {
+                            var nametd = tds.get(1);
+                            if (!nametd) {
+                                fine = false;
+                                break;
+                            }
 
-                        var name = nametd.textContent || nametd.innerText;
-                        var pdga = pdgatd.textContent || pdgatd.innerText;
+                            var name = nametd.textContent || nametd.innerText;
+                            if (!name) {
+                                fine = false;
+                                break;
+                            }
 
-                        if (!name || !pdga) {
-                            fine = false;
-                            break;
+                            if (!name.match(new RegExp(word, "i"))) {
+                                fine = false;
+                                break;
+                            }
                         }
-
-                        if (!name.match(new RegExp(word, "i"))
-                            && !pdga.match(new RegExp(word, "i") ))  {
-                            fine = false;
-                            break;
-                        }
-
-
-
-
                     }
 
                     if (fine) {
