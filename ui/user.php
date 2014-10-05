@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User details page
  *
@@ -46,15 +46,20 @@ if (!is_callable('InitializeSmartyVariables')) {
 function User_InitializeSmartyVariables(&$smarty, $error)
 {
    $getId = $_GET['id'];
-   if (is_numeric($getId)) $userid= $getId;
-   else $userid = GetUserId($getId);
+   if (is_numeric($getId) && is_a(GetUserDetails($getId), 'User'))
+      $userid= $getId;
+   else
+      $userid = GetUserId($getId);
 
-   if (!$userid) return Error::NotFound('user');
+   if (!$userid)
+      return Error::NotFound('user');
 
    $user = GetUserDetails($userid);
-   if (is_a($user, 'Error')) return $user;
+   if (is_a($user, 'Error'))
+      return $user;
 
-   if (!$user) return Error::NotFound('user_record');
+   if (!$user)
+      return Error::NotFound('user_record');
 
    $player = $user->GetPlayer();
 
@@ -66,7 +71,8 @@ function User_InitializeSmartyVariables(&$smarty, $error)
 
    if ($itsme) {
       $ad = GetAd(null, 'myinfo');
-      if ($ad) $smarty->assign('ad', $ad);
+      if ($ad)
+         $smarty->assign('ad', $ad);
    }
 
    if (IsAdmin() || $itsme) {

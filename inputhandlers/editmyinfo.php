@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Edit my info ui backend
  *
@@ -28,13 +28,17 @@
 function processForm()
 {
     $user = @$_SESSION['user'];
-    if (!$user) return error::AccessDenied();
+    if (!$user)
+        return error::AccessDenied();
 
     $username = @$_GET['id'];
     if ($username) {
-        if (!IsAdmin()) return Error::AccessDenied();
-        if (is_numeric($username)) $uid = $username;
-        else $uid = GetUserId($username);
+        if (!IsAdmin())
+            return Error::AccessDenied();
+        if (is_numeric($username) && is_a(GetUserDetails($username), 'User'))
+            $uid = $username;
+        else
+            $uid = GetUserId($username);
         $eduser = GetUserDetails($uid);
     } else {
         $uid = $user->id;
@@ -47,36 +51,42 @@ function processForm()
     }
 
     $lastname = $_POST['lastname'];
-    if ($lastname == '') $problems['lastname'] = translate('FormError_NotEmpty');
+    if ($lastname == '')
+        $problems['lastname'] = translate('FormError_NotEmpty');
 
     $firstname = $_POST['firstname'];
-    if ($firstname == '') $problems['firstname'] = translate('FormError_NotEmpty');
+    if ($firstname == '')
+        $problems['firstname'] = translate('FormError_NotEmpty');
 
     $email = $_POST['email'];
-    if (!preg_match('/^.+@.+\..+$/', $email)) $problems['email'] = translate('FormError_InvalidEmail');
+    if (!preg_match('/^.+@.+\..+$/', $email))
+        $problems['email'] = translate('FormError_InvalidEmail');
 
     $player = $eduser->GetPlayer();
-
     if ($player) {
-
         $pdga = $_POST['pdga'];
-        if ($pdga == '') $pdga = null;
-    else {
-        $pdga = (int) $pdga;
-        if (!$pdga) $problems['pdga'] = translate('FormError_NotPositiveInteger');
-    }
+        if ($pdga == '')
+            $pdga = null;
+        else {
+            $pdga = (int) $pdga;
+            if (!$pdga)
+                $problems['pdga'] = translate('FormError_NotPositiveInteger');
+        }
 
         $gender = @$_POST['gender'];
-        if ($gender != 'M' && $gender != 'F') $problems['gender'] = translate('FormError_NotEmpty');
+        if ($gender != 'M' && $gender != 'F')
+            $problems['gender'] = translate('FormError_NotEmpty');
 
         $dobYear = $_POST['dob_Year'];
-
-        if ($dobYear != (int) $dobYear) $problems['dob'] = translate('FormError_NotEmpty');
-    } else {
+        if ($dobYear != (int) $dobYear)
+            $problems['dob'] = translate('FormError_NotEmpty');
+    }
+    else {
         $pdga = null;
         $gender = null;
         $dobYear = null;
-     }
+    }
+
     if (count($problems)) {
         $error = new Error();
         $error->title = 'Edit My Info failed';
@@ -88,7 +98,7 @@ function processForm()
         return $error;
     }
 
-    $result = EditUserInfo($uid, $email, $firstname, $lastname, $gender, $pdga, $dobYear );
+    $result = EditUserInfo($uid, $email, $firstname, $lastname, $gender, $pdga, $dobYear);
     if (!is_a($result, 'Error')) {
         if (!$username) {
             $user->birthyear = $dobYear;
@@ -101,11 +111,13 @@ function processForm()
 
         if (@$_GET['id']) {
             redirect("Location: " . url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
-        } else {
+        }
+        else {
             redirect("Location: " . url_smarty(array('page' => 'myinfo'), $user));
         }
         die();
-    } else {
+    }
+    else {
         return $result;
     }
 }

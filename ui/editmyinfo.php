@@ -1,8 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
- *
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  * User info editor
  *
  * --
@@ -38,20 +38,22 @@ function InitializeSmartyVariables(&$smarty, $error)
         $player->pdga = $_POST['pdga'];
         $user->email = $_POST['email'];
         $player->gender = $_POST['gender'];
-    } else {
+    }
+    else {
         if (@$_GET['id']) {
             if (!IsAdmin())
                 return Error::AccessDenied();
 
             $getId = $_GET['id'];
-            if (is_numeric($getId))
+            if (is_numeric($getId) && is_a(GetUserDetails($getId), 'User'))
                 $userid= $getId;
             else
                 $userid = GetUserId($getId);
 
             $user = GetUserDetails($userid);
 
-        } else {
+        }
+        else {
             $user = @$_SESSION['user'];
         }
         if ($user)

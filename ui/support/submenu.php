@@ -62,14 +62,20 @@ function page_getSubMenu()
 
     global $user;
     $username = '(not_available)';
-    if ($user) $username = $user->username;
+    if ($user)
+        $username = $user->username;
 
     if (getmainmenuselection() == "users" && @$_GET['id']) {
         $selectedusername = @$_GET['id'];
         if (is_numeric($selectedusername)) {
             $selecteduser = GetUserDetails($selectedusername);
-            if (!$selecteduser) $selectedusername = "?";
-            else $selectedusername = $selecteduser->firstname . ' ' . $selecteduser->lastname;
+            if (!$selecteduser) {
+                $selecteduser = GetUserDetails(GetUserId($selectedusername));
+                if (!$selecteduser)
+                    $selectedusername = "?";
+            }
+            else
+                $selectedusername = $selecteduser->firstname . ' ' . $selecteduser->lastname;
         }
     } else {
         $selectedusername = "";
