@@ -78,8 +78,8 @@
     {translate id=preliminary_results}
 </p>
 
-<p>{translate id=leaderboard_cvs_help}</p>
-<p>{translate id=leaderboard_cvs_help2}</p>
+<p class="searcharea">{translate id=leaderboard_cvs_help}</p>
+<p class="error">{translate id=leaderboard_cvs_help2}</p>
 
 <textarea cols=120 rows=140>
 {counter assign=rowind start=-1}{foreach from=$resultsByClass key=class item=results}
