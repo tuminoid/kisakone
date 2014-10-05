@@ -28,10 +28,11 @@ error_db_query_description Tietokantakysely epäonnistui.
 error_event_not_found       Kilpailua ei löytynyt
 error_event_not_found_description   Valittua kilpailua ei löytynyt.
 
-
 error_class_not_found       Luokkaa ei löytynyt
 error_class_not_found_description   Valittua luokkaa ei löytynyt.
 
+error_tournament_not_found       Sarjaa ei löytynyt
+error_tournament_not_found_description   Valittua sarjaa ei löytynyt.
 
 error_user_not_found       Käyttäjää ei löytynyt
 error_user_not_found_description   Valittua käyttäjää ei löytynyt.
@@ -41,6 +42,7 @@ error_object_not_found_description   Valittua kohdetta ei löytynyt.
 
 error_level_not_found       Tasoa ei löytynyt
 error_level_not_found_description   Valittua tasoa ei löytynyt.
+
 title_is_mandatory          Otsikko on pakollinen.
 admins_dont_participate     Ylläpitäjät eivät voi osallistua kilpailuihin.
 

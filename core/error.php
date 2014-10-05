@@ -94,7 +94,6 @@ class Error
     function Error()
     {
         $this->backtrace = debug_backtrace();
-
     }
 
     // The functions below create Error objects for specific error types with
@@ -146,7 +145,6 @@ class Error
         $e->title = 'error_db_query';
         $e->description = translate('error_db_query_description');
         $e->errorPage = 'error';
-        $e->isMajor = true;
 
         return $e;
     }

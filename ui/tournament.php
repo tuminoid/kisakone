@@ -35,6 +35,10 @@ function InitializeSmartyVariables(&$smarty, $error)
     SetContentType('text/html; charset=utf-8');
     $tournament = GetTournamentDetails($_GET['id']);
 
+    if (!$tournament) {
+      return Error::NotFound('tournament');
+    }
+
     $eph = array();
     $numev = $tournament->GetNumEvents();
     for ($ind = 0; $ind < $numev; ++$ind)
