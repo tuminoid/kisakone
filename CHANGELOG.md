@@ -10,6 +10,7 @@ next:
   * Fix finding players without PDGA numbers in enter results page. GH #146.
   * Exporting to TD report works now directly. GH #156.
   * Trying to view non-existent tournament does not error 500. GH #153.
+  * All-numeric user id's info now displayed properly. GH #131.
 
 2014.09.22:
 ===========
