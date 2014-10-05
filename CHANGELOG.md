@@ -9,6 +9,7 @@ next:
       able to get into results page without paying as group creation is prevented without payment. GH #152.
   * Fix finding players without PDGA numbers in enter results page. GH #146.
   * Exporting to TD report works now directly. GH #156.
+  * Trying to view non-existent tournament does not error 500. GH #153.
 
 2014.09.22:
 ===========
