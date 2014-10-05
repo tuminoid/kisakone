@@ -2851,12 +2851,7 @@ function GetParticipantsForRound($previousRoundId)
 
            $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $row['FirstName'], $row['LastName'], $row['Email'], $row['PlayerId']);
            $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $row['FirstName'], $row['LastName'], $row['Email']);
-
-           //$pdata['eventFeePaid'] = $row['EventFeePaid'];
            $pdata['participationId'] = $row['ParticipationID'];
-           //$pdata['signupTimestamp'] = $row['SignupTimestamp'];
-           //$/pdata['className'] = $row['ClassName'];
-
            $pdata['classification'] = $row['Classification'];
            $pdata['result'] = $row['Result'];
            $pdata['didNotFinish']=  $row['DidNotFinish'];
@@ -3223,7 +3218,7 @@ function SaveTextContent($page)
                             LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
                             LEFT JOIN :User ON :Player.player_id = :User.Player
                             LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
-                            WHERE :Event.id = $eventId AND :Section.Present AND :Participation.EventFeePaid IS NOT NULL
+                            WHERE :Event.id = $eventId AND :Section.Present
                             ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber
 
                             ";
@@ -3299,7 +3294,7 @@ function SaveTextContent($page)
                             LEFT JOIN :Participation ON (:Participation.Event = $eventId AND :Participation.Player = :Player.player_id)
                             LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
                             LEFT JOIN :User ON :Player.player_id = :User.Player
-                            WHERE :Event.id = $eventId AND :Section.Present AND :Participation.EventFeePaid IS NOT NULL
+                            WHERE :Event.id = $eventId AND :Section.Present
                             ORDER BY :Participation.Standing, player_id, :Round.StartTime
 
                             ";
@@ -3367,7 +3362,7 @@ function SaveTextContent($page)
                      INNER JOIN :User ON :User.Player = :Player.player_id
                      INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                      LEFT JOIN :TournamentStanding ON (:TournamentStanding.Tournament = :Tournament.id AND :TournamentStanding.Player = :Player.player_id)
-                     WHERE :Tournament.id = $tournamentId AND :Participation.EventFeePaid IS NOT NULL AND :Event.ResultsLocked IS NOT NULL
+                     WHERE :Tournament.id = $tournamentId AND :Event.ResultsLocked IS NOT NULL
                      ORDER BY
                         :TournamentStanding.Standing,
                         :Player.lastname,
