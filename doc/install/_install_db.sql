@@ -299,7 +299,9 @@ CREATE TABLE :StartingOrder
   `Section` INT NOT NULL,
   StartingTime DATETIME NOT NULL,
   StartingHole TINYINT,
+  -- Changed from PoolNumber to GroupNumber 2014.10.05
   GroupNumber SMALLINT NOT NULL,
+  -- by Tumi
   PRIMARY KEY(id),
   FOREIGN KEY (Player) REFERENCES :Player(player_id),
   FOREIGN KEY (`Section`) REFERENCES `:Section`(id)

@@ -1,7 +1,7 @@
-Upgrading to version xxx
+Upgrading to version 2014.10.05:
 ================================
 
-We need to alter one table. 
+We need to alter two tables.
 Upgrade script will read your database settings from `config.php`, no changes required.
 
 1. Check `upgrade.sql` for intended SQL changes.
