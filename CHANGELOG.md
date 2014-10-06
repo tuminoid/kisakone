@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2014.10.05:
+===========
   * Display results for players without payments (workaround for messing players). Players are not
       able to get into results page without paying as group creation is prevented without payment. GH #152.
   * Fix finding players without PDGA numbers in enter results page. GH #146.
@@ -13,6 +13,9 @@ next:
   * All-numeric user id's info now displayed properly. GH #131.
   * Enable "naming" of holes. Ie, holes can be displayed as "A", "16B", "X". This allows custom competition
       layout holes to be added to a regular course, without need of renaming all the holes. GH #151.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20141005.md)
+for additional actions needed.
 
 2014.09.22:
 ===========
