@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Printable score card
  *
@@ -120,24 +121,25 @@
 <div class="group {if $groupcounter % $perpage == 0} endofpage{/if}">
    {assign var=firstgroup value=$group.0}
 
-
    <h1>{$event->name}, {$event->venue} {$event->fulldate}</h1>
    <h3>{translate id=round_number    number=$round->roundNumber}, {$round->starttime|date_format:"%d.%m.%Y"}</h3>
    <h3>{translate id=group_number number=$firstgroup.PoolNumber},
    {if $round->starttype=='sequential'}
-   {capture assign=groupstart}{$firstgroup.StartingTime|date_format:"%H:%M"}{/capture}
-   {translate id=group_starting start=$groupstart}
-   {else}{translate id=your_group_starting_hole hole=$firstgroup.StartingHole}{/if}
+      {capture assign=groupstart}{$firstgroup.StartingTime|date_format:"%H:%M"}{/capture}
+      {translate id=group_starting start=$groupstart}
+   {else}
+      {math assign=holeIndex equation="x-y" x=$firstgroup.StartingHole y=1}
+      {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+   {/if}
    </h3>
 
     <table>
-
             <tr class="thr">
                 <th class="rightside" colspan="2">
                     {translate id=hole_num}
                 </th>
                 {foreach from=$holes key=index item=hole}
-                        <th>{$hole->holeNumber}</th>
+                        <th>{$hole->holeText}</th>
                         {if $hole->holeNumber == $out_hole_index}
                            <th class="out">{translate id=hole_out}</th>
                         {/if}

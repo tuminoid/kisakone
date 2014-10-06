@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Course info page
  *
@@ -36,43 +37,21 @@
     {/if}
 
     <h4>{translate id=holes_title}</h4>
-    <table class="narrow">
-        {if true || $course.Map}
-        {* Remove the "true" to enable horizontal listing if there is no image *}
-            <tr>
-                <th>{translate id=holeNumber}</th>
-                <th>{translate id=par}</th>
-                <th>{translate id=length}</th>
-            </tr>
-            {foreach from=$course.Holes item=hole}
-            <tr>
-                <td>{$hole->holeNumber}</td>
-                 <td>{$hole->par}</td>
-                 <td>{$hole->length}</td>
-            </tr>
-            {/foreach}
-
-
-        {else}
-            <tr>
-                <th>{translate id=holeNumber}</th>
-                {foreach from=$course.Holes item=hole}
-                    <td>{$hole->holeNumber}</td>
-                {/foreach}
-            </tr>
-            <tr>
-                <th>{translate id=par}</th>
-                {foreach from=$course.Holes item=hole}
-                    <td>{$hole->par}</td>
-                {/foreach}
-            </tr>
-            <tr>
-                <th>{translate id=length}</th>
-                {foreach from=$course.Holes item=hole}
-                    <td>{$hole->length}</td>
-                {/foreach}
-            </tr>
-        {/if}
+    <table class="narrow" style="text-align: right;">
+        <tr>
+            <th>{translate id=holeNumber}</th>
+            <th>{translate id=holeText}</th>
+            <th>{translate id=par}</th>
+            <th>{translate id=length}</th>
+        </tr>
+        {foreach from=$course.Holes item=hole}
+        <tr>
+            <td>{$hole->holeNumber}</td>
+            <td>{$hole->holeText}</td>
+            <td>{$hole->par}</td>
+            <td>{$hole->length}</td>
+        </tr>
+        {/foreach}
     </table>
 <hr style="clear: both" />
 {/foreach}

@@ -50,10 +50,12 @@
             {if $group && $round->groupsFinished !== null}
                 <p>{translate id=your_group}</p>
                 <p style="float: left; margin: 8px;">
-                {if $round->starttype == 'simultaneous'}{translate id=your_group_starting_hole hole=$group.0.StartingHole}
-                  {else}
-                  {$group.0.StartingTime|date_format:"%H:%M"}
-                  {/if}</p>
+                {if $round->starttype == 'simultaneous'}
+                    {math assign="holeIndex" equation="x-y" x=$group.0.StartingHole y=1}
+                    {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+                {else}
+                    {$group.0.StartingTime|date_format:"%H:%M"}
+                {/if}</p>
                 <table class="narrow">
                 {foreach from=$group item=player}
                     <tr>
@@ -76,9 +78,9 @@
         <hr />
     {/foreach}
 {else}
-{math assign=num equation="x-1" x=$smarty.get.round}
- {assign var=round value=$rounds.$num}
- {if $round->groupsFinished !== null}
+  {math assign=num equation="x-1" x=$smarty.get.round}
+  {assign var=round value=$rounds.$num}
+  {if $round->groupsFinished !== null}
     <h3>{translate id=round_title number=$smarty.get.round}</h3>
     {if $allow_print}
         <p><a href="{url page=printscorecard id=$smarty.get.id round=$smarty.get.round}">{translate id=print_score_card}</a></p>
@@ -99,7 +101,8 @@
                 <td>{$group.PoolNumber}</td>
                 <td>
                     {if $round->starttype == 'simultaneous'}
-                        {translate id=your_group_starting_hole hole=$group.StartingHole}
+                        {math assign="holeIndex" equation="x-y" x=$group.StartingHole y=1}
+                        {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
                     {else}
                         {$group.StartingTime|date_format:"%H:%M"}
                     {/if}

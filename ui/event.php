@@ -70,8 +70,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
          }
 
-         // The index page has an extra text content area for schedule, must be taken care
-         // of manually
+         // The index page has an extra text content area for schedule,
+         // must be taken care of manually
          $scheduleText = $event->GetTextContent('index_schedule');
          $index_schedule_content = '';
          if ($scheduleText) {
@@ -104,7 +104,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
       case 'schedule':
          $view = 'schedule';
-         $smarty->assign('rounds', $event->GetRounds());
+         $rounds = $event->GetRounds();
+         $roundId = @$_GET['round'];
+         if ($roundId) {
+            $smarty->assign('holes', $rounds[$roundId-1]->GetHoles());
+         }
+         $smarty->assign('rounds', $rounds);
          $smarty->assign('allow_print', IsAdmin() || $event->management != '');
          break;
 

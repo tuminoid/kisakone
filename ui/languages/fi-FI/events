@@ -218,7 +218,8 @@ sequential      Porrastettu lähtö
 simultaneous    Yhteislähtö
 
 
-hole_number     Väylä
+hole_number     Juokseva väylänumero
+hole_text       Väylämerkintä
 par             Par
 hole_length     Pituus (metreissä)
 holes_list      Väylät
@@ -254,6 +255,7 @@ course_details      Radan tiedot
 holes_title         Väylät
 length              Pituus (m)
 holeNumber          #
+holeText            Kisa#
 day_index           Päivä {index}
 
 

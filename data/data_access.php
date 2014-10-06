@@ -1540,10 +1540,11 @@ function SetCourseHoles($courseid, $holes)
         $h_length = 0;
 
         // Get the existing hole
-        $query = data_query( "SELECT id, Par, Length FROM :Hole WHERE Course = %d AND HoleNumber = %d",
+        $query = data_query( "SELECT id, HoleText, Par, Length FROM :Hole WHERE Course = %d AND HoleNumber = %d",
                           (int) $courseid, $holenumber);
         $result = mysql_query( $query);
         $nbr_of_results = mysql_num_rows( $result);
+
         if ($nbr_of_results == 1) {
             mysql_free_result($result);
             // One and only valid hole
@@ -1551,11 +1552,13 @@ function SetCourseHoles($courseid, $holes)
             $h_holeid = $row['id'];
             $h_pr = $row['Par'];
             $h_length = $row['Length'];
-        } elseif ($nbr_of_results == 0) {
+            $h_text = $row['HoleText'];
+        }
+        elseif ($nbr_of_results == 0) {
             mysql_free_result($result);
             // No existing hole, create new
-            $query = data_query( "INSERT INTO :Hole (Course, HoleNumber, Par, Length) VALUES (%d, %d, %d, %d);",
-                              $courseid, $holenumber, $h_par, $h_length);
+            $query = data_query( "INSERT INTO :Hole (Course, HoleNumber, HoleText, Par, Length) VALUES (%d, %d, %s, %d, %d);",
+                              $courseid, $holenumber, $h_text, $h_par, $h_length);
             if ( !mysql_query( $query)) {
                 $err = new Error();
                 $err->title = "error_db_query";
@@ -1568,7 +1571,8 @@ function SetCourseHoles($courseid, $holes)
                 $retValue = $err;
                 break;
             }
-        } else {
+        }
+        else {
             // Found more than one hole with same number, report error
             $err = new Error();
             $err->title = "error_db_integrity";
@@ -2953,7 +2957,7 @@ function SaveTextContent($page)
       $retValue = array();
       $roundId = (int) $roundId;
 
-      $query = data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, Par, Length, :Round.id Round
+      $query = data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id Round
                             FROM :Hole
                             INNER JOIN :Course ON (:Course.id = :Hole.Course)
                             INNER JOIN :Round ON (:Round.Course = :Course.id)
@@ -2985,19 +2989,19 @@ function SaveTextContent($page)
       }
 
       $retValue = array();
-
-      $query= data_query("SELECT id, Course, HoleNumber, Par, Length FROM :Hole
+      $query= data_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
                             WHERE Course = %d
                             ORDER BY HoleNumber", $courseId);
       $result = mysql_query($query);
-      if (is_a($result, 'Error')) return $result;
+
+      if (is_a($result, 'Error'))
+         return $result;
 
       if (mysql_num_rows($result) > 0) {
          $index = 1;
          while ($row = mysql_fetch_assoc($result)) {
             $hole =  new Hole($row);
             $retValue[] = $hole;
-
          }
       }
 
@@ -3032,7 +3036,7 @@ function SaveTextContent($page)
       $retValue = array();
       $eventId = (int) $eventId;
 
-      $result = mysql_query(data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, Par, Length, :Round.id AS Round FROM :Hole
+      $result = mysql_query(data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round FROM :Hole
                             INNER JOIN :Course ON (:Course.id = :Hole.Course)
                             INNER JOIN :Round ON (:Round.Course = :Course.id)
                             INNER JOIN :Event ON :Round.Event = :Event.id
@@ -3065,24 +3069,23 @@ function SaveTextContent($page)
       $retValue = null;
       $holeid = (int) $holeid;
 
-      $query = data_Query("SELECT :Hole.id, :Hole.Course, HoleNumber, Par, Length,
+      $query = data_Query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
                             :Course.id CourseId, :Round.id RoundId FROM :Hole
                             LEFT JOIN :Course ON (:Course.id = :Hole.Course)
                             LEFT JOIN :Round ON (:Round.Course = :Course.id)
                             WHERE :Hole.id = $holeid
                             ORDER BY HoleNumber");
       $result = mysql_query($query);
-      if (!$result) return Error::Query($query);
+      if (!$result)
+         return Error::Query($query);
+
       if (mysql_num_rows($result) > 0) {
          $index = 1;
          $row = mysql_fetch_assoc($result);
-
          $retValue =  new Hole($row);
-
       }
 
       mysql_free_result($result);
-
       return $retValue;
    }
 
@@ -4060,32 +4063,31 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
 
 function SaveHole($hole)
 {
-   //
-    $dbError = InitializeDatabaseConnection();
+   $dbError = InitializeDatabaseConnection();
    if ($dbError) {
       return $dbError;
    }
 
    if ($hole->id) {
-
-      $query = data_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d WHERE id = %d",
+      $query = data_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d, HoleText = '%s' WHERE id = %d",
                        (int) $hole->par,
                        (int) $hole->length,
                        $hole->holeNumber,
+                       $hole->holeText,
                        (int) $hole->id);
-   } else {
-      $query = data_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber) VALUES (%d, %d, %d, %d)",
+   }
+   else {
+      $query = data_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES (%d, %d, %d, %d, '%s')",
                        (int) $hole->par,
                        (int) $hole->length,
                        (int) $hole->course,
-                       $hole->holeNumber);
-
+                       $hole->holeNumber,
+                       $hole->holeText);
    }
 
-    if ( !mysql_query($query)) {
-          return Error::Query($query);
-    }
-
+   if (!mysql_query($query)) {
+      return Error::Query($query);
+   }
 }
 
 function PlayerOnRound($roundid, $playerid)
@@ -4269,17 +4271,20 @@ function GetGroups($sectid)
 
       $res = mysql_query($query);
       echo mysql_error();
-      if (!$res) return Error::Query($query);
+      if (!$res)
+         return Error::Query($query);
 
       $current = null;
       $out = array();
       $group = null;
 
       while (($row = mysql_fetch_assoc($res)) !== false) {
-        $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
-        $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
+         $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
+         $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
          if ($row['PoolNumber'] != $current) {
-            if (count($group)) $out[] = $group;
+            if (count($group))
+               $out[] = $group;
+
             $group = $row;
             $group['People'] = array();
             $current = $row['PoolNumber'];
@@ -4287,19 +4292,19 @@ function GetGroups($sectid)
 
             if ($row['StartingHole']) {
                $group['DisplayName'] = $row['StartingHole'];
-            } else {
+            }
+            else {
                $group['DisplayName'] = date('H:i', $row['StartingTime']);
             }
-
          }
          $group['People'][] = $row;
       }
 
-      if (count($group)) $out[] = $group;
+      if (count($group))
+         $out[] = $group;
       mysql_free_result($res);
 
       return $out;
-
   }
 
   function InsertGroup($group)

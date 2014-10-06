@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Results and live results
  *
@@ -171,7 +171,7 @@
                 {assign var=parSoFar value=0}
                 {foreach from=$holes key=index item=hole}
                         {math assign=parSoFar equation="x+y" x=$parSoFar y=$hole->par}
-                        <th>{$hole->holeNumber}<br />{$hole->par}</th>
+                        <th>{$hole->holeText}<br />{$hole->par}</th>
                         {if $hole->holeNumber == $out_hole_index}<th class="out">{translate id=hole_out}<br />{$parSoFar}{assign var=parSoFar value=0}</th>{/if}
                 {/foreach}
                 <th class="in">{translate id=hole_in}<br />{$parSoFar}</th>

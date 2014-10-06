@@ -153,9 +153,11 @@
             <li style="clear: right;" class="toplist">
                 <div class="tag_group">
                     {translate id=group_number number=$group.PoolNumber},
-                    <span class="dispname">{$group.DisplayName|escape}</span>
                     {if $round->starttype == 'simultaneous'}
+                        <span class="dispname">{$holes[$group.DisplayName]->holeText}</span>
                         <button style="float: right" class="change_hole">{translate id=change_hole}</button>
+                    {else}
+                        <span class="dispname">{$group.DisplayName|escape}</span>
                     {/if}
                 </div>
                 <input type="hidden" class="holenum" name="e[]" value="h{$group.StartingHole}" />
@@ -251,13 +253,13 @@ function redoColumns() {
                 list.className += " needs_splitter";
 
             for (var rowind = 0; rowind < percolumn; ++rowind) {
-                if (elemind == items.length) break;
+                if (elemind == items.length)
+                    break;
                 list.appendChild(items[elemind++]);
             }
 
             gm.appendChild(list);
         }
-
     });
     reinit();
 }
@@ -270,14 +272,14 @@ function reinit() {
     $(".tag_group").click(function(a) {
         if (tagged_people.length != 0) {
             alert(tag_type_error);
-
-        } else if (this == tagged_group) {
+        }
+        else if (this == tagged_group) {
             untag_group();
-
-        } else if (tagged_group == null) {
+        }
+        else if (tagged_group == null) {
             tag_group(this);
-
-        } else {
+        }
+        else {
             alert(retag_error);
         }
     });
@@ -285,7 +287,6 @@ function reinit() {
     $(".tag_person").click(function(a) {
         if (tagged_group != null) {
             alert(tag_type_error);
-
         } else {
             tagOrUntagPerson(this);
         }
@@ -302,7 +303,6 @@ function reinit() {
         start: function(e, ui)  { ui.helper.addClass("beingDragged"); beingDragged = this; },
         stop: function(e, ui)  { ui.helper.removeClass("beingDragged"); },
         opacity: 0.8
-
     });
 
     $(".toplist").draggable({
@@ -445,8 +445,8 @@ function moveTaggedPeople(ignored, moveTarget) {
 
     if (moveTarget == undefined) {
         target = $(this).closest("li");
-
-    } else {
+    }
+    else {
         target = $(moveTarget);
     }
 
@@ -504,8 +504,8 @@ function moveTaggedGroup(ignored, moveTarget) {
         target = $(this).closest("li");
         chosen = this.parentNode.previousSibling
         chosenText = chosen.innerText || chosen.textContent;
-
-    } else {
+    }
+    else {
         target = $(moveTarget);
         chosen = $(moveTarget).find(".tag_group").get(0);
         if (!chosen) {
@@ -546,8 +546,8 @@ function moveTaggedGroup(ignored, moveTarget) {
     list.find("li").each(function(index, item) {
         if (foundtarget && foundsource) {
             // WTF
-
-        } else {
+        }
+        else {
             var textobj = $(this).find(".tag_group").get(0);
             var text = textobj.innerText || textobj.textContent;
 
@@ -557,8 +557,8 @@ function moveTaggedGroup(ignored, moveTarget) {
                 if (foundtarget) {
                     tcon.empty();
                     tcon.get(0).appendChild(last.get(0));
-
-                } else {
+                }
+                else {
                     last = tcon;
                 }
 
@@ -567,20 +567,20 @@ function moveTaggedGroup(ignored, moveTarget) {
                 if (foundsource) {
                     last.empty();
                     last.get(0).appendChild($(this).find(".tcon table").get(0));
-
-                } else {
+                }
+                else {
                     last = $(this).find(".tcon table");
                 }
-
-            } else if (foundsource) {
+            }
+            else if (foundsource) {
                 // source, but no target
                 last.empty();
                 var tcon = $(this).find(".tcon");
                 var table = $(tcon).find("table");
                 last.get(0).appendChild(table.get(0));
                 last = tcon;
-
-            } else if (foundtarget) {
+            }
+            else if (foundtarget) {
                 var tcon = $(this).find(".tcon");
                 var mytable = $(tcon).find("table");
                 tcon.empty();
@@ -641,8 +641,8 @@ function rebalanceGroups(e) {
                         if ($(tr).find("td:eq(0) span").text().substring(0, 1) == "*")
                             continue;
                         break;
-
-                    } else {
+                    }
+                    else {
                         $(tr).remove();
                     }
                 }
@@ -651,7 +651,8 @@ function rebalanceGroups(e) {
         }
 
         while (trind < trs.length - 1) {
-            if ($(trs[trind]).find("td").length != 3) $(trs[trind]).remove();
+            if ($(trs[trind]).find("td").length != 3)
+                $(trs[trind]).remove();
             ++trind;
         }
     });
@@ -662,8 +663,10 @@ function rebalanceGroups(e) {
 function getNumLockedIn(tbody) {
     var locked = 0;
     $(tbody).find("tr").each(function() {
-       if ($(this).find("td:eq(0) span").text().substring(0, 1) == "*") locked++;
+        if ($(this).find("td:eq(0) span").text().substring(0, 1) == "*")
+            locked++;
     });
+
     return locked;
 }
 
@@ -675,23 +678,23 @@ function GetGroupSizes(people, maxGroups) {
 
     if (people == 6) {
         sizes[3] = 2;
-
-    } else if (people == 9) {
+    }
+    else if (people == 9) {
         sizes[4] = 1;
         sizes[5] = 1;
-
-    } else {
+    }
+    else {
         if (people <= 5) {
             sizes[people] = 1;
-
-        } else {
+        }
+        else {
             four = Math.floor(people / 4);
             three = people % 4 ? 1 : 0;
             while (four * 4 + three * 3 != people) {
                 if (four * 4 + three * 3 > people) {
                     four--;
-
-                } else {
+                }
+                else {
                     three++;
                 }
             }
@@ -709,8 +712,8 @@ function GetGroupSizes(people, maxGroups) {
         while (numGroups--) {
             if (groups.length != maxGroups) {
                 groups.push(size);
-
-            }  else {
+            }
+            else {
                 groups[groups.length - 1] += size;
             }
         }

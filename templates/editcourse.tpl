@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Course editor UI
  *
@@ -33,11 +34,8 @@ tinyMCE.init({ldelim}
 	plugins : "table",
 	theme_advanced_buttons3_add : "tablecontrols",
         theme_advanced_toolbar_location : "top",
-
         theme_advanced_toolbar_align : "left",
-
         theme_advanced_statusbar_location : "bottom",
-
         theme_advanced_resizing : true
 {rdelim});
 </script>
@@ -96,32 +94,31 @@ tinyMCE.init({ldelim}
                     <table class="narrow">
                         <tr>
                             <td>{translate id=hole_number}</td>
+                            <td>{translate id=hole_text}</td>
                             <td>{translate id=par}</td>
                             <td>{translate id=hole_length}</td>
                         </tr>
                         {foreach from=$holes item=hole}
                         <tr>
                             <td>
-
                                 {$hole->holeNumber}
-
                             </td>
                             <td>
-                                <input type="text" size="4" name="h_{$hole->holeNumber}_{$hole->id}_par" value="{$hole->par}" />
+                                <input type="text" size="4" maxlength="4" name="h_{$hole->holeNumber}_{$hole->id}_text" value="{$hole->holeText|escape}" />
                             </td>
                             <td>
-                                <input type="text" size="4" name="h_{$hole->holeNumber}_{$hole->id}_len" value="{$hole->length}" />
+                                <input type="text" size="4" maxlength="2" name="h_{$hole->holeNumber}_{$hole->id}_par" value="{$hole->par}" />
+                            </td>
+                            <td>
+                                <input type="text" size="4" maxlength="4" name="h_{$hole->holeNumber}_{$hole->id}_len" value="{$hole->length}" />
                             </td>
                         </tr>
                         {/foreach}
                     </table>
-
                  </td>
             </tr>
         </table>
-
     </div>
-
 
     <div  class="buttonarea">
         <input type="submit" value="{translate id=save}" />
@@ -129,8 +126,6 @@ tinyMCE.init({ldelim}
 	{if !$warning}<input type="submit" style="margin-left: 200px" name="delete" value="{translate id=delete}" />{/if}
     </div>
 </form>
-
-
 {/if}
 
 {include file='include/footer.tpl' noad=1}

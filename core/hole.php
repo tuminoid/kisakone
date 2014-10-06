@@ -26,6 +26,7 @@ class Hole
 {
     var $id;
     var $holeNumber;
+    var $holeText;
     var $course;
     var $length;
     var $par;

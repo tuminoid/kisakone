@@ -65,6 +65,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     $smarty->assign('round', $round);
+    $smarty->assign('holes', $round->GetHoles());
     $smarty->assign('data', GetSections($round->id));
 
     if ($round->starttype == 'simultaneous') {

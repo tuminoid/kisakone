@@ -219,6 +219,9 @@ CREATE TABLE :Hole
   id INT NOT NULL AUTO_INCREMENT,
   Course INT NOT NULL,
   HoleNumber TINYINT NOT NULL,
+  -- added 2014.10.05
+  HoleText VARCHAR(4),
+  -- by Tumi
   Par TINYINT NOT NULL,
   Length SMALLINT NOT NULL,
   PRIMARY KEY(id),
