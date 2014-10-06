@@ -11,6 +11,8 @@ next:
   * Exporting to TD report works now directly. GH #156.
   * Trying to view non-existent tournament does not error 500. GH #153.
   * All-numeric user id's info now displayed properly. GH #131.
+  * Enable "naming" of holes. Ie, holes can be displayed as "A", "16B", "X". This allows custom competition
+      layout holes to be added to a regular course, without need of renaming all the holes. GH #151.
 
 2014.09.22:
 ===========
