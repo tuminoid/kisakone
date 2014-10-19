@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix TD report TSV. Version 9 of the report has fixed the issue of requiring two tabs. GH #164.
+
 2014.10.05:
 ===========
   * Display results for players without payments (workaround for messing players). Players are not
