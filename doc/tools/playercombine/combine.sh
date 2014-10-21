@@ -47,8 +47,8 @@ for TABLE in $UPDATE_TABLES; do
 done
 
 echo "Deleting old entries ..."
-echo "DELETE FROM ${PREFIX}Player WHERE player_id IN ($OLD);" | $MYSQL_CMD
 echo "DELETE FROM ${PREFIX}User WHERE Player IN ($OLD);" | $MYSQL_CMD
+echo "DELETE FROM ${PREFIX}Player WHERE player_id IN ($OLD);" | $MYSQL_CMD
 
 echo "All done!"
 
