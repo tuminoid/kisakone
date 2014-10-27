@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix combine.sh (reported by Niko Palokangas, thx!). GH #165 and GH #166.
+
 2014.10.20:
 ===========
   * Fix TD report TSV. Version 9 of the report has fixed the issue of requiring two tabs. GH #164.
