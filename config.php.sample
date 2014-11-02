@@ -15,6 +15,6 @@ $settings['DB_USERNAME'] = "root";
 $settings['DB_PASSWORD'] = "pass";
 $settings['DB_PREFIX'] = "kisakone_";
 
-$settings['USE_MOD_REWRITE'] = true;
+$settings['USE_MOD_REWRITE'] = false;
 
 include_once('config_site.php');
