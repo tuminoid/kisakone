@@ -32,7 +32,6 @@
 // Valid User->role attribute values
 define('USER_ROLE_PLAYER', 'player'); // Default role
 define('USER_ROLE_ADMIN', 'admin');
-define('USER_ROLE_MANAGER', 'manager');
 
 // Valid User->username field length
 define('USER_USERNAME_MIN_LENGTH', 3);

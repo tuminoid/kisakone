@@ -55,7 +55,7 @@ function processForm()
     if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
 
     $role = @$_POST['access'];
-    if ($role != USER_ROLE_ADMIN && $role != USER_ROLE_MANAGER) {
+    if ($role != USER_ROLE_ADMIN) {
         $problems['access'] = translate('FormError_NotEmpty');
 
     }
