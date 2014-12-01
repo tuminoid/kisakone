@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the User class.
  *
@@ -79,8 +79,8 @@ class user
             $player = null;
         $this->id = $id;
         $this->username = $uname;
-        $this->SetRole( $role);
-        $this->SetNames( $fname, $lname);
+        $this->SetRole($role);
+        $this->SetNames($fname, $lname);
         $this->email = $email;
         $this->gender = null;
         $this->pdga = null;
@@ -98,8 +98,7 @@ class user
      */
     function SetRole($role)
     {
-
-        if ( isset( $role)) {
+        if (isset($role)) {
             $this->role = $role;
         } else {
             $this->role = USER_ROLE_PLAYER;
@@ -115,9 +114,9 @@ class user
      */
     function SetNames($firstname, $lastname)
     {
-        $this->firstname = trim( $firstname);
-        $this->lastname = trim( $lastname);
-        $this->fullname = trim( $firstname . " " . $lastname);
+        $this->firstname = trim($firstname);
+        $this->lastname = trim($lastname);
+        $this->fullname = trim($firstname . " " . $lastname);
 
         return null;
     }
@@ -132,14 +131,14 @@ class user
     {
         $err = null;
 
-        if ( !isset( $this->id)) {
+        if (!isset($this->id)) {
             $this->id = $id;
         } else {
             if ($this->id !== $id) {
                 // Attempt to change valid id, report internal error
                 $err = new Error();
                 $err->title = "error_internal";
-                $err->description = translate( "error_internal_description");
+                $err->description = translate("error_internal_description");
                 $err->internalDescription = "Attempt to change valid User->id.";
                 $err->function = "User->SetId()";
                 $err->IsMajor = true;
@@ -162,14 +161,14 @@ class user
     {
         $err = null;
 
-        if ( !empty( $password)) {
+        if (!empty($password)) {
             // TODO: Is there need to check the password minimum length
-            $this->password = md5( $password);
+            $this->password = md5($password);
         } else {
             // Missing password, report error
             $err = new Error();
             $err->title = "error_missing_password";
-            $err->description = translate( "error_missing_password_description");
+            $err->description = translate("error_missing_password_description");
             $err->internalDescription = "User password argument is empty";
             $err->function = "User->SetPassword()";
             $err->IsMajor = false;
@@ -205,20 +204,20 @@ class user
     {
         $err = null;
 
-        if (!$this->IsValidUsername( $this->username)) {
+        if (!$this->IsValidUsername($this->username)) {
             $err = new Error();
             $err->title = "error_invalid_username";
-            $err->description = translate( "error_invalid_username_description");
+            $err->description = translate("error_invalid_username_description");
             $err->internalDescription = "User->username attribute is not valid.";
             $err->function = "User->ValidateUser()";
             $err->IsMajor = false;
             $err->data = "User->username:" . $this->username;
         }
 
-        if ( !isset( $err) and !$this->IsValidEmail( $this->email)) {
+        if (!isset($err) and !$this->IsValidEmail($this->email)) {
             $err = new Error();
             $err->title = "error_invalid_email";
-            $err->description = translate( "error_invalid_email_description");
+            $err->description = translate("error_invalid_email_description");
             $err->internalDescription = "User->email attribute is not valid.";
             $err->function = "User->ValidateUser()";
             $err->IsMajor = false;
@@ -243,10 +242,11 @@ class user
             // Accountless user (manually entered empty username shows up as an
             // empty string and will not reach this point)
             $retVal = true;
-        } elseif ( !empty( $username)) {
-            if( ( is_string( $username)) and
-                ( strlen( $username) >= USER_USERNAME_MIN_LENGTH) and
-                ( strlen( $username) <= USER_USERNAME_MAX_LENGTH))
+        }
+        elseif (!empty($username)) {
+            if ((is_string($username)) and
+                (strlen($username) >= USER_USERNAME_MIN_LENGTH) and
+                (strlen($username) <= USER_USERNAME_MAX_LENGTH))
             {
                 $retVal = true;
             }
@@ -269,12 +269,13 @@ class user
     {
         $retVal = false;
 
-        if ( !isset( $email)) {
+        if (!isset($email)) {
             $retVal = true;
-        } elseif ( !empty( $email)) {
+        }
+        elseif (!empty($email)) {
             $validEmailExpr = "^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" .
                               "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$";
-            if ( eregi( $validEmailExpr, $email)) {
+            if (eregi($validEmailExpr, $email)) {
                 $retVal = true;
             }
         }
@@ -297,7 +298,7 @@ class user
      */
     function GetMyEvents($eventType)
     {
-        return GetUserEvents( null,  $eventType);
+        return GetUserEvents(null,  $eventType);
     }
 
     /** ************************************************************************
@@ -322,17 +323,17 @@ class user
     {
         require_once 'core/email.php';
 
-        $token = GetUserSecurityToken( $this->id);
+        $token = GetUserSecurityToken($this->id);
 
         global $settings;
         if ($settings['USE_MOD_REWRITE']) {
             $url = "http://" . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
-        } else {
+        }
+        else {
             $url = "http://" . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
-
     }
 
     /**
@@ -341,15 +342,20 @@ class user
     */
     function FeesPaidForYear($year, $required)
     {
-        if (!$required) return true;
+        if (!$required)
+            return true;
+
         list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($this->id, $year);
 
         // If there is any requirements for competition, membership is a must
-        if ($required && !$membership) return false;
+        if ($required && !$membership)
+            return false;
         // If A-license is required, we require that strictly
-        if ($required == LICENSE_A && !$aLicense) return false;
+        if ($required == LICENSE_A && !$aLicense)
+            return false;
         // If B-license is required, both A- and B-license quality, obviusly
-        if ($required == LICENSE_B && !($aLicense || $bLicense)) return false;
+        if ($required == LICENSE_B && !($aLicense || $bLicense))
+            return false;
         return true;
     }
 }
@@ -376,10 +382,11 @@ function access($level)
     if ($level == $user_access_level_none) {
         // No level requirements, all users have access
         $retVal = true;
-    } else {
+    }
+    else {
         // Check user access rights against required level
         $user = @$_SESSION['user'];
-        if ( isset( $user)) {
+        if (isset($user)) {
             $admin_user = IsAdmin();
 
             switch ($level) {
@@ -387,14 +394,16 @@ function access($level)
                     // All logged users have access to 'login' level
                     $retVal = true;
                     break;
+
                 case $user_access_level_official:
                     $event = GetEventDetails($eventid);
-                    if($event && ( $admin_user or $event->management == $user_access_level_td
+                    if ($event && ($admin_user or $event->management == $user_access_level_td
                        or $event->management == $user_access_level_official))
                     {
                         $retVal = true;
                     }
                     break;
+
                 case $user_access_level_officialonly:
                     // Only officials have access to features with this type of protection, no-one else
                      $event = GetEventDetails($eventid);
@@ -402,6 +411,7 @@ function access($level)
                         $retVal = true;
                     }
                     break;
+
                 case $user_access_level_td:
                      $event = GetEventDetails($eventid);
 
@@ -410,16 +420,18 @@ function access($level)
                         $retVal = true;
                     }
                     break;
+
                 case $user_access_level_admin:
                     if ($admin_user) {
                         $retVal = true;
                     }
                     break;
+
                 default:
                     // Invalid access level, report internal error
                     $err = new Error();
                     $err->title = "error_internal";
-                    $err->description = translate( "error_internal_description");
+                    $err->description = translate("error_internal_description");
                     $err->internalDescription = "Unexpected access level as argument.";
                     $err->function = "access()";
                     $err->IsMajor = true;
@@ -444,7 +456,7 @@ function IsAdmin()
     $retVal = false;
 
     $user = @$_SESSION['user'];
-    if ( isset( $user)) {
+    if (isset($user)) {
         $retVal = $user->isAdmin();
     }
 
