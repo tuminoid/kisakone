@@ -17,9 +17,11 @@ SHOW WARNINGS;
 CREATE TABLE :User
 (
   id INT NOT  NULL AUTO_INCREMENT,
-  Username VARCHAR(40),
-  UserEmail VARCHAR(100),
-  Password VARCHAR(40),
+  Username VARCHAR(40) NOT NULL,
+  UserEmail VARCHAR(100) NOT NULL,
+  Password VARCHAR(40) NOT NULL,
+  Salt VARCHAR(40) DEFAULT NULL,
+  Hash VARCHAR(40) DEFAULT NULL,
   Role ENUM('admin', 'player') NOT NULL DEFAULT 'player',
   UserFirstName VARCHAR(40) NOT NULL,
   UserLastName VARCHAR(40) NOT NULL,
