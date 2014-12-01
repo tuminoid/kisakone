@@ -20,7 +20,7 @@ CREATE TABLE :User
   Username VARCHAR(40),
   UserEmail VARCHAR(100),
   Password VARCHAR(40),
-  Role VARCHAR(10) NOT NULL,
+  Role ENUM('admin', 'player') NOT NULL DEFAULT 'player',
   UserFirstName VARCHAR(40) NOT NULL,
   UserLastName VARCHAR(40) NOT NULL,
   Player SMALLINT NULL,
