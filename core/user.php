@@ -324,13 +324,14 @@ class user
         require_once 'core/email.php';
 
         $token = GetUserSecurityToken($this->id);
+        $prototol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
 
         global $settings;
         if ($settings['USE_MOD_REWRITE']) {
-            $url = "http://" . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
+            $url = $protocol . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
         else {
-            $url = "http://" . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
+            $url = $protocol . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         }
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
