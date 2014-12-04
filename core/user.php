@@ -60,7 +60,9 @@ class user
     var $gender;    // Player class attribute, repeated here for convenience
     var $pdga;      // Player class attribute, repeated here for convenience
     var $birthyear; // Player class attribute, repeated here for convenience
-    var $password;  // password as md5 hash
+    var $password;  // password as hash
+    var $hash;      // what type of hash password is
+    var $salt;      // salt for the password
 
     /** ************************************************************************
      * Class constructor
@@ -86,6 +88,8 @@ class user
         $this->pdga = null;
         $this->birthyear = null;
         $this->password = null;
+        $this->hash = null;
+        $this->salt = null;
         $this->player = $player;
 
         return;
@@ -98,11 +102,10 @@ class user
      */
     function SetRole($role)
     {
-        if (isset($role)) {
+        if (isset($role))
             $this->role = $role;
-        } else {
+        else
             $this->role = USER_ROLE_PLAYER;
-        }
 
         return null;
     }
@@ -133,7 +136,8 @@ class user
 
         if (!isset($this->id)) {
             $this->id = $id;
-        } else {
+        }
+        else {
             if ($this->id !== $id) {
                 // Attempt to change valid id, report internal error
                 $err = new Error();
@@ -163,8 +167,10 @@ class user
 
         if (!empty($password)) {
             // TODO: Is there need to check the password minimum length
-            $this->password = md5($password);
-        } else {
+            require_once 'core/crypto.php';
+            $this->password = GenerateHash($password, GetHashType(), $this->salt);
+        }
+        else {
             // Missing password, report error
             $err = new Error();
             $err->title = "error_missing_password";
@@ -176,6 +182,19 @@ class user
         }
 
         return $err;
+    }
+
+    /** ************************************************************************
+     * Method for getting a hash type
+     *
+     * Returns hash type or
+     * null for error
+     */
+    function GetHashType()
+    {
+        if (empty($this->hash))
+            return "md5";
+        return $this->hash;
     }
 
     /** ************************************************************************
