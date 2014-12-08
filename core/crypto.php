@@ -42,13 +42,18 @@ function GenerateSalt()
  */
 function GenerateHash($password, $hash = "md5", $salt = "")
 {
+    if (empty($password))
+        return null;
+
     // Legacy, insecure
     if ($hash == "md5")
         return md5($password);
 
     // Correct way is to use salting and strong crypto
-    if (!empty($salt))
-        return crypt($password, '$2y$10$' . $this->salt  . '$');
+    if ($hash == "crypt") {
+        if (!empty($salt) && strlen($salt) == 32)
+            return crypt($password, '$2y$10$' . $salt  . '$');
+    }
 
     return null;
 }
