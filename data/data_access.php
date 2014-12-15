@@ -72,54 +72,6 @@ require_once 'data/db_init.php';
       return $retValue;
    }
 
-   // Returns a User object if $username and $password matched a user in the database
-   // Returns null if no match was found
-   // Returns an Error object if there was a connection error or if the user is banned
-   function CheckUserAuthentication($username, $password)
-   {
-      if (empty($username) || empty($password)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $retValue = null;
-
-      $usr = mysql_real_escape_string($username);
-      $pw = md5($password);
-
-      $query = data_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                                       :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
-                                       FROM :User
-                                       LEFT JOIN :Player ON :User.Player = :Player.player_id
-                                       WHERE Username = '%s' AND Password = '%s'", $usr, $pw);
-
-      $result = mysql_query($query);
-      if (!$result) return Error::Query($query);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         if (strpos($row['Role'], 'ban') !== false) {
-            $error = new Error();
-            $error->title = 'banned';
-            $error->description = translate('banned2');
-            $error->isMajor= true;
-
-            return $error;
-         }
-         $retValue = new User($row['id'], $row['Username'] , $row['Role'],
-                              data_GetOne($row['UserFirstname'], $row['pFN']),
-                              data_GetOne($row['UserLastname'], $row['pLN']),
-                              data_GetOne($row['UserEmail'], $row['pEM']), $row['Player']);
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
 /* ****************************************************************************
  * Functions for retrieving data
  *
@@ -4710,26 +4662,6 @@ function GetGroups($sectid)
    return $out;
   }
 
-  function data_query($query /*, $arg1, ..., $argn */)
-  {
-   static $prefix = false;
-   if ($prefix === false) {
-      global $settings;
-      $prefix = $settings['DB_PREFIX'];
-   }
-   $query = str_replace(':', $prefix, $query);
-   $args = func_get_args();
-   $args[0]=  $query;
-
-   return call_user_func_array('sprintf', $args);
-  }
-
-  function data_GetOne($a, $b)
-  {
-   if ($b) return $b;
-   return $a;
-  }
-
   function SaveCourse($course)
   {
    $db = InitializeDatabaseConnection();
@@ -5130,7 +5062,7 @@ function GetGroups($sectid)
     $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
     if ($onlySome) {
       echo mysql_error();
-        $data = array_slice($data, 0, 10);
+      $data = array_slice($data, 0, 10);
     }
 
     return $data;

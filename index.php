@@ -26,8 +26,7 @@
 
 setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
 
-// Support libraries that do NOT rely on data relayed from the user
-
+// Our configs
 require_once 'config.php';
 require_once 'config_site.php';
 
@@ -62,7 +61,8 @@ if (@$_COOKIE['kisakone_login']) {
     session_start();
     global $user;
     $user = @$_SESSION['user'];
-} else {
+}
+else {
     // Not logged in; see if the user enabled automatic login
     if (@$_COOKIE['kisakone_autologin_as']) {
 
@@ -77,8 +77,8 @@ if (@$_COOKIE['kisakone_login']) {
             global $user;
             $user = GetUserDetails($uid);
             $_SESSION['user'] = $user;
-
-        } else {
+        }
+        else {
             // Login failed; no error message, just clear the cookies so that
             // the login doesn't have to be attempted for every page load
             setcookie('kisakone_autologin_key', '');
@@ -115,7 +115,8 @@ $pageData = gate_ProcessInputData();
 if (is_a($pageData, 'Error')) {
     if ($pageData->isMajor) {
         $_GET['page'] = array('error');
-    } else {
+    }
+    else {
         if ($pageData->errorPage)
             $_GET['page'] = $pageData->errorPage;
         // else: assume that the page being shown is fine
@@ -199,10 +200,12 @@ $isXhtml = false;
 if (@$GLOBALS['contentTypeSet']) {
     // already done, do nothing now
     $smarty->assign('contentType', $GLOBALS['contentTypeSet']);
-} elseif (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+}
+elseif (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
     header("Content-Type: text/html; charset=utf-8");
     $smarty->assign('contentType', "text/html; charset=utf-8");
-} else {
+}
+else {
     header("Content-Type: application/xhtml+xml; charset=utf-8");
     $smarty->assign('contentType', "application/xhtml+xml; charset=utf-8");
 
@@ -285,7 +288,8 @@ function gate_mapURLParameters()
 
             // Ensure there are no dots in the filename; not only are they unnecessary,
             // doing this prevents directory traversal nicely
-            if (strpos($element, '.') !== false) break;
+            if (strpos($element, '.') !== false)
+                break;
 
             $templatePath .= "/$element";
             $_GET['page'][] = $element;
@@ -311,6 +315,7 @@ function gate_mapURLParameters()
     for ($ind = $offset + 2; $ind < count($pathnodes); $ind += 2) {
         if (count($pathnodes) == $ind + 1)
             break;
+
         $_GET[$pathnodes[$ind]] = $pathnodes[$ind + 1];
         $_REQUEST[$pathnodes[$ind]] = $pathnodes[$ind + 1];
         $parameterInPath[$pathnodes[$ind]] = true;
@@ -334,11 +339,10 @@ function gate_AssignAd(&$smarty)
     if (is_a($ad, 'Error'))
         return $ad;
 
-    if ($ad) {
+    if ($ad)
         $smarty->assign('ad', $ad);
-    } else {
+    else
         $smarty->assign('ad', GetAd(null, 'default'));
-    }
 }
 
 // Translates a single entry in a page name
@@ -357,7 +361,8 @@ function gate_remapGet()
 
     foreach ($_GET as $param => $value) {
         // Page is translated as it's being read, not done here
-        if ($param == 'page') continue;
+        if ($param == 'page')
+            continue;
 
         // Translates both the variable name and value
         if (array_key_exists("param:" . $param, $language->data))
@@ -400,11 +405,10 @@ function recursive_stripslashes($data)
         foreach ($data as $key => $value) {
             $out[$key] = recursive_stripslashes($value);
         }
-
         return $out;
-    } else {
-        return stripslashes($data);
     }
+    else
+        return stripslashes($data);
 }
 
 // Simple function which can be used to confirm whether or not the current page

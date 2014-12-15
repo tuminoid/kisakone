@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Access management form handler
  *
@@ -27,12 +28,10 @@
  */
 function processForm()
 {
-    if (!IsAdmin()) {
+    if (!IsAdmin())
         return Error::AccessDenied('eventfees');
-    }
 
     if (!@$_POST['cancel']) {
-
         foreach ($_POST as $key => $value) {
             if (substr($key, 0, 7) == 'oldban_') {
                 list($ignore, $userid) = explode('_', $key);

@@ -79,11 +79,18 @@ class user
             die('Invalid user initialization' . print_r(debug_backtrace()));
         if ($player === 'none')
             $player = null;
-        $this->id = $id;
-        $this->username = $uname;
-        $this->SetRole($role);
-        $this->SetNames($fname, $lname);
-        $this->email = $email;
+
+        if (is_array($id)) {
+            $this->InitializeFromArray($id);
+        }
+        else {
+            $this->id = $id;
+            $this->username = $uname;
+            $this->SetRole($role);
+            $this->SetNames($fname, $lname);
+            $this->email = $email;
+        }
+
         $this->gender = null;
         $this->pdga = null;
         $this->birthyear = null;
@@ -95,6 +102,18 @@ class user
         return;
     }
 
+    /**
+     * Initialize user data from array
+     */
+    function InitializeFromArray($data)
+    {
+        $this->id = $data[0];
+        $this->username = $data[1];
+        $this->SetRole($data[2]);
+        $this->SetNames($data[3], $data[4]);
+        $this->email = $data[5];
+    }
+
     /** ************************************************************************
      * Method for setting the role attribute
      *
@@ -102,11 +121,7 @@ class user
      */
     function SetRole($role)
     {
-        if (isset($role))
-            $this->role = $role;
-        else
-            $this->role = USER_ROLE_PLAYER;
-
+        $this->role = isset($role) ? $role : USER_ROLE_PLAYER;
         return null;
     }
 
@@ -119,7 +134,7 @@ class user
     {
         $this->firstname = trim($firstname);
         $this->lastname = trim($lastname);
-        $this->fullname = trim($firstname . " " . $lastname);
+        $this->fullname = trim("$firstname $lastname");
 
         return null;
     }
@@ -264,11 +279,9 @@ class user
         }
         elseif (!empty($username)) {
             if ((is_string($username)) and
-                (strlen($username) >= USER_USERNAME_MIN_LENGTH) and
-                (strlen($username) <= USER_USERNAME_MAX_LENGTH))
-            {
+                    (strlen($username) >= USER_USERNAME_MIN_LENGTH) and
+                    (strlen($username) <= USER_USERNAME_MAX_LENGTH))
                 $retVal = true;
-            }
 
             if (!preg_match('/^[\pL\d_-]+$/', $username)) {
                 $retVal = false;
@@ -346,12 +359,10 @@ class user
         $prototol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
 
         global $settings;
-        if ($settings['USE_MOD_REWRITE']) {
+        if ($settings['USE_MOD_REWRITE'])
             $url = $protocol . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
-        }
-        else {
+        else
             $url = $protocol . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
-        }
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
     }
@@ -376,6 +387,7 @@ class user
         // If B-license is required, both A- and B-license quality, obviusly
         if ($required == LICENSE_B && !($aLicense || $bLicense))
             return false;
+
         return true;
     }
 }
@@ -476,13 +488,8 @@ function IsAdmin()
     $retVal = false;
 
     $user = @$_SESSION['user'];
-    if (isset($user)) {
+    if (isset($user))
         $retVal = $user->isAdmin();
-    }
 
     return $retVal;
 }
-
-/* *****************************************************************************
- * End of file
- * */

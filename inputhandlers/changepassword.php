@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Password change handler
  *
@@ -21,6 +22,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require 'data/authentication.php';
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -28,6 +31,9 @@
 function processForm()
 {
     $recover = @$_GET['mode'] == 'recover';
+
+    if (@$_POST['cancel'])
+        redirect("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
 
     if ($recover) {
         // Password recovery mode; ensure the provided token is the correct one
@@ -38,31 +44,31 @@ function processForm()
            return Error::AccessDenied();
         }
         $uid = $user->id;
-
-    } else {
+    }
+    else {
         $user = @$_SESSION['user'];
-        if (!$user) return error::AccessDenied();
+        if (!$user)
+            return error::AccessDenied();
         $problems = array();
 
         if (@$_GET['id']) {
-            if (!IsAdmin()) return Error::AccessDenied();
+            if (!IsAdmin())
+                return Error::AccessDenied();
+
             $getId = @$_GET['id'];
-            if (is_numeric($getId)) $uid = $getId;
-            else $uid = GetUserId($getId);
-        } else {
-            $uid = $user->id;
+            $uid = is_numeric($getId) ? $getId : GetUserId($getId);
         }
+        else
+            $uid = $user->id;
     }
 
-    if (@$_POST['cancel']) {
-        redirect("Location: " . url_smarty(array('page' => 'myinfo'), $_POST));
-    }
     $problems = array();
-
     if (!@$_GET['id'] && !$recover) {
         $current = $_POST['current'];
-            if (CheckUserAuthentication($user->username, $current) === null)
-                $problems['current_password'] = translate('FormError_WrongPassword');
+        // FIXME
+        $userob = new User(CheckUserAuthentication($user->username, $current));
+        if ($userob === null || is_a($userob, 'Error'))
+            $problems['current_password'] = translate('FormError_WrongPassword');
     }
 
     $password = $_POST['password'];
@@ -84,14 +90,12 @@ function processForm()
         return $error;
     }
 
-    $e =  ChangeUserPassword($uid, $password);
+    $e = ChangeUserPassword($uid, $password);
     if (is_a($e, 'Error'))
         return $e;
 
-    if ($recover) {
+    if ($recover)
         redirect("Location: " . url_smarty(array('page' => 'login'), $uid));
-    } else {
-        redirect("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
-    }
-    die();
+
+    redirect("Location: " . url_smarty(array('page' => 'user_edit_done', 'id' => @$_GET['id']), $uid));
 }
