@@ -183,7 +183,7 @@ class user
         if (!empty($password)) {
             // TODO: Is there need to check the password minimum length
             require_once 'core/crypto.php';
-            $this->password = GenerateHash($password, GetHashType(), $this->salt);
+            $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
         }
         else {
             // Missing password, report error

@@ -65,7 +65,6 @@ function processForm()
     $problems = array();
     if (!@$_GET['id'] && !$recover) {
         $current = $_POST['current'];
-        // FIXME
         $userob = new User(CheckUserAuthentication($user->username, $current));
         if ($userob === null || is_a($userob, 'Error'))
             $problems['current_password'] = translate('FormError_WrongPassword');

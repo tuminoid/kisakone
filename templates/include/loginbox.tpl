@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmº
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Login box/login information
  *
@@ -22,7 +23,7 @@
 {if $user eq null}
 <div class="loginbox" id="login_panel">
     <a id="login_link" href="{url page='login'}">{translate id=login}</a> |
-    <a href="{url page='register'}">{translate id=register}</a>
+    <a id="register_link" href="{url page='register'}">{translate id=register}</a>
 
 </div>
 <form class="loginbox hidden" action="{$url_base}" id="login_form" method="post">
