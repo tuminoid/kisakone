@@ -1,10 +1,9 @@
 RewriteEngine On
-
-RewriteCond %{REQUEST_FILENAME} !doc/install/install.php$
+RewriteCond %{REQUEST_FILENAME} !doc/install/
 RewriteCond %{REQUEST_FILENAME} !index.php$
 RewriteCond %{REQUEST_FILENAME} !favicon.ico$
-RewriteCond %{REQUEST_FILENAME} !js/
+RewriteCond %{REQUEST_FILENAME} !.js$
 RewriteCond %{REQUEST_FILENAME} !images/
-RewriteCond %{REQUEST_FILENAME} !css/
+RewriteCond %{REQUEST_FILENAME} !.css$
 RewriteRule (.*) index.php?path=$1&%{QUERY_STRING}
 
