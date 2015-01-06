@@ -25,9 +25,9 @@ CREATE TABLE :User
   UserLastName VARCHAR(40) NOT NULL,
   Player SMALLINT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
   UNIQUE(Username),
-  INDEX (Username, Password)
+  INDEX(Username, Password)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -63,7 +63,7 @@ CREATE TABLE :Tournament
   ScoreCalculationMethod VARCHAR(40) NOT NULL,
   Available TINYINT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Level) REFERENCES :Level(id),
+  FOREIGN KEY(Level) REFERENCES :Level(id),
   INDEX(Year),
   INDEX(Available)
 ) ENGINE=InnoDB;
@@ -81,17 +81,17 @@ CREATE TABLE :File
 SHOW WARNINGS;
 
 
-CREATE TABLE IF NOT EXISTS `:AdBanner` (
-  id INT(11) NOT NULL auto_increment,
+CREATE TABLE :AdBanner (
+  id INT(11) NOT NULL AUTO_INCREMENT,
   URL VARCHAR(200) NULL,
   ImageURL VARCHAR(200)  NULL,
   LongData TEXT,
-  ImageReference INT(11) default NULL,
+  ImageReference INT(11) DEFAULT NULL,
   Type VARCHAR(20) NOT NULL,
-  Event INT(11) default NULL,
+  Event INT(11) DEFAULT NULL,
   ContentId VARCHAR(30)  NOT NULL,
-  FOREIGN KEY (`ImageReference`) REFERENCES :File(id),
-  PRIMARY KEY  (`id`)
+  FOREIGN KEY(ImageReference) REFERENCES :File(id),
+  PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -116,8 +116,8 @@ CREATE TABLE :Event
   PlayerLimit INT NOT NULL DEFAULT 0,
   -- by Tumi
   PRIMARY KEY(id),
-  FOREIGN KEY (Venue) REFERENCES :Venue(id),
-  FOREIGN KEY (Level) REFERENCES :Level(id)
+  FOREIGN KEY(Venue) REFERENCES :Venue(id),
+  FOREIGN KEY(Level) REFERENCES :Level(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -131,7 +131,7 @@ CREATE TABLE :EventManagement
   PRIMARY KEY(id),
   FOREIGN KEY (User) REFERENCES :User(id),
   FOREIGN KEY (Event) REFERENCES :Event(id),
-  INDEX (User, Event, Role)
+  INDEX(User, Event, Role)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -146,9 +146,9 @@ CREATE TABLE :TextContent
   Type VARCHAR(14) NOT NULL,
   `Order` SMALLINT,
   PRIMARY KEY(id),
-  FOREIGN KEY (Event) REFERENCES :Event(id),
-  INDEX (Event, Title),
-  INDEX (Event, Type)
+  FOREIGN KEY(Event) REFERENCES :Event(id),
+  INDEX(Event, Title),
+  INDEX(Event, Type)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -177,8 +177,8 @@ CREATE TABLE :Course
   Map VARCHAR(60) NOT NULL,
   Event INT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Venue) REFERENCES :Venue(id),
-  FOREIGN KEY (Event) REFERENCES :Event(id)
+  FOREIGN KEY(Venue) REFERENCES :Venue(id),
+  FOREIGN KEY(Event) REFERENCES :Event(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -194,8 +194,8 @@ CREATE TABLE `:Round`
   ValidResults TINYINT(1) NOT NULL,
   GroupsFinished DATETIME NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Event) REFERENCES :Event(id),
-  FOREIGN KEY (Course) REFERENCES :Course(id)
+  FOREIGN KEY(Event) REFERENCES :Event(id),
+  FOREIGN KEY(Course) REFERENCES :Course(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -209,8 +209,8 @@ CREATE TABLE :Section (
   StartTime DATETIME NULL,
   Present TINYINT NOT NULL DEFAULT '1',
   PRIMARY KEY(id),
-  FOREIGN KEY (Classification) REFERENCES :Classification(id),
-  FOREIGN KEY (Round) REFERENCES `:Round`(id)
+  FOREIGN KEY(Classification) REFERENCES :Classification(id),
+  FOREIGN KEY(Round) REFERENCES `:Round`(id)
 ) ENGINE=InnoDB;
 
 
@@ -225,7 +225,7 @@ CREATE TABLE :Hole
   Par TINYINT NOT NULL,
   Length SMALLINT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Course) REFERENCES :Course(id),
+  FOREIGN KEY(Course) REFERENCES :Course(id),
   INDEX(Course, HoleNumber)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
@@ -245,9 +245,9 @@ CREATE TABLE :Participation
   SignupTimestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   TournamentPoints INT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
-  FOREIGN KEY (Event) REFERENCES :Event(id),
-  FOREIGN KEY (Classification) REFERENCES :Classification(id)
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Event) REFERENCES :Event(id),
+  FOREIGN KEY(Classification) REFERENCES :Classification(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -267,8 +267,8 @@ CREATE TABLE :RoundResult
   CumulativePlusminus INT DEFAULT '0',
   CumulativeTotal INT DEFAULT '0',
   PRIMARY KEY(id),
-  FOREIGN KEY (`Round`) REFERENCES `:Round`(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(`Round`) REFERENCES `:Round`(id),
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
   INDEX(`Round`, LastUpdated)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
@@ -284,9 +284,9 @@ CREATE TABLE :HoleResult
   DidNotShow TINYINT(1) NOT NULL,
   LastUpdated DATETIME NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Hole) REFERENCES :Hole(id),
-  FOREIGN KEY (RoundResult) REFERENCES :RoundResult(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Hole) REFERENCES :Hole(id),
+  FOREIGN KEY(RoundResult) REFERENCES :RoundResult(id),
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
   INDEX(RoundResult, LastUpdated)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
@@ -296,15 +296,15 @@ CREATE TABLE :StartingOrder
 (
   id INT NOT NULL AUTO_INCREMENT,
   Player SMALLINT NOT NULL,
-  `Section` INT NOT NULL,
+  Section INT NOT NULL,
   StartingTime DATETIME NOT NULL,
   StartingHole TINYINT,
   -- Changed from PoolNumber to GroupNumber 2014.10.05
   GroupNumber SMALLINT NOT NULL,
   -- by Tumi
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
-  FOREIGN KEY (`Section`) REFERENCES `:Section`(id)
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Section) REFERENCES :Section(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -315,8 +315,8 @@ CREATE TABLE :SectionMembership
   Participation INT NOT NULL,
   Section INT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Participation) REFERENCES :Participation(id),
-  FOREIGN KEY (Section) REFERENCES :Section(id)
+  FOREIGN KEY(Participation) REFERENCES :Participation(id),
+  FOREIGN KEY(Section) REFERENCES :Section(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -328,10 +328,10 @@ CREATE TABLE :TournamentStanding
   Tournament INT NOT NULL,
   OverallScore SMALLINT NOT NULL,
   Standing SMALLINT,
-  TieBreaker SMALLINT NOT NULL DEFAULT '0',
+  TieBreaker SMALLINT NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
-  FOREIGN KEY (Tournament) REFERENCES :Tournament(id)
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Tournament) REFERENCES :Tournament(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -346,8 +346,8 @@ CREATE TABLE :ClassInEvent
   MaxQuota INT NOT NULL DEFAULT 999,
   -- by Tumi
   PRIMARY KEY(id),
-  FOREIGN KEY (Classification) REFERENCES :Classification(id),
-  FOREIGN KEY (Event) REFERENCES :Event(id)
+  FOREIGN KEY(Classification) REFERENCES :Classification(id),
+  FOREIGN KEY(Event) REFERENCES :Event(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -358,7 +358,7 @@ CREATE TABLE :LicensePayment
   Player SMALLINT NOT NULL,
   Year INT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id)
+  FOREIGN KEY(Player) REFERENCES :Player(player_id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -369,7 +369,7 @@ CREATE TABLE :MembershipPayment
   Player SMALLINT NOT NULL,
   Year INT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id)
+  FOREIGN KEY(Player) REFERENCES :Player(player_id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -382,10 +382,10 @@ CREATE TABLE :EventQueue (
   Player SMALLINT NOT NULL,
   Classification INT NOT NULL,
   SignupTimestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  FOREIGN KEY (Event) REFERENCES :Event(id),
-  FOREIGN KEY (Player) REFERENCES :Player(player_id),
-  FOREIGN KEY (Classification) REFERENCES :Classification(id),
+  PRIMARY KEY(id),
+  FOREIGN KEY(Event) REFERENCES :Event(id),
+  FOREIGN KEY(Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Classification) REFERENCES :Classification(id),
   INDEX(Event)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
