@@ -34,6 +34,7 @@ function GenerateSalt()
     return $salt;
 }
 
+
 /** ************************************************************************
  * Method for getting a hash for password
  *
