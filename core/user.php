@@ -78,7 +78,7 @@ class user
                    $player = "none")
     {
         if ($email && $player === 'none')
-            die('Invalid user initialization' . print_r(debug_backtrace()));
+            die('Invalid user initialization' . print_r(debug_backtrace(), true));
         if ($player === 'none')
             $player = null;
 

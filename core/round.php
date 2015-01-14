@@ -238,7 +238,7 @@ class Round
 
                 $id = CreateSection($this->id, $class->id,  $class->name);
                 if (is_a($id, 'Error')) {
-                    die(print_r($id));
+                    die(print_r($id, true));
                 }
                 $sections[$class->id] = GetSectionDetails($id);
             }
