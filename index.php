@@ -42,7 +42,7 @@ require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
-require_once 'data/init_data.php';
+require_once 'data/data_access.php';
 
 // Suomen Frisbeegolfliitto-specific functionality
 require_once 'sfl/sfl_integration.php';
