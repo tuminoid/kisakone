@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module. Access the database server directly.
  *
@@ -1853,7 +1853,8 @@ function SetUserDetails($user)
         // Check that username is not already in use
         if ( !GetUserId( $user->username)) {
             // Username is unique, proceed to insert into table
-            $query = data_query( "INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player) VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s);",
+            $query = data_query( "INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player)
+                                    VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s);",
                               $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname, esc_or_null($user->player, 'int'));
 
 

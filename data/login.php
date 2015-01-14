@@ -3,7 +3,7 @@
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Data access module for Crypto
+ * Data access module for Login functions
  *
  * --
  *

@@ -63,6 +63,8 @@ class user
     var $password;  // password as hash
     var $hash;      // what type of hash password is
     var $salt;      // salt for the password
+    var $lastlogin; // time of last login
+    var $passwordchanged; // time of last password change
 
     /** ************************************************************************
      * Class constructor
@@ -97,6 +99,8 @@ class user
         $this->password = null;
         $this->hash = null;
         $this->salt = null;
+        $this->lastlogin = null;
+        $this->passwordchanged = null;
         $this->player = $player;
 
         return;
@@ -182,7 +186,7 @@ class user
 
         if (!empty($password)) {
             // TODO: Is there need to check the password minimum length
-            require_once 'core/crypto.php';
+            require_once 'core/login.php';
             $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
         }
         else {
