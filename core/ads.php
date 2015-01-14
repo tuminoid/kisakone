@@ -155,8 +155,7 @@ class Ad
             return translate('too_much_ad_recursion');
         }
         $ad_render_depth++;
-        $retVal = call_user_method("Render" . $this->type, $this);
-
+        $retVal = call_user_func(array(&$this, "Render" . $this->type));
         $ad_render_depth--;
 
         return $retVal;
