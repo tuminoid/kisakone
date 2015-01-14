@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Login form handler
  *
@@ -27,7 +27,7 @@
  * @return Nothing or Error object on error
  */
 
-require_once 'data/authentication.php';
+require_once 'data/login.php';
 
 function processForm()
 {

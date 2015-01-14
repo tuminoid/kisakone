@@ -26,6 +26,8 @@ CREATE TABLE :User
   UserFirstName VARCHAR(40) NOT NULL,
   UserLastName VARCHAR(40) NOT NULL,
   Player SMALLINT NULL,
+  LastLogin DATETIME,
+  PasswordChange DATETIME,
   PRIMARY KEY(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
   UNIQUE(Username),
