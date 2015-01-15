@@ -838,152 +838,112 @@ function GetSections($round, $order = 'time')
 }
 
 
-   // Get rounds for an event by event id
-   function GetEventRounds($event)
-   {
-      require_once 'core/round.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
+// Get rounds for an event by event id
+function GetEventRounds($event)
+{
+   require_once 'core/round.php';
+
+   $retValue = array();
+   $event = (int) $event;
+   $query = format_query("SELECT id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime,
+                         `Interval`, ValidResults, GroupsFinished FROM :Round WHERE Event = $event ORDER BY StartTime");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $index = 1;
+      while ($row = mysql_fetch_assoc($result)) {
+         $newRound =  new Round($row['id'], $row['Event'], $row['StartType'], $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
+         $newRound->roundnumber = $index++;
+         $retValue[] = $newRound;
       }
-
-      $retValue = array();
-      $event = (int) $event;
-
-      $query = format_query("SELECT id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime,
-                            `Interval`, ValidResults, GroupsFinished FROM :Round WHERE Event = $event ORDER BY StartTime");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         $index = 1;
-         while ($row = mysql_fetch_assoc($result)) {
-            $newRound =  new Round($row['id'], $row['Event'], $row['StartType'], $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
-            $newRound->roundnumber = $index++;
-            $retValue[] = $newRound;
-
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
    }
+   mysql_free_result($result);
 
-   // Get a Round object by id
-   function GetRoundDetails($roundid)
-   {
-      require_once 'core/round.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return $retValue;
+}
 
-      $retValue = null;
-      $id = (int) $roundid;
 
-      $query = format_query("SELECT
-         id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime, `Interval`, ValidResults, GroupsFinished
-         FROM `:Round` WHERE id = $id ORDER BY StartTime");
-      $result = mysql_query($query);
+// Get a Round object by id
+function GetRoundDetails($roundid)
+{
+   require_once 'core/round.php';
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   $retValue = null;
+   $id = (int) $roundid;
+   $query = format_query("SELECT
+      id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime, `Interval`, ValidResults, GroupsFinished
+      FROM `:Round` WHERE id = $id ORDER BY StartTime");
+   $result = mysql_query($query);
 
-      if (mysql_num_rows($result) == 1) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue =  new Round($row['id'], $row['Event'], $row['StartType'], $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
-
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue =  new Round($row['id'], $row['Event'], $row['StartType'], $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
    }
+   mysql_free_result($result);
 
-   // Get event officials for an event
-   function GetEventOfficials($event)
-   {
-      require_once 'core/event_official.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
+   return $retValue;
+}
+
+
+// Get event officials for an event
+function GetEventOfficials($event)
+{
+   require_once 'core/event_official.php';
+
+   $retValue = array();
+   $event = (int) $event;
+   $query = format_query("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event ,
+                                    :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
+                                    FROM :EventManagement, :User
+                                    LEFT JOIN :Player ON :User.Player = :Player.player_id
+                                    WHERE :EventManagement.User = :User.id AND :EventManagement.Event = $event
+                                    ORDER BY :EventManagement.Role DESC, Username ASC");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $tempuser = new User($row['UserId'],
+                              $row['Username'],
+                              $row['Role'],
+                              data_GetOne( $row['UserFirstname'], $row['pFN']),
+                              data_GetOne($row['UserLastname'], $row['pLN']),
+                              data_GetOne($row['UserEmail'], $row['pEM']),
+                              $row['Player']);
+
+         $retValue[] = new EventOfficial($row['UserId'], $row['Event'], $tempuser, $row['Role']);
       }
-
-      $retValue = array();
-      $event = (int) $event;
-
-      $query = format_query("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event ,
-                                       :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
-                                       FROM :EventManagement, :User
-                                       LEFT JOIN :Player ON :User.Player = :Player.player_id
-                                         WHERE :EventManagement.User = :User.id
-                                         AND :EventManagement.Event = $event ORDER BY :EventManagement.Role DESC, Username ASC");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $tempuser = new User($row['UserId'], $row['Username'], $row['Role'],
-                                 data_GetOne( $row['UserFirstname'], $row['pFN']),
-                                 data_GetOne($row['UserLastname'], $row['pLN']),
-                                 data_GetOne($row['UserEmail'], $row['pEM']),
-                                 $row['Player']);
-
-            $retValue[] = new EventOfficial($row['UserId'], $row['Event'], $tempuser, $row['Role']);
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
    }
+   mysql_free_result($result);
 
-   // Edit event information
-   function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees)
-    {
-      $venueid = GetVenueId($venuename);
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return $retValue;
+}
 
-      if ($state == 'active' || $state =='done') {
-         $activation = time();
 
-      } else {
-         $activation = 'NULL';
-      }
+// Edit event information
+function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees)
+ {
+   $venueid = GetVenueId($venuename);
 
-      if ($state =='done') {
-        $locking = time();
-      } else {
-        $locking = 'NULL';
-      }
+   $activation = ($state == 'active' || $state =='done') ? time() : 'NULL';
+   $locking = ($state =='done') ? time() : 'NULL';
+   $query = format_query("UPDATE `:Event` SET `Venue` = %d, `Tournament` = %s, Level = %d, `Name` = '%s', `Date` = FROM_UNIXTIME(%d),
+                    `Duration` = %d, `PlayerLimit` = %d, `SignupStart` = FROM_UNIXTIME(%s), `SignupEnd` = FROM_UNIXTIME(%s),
+                    ActivationDate = FROM_UNIXTIME( %s), ResultsLocked = FROM_UNIXTIME(%s), ContactInfo = '%s', FeesRequired = %d
+                    WHERE id = %d",
+                            $venueid,
+                            esc_or_null($tournament, 'int'), $level, mysql_real_escape_string($name), (int) $start,
+                            (int) $duration, (int) $playerlimit,
+                            esc_or_null($signup_start,'int'), esc_or_null($signup_end,'int'), $activation,
+                            $locking,
+                            mysql_real_escape_string($contact),  $requireFees , (int) $eventid);
+   $result = execute_query($query);
 
-      $query = format_query("UPDATE `:Event` SET `Venue` = %d, `Tournament` = %s, Level = %d, `Name` = '%s', `Date` = FROM_UNIXTIME(%d),
-                       `Duration` = %d, `PlayerLimit` = %d, `SignupStart` = FROM_UNIXTIME(%s), `SignupEnd` = FROM_UNIXTIME(%s),
-                       ActivationDate = FROM_UNIXTIME( %s), ResultsLocked = FROM_UNIXTIME(%s), ContactInfo = '%s', FeesRequired = %d
+   if (!$result)
+      return Error::Query($query);
 
-                       WHERE id = %d", $venueid,
-                               esc_or_null($tournament, 'int'), $level, mysql_real_escape_string($name), (int) $start,
-                               (int) $duration, (int) $playerlimit,
-                               esc_or_null($signup_start,'int'), esc_or_null($signup_end,'int'), $activation,
-                               $locking,
-                               mysql_real_escape_string($contact),  $requireFees , (int) $eventid);
+   mysql_free_result($result);
+}
 
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-    }
 
 /**
  * Function for setting the tournament director for en event
@@ -993,49 +953,44 @@ function GetSections($round, $order = 'time')
  */
 function SetTD($eventid, $td)
 {
-    $retValue = Null;
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   $retValue = Null;
 
-    if ( isset( $eventid) and isset( $td)) {
-        $eventid  = (int) $eventid;
-        $query = format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = 'td'");
-        $result = mysql_query($query);
-        if (!$result)
-            log_mysql_error($query, __LINE__, false);
+   if (isset( $eventid) and isset($td)) {
+      $eventid  = (int) $eventid;
+      $query = format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = 'td'");
+      $result = execute_query($query);
+      mysql_free_result($result);
 
-        $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
+      $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
                           (int) $td, (int) $eventid, 'td');
+      $result = execute_query($query);
 
-        $result = mysql_query($query);
-        if (!$result) {
-            log_mysql_error($query, __LINE__, false);
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL INSERT query";
-            $err->function = "SetTD()";
-            $err->IsMajor = true;
-            $err->data = "Event id: " . $eventid . "; TD: ". $td;
-            $retValue = $err;
-        } else {
+      if (!$result) {
+         $err = new Error();
+         $err->title = "error_db_query";
+         $err->description = translate( "error_db_query_description");
+         $err->internalDescription = "Failed SQL INSERT query";
+         $err->function = "SetTD()";
+         $err->IsMajor = true;
+         $err->data = "Event id: " . $eventid . "; TD: ". $td;
+         $retValue = $err;
+      }
+   }
+   else {
+      $err = new Error();
+      $err->title = "error_invalid_argument";
+      $err->description = translate( "error_invalid_argument_description");
+      $err->internalDescription = "Event id or td argument is not set.";
+      $err->function = "SetTD()";
+      $err->IsMajor = true;
+      $err->data = "event id:" . $eventid . "; td:" . $td;
+      $retValue = $err;
+   }
+   mysql_free_result($result);
 
-        }
-    } else {
-        $err = new Error();
-        $err->title = "error_invalid_argument";
-        $err->description = translate( "error_invalid_argument_description");
-        $err->internalDescription = "Event id or td argument is not set.";
-        $err->function = "SetTD()";
-        $err->IsMajor = true;
-        $err->data = "event id:" . $eventid . "; td:" . $td;
-        $retValue = $err;
-    }
-
-    return $retValue;
+   return $retValue;
 }
+
 
 /**
  * Function for setting the officials for en event
@@ -1045,49 +1000,47 @@ function SetTD($eventid, $td)
  */
 function SetOfficials($eventid, $officials)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
    $eventid = (int) $eventid;
-
    $retValue = null;
+
    if ( isset( $eventid)) {
       $clearingQuery = format_query("DELETE FROM :EventManagement WHERE Event = %d AND Role = 'official'", $eventid);
-      mysql_query($clearingQuery);
+      $result = execute_query($clearingQuery);
+      mysql_free_result($result);
 
       foreach ($officials as $official) {
-            $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
-                              (int) $official, (int) $eventid, 'official');
+         $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
+                           (int) $official, (int) $eventid, 'official');
+         $result = execute_query($query);
 
-            $result = mysql_query($query);
+         if (!$result) {
+            $err = new Error();
+            $err->title = "error_db_query";
+            $err->description = translate( "error_db_query_description");
+            $err->internalDescription = "Failed SQL INSERT query";
+            $err->function = "SetOfficials()";
+            $err->IsMajor = true;
+            $err->data = "Event id: " . $eventid . "; official: ". $official;
+            $retValue = $err;
+            break;
+         }
+      }
+   }
+   else {
+      $err = new Error();
+      $err->title = "error_invalid_argument";
+      $err->description = translate( "error_invalid_argument_description");
+      $err->internalDescription = "Event id argument is not set.";
+      $err->function = "SetOfficials()";
+      $err->IsMajor = true;
+      $err->data = "event id:" . $eventid;
+      $retValue = $err;
+   }
+   mysql_free_result($result);
 
-            if (!$result) {
-                log_mysql_error($query, __LINE__, false);
-                $err = new Error();
-                $err->title = "error_db_query";
-                $err->description = translate( "error_db_query_description");
-                $err->internalDescription = "Failed SQL INSERT query";
-                $err->function = "SetOfficials()";
-                $err->IsMajor = true;
-                $err->data = "Event id: " . $eventid . "; official: ". $official;
-                $retValue = $err;
-                break;
-            }
-        }
-    } else {
-        $err = new Error();
-        $err->title = "error_invalid_argument";
-        $err->description = translate( "error_invalid_argument_description");
-        $err->internalDescription = "Event id argument is not set.";
-        $err->function = "SetOfficials()";
-        $err->IsMajor = true;
-        $err->data = "event id:" . $eventid;
-        $retValue = $err;
-    }
-
-    return $retValue;
+   return $retValue;
 }
+
 
 /**
  * Function for setting the classes for en event
@@ -1097,31 +1050,21 @@ function SetOfficials($eventid, $officials)
  */
 function SetClasses($eventid, $classes)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
    $retValue = null;
    $eventid = (int) $eventid;
 
-   if (isset( $eventid)) {
-      // get quotas for later restoring
+   if (isset($eventid)) {
       $quotas = GetEventQuotas($eventid);
-
       $query = format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid");
       $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
 
       foreach ($classes as $class) {
          $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES (%d, %d);",
                            (int) $class, (int) $eventid);
+         $result = execute_query($query);
 
-         if (!$result) {
-            log_mysql_error($query, __LINE__, false);
+         if (!$result)
             return Error::Query($query);
-         }
       }
 
       // Fix limits back.. do not bother handling errors as some classes may be removed
@@ -1133,25 +1076,24 @@ function SetClasses($eventid, $classes)
          $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d, MaxQuota = %d
                                  WHERE Event = %d AND Classification = %d",
                                  $min, $max, $eventid, $cid);
-         $result = mysql_query($query);
-
-         if (!$result)
-            log_mysql_error($query, __LINE__, false);
-
+         $result = execute_query($query);
       }
-    } else {
-        $err = new Error();
-        $err->title = "error_invalid_argument";
-        $err->description = translate( "error_invalid_argument_description");
-        $err->internalDescription = "Event id argument is not set.";
-        $err->function = "SetClasses()";
-        $err->IsMajor = true;
-        $err->data = "event id:" . $eventid;
-        $retValue = $err;
-    }
+   }
+   else {
+      $err = new Error();
+      $err->title = "error_invalid_argument";
+      $err->description = translate( "error_invalid_argument_description");
+      $err->internalDescription = "Event id argument is not set.";
+      $err->function = "SetClasses()";
+      $err->IsMajor = true;
+      $err->data = "event id:" . $eventid;
+      $retValue = $err;
+   }
+   mysql_free_result($result);
 
-    return $retValue;
+   return $retValue;
 }
+
 
 /**
  * Function for setting the rounds for en event
@@ -1161,69 +1103,53 @@ function SetClasses($eventid, $classes)
  */
 function SetRounds( $eventid, $rounds, $deleteRounds = array())
 {
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
-    $retValue = null;
-
-    $eventid = (int) $eventid;
-    foreach ($deleteRounds as $toDelete) {
+   $retValue = null;
+   $eventid = (int) $eventid;
+   foreach ($deleteRounds as $toDelete) {
       $toDelete = (int) $toDelete;
       $query = format_query("DELETE FROM :Round WHERE Event = $eventid AND id = $toDelete");
-      $result = mysql_query($query);
+      $result = execute_query($query);
+   }
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-    }
+   foreach ($rounds as $round) {
+      $date = $round['date'];
+      $time = $round['time'];
+      $datestring = $round['datestring'];
+      $roundid = $round['roundid'];
 
-    foreach ($rounds as $round) {
+      $r_event = (int) $eventid;
+      $r_course = null;
+      $r_starttype = "simultaneous";
+      $r_starttime = (int) $date;
+      $r_interval = 10;
+      $r_validresults = 1;
 
-        //list( $date, $time, $holes, $datestring, $roundid) = $round;
-        $date = $round['date'];
-        $time = $round['time'];
-        $datestring = $round['datestring'];
-        $roundid = $round['roundid'];
+      if (empty($roundid) || $roundid == '*') {
+         // Create new round
+         $query = format_query("INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults) VALUES (%d, %s, '%s', FROM_UNIXTIME(%d), %d, %d);",
+                           $r_event, esc_or_null($r_course, 'int'), $r_starttype, $r_starttime, $r_interval, $r_validresults);
+         $result = execute_query($query);
 
-        $r_event = (int) $eventid;
-        $r_course = null;
-        $r_starttype = "simultaneous";
-        $r_starttime = (int) $date;
-        $r_interval = 10;
-        $r_validresults = 1;
+         if ($result)
+            $roundid = mysql_insert_id();
+         else {
+            $err = new Error();
+            $err->title = "error_db_query";
+            $err->description = translate( "error_db_query_description");
+            $err->internalDescription = "Failed SQL INSERT query (Round)\n$query\n" . mysql_error();
+            $err->function = "SetRounds()";
+            $err->IsMajor = true;
+            $err->data = "Event id: " . $r_event;
+            $retValue = $err;
+            break;
+         }
+      }
+   }
+   mysql_free_result($result);
 
-        if ( empty( $roundid) || $roundid == '*') {
-            // Create new round
-            $query = format_query( "INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults) VALUES (%d, %s, '%s', FROM_UNIXTIME(%d), %d, %d);",
-                              $r_event, esc_or_null($r_course, 'int'), $r_starttype, $r_starttime, $r_interval, $r_validresults);
-            $result = mysql_query($query);
-
-            if (!$result)
-               log_mysql_error($query, __LINE__, false);
-
-            if ($result) {
-                $roundid = mysql_insert_id();
-            } else {
-                $err = new Error();
-                $err->title = "error_db_query";
-                $err->description = translate( "error_db_query_description");
-                $err->internalDescription = "Failed SQL INSERT query (Round)\n$query\n" . mysql_error();
-                $err->function = "SetRounds()";
-                $err->IsMajor = true;
-                $err->data = "Event id: " . $r_event;
-                $retValue = $err;
-                break;
-            }
-
-        } else {
-            // We don't actually support editing rounds, so it's either deleting or
-            // creating new -- nothing to be done here.
-        }
-    }
-
-    return $retValue;
+   return $retValue;
 }
+
 
 /**
  * Function for setting the round course
