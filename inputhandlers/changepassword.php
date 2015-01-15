@@ -65,9 +65,14 @@ function processForm()
     $problems = array();
     if (!@$_GET['id'] && !$recover) {
         $current = $_POST['current'];
-        $userob = new User(CheckUserAuthentication($user->username, $current));
-        if ($userob === null || is_a($userob, 'Error'))
+        $userdata = CheckUserAuthentication($user->username, $current);
+        if ($userdata === null)
             $problems['current_password'] = translate('FormError_WrongPassword');
+        else {
+            $userob = new User($userdata);
+            if ($userob === null || is_a($userob, 'Error'))
+                $problems['current_password'] = translate('FormError_WrongPassword');
+        }
     }
 
     $password = $_POST['password'];

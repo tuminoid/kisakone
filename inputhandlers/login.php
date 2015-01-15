@@ -45,11 +45,8 @@ function processForm()
         return $error;
     }
 
-    $user = new User(CheckUserAuthentication($username, $password));
-    if (is_a($user, 'Error'))
-      return $user;
-
-    if (is_null($user)) {
+    $userdata = CheckUserAuthentication($username, $password);
+    if (is_null($userdata)) {
         $error = new Error();
         $error->title = translate('error_invalid_login_details');
         $error->description = translate('error_invalid_login_details_description');
@@ -58,6 +55,10 @@ function processForm()
 
         return $error;
     }
+
+    $user = new User($userdata);
+    if ($user === null || is_a($user, 'Error'))
+        return $user;
 
     // Make sure a session is used from now on
     setcookie("kisakone_login", 1);
@@ -70,8 +71,6 @@ function processForm()
         setcookie('kisakone_autologin_as', $user->username, $expires);
         setcookie('kisakone_autologin_key', GetAutoLoginToken($user->id), $expires);
     }
-
-
 
     // Normally we just redirect user to the next page using header() call, but
     // in this particular case we'd have to relay the url to return to, amogst other

@@ -44,6 +44,16 @@ function InitializeDatabaseConnection()
 
 
 /**
+ * Escapes string
+ */
+function escape_string($string)
+{
+    InitializeDatabaseConnection();
+    return mysql_real_escape_string($string);
+}
+
+
+/**
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
  */
@@ -66,30 +76,27 @@ function format_query($query)
 /**
  * Formats and executes SQL query
  */
-function execute_query($query, $return_ob_on_failure = null)
+function execute_query($query)
 {
     $dbError = InitializeDatabaseConnection();
-    if ($dbError)
-        return $dbError;
+    if ($dbError) {
+        error_log("error: database connection init failed");
+        return null;
+    }
 
     if (empty($query))
         return null;
 
-    $formatted_query = format_query($query);
-    $result = mysql_query($formatted_query);
-
+    $result = mysql_query($query);
     if (!$result) {
         global $settings;
         $db_error_log = $settings['DB_ERROR_LOGGING'];
 
         if (isset($db_error_log) && $db_error_log) {
             error_log("error: execute_query failed");
-            error_log("original query: $query");
-            error_log("formatted query: $formatted_query");
+            error_log("query: $query");
+            error_log("message: ". mysql_error());
         }
-
-        if ($return_ob_on_failure)
-            return $return_ob_on_failure;
     }
 
     return $result;

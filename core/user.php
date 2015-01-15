@@ -187,8 +187,7 @@ class user
         $err = null;
         require_once 'core/login.php';
 
-        $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
-        if ($this->password === null) {
+        if (!IsValidPassword($password)) {
             $err = new Error();
             $err->title = "error_missing_password";
             $err->description = translate("error_missing_password_description");
@@ -196,9 +195,11 @@ class user
             $err->function = "User->SetPassword()";
             $err->IsMajor = false;
             $err->data = "username:" . $this->username;
+            return $err;
         }
 
-        return $err;
+        $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
+        return null;
     }
 
     /** ************************************************************************

@@ -50,8 +50,11 @@ function GenerateSalt()
  */
 function GenerateHash($password, $hash = "md5", $salt = "")
 {
-    if (!IsValidPassword($password))
+    if (empty($password))
         return null;
+
+    if (empty($hash))
+        $hash = "md5";
 
     // Legacy, insecure
     if ($hash == "md5")

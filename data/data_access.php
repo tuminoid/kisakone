@@ -81,9 +81,8 @@ require_once 'data/db_init.php';
    // Returns null if the user was not found
    function GetUserId($username)
    {
-      if (empty($username)) {
+      if (empty($username))
          return null;
-      }
 
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
@@ -371,9 +370,8 @@ require_once 'data/db_init.php';
    // Gets an MD5 hash of the User properties
    function GetAutoLoginToken($userid)
    {
-      if (empty($userid)) {
+      if (empty($userid))
          return null;
-      }
 
       $dbError = InitializeDatabaseConnection();
       if ($dbError) {
@@ -529,17 +527,13 @@ require_once 'data/db_init.php';
       }
       global $user;
 
-      if ($user) {
+      if ($user && $user->id) {
          $uid = $user->id;
-         $player = $user->GetPlayer();
 
+         $player = $user->GetPlayer();
          if (is_a($player, 'Error'))
             return $player;
-
-         if ($player)
-            $playerid = $player->id;
-         else
-            $playerid = -1; // -1 impossible normally
+         $playerid = $player ? $player->id : -1;
 
          $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
