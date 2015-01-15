@@ -69,12 +69,9 @@ function CheckUserAuthentication($username, $password)
         }
         mysql_free_result($result);
 
+        execute_query(format_query("UPDATE :User SET LastLogin = NOW() WHERE Username = '$usr'"));
+
         return $retValue;
-    }
-    else {
-        error_log("login failed");
-        error_log("data in db: hash=$db_hash type=$logindata[1] salt=$logindata[2]");
-        error_log("user hash=$usr_hash");
     }
 
     return null;
