@@ -229,15 +229,23 @@ function InstallDB() {
 }
 
 function CreateAdmin() {
+    require_once '../../core/login.php';
+
+    $hash = "crypt";
+    $salt = GenerateSalt();
+    $pass = GenerateHash($_POST['ad_pass'], $hash, $salt);
     $prefix = @$_POST['db_prefix'];
-    $query = sprintf("INSERT INTO %sUser (Username, Password, UserEmail, Role, UserFirstname, UserLastname )
-        VALUES ('%s', '%s', '%s', 'admin', '%s', '%s')",
+
+    $query = sprintf("INSERT INTO %sUser (Username, Password, UserEmail, Role, UserFirstname, UserLastname, Hash, Salt, PasswordChanged)
+        VALUES ('%s', '%s', '%s', 'admin', '%s', '%s', '%s', '%s', NOW())",
         $prefix,
         mysql_real_escape_string($_POST['ad_user']),
-        mysql_real_escape_string(md5($_POST['ad_pass'])),
+        $pass,
         mysql_real_escape_string($_POST['ad_email']),
         mysql_real_escape_string($_POST['ad_firstname']),
-        mysql_real_escape_string($_POST['ad_lastname'])
+        mysql_real_escape_string($_POST['ad_lastname']),
+        $hash,
+        $salt
         );
 
     if (mysql_query($query)) {
