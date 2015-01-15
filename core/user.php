@@ -79,12 +79,12 @@ class user
     {
         if ($email && $player === 'none')
             die('Invalid user initialization' . print_r(debug_backtrace(), true));
+
         if ($player === 'none')
             $player = null;
 
-        if (is_array($id)) {
+        if (is_array($id))
             $this->InitializeFromArray($id);
-        }
         else {
             $this->id = $id;
             $this->username = $uname;
@@ -93,6 +93,7 @@ class user
             $this->email = $email;
         }
 
+        $this->player = $player;
         $this->gender = null;
         $this->pdga = null;
         $this->birthyear = null;
@@ -101,7 +102,6 @@ class user
         $this->salt = null;
         $this->lastlogin = null;
         $this->passwordchanged = null;
-        $this->player = $player;
 
         return;
     }
@@ -177,24 +177,22 @@ class user
     /** ************************************************************************
      * Method for setting the user password.
      *
+     * GenerateHash has internal password strength testing
+     *
      * Returns null for success or
      * an Error object in case the argument is not valid.
      */
     function SetPassword($password)
     {
         $err = null;
+        require_once 'core/login.php';
 
-        if (!empty($password)) {
-            // TODO: Is there need to check the password minimum length
-            require_once 'core/login.php';
-            $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
-        }
-        else {
-            // Missing password, report error
+        $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
+        if ($this->password === null) {
             $err = new Error();
             $err->title = "error_missing_password";
             $err->description = translate("error_missing_password_description");
-            $err->internalDescription = "User password argument is empty";
+            $err->internalDescription = "User password argument is empty or invalid";
             $err->function = "User->SetPassword()";
             $err->IsMajor = false;
             $err->data = "username:" . $this->username;
