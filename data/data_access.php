@@ -2155,42 +2155,29 @@ function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $for
 /* Return event's participant counts by class */
 function GetEventParticipantCounts($eventId)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $eventId = (int) $eventId;
    $query = format_query("SELECT count(*) as cnt, Classification
       FROM :Participation
       WHERE Event = $eventId
       GROUP BY Classification");
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    $ret = array();
    if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
+      while ($row = mysql_fetch_assoc($result))
          $ret[$row['Classification']] = $row['cnt'];
-      }
    }
 
    return $ret;
 }
 
- function GetEventParticipants($eventId, $sortedBy, $search)
- {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
 
+function GetEventParticipants($eventId, $sortedBy, $search)
+{
    $retValue = array();
    $eventId = (int) $eventId;
-
    $sortOrder = data_CreateSortOrder($sortedBy, array('name' => array('LastName', 'FirstName'), 'class' => 'ClassName', 'LastName' => true, 'FirstName' => true, 'birthyear' => 'YEAR(birthdate)', 'pdga', 'gender' => 'sex', 'Username'));
+
    if (is_a($sortOrder, 'Error'))
       return $sortOrder;
    if ($sortOrder == 1)
@@ -2206,79 +2193,64 @@ function GetEventParticipantCounts($eventId)
                   INNER JOIN :Participation ON :Participation.Player = :Player.player_id AND :Participation.Event = ".$eventId ."
                   INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                   WHERE %s
-                  ORDER BY $sortOrder
+                  ORDER BY $sortOrder";
 
-                  ";
    $query = format_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    require_once 'core/player.php';
+   require_once 'core/user.php';
 
    if (mysql_num_rows($result) > 0) {
       while ($row = mysql_fetch_assoc($result)) {
-           $pdata = array();
+         $pdata = array();
 
-           $firstname = data_GetOne( $row['UserFirstName'], $row['pFN']);
-           $lastname = data_GetOne( $row['UserLastName'], $row['pLN']);
-           $email = data_GetOne($row['UserEmail'], $row['pEM']);
+         $firstname = data_GetOne( $row['UserFirstName'], $row['pFN']);
+         $lastname = data_GetOne( $row['UserLastName'], $row['pLN']);
+         $email = data_GetOne($row['UserEmail'], $row['pEM']);
 
-           $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
-           $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
+         $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
+         $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
 
-           $pdata['eventFeePaid'] = $row['EventFeePaid'];
-           $pdata['participationId'] = $row['ParticipationID'];
-           $pdata['signupTimestamp'] = $row['SignupTimestamp'];
-           $pdata['className'] = $row['ClassName'];
-           $pdata['classId'] = $row['ClassId'];
-           $retValue[] = $pdata;
+         $pdata['eventFeePaid'] = $row['EventFeePaid'];
+         $pdata['participationId'] = $row['ParticipationID'];
+         $pdata['signupTimestamp'] = $row['SignupTimestamp'];
+         $pdata['className'] = $row['ClassName'];
+         $pdata['classId'] = $row['ClassId'];
+         $retValue[] = $pdata;
       }
    }
-
    mysql_free_result($result);
 
    return $retValue;
 }
 
+
 /* Return event's queue counts by class */
 function GetEventQueueCounts($eventId)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $eventId = (int) $eventId;
    $query = format_query("SELECT count(*) as cnt, Classification
       FROM :EventQueue
       WHERE Event = $eventId
       GROUP BY Classification");
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    $ret = array();
    if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
+      while ($row = mysql_fetch_assoc($result))
          $ret[$row['Classification']] = $row['cnt'];
-      }
    }
+   mysql_free_result($result);
 
    return $ret;
 }
 
-   // This is more or less copypaste from ^^
-   // FIXME: Redo to a simpler form sometime
- function GetEventQueue($eventId, $sortedBy, $search)
- {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
 
+// This is more or less copypaste from ^^
+// FIXME: Redo to a simpler form sometime
+function GetEventQueue($eventId, $sortedBy, $search)
+{
    $retValue = array();
    $eventId = (int) $eventId;
 
@@ -2292,82 +2264,71 @@ function GetEventQueueCounts($eventId)
                   INNER JOIN :EventQueue ON :EventQueue.Player = :Player.player_id AND :EventQueue.Event = ".$eventId ."
                   INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
                   WHERE %s
-                  ORDER BY SignupTimestamp ASC, :EventQueue.id ASC
-                  ";
-   $query = format_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
-   $result = mysql_query($query);
+                  ORDER BY SignupTimestamp ASC, :EventQueue.id ASC";
 
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $query = format_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
+   $result = execute_query($query);
 
    require_once 'core/player.php';
+   require_once 'core/user.php';
 
    if (mysql_num_rows($result) > 0) {
       while ($row = mysql_fetch_assoc($result)) {
-           $pdata = array();
+         $pdata = array();
 
-           $firstname = data_GetOne( $row['UserFirstName'], $row['pFN']);
-           $lastname = data_GetOne( $row['UserLastName'], $row['pLN']);
-           $email = data_GetOne($row['UserEmail'], $row['pEM']);
+         $firstname = data_GetOne( $row['UserFirstName'], $row['pFN']);
+         $lastname = data_GetOne( $row['UserLastName'], $row['pLN']);
+         $email = data_GetOne($row['UserEmail'], $row['pEM']);
 
-           $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
-           $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
-           $pdata['queueId'] = $row['QueueId'];
-           $pdata['signupTimestamp'] = $row['SignupTimestamp'];
-           $pdata['className'] = $row['ClassName'];
-           $pdata['classId'] = $row['ClassId'];
-           $retValue[] = $pdata;
+         $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
+         $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
+         $pdata['queueId'] = $row['QueueId'];
+         $pdata['signupTimestamp'] = $row['SignupTimestamp'];
+         $pdata['className'] = $row['ClassName'];
+         $pdata['classId'] = $row['ClassId'];
+         $retValue[] = $pdata;
       }
    }
-
    mysql_free_result($result);
 
    return $retValue;
 }
 
+
 function GetParticipantsForRound($previousRoundId)
- {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
+{
    $retValue = array();
-
    $rrid = (int) $previousRoundId;
-
    $query = "SELECT :User.id AS UserId, Username, :Player.firstname FirstName, :Player.lastname LastName, Role, :Player.email Email, Sex, YEAR(birthdate) YearOfBirth,
-
                                :Player.player_id AS PlayerId, pdga PDGANumber, Classification,
                                :Participation.id AS ParticipationID,
                                :RoundResult.Result, :Participation.DidNotFinish
-
                   FROM `:Round`
                   INNER JOIN :RoundResult ON :RoundResult.`Round` = `:Round`.id
                   INNER JOIN :Participation ON (:Participation.Player = :RoundResult.Player AND :Participation.Event = `:Round`.Event)
                   INNER JOIN :Player ON :RoundResult.Player = :Player.player_id
                   INNER JOIN :User ON :Player.player_id = :User.Player
                   WHERE :RoundResult.Round = $rrid
-                  ORDER BY :Participation.Standing
-                  ";
-   $query = format_query($query);
-   $result = mysql_query($query);
+                  ORDER BY :Participation.Standing";
 
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $query = format_query($query);
+   $result = execute_query($query);
+
+   require_once 'core/player.php';
+   require_once 'core/user.php';
 
    if (mysql_num_rows($result) > 0) {
       while ($row = mysql_fetch_assoc($result)) {
-           $pdata = array();
+         $pdata = array();
 
-           $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $row['FirstName'], $row['LastName'], $row['Email'], $row['PlayerId']);
-           $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $row['FirstName'], $row['LastName'], $row['Email']);
-           $pdata['participationId'] = $row['ParticipationID'];
-           $pdata['classification'] = $row['Classification'];
-           $pdata['result'] = $row['Result'];
-           $pdata['didNotFinish']=  $row['DidNotFinish'];
+         $pdata['user'] = new User($row['UserId'], $row['Username'], $row['Role'], $row['FirstName'], $row['LastName'], $row['Email'], $row['PlayerId']);
+         $pdata['player'] = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $row['FirstName'], $row['LastName'], $row['Email']);
+         $pdata['participationId'] = $row['ParticipationID'];
+         $pdata['classification'] = $row['Classification'];
+         $pdata['result'] = $row['Result'];
+         $pdata['didNotFinish']=  $row['DidNotFinish'];
 
-           $retValue[] = $pdata;
+         $retValue[] = $pdata;
       }
    }
    mysql_free_result($result);
@@ -2375,219 +2336,168 @@ function GetParticipantsForRound($previousRoundId)
    return $retValue;
 }
 
+
 function SaveTextContent($page)
-   {
+{
+   if (!is_a($page, 'TextContent'))
+      return new Error();
 
-      if (!is_a($page, 'TextContent')) {
-         return new Error();
-      }
+   if (!$page->id) {
+      $query = format_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
+                       VALUES (%s, '%s', '%s', FROM_UNIXTIME(%d), '%s', %d)",
+                       esc_or_null($page->event, "int"),
+                       escape_string($page->title),
+                       escape_string($page->content),
+                       time(),
+                       escape_string($page->type),
+                       0);
+   }
+   else {
+      $query = format_query("UPDATE :TextContent
+                           SET
+                              Title = '%s',
+                              Content = '%s',
+                              Date = FROM_UNIXTIME(%d),
+                              `Type` = '%s'
+                              WHERE id = %d",
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+                              mysql_real_escape_string($page->title),
+                              mysql_real_escape_string($page->content),
+                              time(),
+                              $page->type,
+                              (int) $page->id);
+   }
+   $result = execute_query($query);
 
-      if (!$page->id) {
-         $query = format_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
-                          VALUES (%s, '%s', '%s', FROM_UNIXTIME(%d), '%s', %d)",
-                          esc_or_null($page->event, "int"),
-                          mysql_real_escape_string($page->title),
-                          mysql_real_escape_string($page->content),
-                          time(),
-                          mysql_real_escape_string($page->type),
-                          0
-                     );
-
-      }
-      else {
-         $query = format_query("UPDATE :TextContent
-                              SET
-                                 Title = '%s',
-                                 Content = '%s',
-                                 Date = FROM_UNIXTIME(%d),
-                                 `Type` = '%s'
-                                 WHERE id = %d",
-
-                                 mysql_real_escape_string($page->title),
-                                 mysql_real_escape_string($page->content),
-                                 time(),
-                                 $page->type,
-                                 (int) $page->id
-                                 );
-
-      }
-
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         $retValue = new Error();
-                $retValue->title = "error_db_query";
-                $retValue->description = translate( "error_db_query_description");
-                $retValue->internalDescription = "Failed SQL INSERT query:" . $query;
-                $retValue->function = "SaveTextContent()";
-                $retValue->IsMajor = true;
-      }
+   if (!$result) {
+      $retValue = new Error();
+      $retValue->title = "error_db_query";
+      $retValue->description = translate( "error_db_query_description");
+      $retValue->internalDescription = "Failed SQL INSERT query:" . $query;
+      $retValue->function = "SaveTextContent()";
+      $retValue->IsMajor = true;
    }
 
-  function GetRoundHoles($roundId)
-  {
-      require_once 'core/hole.php';
+   mysql_free_result($result);
+}
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
+
+function GetRoundHoles($roundId)
+{
+   require_once 'core/hole.php';
+
+   $retValue = array();
+   $roundId = (int) $roundId;
+   $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id Round
+                         FROM :Hole
+                         INNER JOIN :Course ON (:Course.id = :Hole.Course)
+                         INNER JOIN :Round ON (:Round.Course = :Course.id)
+                         WHERE :Round.id = $roundId
+                         ORDER BY HoleNumber");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $index = 1;
+      while ($row = mysql_fetch_assoc($result)) {
+         $hole =  new Hole($row);
+         $retValue[] = $hole;
       }
-
-      $retValue = array();
-      $roundId = (int) $roundId;
-
-      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id Round
-                            FROM :Hole
-                            INNER JOIN :Course ON (:Course.id = :Hole.Course)
-                            INNER JOIN :Round ON (:Round.Course = :Course.id)
-                            WHERE :Round.id = $roundId
-                            ORDER BY HoleNumber");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         $index = 1;
-         while ($row = mysql_fetch_assoc($result)) {
-            $hole =  new Hole($row);
-            $retValue[] = $hole;
-
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
    }
+   mysql_free_result($result);
 
-   function GetCourseHoles($courseId)
-   {
-      require_once 'core/hole.php';
+   return $retValue;
+}
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
+
+function GetCourseHoles($courseId)
+{
+   require_once 'core/hole.php';
+
+   $retValue = array();
+   $query= format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
+                         WHERE Course = %d
+                         ORDER BY HoleNumber", $courseId);
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $index = 1;
+      while ($row = mysql_fetch_assoc($result)) {
+         $hole =  new Hole($row);
+         $retValue[] = $hole;
       }
-
-      $retValue = array();
-      $query= format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
-                            WHERE Course = %d
-                            ORDER BY HoleNumber", $courseId);
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return $result;
-      }
-
-      if (mysql_num_rows($result) > 0) {
-         $index = 1;
-         while ($row = mysql_fetch_assoc($result)) {
-            $hole =  new Hole($row);
-            $retValue[] = $hole;
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
    }
+   mysql_free_result($result);
 
-   function CourseUsed($courseId)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
+   return $retValue;
+}
+
+
+function CourseUsed($courseId)
+{
+   $query = format_query("SELECT id FROM `:Round` WHERE `:Round`.Course = %d LIMIT 1", $courseId);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   return mysql_num_rows($res) == 1;
+}
+
+
+function GetEventHoles($eventId)
+{
+   require_once 'core/hole.php';
+
+   $retValue = array();
+   $eventId = (int) $eventId;
+   $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round FROM :Hole
+                         INNER JOIN :Course ON (:Course.id = :Hole.Course)
+                         INNER JOIN :Round ON (:Round.Course = :Course.id)
+                         INNER JOIN :Event ON :Round.Event = :Event.id
+                         WHERE :Event.id = $eventId
+                         ORDER BY :Round.StartTime, HoleNumber");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $index = 1;
+      while ($row = mysql_fetch_assoc($result)) {
+         $hole =  new Hole($row);
+         $retValue[] = $hole;
       }
-
-      $query = format_query("SELECT id FROM `:Round` WHERE `:Round`.Course = %d LIMIT 1", $courseId);
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      return mysql_num_rows($res) == 1;
    }
+   mysql_free_result($result);
 
-   function GetEventHoles($eventId)
-   {
-      require_once 'core/hole.php';
+   return $retValue;
+}
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
 
-      $retValue = array();
-      $eventId = (int) $eventId;
+function GetHoleDetails($holeid)
+{
+   require_once 'core/hole.php';
 
-      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round FROM :Hole
-                            INNER JOIN :Course ON (:Course.id = :Hole.Course)
-                            INNER JOIN :Round ON (:Round.Course = :Course.id)
-                            INNER JOIN :Event ON :Round.Event = :Event.id
-                            WHERE :Event.id = $eventId
-                            ORDER BY :Round.StartTime, HoleNumber");
-      $result = mysql_query($query);
+   $retValue = null;
+   $holeid = (int) $holeid;
+   $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
+                         :Course.id CourseId, :Round.id RoundId FROM :Hole
+                         LEFT JOIN :Course ON (:Course.id = :Hole.Course)
+                         LEFT JOIN :Round ON (:Round.Course = :Course.id)
+                         WHERE :Hole.id = $holeid
+                         ORDER BY HoleNumber");
+   $result = execute_query($query);
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   if (!$result)
+      return Error::Query($query);
 
-      if (mysql_num_rows($result) > 0) {
-         $index = 1;
-         while ($row = mysql_fetch_assoc($result)) {
-            $hole =  new Hole($row);
-            $retValue[] = $hole;
-
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
+   if (mysql_num_rows($result) > 0) {
+      $index = 1;
+      $row = mysql_fetch_assoc($result);
+      $retValue =  new Hole($row);
    }
+   mysql_free_result($result);
 
-   function GetHoleDetails($holeid)
-   {
-      require_once 'core/hole.php';
+   return $retValue;
+}
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $retValue = null;
-      $holeid = (int) $holeid;
-
-      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
-                            :Course.id CourseId, :Round.id RoundId FROM :Hole
-                            LEFT JOIN :Course ON (:Course.id = :Hole.Course)
-                            LEFT JOIN :Round ON (:Round.Course = :Course.id)
-                            WHERE :Hole.id = $holeid
-                            ORDER BY HoleNumber");
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) > 0) {
-         $index = 1;
-         $row = mysql_fetch_assoc($result);
-         $retValue =  new Hole($row);
-      }
-
-      mysql_free_result($result);
-      return $retValue;
-   }
 
    function GetRoundResults($roundId, $sortedBy)
    {
