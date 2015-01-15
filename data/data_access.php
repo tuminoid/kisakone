@@ -392,325 +392,252 @@ function data_GetEvents($conditions, $sort_mode = null)
 }
 
 
-   // Gets events for a specific tournament
-   function GetTournamentEvents($tournamentId)
-   {
-      $tournamentId = (int) $tournamentId;
-      $conditions = ":Event.Tournament = $tournamentId";
-      return data_GetEvents($conditions);
+// Gets events for a specific tournament
+function GetTournamentEvents($tournamentId)
+{
+   $tournamentId = (int) $tournamentId;
+   $conditions = ":Event.Tournament = $tournamentId";
+   return data_GetEvents($conditions);
+}
+
+
+// Gets the number of people who have signed up for a tournament
+function GetTournamentParticipantCount($tournamentId)
+{
+   $retValue = null;
+   $tournamentId = (int) $tournamentId;
+
+   $query = format_query("SELECT COUNT(DISTINCT :Participation.Player) Count FROM :Event
+                  INNER JOIN :Participation ON :Participation.Event = :Event.id
+                  WHERE :Event.Tournament = $tournamentId AND :Participation.EventFeePaid IS NOT NULL");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $temp = mysql_fetch_assoc($result);
+      $retValue = $temp['Count'];
    }
+   mysql_free_result($result);
 
-   // Gets the number of people who have signed up for a tournament
-   function GetTournamentParticipantCount($tournamentId)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return $retValue;
+}
 
-      $retValue = null;
-      $tournamentId = (int) $tournamentId;
 
-      $query = format_query("SELECT COUNT(DISTINCT :Participation.Player) Count FROM :Event
-                     INNER JOIN :Participation ON :Participation.Event = :Event.id
-                     WHERE :Event.Tournament = $tournamentId AND :Participation.EventFeePaid IS NOT NULL");
+// Gets an Event object by ID or null if the event was not found
+function GetEventDetails($eventid)
+{
+   if (empty($eventid))
+      return null;
 
-      $result = mysql_query($query);
+   $retValue = null;
+   $id = (int) $eventid;
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   global $user;
+   if ($user && $user->id) {
+      $uid = $user->id;
 
-      if (mysql_num_rows($result) > 0) {
-         $temp = mysql_fetch_assoc($result);
-         $retValue = $temp['Count'];
-      } else {
+      $player = $user->GetPlayer();
+      $pid = $player ? $player->id : -1;
 
-      }
-      mysql_free_result($result);
-
-       return $retValue;
+      $query = format_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, AdBanner, :Event.Name, ContactInfo,
+                                      UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
+                                      UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
+                                      :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid, :Participation.Standing, :Level.id LevelId,
+                                      :Level.Name Level, :Tournament.id TournamentId, :Tournament.Name Tournament, :Participation.SignupTimestamp
+                                      FROM :Event
+                                      LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
+                                      LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $pid)
+                                      LEFT Join :Venue ON :Venue.id = :Event.Venue
+                                      LEFT JOIN :Level ON :Level.id = :Event.Level
+                                      LEFT JOIN :Tournament ON :Tournament.id = :Event.Tournament
+                                      WHERE :Event.id = $id ");
    }
-
-   // Gets an Event object by ID or null if the event was not found
-   function GetEventDetails($eventid)
-   {
-      if (empty($eventid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $eventid;
-
-      global $user;
-      if ($user) {
-         $uid = $user->id;
-         $player = $user->GetPlayer();
-         if ($player)
-            $pid = $player->id;
-         else
-            $pid = -1;
-
-         $query = format_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, AdBanner, :Event.Name, ContactInfo,
-                                         UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
-                                         UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-                                         :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid, :Participation.Standing, :Level.id LevelId,
-                                         :Level.Name Level, :Tournament.id TournamentId, :Tournament.Name Tournament, :Participation.SignupTimestamp
-                                         FROM :Event
-                                         LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
-                                         LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $pid)
-                                         LEFT Join :Venue ON :Venue.id = :Event.Venue
-                                         LEFT JOIN :Level ON :Level.id = :Event.Level
-                                         LEFT JOIN :Tournament ON :Tournament.id = :Event.Tournament
-                                         WHERE :Event.id = $id ");
-
-      } else {
-         $query = format_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, AdBanner, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, ContactInfo,
-                               UNIX_TIMESTAMP(SignupStart) SignupStart, UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked, :Level.id LevelId, :Level.Name Level,
-                               :Tournament.id TournamentId, :Tournament.Name Tournament
-                                         FROM :Event
-                                         LEFT JOIN :Level ON :Level.id = :Event.Level
-                                         LEFT JOIN :Tournament ON :Tournament.id = :Event.Tournament
-                                         LEFT Join :Venue ON :Venue.id = :Event.Venue
-                                         WHERE :Event.id = $id ");
-      }
-
-      $result = mysql_query($query);
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Event($row);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
+   else {
+      $query = format_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, AdBanner, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, ContactInfo,
+                            UNIX_TIMESTAMP(SignupStart) SignupStart, UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked, :Level.id LevelId, :Level.Name Level,
+                            :Tournament.id TournamentId, :Tournament.Name Tournament
+                                      FROM :Event
+                                      LEFT JOIN :Level ON :Level.id = :Event.Level
+                                      LEFT JOIN :Tournament ON :Tournament.id = :Event.Tournament
+                                      LEFT Join :Venue ON :Venue.id = :Event.Venue
+                                      WHERE :Event.id = $id ");
    }
+   $result = execute_query($query);
 
-   // Gets an array of strings containing Venue names that match the searchQuery
-   function GetVenueNames($searchQuery = '')
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   if (!$result)
+      return Error::Query($query);
 
-      $retValue = array();
-      $query = "SELECT DISTINCT Name FROM :Venue";
-
-         $query .= " WHERE %s";
-
-      $query .= " ORDER BY Name";
-
-      $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('Name')));
-
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-
-            $retValue[] = $row['Name'];
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Event($row);
    }
+   mysql_free_result($result);
 
-   // Gets an array of Tournament objects for a specific year
-   function GetTournaments($year, $onlyAvailable = false)
-   {
-      require_once 'core/tournament.php';
-      if ($year && ($year < 2000 || $year > 2100)) return Error::InternalError();
+   return $retValue;
+}
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
 
-    $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available FROM :Tournament WHERE 1 ");
-    if ($year) {
+// Gets an array of strings containing Venue names that match the searchQuery
+function GetVenueNames($searchQuery = '')
+{
+   $retValue = array();
+   $query = "SELECT DISTINCT Name FROM :Venue";
+   $query .= " WHERE %s";
+   $query .= " ORDER BY Name";
+   $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('Name')));
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = $row['Name'];
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets an array of Tournament objects for a specific year
+function GetTournaments($year, $onlyAvailable = false)
+{
+   if ($year && ($year < 2000 || $year > 2100))
+      return Error::InternalError();
+
+   require_once 'core/tournament.php';
+   $retValue = array();
+
+   $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available FROM :Tournament WHERE 1 ");
+   if ($year) {
       $year = (int) $year;
       $query .= " AND Year = $year ";
-    }
-    if ($onlyAvailable) {
-         $query .= " AND Available <> 0";
-    }
+   }
+   if ($onlyAvailable) {
+      $query .= " AND Available <> 0";
+   }
+   $query .= " ORDER BY Year, Name";
 
-    $query .= " ORDER BY Year, Name";
+   $result = execute_query($query);
 
-    $retValue = array();
-    $result = mysql_query($query);
-
-    if (!$result)
-      log_mysql_error($query, __LINE__, false);
-
-    if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
          $retValue[] = new Tournament($row['id'], $row['Level'], $row['Name'], $row['Year'], $row['ScoreCalculationMethod'], $row['Available']);
-      }
-    }
-    mysql_free_result($result);
-
-    return $retValue;
    }
+   mysql_free_result($result);
 
-   // Gets an array of Level objects (optionally filtered by the Available bit)
-   function GetLevels($availableOnly = false)
-   {
-      require_once 'core/level.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return $retValue;
+}
 
-      $retValue = array();
-      $query = "SELECT id, Name, ScoreCalculationMethod, Available FROM :Level";
 
-      if ($availableOnly) {
-         $query .= " WHERE Available <> 0";
-      }
-      $query = format_query($query);
-      $result = mysql_query($query);
+// Gets an array of Level objects (optionally filtered by the Available bit)
+function GetLevels($availableOnly = false)
+{
+   require_once 'core/level.php';
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   $retValue = array();
+   $query = "SELECT id, Name, ScoreCalculationMethod, Available FROM :Level";
 
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-         }
-      }
-      mysql_free_result($result);
+   if ($availableOnly)
+      $query .= " WHERE Available <> 0";
+   $query = format_query($query);
+   $result = execute_query($query);
 
-      return $retValue;
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
    }
+   mysql_free_result($result);
 
-   // Gets a Level object by id
-   function GetLevelDetails($levelId)
-   {
-      require_once 'core/level.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return $retValue;
+}
 
-      $retValue = array();
-      $levelId = (int) $levelId;
 
-      $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
-      $result = mysql_query($query);
+// Gets a Level object by id
+function GetLevelDetails($levelId)
+{
+   require_once 'core/level.php';
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   $retValue = array();
+   $levelId = (int) $levelId;
 
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-      }
-      mysql_free_result($result);
+   $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
+   $result = execute_query($query);
 
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
    }
+   mysql_free_result($result);
 
-   // Gets an array of Classification objects (optionally filtered by the Available bit)
-   function GetClasses($onlyAvailable = false)
-   {
-      require_once 'core/classification.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = array();
+   return $retValue;
+}
 
-      $query = "SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification";
-      if ($onlyAvailable) {
-         $query .= " WHERE Available <> 0";
-      }
-      $query .= " ORDER BY Name";
-      $query = format_query($query);
 
-      $result = mysql_query($query);
+// Gets an array of Classification objects (optionally filtered by the Available bit)
+function GetClasses($onlyAvailable = false)
+{
+   require_once 'core/classification.php';
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   $retValue = array();
 
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue[] = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-                                                      $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
-         }
-      }
+   $query = "SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification";
+   if ($onlyAvailable)
+      $query .= " WHERE Available <> 0";
+   $query .= " ORDER BY Name";
+   $query = format_query($query);
+   $result = execute_query($query);
 
-        mysql_free_result($result);
-
-      return $retValue;
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
+                                                   $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
    }
+   mysql_free_result($result);
 
-   // Gets a Classification object by id
-   function GetClassDetails($classId)
-   {
-      require_once 'core/classification.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $classId = (int) $classId;
+   return $retValue;
+}
 
-      $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
-      $result = mysql_query($query);
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+// Gets a Classification object by id
+function GetClassDetails($classId)
+{
+   require_once 'core/classification.php';
 
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-                                                      $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
-      }
+   $retValue = null;
+   $classId = (int) $classId;
 
-      mysql_free_result($result);
+   $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
+   $result = execute_query($query);
 
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
+                                                   $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
    }
+   mysql_free_result($result);
 
-   // Gets a Section object by id
-   function GetSectionDetails($sectionId)
-   {
-      require_once 'core/section.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $sectionId = (int) $sectionId;
+   return $retValue;
+}
 
-      $query = format_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) StartTime, Present, Classification FROM :Section WHERE id = $sectionId");
-      $result = mysql_query($query);
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+// Gets a Section object by id
+function GetSectionDetails($sectionId)
+{
+   require_once 'core/section.php';
 
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Section($row);
-      }
+   $retValue = null;
+   $sectionId = (int) $sectionId;
 
-      mysql_free_result($result);
+   $query = format_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) StartTime, Present, Classification FROM :Section WHERE id = $sectionId");
+   $result = execute_query($query);
 
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Section($row);
    }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
 
 /**
  * Function for creating a new event
@@ -723,237 +650,193 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
 {
     $retValue = null;
 
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
     $query = format_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
                      (%d, %d, %d, '%s', FROM_UNIXTIME(%d), %d, %d, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s), '%s', %d)",
                       esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), mysql_real_escape_string($name),
                       (int) $start, (int) $duration, (int) $playerlimit,
                       esc_or_null($signup_start, 'int'), esc_or_null($signup_end,'int'), mysql_escape_string($contact),
                       $requireFees );
-
-    $result = mysql_query($query);
-
-    if (!$result)
-      log_mysql_error($query, __LINE__, false);
+    $result = execute_query($query);
 
     if ($result) {
         $eventid = mysql_insert_id();
         $retValue = $eventid;
 
-        $retValue = SetClasses( $eventid, $classes);
-        if ( !is_a( $retValue, 'Error')) {
-            $retValue = SetTD( $eventid, $td);
-            if ( !is_a( $retValue, 'Error')) {
-                $retValue = SetOfficials( $eventid, $officials);
-            }
+        $retValue = SetClasses($eventid, $classes);
+        if (!is_a($retValue, 'Error')) {
+            $retValue = SetTD($eventid, $td);
+            if (!is_a($retValue, 'Error'))
+                $retValue = SetOfficials($eventid, $officials);
         }
-
-    } else {
+    }
+    else
         return Error::Query($query, 'CreateEvent');
-    }
 
-    if (!is_a($retValue, 'Error')) {
+    if (!is_a($retValue, 'Error'))
       $retValue = $eventid;
-    }
 
     return $retValue;
 }
 
-   // Edits users user and player information
-   function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $dobyear)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
 
-      $query = format_query("UPDATE :User SET UserEmail = %s, UserFirstName = %s, UserLastName = %s WHERE id = %d",
-                                      esc_or_null($email), esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), (int) $userid);
+// Edits users user and player information
+function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $dobyear)
+{
 
-      $result = mysql_query($query);
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($user_query);
-      }
+   $query = format_query("UPDATE :User SET UserEmail = %s, UserFirstName = %s, UserLastName = %s WHERE id = %d",
+                                   esc_or_null($email), esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), (int) $userid);
+   $result = execute_query($query);
 
-      $u = GetUserDetails($userid);
-      $player = $u->GetPlayer();
-      if ($player) {
-         $playerid = $player->id;
+   if (!$result)
+      return Error::Query($user_query);
 
-         $query = format_query("UPDATE :Player SET sex = %s, pdga = %s,
-                                 birthdate = '%s', firstname = %s, lastname = %s,
-                                 email = %s
-                                 WHERE player_id = %d",
-                                       strtoupper($gender) == 'M' ? "'male'" : "'female'", esc_or_null($pdga, 'int'), (int) $dobyear . '-1-1',
-                                       esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), esc_or_null($email),
-                                       (int) $playerid);
+   $u = GetUserDetails($userid);
+   $player = $u->GetPlayer();
+   if ($player) {
+      $playerid = $player->id;
 
-         $result = mysql_query($query);
-
-         if (!$result) {
-            log_mysql_error($query, __LINE__, false);
-            return Error::Query($plr_query);
-         }
-      }
-   }
-
-   // Gets Events by date
-   function GetEventsByDate($start, $end)
-   {
-      $start = (int) $start;
-      $end = (int) $end;
-
-      return  data_GetEvents("Date BETWEEN FROM_UNIXTIME($start) AND FROM_UNIXTIME($end)");
-   }
-
-   // Get all Classifications in an Event
-   function GetEventClasses($event)
-   {
-      require_once 'core/classification.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $retValue = array();
-      $event = (int) $event;
-
-      $query = format_query("SELECT :Classification.id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
-                     FROM :Classification, :ClassInEvent
-                     WHERE :ClassInEvent.Classification = :Classification.id AND
-                           :ClassInEvent.Event = $event
-                           ORDER BY Name");
-      $result = mysql_query($query);
+      $query = format_query("UPDATE :Player SET sex = %s, pdga = %s,
+                              birthdate = '%s', firstname = %s, lastname = %s,
+                              email = %s
+                              WHERE player_id = %d",
+                                    strtoupper($gender) == 'M' ? "'male'" : "'female'", esc_or_null($pdga, 'int'), (int) $dobyear . '-1-1',
+                                    esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), esc_or_null($email),
+                                    (int) $playerid);
+      $result = execute_query($query);
 
       if (!$result)
-         log_mysql_error($query, __LINE__, false);
+         return Error::Query($plr_query);
+   }
+}
 
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue[] = new Classification($row);
-         }
-         mysql_free_result($result);
-      }
 
-      return $retValue;
+// Gets Events by date
+function GetEventsByDate($start, $end)
+{
+   $start = (int) $start;
+   $end = (int) $end;
+   return  data_GetEvents("Date BETWEEN FROM_UNIXTIME($start) AND FROM_UNIXTIME($end)");
+}
+
+
+// Get all Classifications in an Event
+function GetEventClasses($event)
+{
+   require_once 'core/classification.php';
+
+   $retValue = array();
+   $event = (int) $event;
+   $query = format_query("SELECT :Classification.id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
+                  FROM :Classification, :ClassInEvent
+                  WHERE :ClassInEvent.Classification = :Classification.id AND
+                        :ClassInEvent.Event = $event
+                        ORDER BY Name");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = new Classification($row);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+/* Get Quotas for Classes in Event */
+function GetEventQuotas($eventId)
+{
+   $retValue = array();
+   $event = (int) $eventId;
+
+   // All classes as assoc array
+   $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
+                  FROM :Classification, :ClassInEvent
+                  WHERE :ClassInEvent.Classification = :Classification.id AND
+                        :ClassInEvent.Event = $eventId
+                        ORDER BY Name");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = $row;
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Return min and max quota for a class
+function GetEventClassQuota($eventid, $classid)
+{
+   $quotas = GetEventQuotas($eventid);
+   foreach ($quotas as $quota) {
+      if ($quota['id'] == $classid)
+         return array($quota['MinQuota'], $quota['MaxQuota']);
    }
 
-   /* Get Quotas for Classes in Event */
-   function GetEventQuotas($eventId)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   // not found, give defaults
+   return array(0, 999);
+}
 
-      $retValue = array();
-      $event = (int) $eventId;
 
-      // All classes as assoc array
-      $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
-                     FROM :Classification, :ClassInEvent
-                     WHERE :ClassInEvent.Classification = :Classification.id AND
-                           :ClassInEvent.Event = $eventId
-                           ORDER BY Name");
+// Set class's min quota
+function SetEventClassMinQuota($eventid, $classid, $quota)
+{
+   $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d WHERE Event = %d AND Classification = %d",
+                 $quota, $eventid, $classid);
+   $result = execute_query($query);
 
-      $result = mysql_query($query);
+   if (!$result)
+      return Error::Query($query);
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+   return mysql_affected_rows() == 1;
+}
 
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue[] = $row;
-         }
-         mysql_free_result($result);
-      }
 
-      return $retValue;
+// Set class's max quota
+function SetEventClassMaxQuota($eventid, $classid, $quota)
+{
+   $query = format_query("UPDATE :ClassInEvent SET MaxQuota = %d WHERE Event = %d AND Classification = %d",
+                 $quota, $eventid, $classid);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   return mysql_affected_rows() == 1;
+}
+
+
+// Get sections for a Round
+function GetSections($round, $order = 'time')
+{
+   require_once 'core/section.php';
+
+   $retValue = array();
+   $roundId = (int) $round;
+   $query = "SELECT :Section.id,  Name,
+                         UNIX_TIMESTAMP(StartTime) StartTime, Priority, Classification, Round, Present
+                                      FROM :Section
+                                      WHERE :Section.Round = $roundId ORDER BY ";
+
+   if ($order == 'time')
+      $query .= "Priority, StartTime, Name";
+   else
+      $query .= "Classification, Name";
+   $query = format_query($query);
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result))
+         $retValue[] = new Section($row);
    }
+   mysql_free_result($result);
 
-   // Return min and max quota for a class
-   function GetEventClassQuota($eventid, $classid)
-   {
-      $quotas = GetEventQuotas($eventid);
-      foreach ($quotas as $quota) {
-         if ($quota['id'] == $classid)
-            return array($quota['MinQuota'], $quota['MaxQuota']);
-      }
-      // not found, give defaults
-      return array(0, 999);
-   }
+   return $retValue;
+}
 
-   // Set class's min quota
-   function SetEventClassMinQuota($eventid, $classid, $quota)
-   {
-      $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d WHERE Event = %d AND Classification = %d",
-                    $quota, $eventid, $classid);
-      $result = mysql_query($query);
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      return mysql_affected_rows() == 1;
-   }
-
-   // Set class's max quota
-   function SetEventClassMaxQuota($eventid, $classid, $quota)
-   {
-      $query = format_query("UPDATE :ClassInEvent SET MaxQuota = %d WHERE Event = %d AND Classification = %d",
-                    $quota, $eventid, $classid);
-      $result = mysql_query($query);
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      return mysql_affected_rows() == 1;
-   }
-
-   // Get sections for a Round
-   function GetSections($round, $order = 'time')
-   {
-      require_once 'core/section.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $retValue = array();
-      $roundId = (int) $round;
-
-      $query = "SELECT :Section.id,  Name,
-                            UNIX_TIMESTAMP(StartTime) StartTime, Priority, Classification, Round, Present
-                                         FROM :Section
-                                         WHERE :Section.Round = $roundId ORDER BY ";
-
-      if ($order == 'time') {
-         $query .= "Priority, StartTime, Name";
-      } else {
-         $query .= "Classification, Name";
-      }
-      $query = format_query($query);
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $retValue[] = new Section($row);
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
 
    // Get rounds for an event by event id
    function GetEventRounds($event)
