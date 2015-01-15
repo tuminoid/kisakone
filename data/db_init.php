@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module. Init database connections.
  *
@@ -51,7 +51,7 @@ function data_query($query)
     static $prefix = false;
     if ($prefix === false) {
        global $settings;
-        $prefix = $settings['DB_PREFIX'];
+       $prefix = $settings['DB_PREFIX'];
     }
 
     $query = str_replace(':', $prefix, $query);
