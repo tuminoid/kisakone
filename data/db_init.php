@@ -54,6 +54,53 @@ function escape_string($string)
 
 
 /**
+ * Returns $param as a database safe string surrounded by apostrophes
+ *
+ * Returns 'NULL' if $param is null
+ * The type controls how the parameter should be escaped
+ */
+function esc_or_null($param, $type = 'string')
+{
+    $retValue = "NULL";
+
+    if ($param !== null) {
+        switch ($type) {
+            case 'string':
+                $retValue = "'" . escape_string($param) . "'";
+                break;
+
+            case 'long':
+            case 'int':
+                $retValue = (int) $param;
+                break;
+
+            case 'double':
+            case 'float':
+            case 'decimal':
+                $retValue = (float) $param;
+                break;
+
+            case 'gender':
+                $param = strtoupper($param);
+                if ($param == 'M' || $param == 'F')
+                  $retValue = "'" . $param . "'";
+                break;
+
+            case 'bool':
+                $retValue = $param ? 1 : 0;
+                break;
+
+            default:
+                die("Unknown type: $type (param = $param)");
+                break;
+        }
+    }
+
+    return $retValue;
+}
+
+
+/**
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
  */

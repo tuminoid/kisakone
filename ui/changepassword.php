@@ -31,6 +31,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
    language_include('admin');
    if (@$_GET['mode'] == 'recover') {
+      require_once 'data/login.php';
+
       // Recover password mode: using a token instead of using the current password
       $user = GetUserDetails(@$_GET['id']);
       $token = GetUserSecurityToken(@$_GET['id']);

@@ -24,6 +24,7 @@
 
 require_once 'data/login.php';
 
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error

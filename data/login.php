@@ -28,9 +28,12 @@ require_once 'core/login.php';
 /**
  * Check user authentication
  *
- * Returns a array of data for creating User ob if $username and $password matched a user in the database
- * Returns null if no match was found
- * Returns an Error object if there was a connection error or if the user is banned
+ * @param string $username username
+ * @param string $password plaintext password
+ *
+ * @return a array of data for creating User ob if $username and $password matched a user in the database
+ * @return null if no match was found
+ * @return an Error object if there was a connection error or if the user is banned
  */
 function CheckUserAuthentication($username, $password)
 {
@@ -80,6 +83,10 @@ function CheckUserAuthentication($username, $password)
 
 /**
  * Get user login data, ie. array of (pass, hashtype, salt)
+ *
+ * @param string $username username
+ * @return null on failure
+ * @return array of (password, hashtype, salt) on success
  */
 function GetLoginData($username)
 {
@@ -102,6 +109,12 @@ function GetLoginData($username)
 
 /**
  * Change users password in database
+ *
+ * @param int $userid user id
+ * @param int $password plaintext password
+ *
+ * @return null on success
+ * @return Error object on failure
  */
 function ChangeUserPassword($userid, $password)
 {
@@ -127,5 +140,53 @@ function ChangeUserPassword($userid, $password)
     mysql_free_result($result);
 
     return null;
+}
+
+
+/**
+ * Returns an MD5 hash calculated from the User properties
+ *
+ * @param int $userid user id whose token should be calculated
+ * @return token
+ * @return null if the user was not found
+ */
+function GetUserSecurityToken($userid)
+{
+    $token = GetAutoLoginToken($userid);
+    if ($token)
+        return substr($token, 0, 10);
+    return $retValue;
+}
+
+
+/**
+ * Gets an MD5 hash of the User properties
+ *
+ * @param int $userid user id whose hash should be calculated
+ * @return token
+ * @return null if the user was not found
+ */
+function GetAutoLoginToken($userid)
+{
+    if (empty($userid))
+        return null;
+
+    $retValue = null;
+    $id = (int) $userid;
+
+    $query = format_query("SELECT id,Username,UserEmail,Password FROM :User WHERE id = $id");
+    $result = execute_query($query);
+
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $text = '';
+
+        foreach ($row as $field)
+            $text .= $field;
+        $retValue = md5($text);
+    }
+    mysql_free_result($result);
+
+    return $retValue;
 }
 

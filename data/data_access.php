@@ -25,559 +25,372 @@
 require_once 'data/db_init.php';
 
 
-/* ****************************************************************************
- * Utility data structures and functions
- *
- * */
-
-   // Returns $param as a database safe string surrounded by apostrophes
-   // Returns 'NULL' if $param is null
-   // The type controls how the parameter should be escaped
-   function esc_or_null($param, $type = 'string')
-   {
-      $retValue = "NULL";
-
-      if ($param !== null) {
-         switch ($type) {
-            case 'string':
-               $retValue = "'".mysql_real_escape_string($param)."'";
-               break;
-            case 'long':
-            case 'int':
-               $retValue = (int) $param;
-               break;
-            case 'double':
-            case 'float':
-            case 'decimal':
-               $retValue = (float) $param;
-               break;
-            case 'gender':
-               $param = strtoupper($param);
-               if ($param == 'M' || $param == 'F') {
-                  $retValue = "'".$param."'";
-               }
-               break;
-            case 'bool':
-               if ($param) {
-                  $retValue = 1;
-               } else {
-                  $retValue = 0;
-               }
-            default:
-               die("Unknown type in function esc_or_null: $type (param = $param)");
-               break;
-         }
-      }
-
-      return $retValue;
-   }
-
-/* ****************************************************************************
- * Functions for retrieving data
- *
- * */
-
-   // Gets the user id for the username
-   // Returns null if the user was not found
-   function GetUserId($username)
-   {
-      if (empty($username))
-         return null;
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $uname = mysql_real_escape_string($username);
-
-      $query = format_query("SELECT id FROM :User WHERE Username = '$uname'");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = $row['id'];
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Returns true if the user is a staff member in any tournament
-   function UserIsManagerAnywhere($userid)
-   {
-      if (empty($userid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = false;
-      $userid = (int) $userid;
-
-      $query = format_query("SELECT :User.id FROM :User
-                            INNER JOIN :EventManagement ON :User.id = :EventManagement.User
-                            WHERE :User.id = $userid AND (:EventManagement.Role = 'TD' OR :EventManagement.Role = 'Official')");
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) == 1) {
-         $retValue = true;
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Returns a User object for the user whose email is $email
-   // Returns null if no user was found
-   function GetUserIdByEmail($email)
-   {
-      if (empty($email)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $email = mysql_real_escape_string($email);
-      // Note: email is not indexed, but this is such a rare query so we'll just let mysql scan the table
-
-      // Todo: use :Player.email? not really necessary though
-      $query = format_query("SELECT id FROM :User WHERE UserEmail = '$email'");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = $row['id'];
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Returns an array of User objects
-   function GetUsers($searchQuery = '', $sortOrder = '')
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = array();
-
-      $query = "SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, :User.Player,
-                       :Player.lastname pLN, :Player.firstname pFN, :Player.email pEM
-                FROM :User
-                LEFT JOIN :Player ON :User.Player = :Player.player_id";
-      $query .= " WHERE %s " ;
-
-      if ($sortOrder) {
-        $query .= " ORDER BY " . data_CreateSortOrder($sortOrder,
-            array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username' ));
-      } else {
-        $query .= " ORDER BY Username";
-      }
-      $prefix = $GLOBALS['settings']['DB_PREFIX'];
-      $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('UserFirstname', 'UserLastname', 'Username', $prefix . 'Player.lastname', $prefix. 'Player.firstname')));
-
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new User($row['id'], $row['Username'], $row['Role'],
-                             data_GetOne( $row['UserFirstname'], $row['pFN']),
-                             data_GetOne( $row['UserLastname'], $row['pLN']),
-                             data_GetOne( $row['UserEmail'], $row['pEM']), $row['Player']
-                             );
-            $retValue[] = $temp;
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Returns an array of User objects for users who are also Players
-   // (optionally filtered by search conditions provided in $query)
-   function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = array();
-      if ($with_pdga_number)
-         $searchConditions = data_ProduceSearchConditions($query, array('Username', 'pdga', 'UserFirstname', 'UserLastname'));
-      else
-         $searchConditions = data_ProduceSearchConditions($query, array('Username', 'UserFirstname', 'UserLastname'));
-
-      $query = (format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player FROM :User
-                                       INNER JOIN :Player ON :Player.player_id = :User.Player
-                            WHERE :User.Player IS NOT NULL AND %s", $searchConditions));
-
-      if ($sortOrder) {
-        $query .= " ORDER BY " . data_CreateSortOrder($sortOrder, array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username' ));
-      } else {
-        $query .= " ORDER BY Username";
-      }
-
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new User($row['id'], $row['Username'], $row['Role'], $row['UserFirstname'], $row['UserLastname'], $row['UserEmail'], $row['Player']);
-            $retValue[] = $temp;
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Gets a User object by the PDGA number of the associated Player
-   // Returns null if no user was found
-   function GetUsersByPdga($pdga)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $pdga = (int) $pdga;
-
-      $retValue = array();
-
-      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                            :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
-                            FROM :User
-                            INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.pdga = '$pdga'
-                            ");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new User($row['id'], $row['Username'], $row['Role'],
-                             data_GetOne($row['UserFirstname'], $row['pFN']),
-                             data_GetOne($row['UserLastname'], $row['pLN']),
-                             data_GetOne($row['UserEmail'], $row['pEM']));
-            $retValue[] = $temp;
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Gets a User object by the id number
-   // Returns null if no user was found
-   function GetUserDetails($userid)
-   {
-      if (empty($userid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $userid;
-
-      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                                       :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM,
-                                       :User.Player
-                                       FROM :User
-                                       LEFT JOIN :Player on :Player.player_id = :User.Player
-                                       WHERE id = $id");
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new User($row['id'], $row['Username'], $row['Role'], data_GetOne($row['UserFirstname'], $row['pFN']), data_GetOne($row['UserLastname'], $row['pLN']), data_GetOne($row['UserEmail'], $row['pEM']), $row['Player']);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Returns an MD5 hash calculated from the User properties
-   // Returns null if the user was not found
-   function GetUserSecurityToken($userid)
-   {
-      if (empty($userid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $userid;
-
-
-      // Note: the hash of the user's password is included, so changing the password
-      // invalidates the token, which is good.
-      $query = format_query("SELECT * FROM :User WHERE id = $id");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $text = '';
-
-         foreach ($row as $field) $text .= $field;
-         $retValue = substr(md5($text), 0, 10);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Gets an MD5 hash of the User properties
-   function GetAutoLoginToken($userid)
-   {
-      if (empty($userid))
-         return null;
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $userid;
-
-      // Note: the hash of the user's password is included, so changing the password
-      // invalidates the token, which is good.
-      $query = format_query("SELECT * FROM :User WHERE id = $id");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $text = '';
-
-         foreach ($row as $field) $text .= $field;
-         $retValue = md5($text);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Gets a Player object by id or null if the player was not found
-   function GetPlayerDetails($playerid)
-   {
-      if (empty($playerid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $retValue = null;
-      $id = (int) $playerid;
-
-      $query = format_query("SELECT player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth
-                                         FROM :Player
-                                         WHERE player_id = $id");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Player($row['id'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth']);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   // Gets a User object associated with Playerid
-   function GetPlayerUser($playerid = null)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      if ($playerid === null)
-         return null;
-
-      $playerid = (int) $playerid;
-      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                            :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
-                            FROM :User
-                            INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'
-                            ");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) === 1) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new User($row['id'], $row['Username'], $row['Role'],
-                             data_GetOne($row['UserFirstname'], $row['pFN']),
-                             data_GetOne($row['UserLastname'], $row['pLN']),
-                             data_GetOne($row['UserEmail'], $row['pEM']), $playerid);
-
-            return $temp;
-         }
-      }
-      mysql_free_result($result);
-
+// Gets the user id for the username
+// Returns null if the user was not found
+function GetUserId($username)
+{
+   if (empty($username))
       return null;
+
+   $retValue = null;
+   $uname = escape_string($username);
+
+   $query = format_query("SELECT id FROM :User WHERE Username = '$uname'");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = $row['id'];
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Returns true if the user is a staff member in any tournament
+function UserIsManagerAnywhere($userid)
+{
+   if (empty($userid))
+      return null;
+
+   $retValue = false;
+   $userid = (int) $userid;
+
+   $query = format_query("SELECT :User.id FROM :User
+                         INNER JOIN :EventManagement ON :User.id = :EventManagement.User
+                         WHERE :User.id = $userid AND (:EventManagement.Role = 'TD' OR :EventManagement.Role = 'Official')");
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   $retValue = mysql_num_rows($result) == 1;
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Returns a User object for the user whose email is $email
+// Returns null if no user was found
+function GetUserIdByEmail($email)
+{
+   if (empty($email))
+      return null;
+
+   $retValue = null;
+   $email = escape_string($email);
+
+   $query = format_query("SELECT id FROM :User WHERE UserEmail = '$email'");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = $row['id'];
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Returns an array of User objects
+function GetUsers($searchQuery = '', $sortOrder = '')
+{
+   $retValue = array();
+
+   $query = "SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, :User.Player,
+                    :Player.lastname pLN, :Player.firstname pFN, :Player.email pEM
+             FROM :User
+             LEFT JOIN :Player ON :User.Player = :Player.player_id";
+   $query .= " WHERE %s ";
+
+   if ($sortOrder)
+      $query .= " ORDER BY " . data_CreateSortOrder($sortOrder,
+         array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username' ));
+   else
+      $query .= " ORDER BY Username";
+
+   $query = format_query($query,
+      data_ProduceSearchConditions($searchQuery,
+         array('UserFirstname', 'UserLastname', 'Username', ':Player.lastname', ':Player.firstname')));
+
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new User($row['id'], $row['Username'], $row['Role'],
+                          data_GetOne( $row['UserFirstname'], $row['pFN']),
+                          data_GetOne( $row['UserLastname'], $row['pLN']),
+                          data_GetOne( $row['UserEmail'], $row['pEM']), $row['Player']
+                          );
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Returns an array of User objects for users who are also Players
+// (optionally filtered by search conditions provided in $query)
+function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
+{
+   $retValue = array();
+
+   if ($with_pdga_number)
+      $searchConditions = data_ProduceSearchConditions($query, array('Username', 'pdga', 'UserFirstname', 'UserLastname'));
+   else
+      $searchConditions = data_ProduceSearchConditions($query, array('Username', 'UserFirstname', 'UserLastname'));
+
+   $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player
+      FROM :User
+      INNER JOIN :Player ON :Player.player_id = :User.Player
+      WHERE :User.Player IS NOT NULL AND %s", $searchConditions);
+
+   if ($sortOrder)
+      $query .= " ORDER BY " . data_CreateSortOrder($sortOrder, array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username' ));
+   else
+     $query .= " ORDER BY Username";
+
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new User($row['id'], $row['Username'], $row['Role'], $row['UserFirstname'], $row['UserLastname'], $row['UserEmail'], $row['Player']);
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets a User object by the PDGA number of the associated Player
+// Returns null if no user was found
+function GetUsersByPdga($pdga)
+{
+   $pdga = (int) $pdga;
+   $retValue = array();
+
+   $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+                           :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
+                         FROM :User
+                         INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.pdga = '$pdga'");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new User($row['id'],
+                        $row['Username'],
+                        $row['Role'],
+                        data_GetOne($row['UserFirstname'], $row['pFN']),
+                        data_GetOne($row['UserLastname'], $row['pLN']),
+                        data_GetOne($row['UserEmail'], $row['pEM']));
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets a User object by the id number
+// Returns null if no user was found
+function GetUserDetails($userid)
+{
+   if (empty($userid))
+      return null;
+
+   $retValue = null;
+   $id = (int) $userid;
+
+   $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+                                    :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM,
+                                    :User.Player
+                                    FROM :User
+                                    LEFT JOIN :Player on :Player.player_id = :User.Player
+                                    WHERE id = $id");
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new User($row['id'], $row['Username'], $row['Role'], data_GetOne($row['UserFirstname'], $row['pFN']), data_GetOne($row['UserLastname'], $row['pLN']), data_GetOne($row['UserEmail'], $row['pEM']), $row['Player']);
    }
 
-   // Gets a Player object for the User by userid or null if the player was not found
-   function GetUserPlayer($userid)
-   {
-      require_once 'core/player.php';
-      if (empty($userid)) {
-         return null;
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets a Player object by id or null if the player was not found
+function GetPlayerDetails($playerid)
+{
+   if (empty($playerid))
+      return null;
+
+   $retValue = null;
+   $id = (int) $playerid;
+
+   $query = format_query("SELECT player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth
+        FROM :Player
+        WHERE player_id = $id");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Player($row['id'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth']);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets a User object associated with Playerid
+function GetPlayerUser($playerid = null)
+{
+   if ($playerid === null)
+      return null;
+
+   $playerid = (int) $playerid;
+   $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+                            :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
+                         FROM :User
+                         INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'");
+   $result = mysql_query($query);
+
+   if (mysql_num_rows($result) === 1) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new User($row['id'],
+                        $row['Username'],
+                        $row['Role'],
+                        data_GetOne($row['UserFirstname'], $row['pFN']),
+                        data_GetOne($row['UserLastname'], $row['pLN']),
+                        data_GetOne($row['UserEmail'], $row['pEM']),
+                        $playerid);
+
+         return $temp;
       }
+   }
+   mysql_free_result($result);
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   return null;
+}
 
-      $retValue = null;
-      $id = (int) $userid;
 
-      $query = format_query("SELECT :Player.player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth, firstname, lastname, email
-                                         FROM :Player INNER JOIN :User ON :User.Player = :Player.player_id
-                                         WHERE :User.id = $id");
+// Gets a Player object for the User by userid or null if the player was not found
+function GetUserPlayer($userid)
+{
+   if (empty($userid))
+      return null;
 
-      $result = mysql_query($query);
+   require_once 'core/player.php';
 
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
+   $retValue = null;
+   $id = (int) $userid;
+   $query = format_query("SELECT :Player.player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth, firstname, lastname, email
+                                      FROM :Player INNER JOIN :User ON :User.Player = :Player.player_id
+                                      WHERE :User.id = $id");
+   $result = mysql_query($query);
 
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new Player($row['id'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $row['firstname'], $row['lastname'], $row['email']);
-      }
+   if (!$result)
+      return Error::Query($query);
 
-      return $retValue;
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new Player($row['id'],
+                           $row['PDGANumber'],
+                           $row['Sex'],
+                           $row['YearOfBirth'],
+                           $row['firstname'],
+                           $row['lastname'],
+                           $row['email']);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+// Gets an array of Event objects where the conditions match
+function data_GetEvents($conditions, $sort_mode = null)
+{
+   $retValue = array();
+
+   global $event_sort_mode;
+   if ($sort_mode !== null) {
+      $sort = "`$sort_mode`";
+   }
+   elseif (!$event_sort_mode) {
+     $sort = "`Date`";
+   }
+   else {
+     $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
    }
 
-   // Gets an array of Event objects where the conditions match
-   function data_GetEvents($conditions, $sort_mode = null)
-   {
-      $retValue = array();
-      $dbError = InitializeDatabaseConnection();
+   global $user;
+   if ($user && $user->id) {
+      $uid = $user->id;
 
-      if ($dbError) {
-         return $dbError;
-      }
+      $player = $user->GetPlayer();
+      if (is_a($player, 'Error'))
+         return $player;
+      $playerid = $player ? $player->id : -1;
 
-      global $event_sort_mode;
-      if ($sort_mode !== null) {
-         $sort = "`$sort_mode`";
-      }
-      elseif (!$event_sort_mode) {
-        $sort = "`Date`";
-      }
-      else {
-        $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
-      }
-      global $user;
-
-      if ($user && $user->id) {
-         $uid = $user->id;
-
-         $player = $user->GetPlayer();
-         if (is_a($player, 'Error'))
-            return $player;
-         $playerid = $player ? $player->id : -1;
-
-         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
-               Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
-               UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-               :Level.Name LevelName, :EventManagement.Role AS Management, :Participation.Approved,
-               :Participation.EventFeePaid, :Participation.Standing
-           FROM :Event
-           LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
-           LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $playerid)
-           LEFT JOIN :Level ON :Event.Level = :Level.id
-           INNER Join :Venue ON :Venue.id = :Event.Venue
-           WHERE $conditions
-           ORDER BY %s", $sort);
-      }
-      else {
-         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
-               Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
-               UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-               :Level.Name LevelName
-           FROM :Event
-           INNER Join :Venue ON :Venue.id = :Event.Venue
-           LEFT JOIN :Level ON :Event.Level = :Level.id
-           WHERE $conditions
-           ORDER BY %s", $sort);
-      }
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
-      }
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new Event($row);
-            $retValue[] = $temp;
-         }
-      }
-      mysql_free_result($result);
-
-      return $retValue;
+      $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+            Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
+            UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
+            UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
+            :Level.Name LevelName, :EventManagement.Role AS Management, :Participation.Approved,
+            :Participation.EventFeePaid, :Participation.Standing
+        FROM :Event
+        LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
+        LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $playerid)
+        LEFT JOIN :Level ON :Event.Level = :Level.id
+        INNER Join :Venue ON :Venue.id = :Event.Venue
+        WHERE $conditions
+        ORDER BY %s", $sort);
    }
+   else {
+      $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+            Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
+            UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
+            UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
+            :Level.Name LevelName
+        FROM :Event
+        INNER Join :Venue ON :Venue.id = :Event.Venue
+        LEFT JOIN :Level ON :Event.Level = :Level.id
+        WHERE $conditions
+        ORDER BY %s", $sort);
+   }
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new Event($row);
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
 
    // Gets events for a specific tournament
    function GetTournamentEvents($tournamentId)

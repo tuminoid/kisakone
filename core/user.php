@@ -361,6 +361,7 @@ class user
     function SendPasswordRecoveryEmail()
     {
         require_once 'core/email.php';
+        require_once 'data/login.php';
 
         $token = GetUserSecurityToken($this->id);
         $prototol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
