@@ -1594,241 +1594,180 @@ return $retValue;
 }
 
 
-   function GetAllTextContent($eventid)
-   {
-      require_once 'core/textcontent.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = array();
-
-      if ($eventid)
-         $eventCond = " = " . (int) $eventid;
-      else
-         $eventCond = " IS NULL";
-
-      $eventid =  esc_or_null( $eventid, 'int');
-      $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date)
-                                       Date, Type, `Order`  FROM :TextContent
-                                       WHERE Event $eventCond AND Type !=  'news' ORDER BY `order`");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new TextContent($row);
-            $retValue[] = $temp;
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   function GetEventNews($eventid, $from, $count)
-   {
-      require_once 'core/textcontent.php';
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = array();
-      $eventid = (int) $eventid;
-      $from = (int) $from;
-      $count = (int) $count;
-
-      $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) Date,
-                                       Type, `Order`  FROM :TextContent
-                                       WHERE Event = $eventid AND Type =  'news' ORDER BY `date` DESC
-                                       LIMIT $from, $count");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) > 0) {
-         while ($row = mysql_fetch_assoc($result)) {
-            $temp = new TextContent($row);
-            $retValue[] = $temp;
-         }
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   function GetTextContent($pageid)
-   {
-      if (empty($pageid)) {
-         return null;
-      }
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $pageid;
-
-      $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE id = $id ");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new TextContent($row);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   function GetTextContentByEvent($eventid, $type)
-   {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $eventid;
-      $type = mysql_real_escape_string($type);
-
-      if ($id)
-         $eventCond = "= $id";
-      else
-         $eventCond = "IS NULL";
-
-      $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `type` = '$type' ");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) != 0) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new TextContent($row);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   function GetTextContentByTitle($eventid, $title)
-   {
-
-
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-      $retValue = null;
-      $id = (int) $eventid;
-      $title = mysql_real_escape_string($title);
-
-      if ($id)
-         $eventCond = "= $id";
-      else
-         $eventCond = "IS NULL";
-
-      $query =format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `title` = '$title' ");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-
-      if (mysql_num_rows($result) == 1) {
-         $row = mysql_fetch_assoc($result);
-         $retValue = new TextContent($row);
-      }
-
-      mysql_free_result($result);
-
-      return $retValue;
-   }
-
-   function EditClass($id, $name, $minage, $maxage, $gender, $available)
+function GetAllTextContent($eventid)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
+   require_once 'core/textcontent.php';
 
+   $retValue = array();
+   $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
+   $eventid = esc_or_null($eventid, 'int');
+   $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date)
+                                    Date, Type, `Order`  FROM :TextContent
+                                    WHERE Event $eventCond AND Type !=  'news' ORDER BY `order`");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new TextContent($row);
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+function GetEventNews($eventid, $from, $count)
+{
+   require_once 'core/textcontent.php';
+
+   $retValue = array();
+   $eventid = (int) $eventid;
+   $from = (int) $from;
+   $count = (int) $count;
+
+   $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) Date,
+                                    Type, `Order`  FROM :TextContent
+                                    WHERE Event = $eventid AND Type =  'news' ORDER BY `date` DESC
+                                    LIMIT $from, $count");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_assoc($result)) {
+         $temp = new TextContent($row);
+         $retValue[] = $temp;
+      }
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+function GetTextContent($pageid)
+{
+   if (empty($pageid))
+      return null;
+
+   $retValue = null;
+   $id = (int) $pageid;
+   $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE id = $id ");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new TextContent($row);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+function GetTextContentByEvent($eventid, $type)
+{
+   $retValue = null;
+   $id = (int) $eventid;
+   $type = escape_string($type);
+   $eventCond = $id ? "= $id" : "IS NULL";
+
+   $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `type` = '$type' ");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) > 0) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new TextContent($row);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+function GetTextContentByTitle($eventid, $title)
+{
+   $retValue = null;
+   $id = (int) $eventid;
+   $title = mysql_real_escape_string($title);
+   $eventCond = $id ? "= $id" : "IS NULL";
+
+   $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `title` = '$title' ");
+   $result = execute_query($query);
+
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
+      $retValue = new TextContent($row);
+   }
+   mysql_free_result($result);
+
+   return $retValue;
+}
+
+
+function EditClass($id, $name, $minage, $maxage, $gender, $available)
+{
    $query = format_query("UPDATE :Classification SET Name = '%s', MinimumAge = %s, MaximumAge = %s, GenderRequirement = %s, Available = %d
                            WHERE id = %d",
-                    mysql_real_escape_string($name), esc_or_null($minage,'int'), esc_or_null($maxage, 'int'), esc_or_null($gender, 'gender'), $available ? 1:0, $id);
-   $result = mysql_query($query);
+                    escape_string($name), esc_or_null($minage,'int'), esc_or_null($maxage, 'int'),
+                    esc_or_null($gender, 'gender'), $available ? 1:0, $id);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL UPDATE";
-       $err->function = "EditClass()";
-       $err->IsMajor = true;
-       $err->data = "Class id: " . $id;
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL UPDATE";
+      $err->function = "EditClass()";
+      $err->IsMajor = true;
+      $err->data = "Class id: " . $id;
 
-       return $err;
+      return $err;
    }
+   mysql_free_result($result);
 }
+
 
 function CreateClass($name, $minage, $maxage, $gender, $available)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available) VALUES ('%s', %s, %s, %s, %d);",
                     mysql_real_escape_string($name), esc_or_null($minage, 'int'), esc_or_null($maxage, 'int'), esc_or_null($gender, 'gender'), $available ? 1:0);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL INSERT";
-       $err->function = "CreateClass()";
-       $err->IsMajor = true;
-       $err->data = "Class name: " . $name;
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL INSERT";
+      $err->function = "CreateClass()";
+      $err->IsMajor = true;
+      $err->data = "Class name: " . $name;
 
-       return $err;
+      return $err;
    }
+   mysql_free_result($result);
 }
+
 
 function DeleteClass($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("DELETE FROM :Classification WHERE id = ". (int) $id);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL DELETE";
-       $err->function = "DeleteClass()";
-       $err->IsMajor = true;
-       $err->data = "Class id: " . $id;
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL DELETE";
+      $err->function = "DeleteClass()";
+      $err->IsMajor = true;
+      $err->data = "Class id: " . $id;
 
-       return $err;
+      return $err;
    }
+   mysql_free_result($result);
 }
+
 
 // Returns true if the provided class is being used in any event, false otherwise
 function ClassBeingUsed($id)

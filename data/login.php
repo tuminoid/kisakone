@@ -33,7 +33,7 @@ require_once 'core/login.php';
  *
  * @return a array of data for creating User ob if $username and $password matched a user in the database
  * @return null if no match was found
- * @return an Error object if there was a connection error or if the user is banned
+ * @return an Error object if there was a connection error
  */
 function CheckUserAuthentication($username, $password)
 {
@@ -44,10 +44,8 @@ function CheckUserAuthentication($username, $password)
 
     $usr = escape_string($username);
     $logindata = GetLoginData($usr);
-    if (!$logindata) {
-        error_log("error: failed to get login data for '$usr'");
+    if (!$logindata)
         return null;
-    }
 
     $db_hash = $logindata[0];
     $usr_hash = GenerateHash($password, $logindata[1], $logindata[2]);
