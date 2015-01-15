@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains functionality for managing users
  *
@@ -44,46 +44,38 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname,
 {
     $err = null;
 
-    if (isset($gender)) {
-        if ('male' == $gender) {
-            $gender = PLAYER_GENDER_MALE;
-        } elseif ('female' == $gender) {
-            $gender = PLAYER_GENDER_FEMALE;
-        }
-    }
+    if (isset($gender) && $gender == "female")
+        $gender = PLAYER_GENDER_FEMALE;
+    else
+        $gender = PLAYER_GENDER_MALE;
 
     $player = new Player(null, $pdga, $gender, $birthyear, $firstname, $lastname, $email);
     $err = $player->ValidatePlayer();
     if (!isset($err)) {
         $player = SetPlayerDetails($player);
-        if (is_a( $player, "Error")) {
+        if (is_a($player, "Error"))
             return $player;
-        }
-
-    } else {
-        return $err;
     }
+    else
+        return $err;
 
     $user = new User(null, $username, USER_ROLE_PLAYER,
                      $firstname, $lastname, $email, $player->id);
     $err = $user->ValidateUser();
-    if (!isset( $err)) {
-        if ($user->username !== null) {
+    if (!isset($err)) {
+        if ($user->username !== null)
             $err = $user->SetPassword($password);
-        }
 
         if (!isset($err)) {
             $user = SetUserDetails($user);
-            if (is_a( $user, "Error")) {
+            if (is_a($user, "Error")) {
                 $err = $user;
                 $user = null;
             }
         }
     }
-
-    if ($err) {
+    else
         return $err;
-    }
 
     return $user;
 }
