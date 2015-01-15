@@ -57,5 +57,11 @@ $settings["PDGA_USERNAME"] = "";
 $settings["PDGA_PASSWORD"] = "";
 
 
+/*
+ * DEVELOPMENT/ERROR HANDLING/TECHNICAL
+ */
 // php 5.3 spits out deprecation warnings without this
 error_reporting(E_ERROR);
+
+// mysql debugging
+$settings['DB_ERROR_LOGGING'] = false;
