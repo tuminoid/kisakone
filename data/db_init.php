@@ -22,6 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+
 /**
  * Connects to the database
  */
@@ -46,7 +47,7 @@ function InitializeDatabaseConnection()
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
  */
-function data_query($query)
+function format_query($query)
 {
     static $prefix = false;
     if ($prefix === false) {
@@ -59,6 +60,54 @@ function data_query($query)
     $args[0] = $query;
 
     return call_user_func_array('sprintf', $args);
+}
+
+
+/**
+ * Formats and executes SQL query
+ */
+function execute_query($query, $return_ob_on_failure = null)
+{
+    $dbError = InitializeDatabaseConnection();
+    if ($dbError)
+        return $dbError;
+
+    if (empty($query))
+        return null;
+
+    $formatted_query = format_query($query);
+    $result = mysql_query($formatted_query);
+
+    if (!$result) {
+        global $settings;
+        $db_error_log = $settings['DB_ERROR_LOGGING'];
+
+        if (isset($db_error_log) && $db_error_log) {
+            error_log("error: execute_query failed");
+            error_log("original query: $query");
+            error_log("formatted query: $formatted_query");
+        }
+
+        if ($return_ob_on_failure)
+            return $return_ob_on_failure;
+    }
+
+    return $result;
+}
+
+
+/**
+ * Log mysql errors properly
+ */
+function log_mysql_error($query, $line, $fatal = false)
+{
+   $err = mysql_error();
+   $msg = "mysql_query('" . $query . "') => error: '" . $err . "' on line $line";
+
+   if ($fatal)
+      die($msg);
+
+   error_log($msg);
 }
 
 

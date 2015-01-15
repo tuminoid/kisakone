@@ -44,7 +44,7 @@ function CheckUserAuthentication($username, $password)
     $usr = mysql_real_escape_string($username);
     $pw = md5($password);
 
-    $query = data_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname,
+    $query = format_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname,
                                    :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
                                    FROM :User
                                    LEFT JOIN :Player ON :User.Player = :Player.player_id
@@ -81,7 +81,7 @@ function GetUserAuthenticationMethod($username)
         return $dbError;
 
     $usr = mysql_real_escape_string($username);
-    $query = data_query("SELECT Hash FROM :User WHERE Username = '%s'", $usr);
+    $query = format_query("SELECT Hash FROM :User WHERE Username = '%s'", $usr);
 
     $result = mysql_query($query);
     if (!$result)

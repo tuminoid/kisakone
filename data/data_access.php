@@ -25,22 +25,6 @@
 require_once 'data/db_init.php';
 
 
-/**
- * Log mysql errors properly
- */
-function log_mysql_error($query, $line, $fatal = false)
-{
-   $err = mysql_error();
-   $msg = "mysql_query('" . $query . "') => error: '" . $err . "' on line $line";
-
-   if ($fatal)
-      die($msg);
-
-   error_log($msg);
-}
-
-
-
 /* ****************************************************************************
  * Utility data structures and functions
  *
@@ -108,7 +92,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $uname = mysql_real_escape_string($username);
 
-      $query = data_query("SELECT id FROM :User WHERE Username = '$uname'");
+      $query = format_query("SELECT id FROM :User WHERE Username = '$uname'");
       $result = mysql_query($query);
 
       if (!$result)
@@ -137,7 +121,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = false;
       $userid = (int) $userid;
 
-      $query = data_query("SELECT :User.id FROM :User
+      $query = format_query("SELECT :User.id FROM :User
                             INNER JOIN :EventManagement ON :User.id = :EventManagement.User
                             WHERE :User.id = $userid AND (:EventManagement.Role = 'TD' OR :EventManagement.Role = 'Official')");
       $result = mysql_query($query);
@@ -172,7 +156,7 @@ function log_mysql_error($query, $line, $fatal = false)
       // Note: email is not indexed, but this is such a rare query so we'll just let mysql scan the table
 
       // Todo: use :Player.email? not really necessary though
-      $query = data_query("SELECT id FROM :User WHERE UserEmail = '$email'");
+      $query = format_query("SELECT id FROM :User WHERE UserEmail = '$email'");
       $result = mysql_query($query);
 
       if (!$result)
@@ -209,7 +193,7 @@ function log_mysql_error($query, $line, $fatal = false)
         $query .= " ORDER BY Username";
       }
       $prefix = $GLOBALS['settings']['DB_PREFIX'];
-      $query = data_query($query, data_ProduceSearchConditions($searchQuery, array('UserFirstname', 'UserLastname', 'Username', $prefix . 'Player.lastname', $prefix. 'Player.firstname')));
+      $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('UserFirstname', 'UserLastname', 'Username', $prefix . 'Player.lastname', $prefix. 'Player.firstname')));
 
       $result = mysql_query($query);
 
@@ -247,7 +231,7 @@ function log_mysql_error($query, $line, $fatal = false)
       else
          $searchConditions = data_ProduceSearchConditions($query, array('Username', 'UserFirstname', 'UserLastname'));
 
-      $query = (data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player FROM :User
+      $query = (format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player FROM :User
                                        INNER JOIN :Player ON :Player.player_id = :User.Player
                             WHERE :User.Player IS NOT NULL AND %s", $searchConditions));
 
@@ -285,7 +269,7 @@ function log_mysql_error($query, $line, $fatal = false)
 
       $retValue = array();
 
-      $query = data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
                             :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
                             FROM :User
                             INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.pdga = '$pdga'
@@ -324,7 +308,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $id = (int) $userid;
 
-      $query = data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
                                        :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM,
                                        :User.Player
                                        FROM :User
@@ -365,7 +349,7 @@ function log_mysql_error($query, $line, $fatal = false)
 
       // Note: the hash of the user's password is included, so changing the password
       // invalidates the token, which is good.
-      $query = data_query("SELECT * FROM :User WHERE id = $id");
+      $query = format_query("SELECT * FROM :User WHERE id = $id");
       $result = mysql_query($query);
 
       if (!$result)
@@ -400,7 +384,7 @@ function log_mysql_error($query, $line, $fatal = false)
 
       // Note: the hash of the user's password is included, so changing the password
       // invalidates the token, which is good.
-      $query = data_query("SELECT * FROM :User WHERE id = $id");
+      $query = format_query("SELECT * FROM :User WHERE id = $id");
       $result = mysql_query($query);
 
       if (!$result)
@@ -434,7 +418,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $id = (int) $playerid;
 
-      $query = data_query("SELECT player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth
+      $query = format_query("SELECT player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth
                                          FROM :Player
                                          WHERE player_id = $id");
       $result = mysql_query($query);
@@ -463,7 +447,7 @@ function log_mysql_error($query, $line, $fatal = false)
          return null;
 
       $playerid = (int) $playerid;
-      $query = data_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+      $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
                             :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
                             FROM :User
                             INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'
@@ -504,7 +488,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $id = (int) $userid;
 
-      $query = data_query("SELECT :Player.player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth, firstname, lastname, email
+      $query = format_query("SELECT :Player.player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth, firstname, lastname, email
                                          FROM :Player INNER JOIN :User ON :User.Player = :Player.player_id
                                          WHERE :User.id = $id");
 
@@ -533,13 +517,14 @@ function log_mysql_error($query, $line, $fatal = false)
          return $dbError;
       }
 
-
       global $event_sort_mode;
       if ($sort_mode !== null) {
          $sort = "`$sort_mode`";
-      } elseif (!$event_sort_mode) {
+      }
+      elseif (!$event_sort_mode) {
         $sort = "`Date`";
-      } else {
+      }
+      else {
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
       }
       global $user;
@@ -556,32 +541,33 @@ function log_mysql_error($query, $line, $fatal = false)
          else
             $playerid = -1; // -1 impossible normally
 
-
-         $query = data_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-                               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart, UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-                               :Level.Name LevelName,
-                                    :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid, :Participation.Standing
-                                         FROM :Event
-                                         LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
-                                         LEFT JOIN :Participation ON :Participation.Event = :Event.id AND :Participation.Player = $playerid
-                                         LEFT JOIN :Level ON :Event.Level = :Level.id
-                                         INNER Join :Venue ON :Venue.id = :Event.Venue
-                                         WHERE $conditions
-                                         ORDER BY %s ", $sort);
-
-      } else {
-
-         $query = data_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-                               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart, UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-                               :Level.Name LevelName
-                                         FROM :Event
-                                         INNER Join :Venue ON :Venue.id = :Event.Venue
-                                         LEFT JOIN :Level ON :Event.Level = :Level.id
-                                         WHERE $conditions
-                                         ORDER BY %s ", $sort);
+         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+               Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
+               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
+               UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
+               :Level.Name LevelName, :EventManagement.Role AS Management, :Participation.Approved,
+               :Participation.EventFeePaid, :Participation.Standing
+           FROM :Event
+           LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
+           LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $playerid)
+           LEFT JOIN :Level ON :Event.Level = :Level.id
+           INNER Join :Venue ON :Venue.id = :Event.Venue
+           WHERE $conditions
+           ORDER BY %s", $sort);
       }
-
-      $result =mysql_query($query);
+      else {
+         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+               Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
+               UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
+               UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
+               :Level.Name LevelName
+           FROM :Event
+           INNER Join :Venue ON :Venue.id = :Event.Venue
+           LEFT JOIN :Level ON :Event.Level = :Level.id
+           WHERE $conditions
+           ORDER BY %s", $sort);
+      }
+      $result = mysql_query($query);
 
       if (!$result) {
          log_mysql_error($query, __LINE__, false);
@@ -618,7 +604,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $tournamentId = (int) $tournamentId;
 
-      $query = data_query("SELECT COUNT(DISTINCT :Participation.Player) Count FROM :Event
+      $query = format_query("SELECT COUNT(DISTINCT :Participation.Player) Count FROM :Event
                      INNER JOIN :Participation ON :Participation.Event = :Event.id
                      WHERE :Event.Tournament = $tournamentId AND :Participation.EventFeePaid IS NOT NULL");
 
@@ -661,7 +647,7 @@ function log_mysql_error($query, $line, $fatal = false)
          else
             $pid = -1;
 
-         $query = data_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, AdBanner, :Event.Name, ContactInfo,
+         $query = format_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament, AdBanner, :Event.Name, ContactInfo,
                                          UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
                                          UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
                                          :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid, :Participation.Standing, :Level.id LevelId,
@@ -675,7 +661,7 @@ function log_mysql_error($query, $line, $fatal = false)
                                          WHERE :Event.id = $id ");
 
       } else {
-         $query = data_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, AdBanner, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, ContactInfo,
+         $query = format_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, AdBanner, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration, PlayerLimit, UNIX_TIMESTAMP(ActivationDate) ActivationDate, ContactInfo,
                                UNIX_TIMESTAMP(SignupStart) SignupStart, UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked, :Level.id LevelId, :Level.Name Level,
                                :Tournament.id TournamentId, :Tournament.Name Tournament
                                          FROM :Event
@@ -716,7 +702,7 @@ function log_mysql_error($query, $line, $fatal = false)
 
       $query .= " ORDER BY Name";
 
-      $query = data_query($query, data_ProduceSearchConditions($searchQuery, array('Name')));
+      $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('Name')));
 
       $result = mysql_query($query);
 
@@ -745,7 +731,7 @@ function log_mysql_error($query, $line, $fatal = false)
          return $dbError;
       }
 
-    $query = data_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available FROM :Tournament WHERE 1 ");
+    $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available FROM :Tournament WHERE 1 ");
     if ($year) {
       $year = (int) $year;
       $query .= " AND Year = $year ";
@@ -787,7 +773,7 @@ function log_mysql_error($query, $line, $fatal = false)
       if ($availableOnly) {
          $query .= " WHERE Available <> 0";
       }
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result)
@@ -815,7 +801,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = array();
       $levelId = (int) $levelId;
 
-      $query = data_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
+      $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
       $result = mysql_query($query);
 
       if (!$result)
@@ -845,7 +831,7 @@ function log_mysql_error($query, $line, $fatal = false)
          $query .= " WHERE Available <> 0";
       }
       $query .= " ORDER BY Name";
-      $query = data_query($query);
+      $query = format_query($query);
 
       $result = mysql_query($query);
 
@@ -875,7 +861,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $classId = (int) $classId;
 
-      $query = data_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
+      $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
       $result = mysql_query($query);
 
       if (!$result)
@@ -903,7 +889,7 @@ function log_mysql_error($query, $line, $fatal = false)
       $retValue = null;
       $sectionId = (int) $sectionId;
 
-      $query = data_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) StartTime, Present, Classification FROM :Section WHERE id = $sectionId");
+      $query = format_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) StartTime, Present, Classification FROM :Section WHERE id = $sectionId");
       $result = mysql_query($query);
 
       if (!$result)
@@ -935,7 +921,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
         return $dbError;
     }
 
-    $query = data_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
+    $query = format_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
                      (%d, %d, %d, '%s', FROM_UNIXTIME(%d), %d, %d, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s), '%s', %d)",
                       esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), mysql_real_escape_string($name),
                       (int) $start, (int) $duration, (int) $playerlimit,
@@ -978,7 +964,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
          return $dbError;
       }
 
-      $query = data_query("UPDATE :User SET UserEmail = %s, UserFirstName = %s, UserLastName = %s WHERE id = %d",
+      $query = format_query("UPDATE :User SET UserEmail = %s, UserFirstName = %s, UserLastName = %s WHERE id = %d",
                                       esc_or_null($email), esc_or_null(data_fixNameCase($firstname)), esc_or_null(data_fixNameCase($lastname)), (int) $userid);
 
       $result = mysql_query($query);
@@ -992,7 +978,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       if ($player) {
          $playerid = $player->id;
 
-         $query = data_query("UPDATE :Player SET sex = %s, pdga = %s,
+         $query = format_query("UPDATE :Player SET sex = %s, pdga = %s,
                                  birthdate = '%s', firstname = %s, lastname = %s,
                                  email = %s
                                  WHERE player_id = %d",
@@ -1030,7 +1016,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       $retValue = array();
       $event = (int) $event;
 
-      $query = data_query("SELECT :Classification.id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
+      $query = format_query("SELECT :Classification.id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
                      FROM :Classification, :ClassInEvent
                      WHERE :ClassInEvent.Classification = :Classification.id AND
                            :ClassInEvent.Event = $event
@@ -1062,7 +1048,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       $event = (int) $eventId;
 
       // All classes as assoc array
-      $query = data_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
+      $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
                      FROM :Classification, :ClassInEvent
                      WHERE :ClassInEvent.Classification = :Classification.id AND
                            :ClassInEvent.Event = $eventId
@@ -1098,7 +1084,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
    // Set class's min quota
    function SetEventClassMinQuota($eventid, $classid, $quota)
    {
-      $query = data_query("UPDATE :ClassInEvent SET MinQuota = %d WHERE Event = %d AND Classification = %d",
+      $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d WHERE Event = %d AND Classification = %d",
                     $quota, $eventid, $classid);
       $result = mysql_query($query);
       if (!$result) {
@@ -1112,7 +1098,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
    // Set class's max quota
    function SetEventClassMaxQuota($eventid, $classid, $quota)
    {
-      $query = data_query("UPDATE :ClassInEvent SET MaxQuota = %d WHERE Event = %d AND Classification = %d",
+      $query = format_query("UPDATE :ClassInEvent SET MaxQuota = %d WHERE Event = %d AND Classification = %d",
                     $quota, $eventid, $classid);
       $result = mysql_query($query);
       if (!$result) {
@@ -1145,7 +1131,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       } else {
          $query .= "Classification, Name";
       }
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result)
@@ -1174,7 +1160,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       $retValue = array();
       $event = (int) $event;
 
-      $query = data_query("SELECT id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime,
+      $query = format_query("SELECT id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime,
                             `Interval`, ValidResults, GroupsFinished FROM :Round WHERE Event = $event ORDER BY StartTime");
       $result = mysql_query($query);
 
@@ -1208,7 +1194,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       $retValue = null;
       $id = (int) $roundid;
 
-      $query = data_query("SELECT
+      $query = format_query("SELECT
          id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime, `Interval`, ValidResults, GroupsFinished
          FROM `:Round` WHERE id = $id ORDER BY StartTime");
       $result = mysql_query($query);
@@ -1240,7 +1226,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
       $retValue = array();
       $event = (int) $event;
 
-      $query = data_query("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event ,
+      $query = format_query("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event ,
                                        :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
                                        FROM :EventManagement, :User
                                        LEFT JOIN :Player ON :User.Player = :Player.player_id
@@ -1290,7 +1276,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
         $locking = 'NULL';
       }
 
-      $query = data_query("UPDATE `:Event` SET `Venue` = %d, `Tournament` = %s, Level = %d, `Name` = '%s', `Date` = FROM_UNIXTIME(%d),
+      $query = format_query("UPDATE `:Event` SET `Venue` = %d, `Tournament` = %s, Level = %d, `Name` = '%s', `Date` = FROM_UNIXTIME(%d),
                        `Duration` = %d, `PlayerLimit` = %d, `SignupStart` = FROM_UNIXTIME(%s), `SignupEnd` = FROM_UNIXTIME(%s),
                        ActivationDate = FROM_UNIXTIME( %s), ResultsLocked = FROM_UNIXTIME(%s), ContactInfo = '%s', FeesRequired = %d
 
@@ -1325,12 +1311,12 @@ function SetTD($eventid, $td)
 
     if ( isset( $eventid) and isset( $td)) {
         $eventid  = (int) $eventid;
-        $query = data_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = 'td'");
+        $query = format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = 'td'");
         $result = mysql_query($query);
         if (!$result)
             log_mysql_error($query, __LINE__, false);
 
-        $query = data_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
+        $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
                           (int) $td, (int) $eventid, 'td');
 
         $result = mysql_query($query);
@@ -1377,11 +1363,11 @@ function SetOfficials($eventid, $officials)
 
    $retValue = null;
    if ( isset( $eventid)) {
-      $clearingQuery = data_query("DELETE FROM :EventManagement WHERE Event = %d AND Role = 'official'", $eventid);
+      $clearingQuery = format_query("DELETE FROM :EventManagement WHERE Event = %d AND Role = 'official'", $eventid);
       mysql_query($clearingQuery);
 
       foreach ($officials as $official) {
-            $query = data_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
+            $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
                               (int) $official, (int) $eventid, 'official');
 
             $result = mysql_query($query);
@@ -1432,14 +1418,14 @@ function SetClasses($eventid, $classes)
       // get quotas for later restoring
       $quotas = GetEventQuotas($eventid);
 
-      $query = data_query("DELETE FROM :ClassInEvent WHERE Event = $eventid");
+      $query = format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid");
       $result = mysql_query($query);
 
       if (!$result)
          log_mysql_error($query, __LINE__, false);
 
       foreach ($classes as $class) {
-         $query = data_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES (%d, %d);",
+         $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES (%d, %d);",
                            (int) $class, (int) $eventid);
 
          if (!$result) {
@@ -1454,7 +1440,7 @@ function SetClasses($eventid, $classes)
          $min = (int) $quota['MinQuota'];
          $max = (int) $quota['MaxQuota'];
 
-         $query = data_query("UPDATE :ClassInEvent SET MinQuota = %d, MaxQuota = %d
+         $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d, MaxQuota = %d
                                  WHERE Event = %d AND Classification = %d",
                                  $min, $max, $eventid, $cid);
          $result = mysql_query($query);
@@ -1495,7 +1481,7 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
     $eventid = (int) $eventid;
     foreach ($deleteRounds as $toDelete) {
       $toDelete = (int) $toDelete;
-      $query = data_query("DELETE FROM :Round WHERE Event = $eventid AND id = $toDelete");
+      $query = format_query("DELETE FROM :Round WHERE Event = $eventid AND id = $toDelete");
       $result = mysql_query($query);
 
       if (!$result)
@@ -1519,7 +1505,7 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
 
         if ( empty( $roundid) || $roundid == '*') {
             // Create new round
-            $query = data_query( "INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults) VALUES (%d, %s, '%s', FROM_UNIXTIME(%d), %d, %d);",
+            $query = format_query( "INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults) VALUES (%d, %s, '%s', FROM_UNIXTIME(%d), %d, %d);",
                               $r_event, esc_or_null($r_course, 'int'), $r_starttype, $r_starttime, $r_interval, $r_validresults);
             $result = mysql_query($query);
 
@@ -1564,7 +1550,7 @@ function GetOrSetRoundCourse($roundid)
     $courseid = null;
 
     // Get the existing round
-    $query = data_query( "SELECT Course FROM :Round WHERE id = %d",
+    $query = format_query( "SELECT Course FROM :Round WHERE id = %d",
                       (int) $roundid);
     $result = mysql_query( $query);
 
@@ -1590,7 +1576,7 @@ function GetOrSetRoundCourse($roundid)
 
     if ( !isset( $courseid)) {
         // Create a new course for the round
-        $query = data_query( "INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
+        $query = format_query( "INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
                           "", "", "", "");
         $result = mysql_query($query);
 
@@ -1614,7 +1600,7 @@ function GetOrSetRoundCourse($roundid)
         }
 
         // Update round's course field
-        $query = data_query( "UPDATE :Round SET Course = %d WHERE id = %d;",
+        $query = format_query( "UPDATE :Round SET Course = %d WHERE id = %d;",
                           $courseid, $roundid);
         $result = mysql_query($query);
 
@@ -1657,7 +1643,7 @@ function SetCourseHoles($courseid, $holes)
         $h_length = 0;
 
         // Get the existing hole
-        $query = data_query( "SELECT id, HoleText, Par, Length FROM :Hole WHERE Course = %d AND HoleNumber = %d",
+        $query = format_query( "SELECT id, HoleText, Par, Length FROM :Hole WHERE Course = %d AND HoleNumber = %d",
                           (int) $courseid, $holenumber);
         $result = mysql_query( $query);
 
@@ -1678,7 +1664,7 @@ function SetCourseHoles($courseid, $holes)
         elseif ($nbr_of_results == 0) {
             mysql_free_result($result);
             // No existing hole, create new
-            $query = data_query( "INSERT INTO :Hole (Course, HoleNumber, HoleText, Par, Length) VALUES (%d, %d, %s, %d, %d);",
+            $query = format_query( "INSERT INTO :Hole (Course, HoleNumber, HoleText, Par, Length) VALUES (%d, %d, %s, %d, %d);",
                               $courseid, $holenumber, $h_text, $h_par, $h_length);
             $result = mysql_query($query);
 
@@ -1798,7 +1784,7 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
    // and double checking that player will not be in competition table twice
    CancelSignup($eventid, $playerid, false);
 
-   $query = data_query("INSERT INTO :$table (Player, Event, Classification) VALUES (%d, %d, %d);",
+   $query = format_query("INSERT INTO :$table (Player, Event, Classification) VALUES (%d, %d, %d);",
                          (int) $playerid, (int) $eventid, (int) $classid);
    $result = mysql_query($query);
 
@@ -1849,7 +1835,7 @@ function PromotePlayerFromQueue($eventId, $playerId)
    }
 
    // Get data from queue
-   $query = data_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
+   $query = format_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
    if (!$result)
       log_mysql_error($query, __LINE__, false);
 
@@ -1858,7 +1844,7 @@ function PromotePlayerFromQueue($eventId, $playerId)
       $row = mysql_fetch_assoc($result);
 
       // Insert into competition
-      $query = data_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
+      $query = format_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
                          (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], time());
       $result = mysql_query($query);
 
@@ -1868,7 +1854,7 @@ function PromotePlayerFromQueue($eventId, $playerId)
       }
 
       // Remove data from queue
-      $query = data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
+      $query = format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
       $result = mysql_query($query);
 
       if (!$result) {
@@ -1901,12 +1887,12 @@ function CancelSignup($eventId, $playerId, $check_promotion = true)
     }
 
     // Delete from event and queue
-    $query = data_query("DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId");
+    $query = format_query("DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId");
     $result = mysql_query($query);
     if (!$result)
       log_mysql_error($query, __LINE__, false);
 
-    $query = data_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
+    $query = format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
     $result = mysql_query($query);
     if (!$result)
       log_mysql_error($query, __LINE__, false);
@@ -1933,7 +1919,7 @@ function GetVenueId($venue)
     $venueid = null;
 
     // Get the existing venue
-    $query = data_query( "SELECT id FROM :Venue WHERE Name = '%s'",
+    $query = format_query( "SELECT id FROM :Venue WHERE Name = '%s'",
                       mysql_real_escape_string( $venue));
     $result = mysql_query( $query);
 
@@ -1949,7 +1935,7 @@ function GetVenueId($venue)
 
     if ( !isset( $venueid)) {
         // Create a new venue
-        $query = data_query( "INSERT INTO :Venue (Name) VALUES ('%s');",
+        $query = format_query( "INSERT INTO :Venue (Name) VALUES ('%s');",
                           mysql_real_escape_string( $venue));
         $result = mysql_query($query);
 
@@ -1981,7 +1967,7 @@ function GetVenueId($venue)
       return $dbError;
    }
 
-    $query = data_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
+    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
                             (int) $eventid, mysql_real_escape_string($title), mysql_real_escape_string($text));
     $result = mysql_query($query);
 
@@ -2006,7 +1992,7 @@ function EditNewsItem($itemid, $title, $text)
       return $dbError;
    }
 
-   $query = data_query("UPDATE :TextContent SET Title = '%s', Content = '%s' WHERE id = %d",
+   $query = format_query("UPDATE :TextContent SET Title = '%s', Content = '%s' WHERE id = %d",
                           mysql_real_escape_string($title), mysql_real_escape_string($text), (int) $itemid);
    $result = mysql_query($query);
 
@@ -2060,7 +2046,7 @@ function SetUserDetails($user)
         // Check that username is not already in use
         if ( !GetUserId( $user->username)) {
             // Username is unique, proceed to insert into table
-            $query = data_query( "INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player)
+            $query = format_query( "INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player)
                                     VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s);",
                               $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname, esc_or_null($user->player, 'int'));
             $result = mysql_query($query);
@@ -2122,7 +2108,7 @@ function SetPlayerDetails($player)
            return $dbError;
         }
 
-        $query = data_query( "INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email) VALUES (
+        $query = format_query( "INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email) VALUES (
                             %s, '%s', %s, %s, '%s', %s
                             );",
                           esc_or_null($player->pdga),
@@ -2178,7 +2164,7 @@ return $retValue;
          $eventCond = " IS NULL";
 
       $eventid =  esc_or_null( $eventid, 'int');
-      $query = data_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date)
+      $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date)
                                        Date, Type, `Order`  FROM :TextContent
                                        WHERE Event $eventCond AND Type !=  'news' ORDER BY `order`");
       $result = mysql_query($query);
@@ -2210,7 +2196,7 @@ return $retValue;
       $from = (int) $from;
       $count = (int) $count;
 
-      $query = data_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) Date,
+      $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) Date,
                                        Type, `Order`  FROM :TextContent
                                        WHERE Event = $eventid AND Type =  'news' ORDER BY `date` DESC
                                        LIMIT $from, $count");
@@ -2244,7 +2230,7 @@ return $retValue;
       $retValue = null;
       $id = (int) $pageid;
 
-      $query = data_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE id = $id ");
+      $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE id = $id ");
       $result = mysql_query($query);
 
       if (!$result)
@@ -2275,7 +2261,7 @@ return $retValue;
       else
          $eventCond = "IS NULL";
 
-      $query = data_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `type` = '$type' ");
+      $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `type` = '$type' ");
       $result = mysql_query($query);
 
       if (!$result)
@@ -2308,7 +2294,7 @@ return $retValue;
       else
          $eventCond = "IS NULL";
 
-      $query =data_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `title` = '$title' ");
+      $query =format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `title` = '$title' ");
       $result = mysql_query($query);
 
       if (!$result)
@@ -2331,7 +2317,7 @@ return $retValue;
       return $dbError;
    }
 
-   $query = data_query("UPDATE :Classification SET Name = '%s', MinimumAge = %s, MaximumAge = %s, GenderRequirement = %s, Available = %d
+   $query = format_query("UPDATE :Classification SET Name = '%s', MinimumAge = %s, MaximumAge = %s, GenderRequirement = %s, Available = %d
                            WHERE id = %d",
                     mysql_real_escape_string($name), esc_or_null($minage,'int'), esc_or_null($maxage, 'int'), esc_or_null($gender, 'gender'), $available ? 1:0, $id);
    $result = mysql_query($query);
@@ -2357,7 +2343,7 @@ function CreateClass($name, $minage, $maxage, $gender, $available)
       return $dbError;
    }
 
-   $query = data_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available) VALUES ('%s', %s, %s, %s, %d);",
+   $query = format_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available) VALUES ('%s', %s, %s, %s, %d);",
                     mysql_real_escape_string($name), esc_or_null($minage, 'int'), esc_or_null($maxage, 'int'), esc_or_null($gender, 'gender'), $available ? 1:0);
    $result = mysql_query($query);
 
@@ -2382,7 +2368,7 @@ function DeleteClass($id)
       return $dbError;
    }
 
-   $query = data_query("DELETE FROM :Classification WHERE id = ". (int) $id);
+   $query = format_query("DELETE FROM :Classification WHERE id = ". (int) $id);
    $result = mysql_query($query);
 
    if (!$result) {
@@ -2410,7 +2396,7 @@ function ClassBeingUsed($id)
    $retValue = true;
    $id = (int) $id;
 
-   $query = data_query("SELECT COUNT(*)   AS Events FROM :ClassInEvent WHERE Classification = %d"
+   $query = format_query("SELECT COUNT(*)   AS Events FROM :ClassInEvent WHERE Classification = %d"
                           , $id);
    $result = mysql_query($query);
 
@@ -2434,7 +2420,7 @@ function EditLevel($id, $name, $method, $available)
       return $dbError;
    }
 
-   $query = data_query("UPDATE :Level SET Name = '%s', ScoreCalculationMethod = '%s', Available = %d WHERE id = %d",
+   $query = format_query("UPDATE :Level SET Name = '%s', ScoreCalculationMethod = '%s', Available = %d WHERE id = %d",
                             mysql_real_escape_string($name), mysql_real_escape_string($method), $available ? 1:0, (int) $id);
    $result = mysql_query($query);
 
@@ -2461,7 +2447,7 @@ function CreateLevel($name, $method, $available)
        return $dbError;
     }
 
-    $query = data_query( "INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ('%s', '%s', %d);",
+    $query = format_query( "INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ('%s', '%s', %d);",
                       mysql_real_escape_string( $name), mysql_real_escape_string($method), $available ? 1:0);
     $result = mysql_query($query);
 
@@ -2496,7 +2482,7 @@ function DeleteLevel($id)
       return $dbError;
    }
 
-   $query = data_query("DELETE FROM :Level WHERE id = ". (int) $id);
+   $query = format_query("DELETE FROM :Level WHERE id = ". (int) $id);
    $result = mysql_query($query);
 
    if (!$result) {
@@ -2525,7 +2511,7 @@ function LevelBeingUsed($id)
    $retValue = true;
    $id = (int) $id;
 
-   $query = data_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = %d) AS Events,
+   $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = %d) AS Events,
                            (SELECT COUNT(*) FROM :Tournament WHERE Level = %d) AS Tournaments", $id, $id);
    $result = mysql_query($query);
 
@@ -2549,7 +2535,7 @@ function EditTournament($id, $name, $method, $level, $available, $year, $descrip
       return $dbError;
    }
 
-   $query = data_query("UPDATE :Tournament SET Name = '%s', ScoreCalculationMethod = '%s', Level = %d, Available = %d, Year = %d,
+   $query = format_query("UPDATE :Tournament SET Name = '%s', ScoreCalculationMethod = '%s', Level = %d, Available = %d, Year = %d,
                        Description = '%s'
                        WHERE id = %d",
                            mysql_real_escape_string($name), mysql_real_escape_string($method), (int) $level, $available ? 1:0, (int) $year,
@@ -2577,7 +2563,7 @@ function CreateTournament($name, $method, $level, $available, $year, $descriptio
       return $dbError;
    }
 
-   $query = data_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description) VALUES('%s', '%s', %d, %d, %d, '%s')",
+   $query = format_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description) VALUES('%s', '%s', %d, %d, %d, '%s')",
                            mysql_real_escape_string($name), mysql_real_escape_string($method), (int) $level, $available ? 1:0, (int) $year,
                            mysql_real_escape_string($description));
    $result = mysql_query($query);
@@ -2603,7 +2589,7 @@ function DeleteTournament($id)
       return $dbError;
    }
 
-   $query = data_query("DELETE FROM :Tournament WHERE id = ". (int) $id);
+   $query = format_query("DELETE FROM :Tournament WHERE id = ". (int) $id);
    $result = mysql_query($query);
 
    if (!$result) {
@@ -2630,7 +2616,7 @@ function TournamentBeingUsed($id)
    }
 
    $retValue = true;
-   $query = data_query("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = ". (int) $id);
+   $query = format_query("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = ". (int) $id);
    $result = mysql_query($query);
 
    if (!$result)
@@ -2657,7 +2643,7 @@ function GetTournamentDetails($id)
     $id = (int) $id;
     $retValue = array();
 
-    $query = data_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description FROM :Tournament WHERE id = $id");
+    $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description FROM :Tournament WHERE id = $id");
     $result = mysql_query($query);
 
     if (!$result)
@@ -2682,7 +2668,7 @@ function GetTournamentYears()
    }
 
    $retValue = array();
-   $query = data_query("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
+   $query = format_query("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
    $result = mysql_query($query);
 
    if (!$result)
@@ -2709,7 +2695,7 @@ function GetTournamentLeader($tournamentId)
 
    $tournamentId = (int) $tournamentId;
    $retValue = array();
-   $query = data_query("SELECT :User.id FROM
+   $query = format_query("SELECT :User.id FROM
                            :TournamentStanding
                            INNER JOIN :Player ON :TournamentStanding.Player = :Player.player_id
                            INNER JOIN :User ON :Player.player_id = :User.Player
@@ -2750,7 +2736,7 @@ function GetEventYears()
    }
 
    $retValue = array();
-   $query = data_query("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
+   $query = format_query("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
    $result = mysql_query($query);
 
    if (!$result)
@@ -2794,7 +2780,7 @@ function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $for
    }
 
     if ($forcePlayer) {
-        $search = data_query( ":Player.player_id = %d", (int) $forcePlayer);
+        $search = format_query( ":Player.player_id = %d", (int) $forcePlayer);
     }
     else {
         $search = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username'));
@@ -2815,7 +2801,7 @@ function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $for
                    ORDER BY %s, UserId, :MembershipPayment.Year, :LicensePayment.Year"
                   ;
 
-   $query = data_query($query, $search, $sortOrder);
+   $query = format_query($query, $search, $sortOrder);
    $result = mysql_query($query);
 
    if (!$result)
@@ -2895,7 +2881,7 @@ function GetEventParticipantCounts($eventId)
    }
 
    $eventId = (int) $eventId;
-   $query = data_query("SELECT count(*) as cnt, Classification
+   $query = format_query("SELECT count(*) as cnt, Classification
       FROM :Participation
       WHERE Event = $eventId
       GROUP BY Classification");
@@ -2943,7 +2929,7 @@ function GetEventParticipantCounts($eventId)
                   ORDER BY $sortOrder
 
                   ";
-   $query = data_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
+   $query = format_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
    $result = mysql_query($query);
 
    if (!$result)
@@ -2985,7 +2971,7 @@ function GetEventQueueCounts($eventId)
    }
 
    $eventId = (int) $eventId;
-   $query = data_query("SELECT count(*) as cnt, Classification
+   $query = format_query("SELECT count(*) as cnt, Classification
       FROM :EventQueue
       WHERE Event = $eventId
       GROUP BY Classification");
@@ -3028,7 +3014,7 @@ function GetEventQueueCounts($eventId)
                   WHERE %s
                   ORDER BY SignupTimestamp ASC, :EventQueue.id ASC
                   ";
-   $query = data_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
+   $query = format_query($query, data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate')));
    $result = mysql_query($query);
 
    if (!$result)
@@ -3084,7 +3070,7 @@ function GetParticipantsForRound($previousRoundId)
                   WHERE :RoundResult.Round = $rrid
                   ORDER BY :Participation.Standing
                   ";
-   $query = data_query($query);
+   $query = format_query($query);
    $result = mysql_query($query);
 
    if (!$result)
@@ -3122,7 +3108,7 @@ function SaveTextContent($page)
       }
 
       if (!$page->id) {
-         $query = data_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
+         $query = format_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
                           VALUES (%s, '%s', '%s', FROM_UNIXTIME(%d), '%s', %d)",
                           esc_or_null($page->event, "int"),
                           mysql_real_escape_string($page->title),
@@ -3134,7 +3120,7 @@ function SaveTextContent($page)
 
       }
       else {
-         $query = data_query("UPDATE :TextContent
+         $query = format_query("UPDATE :TextContent
                               SET
                                  Title = '%s',
                                  Content = '%s',
@@ -3174,7 +3160,7 @@ function SaveTextContent($page)
       $password  = esc_or_null($password, 'string');
       $userid = (int) $userid;
 
-      $query = data_query("UPDATE :User SET Password = md5(%s) WHERE id = %d", $password, $userid);
+      $query = format_query("UPDATE :User SET Password = md5(%s) WHERE id = %d", $password, $userid);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -3203,7 +3189,7 @@ function SaveTextContent($page)
       $retValue = array();
       $roundId = (int) $roundId;
 
-      $query = data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id Round
+      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id Round
                             FROM :Hole
                             INNER JOIN :Course ON (:Course.id = :Hole.Course)
                             INNER JOIN :Round ON (:Round.Course = :Course.id)
@@ -3237,7 +3223,7 @@ function SaveTextContent($page)
       }
 
       $retValue = array();
-      $query= data_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
+      $query= format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
                             WHERE Course = %d
                             ORDER BY HoleNumber", $courseId);
       $result = mysql_query($query);
@@ -3267,7 +3253,7 @@ function SaveTextContent($page)
          return $dbError;
       }
 
-      $query = data_query("SELECT id FROM `:Round` WHERE `:Round`.Course = %d LIMIT 1", $courseId);
+      $query = format_query("SELECT id FROM `:Round` WHERE `:Round`.Course = %d LIMIT 1", $courseId);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -3290,7 +3276,7 @@ function SaveTextContent($page)
       $retValue = array();
       $eventId = (int) $eventId;
 
-      $query = data_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round FROM :Hole
+      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round FROM :Hole
                             INNER JOIN :Course ON (:Course.id = :Hole.Course)
                             INNER JOIN :Round ON (:Round.Course = :Course.id)
                             INNER JOIN :Event ON :Round.Event = :Event.id
@@ -3327,7 +3313,7 @@ function SaveTextContent($page)
       $retValue = null;
       $holeid = (int) $holeid;
 
-      $query = data_Query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
+      $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
                             :Course.id CourseId, :Round.id RoundId FROM :Hole
                             LEFT JOIN :Course ON (:Course.id = :Hole.Course)
                             LEFT JOIN :Round ON (:Round.Course = :Course.id)
@@ -3401,7 +3387,7 @@ function SaveTextContent($page)
             return Error::InternalError();
       }
 
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result)
@@ -3490,7 +3476,7 @@ function SaveTextContent($page)
 
                             ";
 
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -3567,7 +3553,7 @@ function SaveTextContent($page)
                             LEFT JOIN :User ON :Player.player_id = :User.Player
                             WHERE :Event.id = $eventId AND :Section.Present
                             ORDER BY :Participation.Standing, player_id, :Round.StartTime";
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -3635,7 +3621,7 @@ function SaveTextContent($page)
                         :TournamentStanding.Standing,
                         :Player.lastname,
                         :Player.firstname";
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -3680,7 +3666,7 @@ function SaveTextContent($page)
    $eventId = (int) $event;
 
    $retValue = array();
-   $query = data_query("SELECT :Player.id PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber,
+   $query = format_query("SELECT :Player.id PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber,
                     :Participation.id ParticipationId
                  FROM :User
                  INNER JOIN :Player ON User.id = :Player.User
@@ -3713,7 +3699,7 @@ function SaveTextContent($page)
    $eventId = (int) $event;
 
    $retValue = array();
-   $query = data_query("SELECT :Player.id PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber,
+   $query = format_query("SELECT :Player.id PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber,
                     :EventQueue.id ParticipationId
                  FROM :User
                  INNER JOIN :Player ON User.id = :Player.User
@@ -3757,7 +3743,7 @@ function SaveTextContent($page)
                       ORDER BY SM.id
                         ";
 
-      $query = data_query($query);
+      $query = format_query($query);
       $result = mysql_query($query);
 
       if (!$result)
@@ -3792,7 +3778,7 @@ function SaveTextContent($page)
          $eventCond = " IS NULL";
 
       $eventid =  esc_or_null( $eventid, 'int');
-      $query = data_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId  FROM :AdBanner WHERE Event $eventCond");
+      $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId  FROM :AdBanner WHERE Event $eventCond");
       $result = mysql_query($query);
 
       if (!$result)
@@ -3827,7 +3813,7 @@ function SaveTextContent($page)
       $contentId = mysql_real_escape_string($contentId);
 
       $eventid =  esc_or_null( $eventid, 'int');
-      $query = data_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId  FROM :AdBanner WHERE Event $eventCond AND ContentId = '%s'"
+      $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId  FROM :AdBanner WHERE Event $eventCond AND ContentId = '%s'"
                           ,$contentId);
       $result = mysql_query($query);
 
@@ -3860,7 +3846,7 @@ function SaveTextContent($page)
       $contentId = mysql_real_escape_string($contentId);
 
       //$result = mysql_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type  FROM AdBanner WHERE Event $eventCond AND ContentId = '$contentId'");
-      $query = data_query( "INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
+      $query = format_query( "INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
                        VALUES (%s, NULL, NULL, NULL, NULL, '%s', '%s')",
                        esc_or_null($eventid, 'int'), ($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT), mysql_real_escape_string($contentId));
       $result = mysql_query($query);
@@ -3910,7 +3896,7 @@ function SaveTextContent($page)
         if ((int) $time < 10) $time = 10;
 
       if ($roundId) {
-         $query = data_query("SELECT :HoleResult.Player, :HoleResult.Hole, :HoleResult.Result,
+         $query = format_query("SELECT :HoleResult.Player, :HoleResult.Hole, :HoleResult.Result,
                              :RoundResult.`Round`, :Hole.HoleNumber
                           FROM :HoleResult
                           INNER JOIN :RoundResult ON :HoleResult.RoundResult = :RoundResult.id
@@ -3919,7 +3905,7 @@ function SaveTextContent($page)
                           AND :HoleResult.LastUpdated > FROM_UNIXTIME(%d)
                           ", $roundId, $time - 2);
       } else {
-         $query = data_query("SELECT :HoleResult.Player, :HoleResult.Hole, :HoleResult.Result,
+         $query = format_query("SELECT :HoleResult.Player, :HoleResult.Hole, :HoleResult.Result,
                              HoleNumber,
                              :RoundResult.`Round`
                           FROM :HoleResult
@@ -3950,7 +3936,7 @@ function SaveTextContent($page)
       }
 
       mysql_free_result($result);
-      $query = data_query("SELECT Result, Player, SuddenDeath, Penalty, Round
+      $query = format_query("SELECT Result, Player, SuddenDeath, Penalty, Round
                        FROM :RoundResult
                        WHERE :RoundResult.`Round` = %d
                        AND LastUpdated > FROM_UNIXTIME(%d)
@@ -4005,13 +3991,13 @@ function SaveTextContent($page)
 
     function data_UpdateHoleResult($rrid, $playerid, $holeid, $result)
     {
-      $query = data_query("LOCK TABLE :HoleResult WRITE");
+      $query = format_query("LOCK TABLE :HoleResult WRITE");
       $result = mysql_query($query);
 
       if (!$result)
          log_mysql_error($query, __LINE__, false);
 
-      $query = data_query("SELECT id FROM :HoleResult WHERE RoundResult = %d AND Player = %d AND Hole = %d",
+      $query = format_query("SELECT id FROM :HoleResult WHERE RoundResult = %d AND Player = %d AND Hole = %d",
          $rrid, $playerid, $holeid);
       $result = mysql_query($query);
 
@@ -4019,7 +4005,7 @@ function SaveTextContent($page)
          log_mysql_error($query, __LINE__, false);
 
       if (!mysql_num_rows($result)) {
-         $query = data_query("INSERT INTO :HoleResult (Hole, RoundResult, Player, Result, DidNotShow, LastUpdated) VALUES (%d, %d, %d, 0, 0, NOW())",
+         $query = format_query("INSERT INTO :HoleResult (Hole, RoundResult, Player, Result, DidNotShow, LastUpdated) VALUES (%d, %d, %d, 0, 0, NOW())",
            $holeid, $rrid, $playerid);
          $result = mysql_query($query);
 
@@ -4033,13 +4019,13 @@ function SaveTextContent($page)
          $result = 99;
       }
 
-      $query = data_query("UPDATE :HoleResult SET Result = %d, DidNotShow = %d, LastUpdated = NOW() WHERE RoundResult = %d AND Hole = %d AND Player = %d",
+      $query = format_query("UPDATE :HoleResult SET Result = %d, DidNotShow = %d, LastUpdated = NOW() WHERE RoundResult = %d AND Hole = %d AND Player = %d",
                      $result, $dns, $rrid, $holeid, $playerid);
       $result = mysql_query($query);
       if (!$result)
          log_mysql_error($query, __LINE__, false);
 
-      $query = data_query("UNLOCK TABLES");
+      $query = format_query("UNLOCK TABLES");
       $result = mysql_query($query);
       if (!$result)
          log_mysql_error($query, __LINE__, false);
@@ -4049,7 +4035,7 @@ function SaveTextContent($page)
 
     function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null)
     {
-      $query = data_query("SELECT `Round`, Penalty, SuddenDeath FROM :RoundResult WHERE id = %d",
+      $query = format_query("SELECT `Round`, Penalty, SuddenDeath FROM :RoundResult WHERE id = %d",
          $rrid);
       $result = mysql_query($query);
       if (!$result) {
@@ -4061,7 +4047,7 @@ function SaveTextContent($page)
       $round = GetRoundDetails($details['Round']);
       $numHoles = $round->NumHoles();
 
-      $holeQuery = data_query("SELECT Result, DidNotShow, :Hole.Par FROM :HoleResult
+      $holeQuery = format_query("SELECT Result, DidNotShow, :Hole.Par FROM :HoleResult
                            INNER JOIN :Hole ON :HoleResult.Hole = :Hole.id
                            WHERE RoundResult = %d", $rrid);
       $result = mysql_query($holeQuery);
@@ -4106,7 +4092,7 @@ function SaveTextContent($page)
       if ($modifyField == 'Sudden Death')
          $suddendeath = $modValue;
 
-      $query = data_query("UPDATE :RoundResult SET Result = %d, Penalty = %d, SuddenDeath = %d, Completed = %d,
+      $query = format_query("UPDATE :RoundResult SET Result = %d, Penalty = %d, SuddenDeath = %d, Completed = %d,
                           DidNotFinish = %d, PlusMinus = %d, LastUpdated = NOW() WHERE id = %d",
                        $total, $penalty, $suddendeath, $complete, $dnf ? 1 : 0, $plusminus, $rrid);
       $result = mysql_query($query);
@@ -4121,7 +4107,7 @@ function SaveTextContent($page)
 
     function UpdateCumulativeScores($rrid)
     {
-        $query = data_query("
+        $query = format_query("
                 SELECT :RoundResult.PlusMinus, :RoundResult.Result, :RoundResult.CumulativePlusminus,
                         :RoundResult.CumulativeTotal, :RoundResult.id,
                         :RoundResult.DidNotFinish
@@ -4145,7 +4131,7 @@ function SaveTextContent($page)
             }
 
             if ($row['CumulativePlusminus'] != $pm || $row['CumulativeTotal'] != $total) {
-                $query = data_query("UPDATE :RoundResult
+                $query = format_query("UPDATE :RoundResult
                                     SET CumulativeTotal = %d,
                                         CumulativePlusminus = %d
                                     WHERE id = %d",
@@ -4161,14 +4147,14 @@ function SaveTextContent($page)
     function GetRoundResult($roundid, $playerid)
     {
       $id = 0;
-      $query = data_query("LOCK TABLE :RoundResult WRITE");
+      $query = format_query("LOCK TABLE :RoundResult WRITE");
       $result = mysql_query($query);
 
       if (!$result)
          log_mysql_error($query, __LINE__, false);
 
       if ($result) {
-         $query = data_query("SELECT id FROM :RoundResult WHERE `Round` = %d AND Player = %d",
+         $query = format_query("SELECT id FROM :RoundResult WHERE `Round` = %d AND Player = %d",
             $roundid, $playerid);
          $result = mysql_query($query);
 
@@ -4184,14 +4170,14 @@ function SaveTextContent($page)
             if ($rows > 1) {
                /* Cleanest thing we can do is to throw away all the invalid scores and return error.
                 * This way TD knows to reload the scoring page and can alleviate the error by re-entering. */
-               $query = data_query("DELETE FROM :RoundResult WHERE `Round` = %d AND Player = %d", $roundid, $playerid);
+               $query = format_query("DELETE FROM :RoundResult WHERE `Round` = %d AND Player = %d", $roundid, $playerid);
                $result = mysql_query($query);
                if (!$result)
                   log_mysql_error($query, __LINE__, false);
                // Fall thru the the end and return Error to get proper cleanup on the way
             }
             elseif (!mysql_num_rows($result)) {
-               $query = data_query("INSERT INTO :RoundResult (`Round`, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
+               $query = format_query("INSERT INTO :RoundResult (`Round`, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
                                 VALUES (%d, %d, 0, 0, 0, 0, NOW())",
                                 $roundid, $playerid);
                $result = mysql_query($query);
@@ -4206,7 +4192,7 @@ function SaveTextContent($page)
             }
          }
 
-         $query = data_query("UNLOCK TABLES");
+         $query = format_query("UNLOCK TABLES");
          $result = mysql_query($query);
          if (!$result)
            log_mysql_error($query, __LINE__, false);
@@ -4229,7 +4215,7 @@ function SaveTextContent($page)
       $round = (int) $round;
       $name = mysql_real_escape_string($name);
 
-      $query = data_query("INSERT INTO :Section(Round, Classification, Name, Present)
+      $query = format_query("INSERT INTO :Section(Round, Classification, Name, Present)
          VALUES(%d, %s, '%s', 1)", $round, esc_or_null($baseClassId, 'int'), $name);
       $result = mysql_query($query);
 
@@ -4259,7 +4245,7 @@ function SaveTextContent($page)
 
       $classId = (int) $classId;
       $newName = mysql_real_escape_string($newName);
-      $query = data_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
+      $query = format_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
       $result = mysql_query($query);
 
       if (!$result) {
@@ -4289,7 +4275,7 @@ function SaveTextContent($page)
                                                         $sectionid);
 
       $data = implode(", ", $each);
-      $query = data_query("INSERT INTO :SectionMembership (Participation, Section) VALUES %s"
+      $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES %s"
                       , $data);
       $result = mysql_query($query);
 
@@ -4320,7 +4306,7 @@ function SaveTextContent($page)
       $priority = esc_or_null($priority, 'int');
       $startTime = esc_or_null($startTime, 'int');
 
-      $query = data_query("UPDATE :ClassOnRound SET Priority = %s, StartTime = FROM_UNIXTIME(%s) WHERE Round = %d AND Classification = %d",
+      $query = format_query("UPDATE :ClassOnRound SET Priority = %s, StartTime = FROM_UNIXTIME(%s) WHERE Round = %d AND Classification = %d",
                                $priority, $startTime, $roundId, $classId);
       $result = mysql_query($query);
 
@@ -4348,7 +4334,7 @@ function MarkEventFeePayment($eventid, $participationId, $payment)
       return $dbError;
    }
 
-   $query = data_query("UPDATE :Participation SET EventFeePaid = FROM_UNIXTIME(%s), Approved = 1 WHERE id = %d AND Event = %d",
+   $query = format_query("UPDATE :Participation SET EventFeePaid = FROM_UNIXTIME(%s), Approved = 1 WHERE id = %d AND Event = %d",
                           ($payment ? time() : "NULL"), (int) $participationId, (int) $eventid);
    $result = mysql_query($query);
 
@@ -4373,7 +4359,7 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
       return $dbError;
    }
 
-   $query = data_query("UPDATE :Round SET StartTime = FROM_UNIXTIME(%d), StartType = '%s', `Interval` = %d, ValidResults = %d, Course = %s WHERE id = %d",
+   $query = format_query("UPDATE :Round SET StartTime = FROM_UNIXTIME(%d), StartType = '%s', `Interval` = %d, ValidResults = %d, Course = %s WHERE id = %d",
                     (int) $date,
                     mysql_real_escape_string($startType),
                     (int) $interval,
@@ -4396,7 +4382,7 @@ function SaveHole($hole)
    }
 
    if ($hole->id) {
-      $query = data_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d, HoleText = '%s' WHERE id = %d",
+      $query = format_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d, HoleText = '%s' WHERE id = %d",
                        (int) $hole->par,
                        (int) $hole->length,
                        $hole->holeNumber,
@@ -4404,7 +4390,7 @@ function SaveHole($hole)
                        (int) $hole->id);
    }
    else {
-      $query = data_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES (%d, %d, %d, %d, '%s')",
+      $query = format_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES (%d, %d, %d, %d, '%s')",
                        (int) $hole->par,
                        (int) $hole->length,
                        (int) $hole->course,
@@ -4426,7 +4412,7 @@ function PlayerOnRound($roundid, $playerid)
         return $dbError;
     }
 
-    $query = data_query("SELECT :Participation.Player FROM :Participation
+    $query = format_query("SELECT :Participation.Player FROM :Participation
                      INNER JOIN :SectionMembership ON :SectionMembership.Participation = :Participation.id
                      INNER JOIN :Section ON :Section.id = :SectionMembership.Section
                      WHERE :Participation.Player = %d
@@ -4450,7 +4436,7 @@ function GetParticipationIdByRound($roundid, $playerid)
         return $dbError;
     }
 
-    $query = data_query("SELECT :Participation.id FROM :Participation
+    $query = format_query("SELECT :Participation.id FROM :Participation
                      INNER JOIN :Event ON :Event.id = :Participation.Event
                      INNER JOIN :Round ON :Round.Event = :Event.id
 
@@ -4484,7 +4470,7 @@ function RemovePlayersFromRound($roundid, $playerids = null)
     $retValue = null;
     $playerids = array_filter($playerids, 'is_numeric');
 
-    $query = data_query( "SELECT :SectionMembership.id FROM :SectionMembership
+    $query = format_query( "SELECT :SectionMembership.id FROM :SectionMembership
       INNER JOIN :Section ON :Section.id = :SectionMembership.Section
       INNER JOIN :Participation ON :Participation.id = :SectionMembership.Participation
       WHERE :Section.Round = %d AND :Participation.Player IN (%s)",
@@ -4506,7 +4492,7 @@ function RemovePlayersFromRound($roundid, $playerids = null)
     if (!count($ids))
       return;
 
-    $query = data_query( "DELETE FROM :SectionMembership WHERE id IN (%s)",
+    $query = format_query( "DELETE FROM :SectionMembership WHERE id IN (%s)",
       implode(", ", $ids ));
     $result = mysql_query( $query);
 
@@ -4536,7 +4522,7 @@ function ResetRound($roundid, $resetType = 'full')
    $idList = implode(', ', $sectIds);
 
    if ($resetType == 'groups' || $resetType == 'full') {
-      $query = data_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)");
+      $query = format_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)");
       $result = mysql_query($query);
 
       if (!$result)
@@ -4544,7 +4530,7 @@ function ResetRound($roundid, $resetType = 'full')
    }
 
    if ($resetType == 'full' || $resetType == 'players') {
-      $query = data_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)");
+      $query = format_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)");
       $result = mysql_query($query);
 
       if (!$result)
@@ -4552,7 +4538,7 @@ function ResetRound($roundid, $resetType = 'full')
    }
 
    if ($resetType == 'full') {
-      $query = data_query("DELETE FROM :Section WHERE id IN ($idList)");
+      $query = format_query("DELETE FROM :Section WHERE id IN ($idList)");
       $result = mysql_query($query);
 
       if (!$result)
@@ -4568,7 +4554,7 @@ function RemoveEmptySections($round)
       $players = $section->GetPlayers();
 
       if (!count($players)) {
-         $query = data_query("DELETE FROM :Section WHERE id = %d", $section->id);
+         $query = format_query("DELETE FROM :Section WHERE id = %d", $section->id);
          $result = mysql_query($query);
 
          if (!$result)
@@ -4579,7 +4565,7 @@ function RemoveEmptySections($round)
 
 function AdjustSection($sectionid, $priority, $sectionTime, $present)
 {
-   $query = data_query("UPDATE :Section SET Priority = %d, StartTime = FROM_UNIXTIME(%s), Present = %d WHERE id = %d",
+   $query = format_query("UPDATE :Section SET Priority = %d, StartTime = FROM_UNIXTIME(%s), Present = %d WHERE id = %d",
                      $priority,
                      esc_or_null($sectionTime, 'int'),
                      $present ? 1 : 0,
@@ -4596,7 +4582,7 @@ function AdjustSection($sectionid, $priority, $sectionTime, $present)
 
 function GetGroups($sectid)
 {
-      $query = data_query("
+      $query = format_query("
             SELECT
                :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
                :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
@@ -4654,7 +4640,7 @@ function GetGroups($sectid)
   function InsertGroup($group)
   {
    foreach ($group['People'] as $player) {
-      $query = data_query("INSERT INTO :StartingOrder
+      $query = format_query("INSERT INTO :StartingOrder
                        (Player, StartingTime, StartingHole, GroupNumber, Section)
                      VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
                      $player['PlayerId'],
@@ -4671,7 +4657,7 @@ function GetGroups($sectid)
 
   function InsertGroupMember($data)
   {
-   $query = data_query("INSERT INTO :StartingOrder
+   $query = format_query("INSERT INTO :StartingOrder
                     (Player, StartingTime, StartingHole, GroupNumber, Section)
                     VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
                     $data['Player'],
@@ -4687,7 +4673,7 @@ function GetGroups($sectid)
 
   function GetAllRoundResults($eventid)
   {
-      $query = data_query("SELECT :RoundResult.id, `Round`, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
+      $query = format_query("SELECT :RoundResult.id, `Round`, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
                         FROM :RoundResult
                        INNER JOIN `:Round` ON `:Round`.id = :RoundResult.`Round`
                        WHERE `:Round`.Event = %d", $eventid);
@@ -4709,7 +4695,7 @@ function GetGroups($sectid)
 
   function GetHoleResults($rrid)
   {
-   $query = data_query("SELECT Hole, Result FROM :HoleResult WHERE RoundResult = %d", $rrid);
+   $query = format_query("SELECT Hole, Result FROM :HoleResult WHERE RoundResult = %d", $rrid);
    $result = mysql_query($query);
 
     if (!$result)
@@ -4726,7 +4712,7 @@ function GetGroups($sectid)
 
   function GetAllParticipations($eventid)
   {
-      $query = data_query("SELECT Classification, :Classification.Name,
+      $query = format_query("SELECT Classification, :Classification.Name,
                        :Participation.Player, :Participation.id,
                        :Participation.Standing, :Participation.DidNotFinish, :Participation.TournamentPoints,
                        :Participation.OverallResult
@@ -4753,7 +4739,7 @@ function GetGroups($sectid)
 
   function SaveParticipationResults($entry)
   {
-      $query = data_query("UPDATE :Participation
+      $query = format_query("UPDATE :Participation
                            SET OverallResult = %d,
                            Standing = %d,
                            DidNotFinish = %d,
@@ -4831,7 +4817,7 @@ function GetGroups($sectid)
 
   function CreateFileRecord($filename, $displayname, $type)
   {
-    $query = data_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES
+    $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES
                      ('%s', '%s', '%s')",
                      mysql_real_escape_string($filename),
                      mysql_real_escape_string($displayname),
@@ -4850,7 +4836,7 @@ function GetGroups($sectid)
   function GetFile($id)
   {
     require_once 'core/files.php';
-    $query = data_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = %d", $id);
+    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = %d", $id);
     $result = mysql_query($query);
 
     if (!$result) {
@@ -4869,7 +4855,7 @@ function GetGroups($sectid)
   function GetFilesOfType($type)
   {
     require_once 'core/files.php';
-    $query = data_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", mysql_real_escape_string($type));
+    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", mysql_real_escape_string($type));
     $result = mysql_query($query);
 
     if (!$result) {
@@ -4887,7 +4873,7 @@ function GetGroups($sectid)
 
   function SaveAd($ad)
   {
-    $query = data_query("UPDATE :AdBanner SET URL = %s, ImageURL = %s, LongData = %s, ImageReference = %s, Type = %s WHERE id = %d",
+    $query = format_query("UPDATE :AdBanner SET URL = %s, ImageURL = %s, LongData = %s, ImageReference = %s, Type = %s WHERE id = %d",
                      esc_or_null($ad->url),
                      esc_or_null($ad->imageURL),
                      esc_or_null($ad->longData),
@@ -4904,7 +4890,7 @@ function GetGroups($sectid)
 
   function AnyGroupsDefined($roundid)
   {
-    $query = data_query("SELECT 1
+    $query = format_query("SELECT 1
                      FROM :StartingOrder
                      INNER JOIN :Section ON :Section.id = :StartingOrder.Section
                      INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
@@ -4921,7 +4907,7 @@ function GetGroups($sectid)
 
   function GetRoundGroups($roundid)
   {
-    $query = data_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
+    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
                      FROM :StartingOrder
                      INNER JOIN :Section ON :Section.id = :StartingOrder.Section
@@ -4951,7 +4937,7 @@ function GetGroups($sectid)
 
   function GetSingleGroup($roundid, $playerid)
   {
-    $query = data_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder
@@ -4983,7 +4969,7 @@ function GetGroups($sectid)
 
   function GetSingleGroupByPN($roundid, $groupNumber)
   {
-    $query = data_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
+    $query = format_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder
@@ -5013,7 +4999,7 @@ function GetGroups($sectid)
 
   function GetUserGroupSummary($eventid, $playerid)
   {
-    $query = data_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
                         :Classification.Name ClassificationName, :Round.GroupsFinished,
                         :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
                      FROM :StartingOrder
@@ -5045,7 +5031,7 @@ function GetGroups($sectid)
 
   function GetRoundCourse($roundid)
   {
-    $query = data_query("SELECT :Course.id, Name, Description, Link, Map
+    $query = format_query("SELECT :Course.id, Name, Description, Link, Map
                      FROM :Course
                      INNER JOIN `:Round` ON `:Round`.Course = :Course.id
                      WHERE `:Round`.id = %d", $roundid);
@@ -5061,7 +5047,7 @@ function GetGroups($sectid)
 
   function SetParticipantClass($eventid, $playerid, $newClass)
   {
-   $query = data_query("UPDATE :Participation SET Classification = %d WHERE Player = %d AND Event = %d",
+   $query = format_query("UPDATE :Participation SET Classification = %d WHERE Player = %d AND Event = %d",
                     $newClass, $playerid, $eventid);
    $result = mysql_query($query);
     if (!$result) {
@@ -5074,7 +5060,7 @@ function GetGroups($sectid)
 
   function GetCourses()
   {
-   $query = data_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
+   $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
    $result = mysql_query($query);
     if (!$result) {
        log_mysql_error($query, __LINE__, false);
@@ -5095,7 +5081,7 @@ function GetGroups($sectid)
    if (is_a($db, 'Error'))
       return $db;
 
-   $query = data_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = %d", $id);
+   $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = %d", $id);
    $result = mysql_query($query);
     if (!$result) {
        log_mysql_error($query, __LINE__, false);
@@ -5117,7 +5103,7 @@ function GetGroups($sectid)
       return $db;
 
    if ($course['id']) {
-      $query = data_query("UPDATE :Course
+      $query = format_query("UPDATE :Course
                           SET Name = '%s',
                           Description = '%s',
                           Link = '%s',
@@ -5140,7 +5126,7 @@ function GetGroups($sectid)
       if (!$eventid)
          $eventid = null;
 
-      $query = data_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
+      $query = format_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
                           VALUES ('%s', '%s', '%s', '%s', %s)",
                           mysql_real_escape_string($course['Name']),
                           mysql_real_escape_string($course['Description']),
@@ -5165,14 +5151,14 @@ function GetGroups($sectid)
         if (isset($payments['license'])) {
             foreach ($payments['license'] as $year => $paid) {
 
-                $query = data_query("DELETE FROM :LicensePayment WHERE Player = %d AND Year = %d", $playerid, $year);
+                $query = format_query("DELETE FROM :LicensePayment WHERE Player = %d AND Year = %d", $playerid, $year);
                 $result = mysql_query($query);
 
                 if (!$result)
                    log_mysql_error($query, __LINE__, false);
 
                 if ($paid) {
-                    $query = data_query("INSERT INTO :LicensePayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
+                    $query = format_query("INSERT INTO :LicensePayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
                     $result = mysql_query($query);
 
                    if (!$result)
@@ -5184,14 +5170,14 @@ function GetGroups($sectid)
         if (isset($payments['membership'])) {
             foreach ($payments['membership'] as $year => $paid) {
 
-                $query = data_query("DELETE FROM :MembershipPayment WHERE Player = %d AND Year = %d", $playerid, $year);
+                $query = format_query("DELETE FROM :MembershipPayment WHERE Player = %d AND Year = %d", $playerid, $year);
                 $result = mysql_query($query);
 
                 if (!$result)
                    log_mysql_error($query, __LINE__, false);
 
                 if ($paid) {
-                    $query = data_query("INSERT INTO :MembershipPayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
+                    $query = format_query("INSERT INTO :MembershipPayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
                     $result = mysql_query($query);
 
                    if (!$result)
@@ -5208,7 +5194,7 @@ function GetGroups($sectid)
     if (strpos($user->role, 'ban') === false) {
         if ($activate) {
             $newrole = "ban_".$user->role;
-            $query = data_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
+            $query = format_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
             $result = mysql_query($query);
              if (!$result)
                 log_mysql_error($query, __LINE__, false);
@@ -5216,7 +5202,7 @@ function GetGroups($sectid)
     } else {
         if (!$activate) {
             $newrole = substr($user->role, 4);
-            $query = data_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
+            $query = format_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
             $result = mysql_query($query);
              if (!$result)
                 log_mysql_error($query, __LINE__, false);
@@ -5226,7 +5212,7 @@ function GetGroups($sectid)
 
   function EventRequiresFees($eventid)
   {
-    $query = data_query("SELECT FeesRequired FROM :Event WHERE id = %d", $eventid);
+    $query = format_query("SELECT FeesRequired FROM :Event WHERE id = %d", $eventid);
     $result = mysql_query($query);
 
     if (!$result)
@@ -5242,7 +5228,7 @@ function GetGroups($sectid)
 
   function GetTournamentData($tid)
   {
-    $query = data_query("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
+    $query = format_query("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
                             :Participation.TournamentPoints, :Participation.Classification,
                             :TournamentStanding.id TSID, :Player.player_id PID, :Tournament.id TID,
                             :Event.ResultsLocked, TieBreaker, :Participation.Standing EventStanding
@@ -5292,14 +5278,14 @@ function GetGroups($sectid)
       return;
 
     if (!$item['TSID']) {
-        $query = data_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
+        $query = format_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
                             VALUES (%d, %d, 0, NULL)", $item['PID'], $item['TID']);
         $result = mysql_query($query);
        if (!$result)
           log_mysql_error($query, __LINE__, false);
     }
 
-    $query = data_query("UPDATE :TournamentStanding
+    $query = format_query("UPDATE :TournamentStanding
                         SET OverallScore = %d, Standing = %d
                         WHERE Player = %d AND Tournament = %d",
                         $item['OverallScore'],
@@ -5315,7 +5301,7 @@ function GetGroups($sectid)
 
   function UserParticipating($eventid, $userid)
   {
-    $query = data_query("SELECT :Participation.id FROM :Participation
+    $query = format_query("SELECT :Participation.id FROM :Participation
                         INNER JOIN :Player ON :Participation.Player = :Player.player_id
                         INNER JOIN :User ON :User.Player = :Player.player_id
                         WHERE :User.id = %d AND :Participation.Event = %d",
@@ -5330,7 +5316,7 @@ function GetGroups($sectid)
 
   function UserQueueing($eventid, $userid)
   {
-    $query = data_query("SELECT :EventQueue.id FROM :EventQueue
+    $query = format_query("SELECT :EventQueue.id FROM :EventQueue
                         INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
                         INNER JOIN :User ON :User.Player = :Player.player_id
                         WHERE :User.id = %d AND :EventQueue.Event = %d",
@@ -5345,7 +5331,7 @@ function GetGroups($sectid)
 
   function GetAllToRemind($eventid)
   {
-    $query = data_query(
+    $query = format_query(
         "SELECT :User.id FROM :User
         INNER JOIN :Player ON :User.Player = :Player.player_id
         INNER JOIN :Participation ON :Player.player_id = :Participation.Player
@@ -5406,7 +5392,7 @@ function GetGroups($sectid)
     $ids = array_filter($playerList, 'is_numeric');
     $ids = implode(',', $ids);
 
-    $query = data_query(
+    $query = format_query(
         "SELECT `:Round`.id RoundId, :StartingOrder.id StartId, :RoundResult.Result, :StartingOrder.Player
             FROM `:Round` LinkRound INNER JOIN `:Round` ON `:Round`.Event = LinkRound.Event
             INNER JOIN :Section ON :Section.`Round` = `:Round`.id
@@ -5507,7 +5493,7 @@ function GetGroups($sectid)
     $time = null;
     if ($done)
       $time = time();
-    $query = data_query("UPDATE `:Round` SET GroupsFinished = FROM_UNIXTIME(%s) WHERE id = %d", esc_or_null($time, 'int' ), $roundid);
+    $query = format_query("UPDATE `:Round` SET GroupsFinished = FROM_UNIXTIME(%s) WHERE id = %d", esc_or_null($time, 'int' ), $roundid);
     $result = mysql_query($query);
 
     if (!$result)
@@ -5530,7 +5516,7 @@ function GetGroups($sectid)
   */
   function GetUserFees($playerid, $year)
   {
-    $query = data_query("SELECT 1 FROM :LicensePayment WHERE Player = %d AND Year = %d",
+    $query = format_query("SELECT 1 FROM :LicensePayment WHERE Player = %d AND Year = %d",
                          $playerid, $year);
     $result = mysql_query($query);
     if (!$result)
@@ -5538,7 +5524,7 @@ function GetGroups($sectid)
     $license = mysql_num_rows($result);
     mysql_free_result($result);
 
-    $query = data_query("SELECT 1 FROM :MembershipPayment WHERE Player = %d AND Year = %d",
+    $query = format_query("SELECT 1 FROM :MembershipPayment WHERE Player = %d AND Year = %d",
                          $playerid, $year);
     $result = mysql_query($query);
     if (!$result)
@@ -5592,7 +5578,7 @@ function GetGroups($sectid)
 
   function DeleteTextContent($id)
   {
-    $query = data_query("DELETE FROM :TextContent WHERE id = %d", $id);
+    $query = format_query("DELETE FROM :TextContent WHERE id = %d", $id);
     $result = mysql_query($query);
 
     if (!$result)
@@ -5601,12 +5587,12 @@ function GetGroups($sectid)
 
   function DeleteCourse($id)
   {
-    $query = data_query("DELETE FROM :Hole WHERE Course = %d", $id);
+    $query = format_query("DELETE FROM :Hole WHERE Course = %d", $id);
     $result = mysql_query($query);
     if (!$result)
        log_mysql_error($query, __LINE__, false);
 
-    $query = data_query("DELETE FROM :Course WHERE id = %d", $id);
+    $query = format_query("DELETE FROM :Course WHERE id = %d", $id);
     $result = mysql_query($query);
     if (!$result)
        log_mysql_error($query, __LINE__, false);
@@ -5619,7 +5605,7 @@ function GetGroups($sectid)
          return $dbError;
       }
 
-    $query = data_query("UPDATE :TournamentStanding SET TieBreaker = %d WHERE Player = %d AND Tournament = %d",
+    $query = format_query("UPDATE :TournamentStanding SET TieBreaker = %d WHERE Player = %d AND Tournament = %d",
                         $value, $player, $tournament);
     $result = mysql_query($query);
     if (!$result)
@@ -5681,7 +5667,7 @@ function RemovePlayersDefinedforAnySection($a)
    if (!is_array($data)) $data = array();
    $key = sprintf("%d_%d", $round, $section);
    if (!isset($data[$key])) {
-      $query = data_query("SELECT Player FROM :StartingOrder
+      $query = format_query("SELECT Player FROM :StartingOrder
                           INNER JOIN :Section ON :StartingOrder.Section = :Section.id
                           WHERE :Section.Round = %d", $round);
       $result = mysql_query($query);
@@ -5704,10 +5690,10 @@ function DeleteEventPermanently($event)
    $id = $event->id;
 
    $queries = array();
-   $queries[] = data_query("DELETE FROM :AdBanner WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :EventQueue WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :ClassInEvent WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :EventManagement WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :AdBanner WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :EventQueue WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :ClassInEvent WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :EventManagement WHERE Event = %d", $id);
 
    $rounds = $event->GetRounds();
    foreach ($rounds as $round) {
@@ -5716,30 +5702,30 @@ function DeleteEventPermanently($event)
       foreach ($sections as $section) {
          $sid = $section->id;
 
-         $queries[] = data_query("DELETE FROM :SectionMembership WHERE Section = %d", $sid);
-         $queries[] = data_query("DELETE FROM :StartingOrder WHERE Section = %d", $sid);
+         $queries[] = format_query("DELETE FROM :SectionMembership WHERE Section = %d", $sid);
+         $queries[] = format_query("DELETE FROM :StartingOrder WHERE Section = %d", $sid);
       }
-      $queries[] = data_query("DELETE FROM :Section WHERE Round = %d", $rid);
+      $queries[] = format_query("DELETE FROM :Section WHERE Round = %d", $rid);
 
-      $query = data_query("SELECT id FROM :RoundResult WHERE Round = %d", $rid);
+      $query = format_query("SELECT id FROM :RoundResult WHERE Round = %d", $rid);
       $result = mysql_query($query);
 
        if (!$result)
           log_mysql_error($query, __LINE__, false);
 
       while (($row = mysql_fetch_assoc($result)) !== false) {
-         $queries[] = data_query("DELETE FROM :HoleResult WHERE RoundResult = %d", $row['id']);
+         $queries[] = format_query("DELETE FROM :HoleResult WHERE RoundResult = %d", $row['id']);
       }
 
       mysql_free_result($result);
 
-      $queries[] = data_query("DELETE FROM :RoundResult WHERE Round = %d", $rid);
+      $queries[] = format_query("DELETE FROM :RoundResult WHERE Round = %d", $rid);
    }
 
-   $queries[] = data_query("DELETE FROM :Round WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :TextContent WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :Participation WHERE Event = %d", $id);
-   $queries[] = data_query("DELETE FROM :Event WHERE id = %d", $id);
+   $queries[] = format_query("DELETE FROM :Round WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :TextContent WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :Participation WHERE Event = %d", $id);
+   $queries[] = format_query("DELETE FROM :Event WHERE id = %d", $id);
 
    foreach ($queries as $query) {
       $result = mysql_query($query);

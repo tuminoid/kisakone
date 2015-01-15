@@ -35,7 +35,7 @@ function SFL_FeesPaidForYear($user, $year)
         return array(true, true, true);
     }
 
-    $query = data_query("SELECT license, sfl_player.pdga
+    $query = format_query("SELECT license, sfl_player.pdga
                         FROM sfl_membership
                         INNER JOIN sfl_player ON (sfl_player.player_id = sfl_membership.player_id)
                         INNER JOIN :Player ON
