@@ -2025,24 +2025,27 @@ function SetUserDetails($user)
            return $dbError;
         }
 
-
         if ($user->username !== null) {
-            $u_username_quoted  = "'" .  mysql_real_escape_string( $user->username) . "'";
+            $u_username_quoted  = "'" .  mysql_real_escape_string($user->username) . "'";
         } else {
             $u_username_quoted = 'NULL';
         }
-        $u_email     = mysql_real_escape_string( $user->email);
+        $u_email     = mysql_real_escape_string($user->email);
         $u_password  = $user->password;
-        $u_role      = mysql_real_escape_string( $user->role);
-        $u_firstname = mysql_real_escape_string( data_fixNameCase($user->firstname));
-        $u_lastname  = mysql_real_escape_string( data_fixNameCase($user->lastname));
+        $u_hash      = $user->GetHashType();
+        $u_salt      = $user->salt ? "'$user->salt'" : 'NULL';
+        $u_role      = mysql_real_escape_string($user->role);
+        $u_firstname = mysql_real_escape_string(data_fixNameCase($user->firstname));
+        $u_lastname  = mysql_real_escape_string(data_fixNameCase($user->lastname));
 
         // Check that username is not already in use
         if ( !GetUserId( $user->username)) {
             // Username is unique, proceed to insert into table
-            $query = format_query( "INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player)
-                                    VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s);",
-                              $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname, esc_or_null($user->player, 'int'));
+            $query = format_query( "INSERT INTO :User (
+                                    Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
+                                    VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);",
+                              $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname,
+                              esc_or_null($user->player, 'int'), $u_hash, $u_salt);
             $result = mysql_query($query);
 
             if (!$result) {
@@ -3141,33 +3144,6 @@ function SaveTextContent($page)
                 $retValue->internalDescription = "Failed SQL INSERT query:" . $query;
                 $retValue->function = "SaveTextContent()";
                 $retValue->IsMajor = true;
-      }
-   }
-
-  function ChangeUserPassword($userid, $password)
-  {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
-
-      $password  = esc_or_null($password, 'string');
-      $userid = (int) $userid;
-
-      $query = format_query("UPDATE :User SET Password = md5(%s) WHERE id = %d", $password, $userid);
-      $result = mysql_query($query);
-
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         $err = new Error();
-         $err->title = "error_db_query";
-         $err->description = translate( "error_db_query_description");
-         $err->internalDescription = "Failed SQL UPDATE";
-         $err->function = "ChangeUserPassword()";
-         $err->IsMajor = true;
-         $err->data = "User id: " . $userid;
-
-         return $err;
       }
    }
 

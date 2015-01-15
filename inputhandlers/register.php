@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Registration screen handler
  *
@@ -25,6 +25,10 @@
  * Processes the login form
  * @return Nothing or Error object on error
  */
+
+require_once 'core/login.php';
+
+
 function processForm()
 {
     $problems = array();
@@ -61,6 +65,11 @@ function processForm()
     $password2 = $_POST['password2'];
     if ($password != $password2)
         $problems['password2'] = translate('FormError_PasswordsDontMatch');
+
+    if (!IsValidPassword($password)) {
+        $problems['password'] = translate('FormError_PasswordLength');
+        $problems['password2'] = translate('FormError_PasswordLength');
+    }
 
     $pdga = $_POST['pdga'];
     if ($pdga == '')

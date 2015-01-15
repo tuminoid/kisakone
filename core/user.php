@@ -198,7 +198,11 @@ class user
             return $err;
         }
 
-        $this->password = GenerateHash($password, $this->GetHashType(), $this->salt);
+        $this->hash = "crypt";
+        if (empty($this->salt))
+            $this->salt = GenerateSalt();
+        $this->password = GenerateHash($password, $this->hash, $this->salt);
+
         return null;
     }
 
@@ -239,8 +243,6 @@ class user
      */
     function ValidateUser()
     {
-        $err = null;
-
         if (!$this->IsValidUsername($this->username)) {
             $err = new Error();
             $err->title = "error_invalid_username";
@@ -249,9 +251,10 @@ class user
             $err->function = "User->ValidateUser()";
             $err->IsMajor = false;
             $err->data = "User->username:" . $this->username;
+            return $err;
         }
 
-        if (!isset($err) and !$this->IsValidEmail($this->email)) {
+        if (!$this->IsValidEmail($this->email)) {
             $err = new Error();
             $err->title = "error_invalid_email";
             $err->description = translate("error_invalid_email_description");
@@ -260,9 +263,10 @@ class user
             $err->IsMajor = false;
             $err->data = "User->username:" . $this->username .
                          "; User->email:" . $this->email;
+            return $err;
         }
 
-        return $err;
+        return null;
     }
 
     /** ************************************************************************

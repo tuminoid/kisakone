@@ -63,15 +63,17 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname,
                      $firstname, $lastname, $email, $player->id);
     $err = $user->ValidateUser();
     if (!isset($err)) {
-        if ($user->username !== null)
+        if ($user->username !== null) {
             $err = $user->SetPassword($password);
+            if (is_a($err, "Error"))
+                return $err;
+        }
 
         if (!isset($err)) {
-            $user = SetUserDetails($user);
-            if (is_a($user, "Error")) {
-                $err = $user;
+            $err = SetUserDetails($user);
+            if (is_a($err, "Error"))
                 $user = null;
-            }
+
         }
     }
     else

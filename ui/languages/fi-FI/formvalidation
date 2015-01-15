@@ -6,6 +6,7 @@ FormError_PDGA      Oltava joko numero tai tyhjä
 FormError_NotEmpty  Pakollinen kenttä
 FormError_InvalidEmail  Virheellinen sähköpostiosoite
 FormError_PasswordsDontMatch    Salasanat eivät täsmää
+FormError_PasswordLength        Salasanan on oltava 8-40 merkkiä pitkä
 FormError_NotPositiveInteger    Oltava numero
 FormError_Terms     Käyttöehdot on hyväksyttävä, jotta rekisteröinti voidaan vahvistaa.
 FormError_Summary   Lomaketta ei voida lähettää sen virheellisen täytön johdosta. Virheelliset kohdat on korostettu.

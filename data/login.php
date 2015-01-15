@@ -40,7 +40,7 @@ function CheckUserAuthentication($username, $password)
         return null;
 
     $usr = escape_string($username);
-    $logindata = get_login_data($usr);
+    $logindata = GetLoginData($usr);
     if (!$logindata) {
         error_log("error: failed to get login data for '$usr'");
         return null;
@@ -84,7 +84,7 @@ function CheckUserAuthentication($username, $password)
 /**
  * Get user login data, ie. array of (pass, hashtype, salt)
  */
-function get_login_data($username)
+function GetLoginData($username)
 {
     if (empty($username))
         return null;
@@ -101,3 +101,34 @@ function get_login_data($username)
 
     return $retValue;
 }
+
+
+/**
+ * Change users password in database
+ */
+function ChangeUserPassword($userid, $password)
+{
+    $userid = (int) $userid;
+    $salt = GenerateSalt();
+    $hash = "crypt";
+    $password = GenerateHash($password, $hash, $salt);
+
+    $query = format_query("UPDATE :User SET Password = '$password', Hash = '$hash', Salt = '$salt', PasswordChanged = NOW() WHERE id = $userid");
+    $result = execute_query($query);
+
+    if (!$result) {
+        $err = new Error();
+        $err->title = "error_db_query";
+        $err->description = translate( "error_db_query_description");
+        $err->internalDescription = "Failed SQL UPDATE";
+        $err->function = "ChangeUserPassword()";
+        $err->IsMajor = true;
+        $err->data = "User id: " . $userid;
+
+        return $err;
+    }
+    mysql_free_result($result);
+
+    return null;
+}
+
