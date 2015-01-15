@@ -83,6 +83,11 @@ function processForm()
     if ($password != $password2)
         $problems['password2'] = translate('FormError_PasswordsDontMatch');
 
+    if (!IsValidPassword($password)) {
+        $problems['password'] = translate('FormError_PasswordLength');
+        $problems['password2'] = translate('FormError_PasswordLength');
+    }
+
     if (count($problems)) {
         $error = new Error();
         $error->title = 'Password form error';
