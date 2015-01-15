@@ -3,7 +3,7 @@
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * This file contains the password manipulation utilities
+ * This file contains function related to logging in, password handling etc
  *
  * --
  *
@@ -22,20 +22,27 @@
  * */
 
 
-/** ************************************************************************
+/**
  * Method for generating the user salt.
  *
+ * Returns 32 character salt
  */
 function GenerateSalt()
 {
-    $rawsalt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
+    try {
+        $rawsalt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
+    }
+    catch (Exception $e) {
+        error_log("error: php5-crypt missing, cannot create salt");
+        return null;
+    }
     $salt = base64_encode($rawsalt);
     $salt = str_replace('+', '.', $salt);
     return $salt;
 }
 
 
-/** ************************************************************************
+/**
  * Method for getting a hash for password
  *
  * Returns hash for a password or
@@ -43,7 +50,7 @@ function GenerateSalt()
  */
 function GenerateHash($password, $hash = "md5", $salt = "")
 {
-    if (empty($password))
+    if (!IsValidPassword($password))
         return null;
 
     // Legacy, insecure
@@ -52,9 +59,49 @@ function GenerateHash($password, $hash = "md5", $salt = "")
 
     // Correct way is to use salting and strong crypto
     if ($hash == "crypt") {
-        if (!empty($salt) && strlen($salt) == 32)
+        if (IsValidSalt($salt))
             return crypt($password, '$2y$10$' . $salt  . '$');
     }
 
     return null;
+}
+
+
+/**
+ * Method for enforcing password quality
+ *
+ * We will enforce password quality mainly by runtime JS checks
+ * so this will just check the length is within boundaries
+ *
+ * Returns true for valid password and false for invalid password
+ */
+function IsValidPassword($password)
+{
+    if (empty($password))
+        return false;
+
+    if (strlen($password) < 8)
+        return false;
+
+    if (strlen($password) > 40)
+        return false;
+
+    return true;
+}
+
+
+/**
+ * Method for checking valid salt
+ *
+ * Returns true for valid salt and false for invalid salt
+ */
+function IsValidSalt($salt)
+{
+    if (empty($salt))
+        return false;
+
+    if (strlen($salt) == 32)
+        return true;
+
+    return false;
 }
