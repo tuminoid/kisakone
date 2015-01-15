@@ -1125,7 +1125,6 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
       $r_validresults = 1;
 
       if (empty($roundid) || $roundid == '*') {
-         // Create new round
          $query = format_query("INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults) VALUES (%d, %s, '%s', FROM_UNIXTIME(%d), %d, %d);",
                            $r_event, esc_or_null($r_course, 'int'), $r_starttype, $r_starttime, $r_interval, $r_validresults);
          $result = execute_query($query);
@@ -1158,163 +1157,65 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
  */
 function GetOrSetRoundCourse($roundid)
 {
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
-    $courseid = null;
-
-    // Get the existing round
-    $query = format_query( "SELECT Course FROM :Round WHERE id = %d",
+   $courseid = null;
+   $query = format_query( "SELECT Course FROM :Round WHERE id = %d",
                       (int) $roundid);
-    $result = mysql_query( $query);
+   $result = execute_query( $query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   if (mysql_num_rows( $result) == 1) {
+      $row = mysql_fetch_assoc( $result);
+      $course = $row['Course'];
+      mysql_free_result($result);
+   }
+   else {
+     $err = new Error();
+     $err->title = "error_invalid_argument";
+     $err->description = translate( "error_invalid_argument_description");
+     $err->internalDescription = "Invalid round id argument";
+     $err->function = "GetOrSetRoundCourse()";
+     $err->IsMajor = true;
+     $err->data = "Round id: " . $roundid;
+     return $err;
+   }
 
-    if ( mysql_num_rows( $result) == 1) {
-         $row = mysql_fetch_assoc( $result);
-         $course = $row['Course'];
-         mysql_free_result($result);
-    }
-    else {
-        // Invalid round id
-        $err = new Error();
-        $err->title = "error_invalid_argument";
-        $err->description = translate( "error_invalid_argument_description");
-        $err->internalDescription = "Invalid round id argument";
-        $err->function = "GetOrSetRoundCourse()";
-        $err->IsMajor = true;
-        $err->data = "Round id: " . $roundid;
-        $courseid = $err;
-    }
+   // Create a new course for the round
+   $query = format_query( "INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
+                     "", "", "", "");
+   $result = execute_query($query);
 
-    if ( !isset( $courseid)) {
-        // Create a new course for the round
-        $query = format_query( "INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
-                          "", "", "", "");
-        $result = mysql_query($query);
+   if ($result)
+       $courseid = mysql_insert_id();
+   else {
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL INSERT query (Course)\n$query\n" . mysql_error();
+      $err->function = "GetOrSetRoundCourse()";
+      $err->IsMajor = true;
+      $err->data = "Round id: " . $roundid;
+      $courseid = $err;
+      return $err;
+   }
 
-        if (!$result)
-            log_mysql_error($query, __LINE__, false);
+   $query = format_query( "UPDATE :Round SET Course = %d WHERE id = %d;",
+                     $courseid, $roundid);
+   $result = execute_query($query);
 
-        if ($result) {
-            $courseid = mysql_insert_id();
-        }
-        else {
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL INSERT query (Course)\n$query\n" . mysql_error();
-            $err->function = "GetOrSetRoundCourse()";
-            $err->IsMajor = true;
-            $err->data = "Round id: " . $roundid;
-            $courseid = $err;
+   if (!$result) {
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL UPDATE query (Round)\n$query" . mysql_error();
+      $err->function = "GetOrSetRoundCourse()";
+      $err->IsMajor = true;
+      $err->data = "Course id: " . $courseid .
+                   "; Round id: " . $roundid;;
+      return $err;
+   }
 
-            return $err;
-        }
-
-        // Update round's course field
-        $query = format_query( "UPDATE :Round SET Course = %d WHERE id = %d;",
-                          $courseid, $roundid);
-        $result = mysql_query($query);
-
-        if (!$result) {
-            log_mysql_error($query, __LINE__, false);
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL UPDATE query (Round)\n$query" . mysql_error();
-            $err->function = "GetOrSetRoundCourse()";
-            $err->IsMajor = true;
-            $err->data = "Course id: " . $courseid .
-                         "; Round id: " . $roundid;;
-            $courseid = $err;
-        }
-    }
-
-    return $courseid;
+  return $courseid;
 }
 
-/**
- * Function for setting the holes for a course
- *
- * Returns null for success or an Error
- *
- * Seems to be unused now
- */
-function SetCourseHoles($courseid, $holes)
-{
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
-    $retValue = null;
-
-    for ($holenumber = 1; $holenumber <= $holes; $holenumber++) {
-        $h_holeid = null;
-        $h_par = 0;
-        $h_length = 0;
-
-        // Get the existing hole
-        $query = format_query( "SELECT id, HoleText, Par, Length FROM :Hole WHERE Course = %d AND HoleNumber = %d",
-                          (int) $courseid, $holenumber);
-        $result = mysql_query( $query);
-
-        if (!$result)
-            log_mysql_error($query, __LINE__, false);
-
-        $nbr_of_results = mysql_num_rows( $result);
-
-        if ($nbr_of_results == 1) {
-            mysql_free_result($result);
-            // One and only valid hole
-            $row = mysql_fetch_assoc( $result);
-            $h_holeid = $row['id'];
-            $h_pr = $row['Par'];
-            $h_length = $row['Length'];
-            $h_text = $row['HoleText'];
-        }
-        elseif ($nbr_of_results == 0) {
-            mysql_free_result($result);
-            // No existing hole, create new
-            $query = format_query( "INSERT INTO :Hole (Course, HoleNumber, HoleText, Par, Length) VALUES (%d, %d, %s, %d, %d);",
-                              $courseid, $holenumber, $h_text, $h_par, $h_length);
-            $result = mysql_query($query);
-
-            if (!$result) {
-                log_mysql_error($query, __LINE__, false);
-                $err = new Error();
-                $err->title = "error_db_query";
-                $err->description = translate( "error_db_query_description");
-                $err->internalDescription = "Failed SQL INSERT query (Hole)";
-                $err->function = "SetCourseHoles()";
-                $err->IsMajor = true;
-                $err->data = "Course id: ". $courseid .
-                             "; Hole number: " . $holenumber;
-                $retValue = $err;
-                break;
-            }
-        }
-        else {
-            // Found more than one hole with same number, report error
-            $err = new Error();
-            $err->title = "error_db_integrity";
-            $err->description = translate( "error_db_integrity_description");
-            $err->internalDescription = "More than one one Course-HoleNumber record in the database.";
-            $err->function = "SetCourseHoles()";
-            $err->IsMajor = true;
-            $err->data = "Course id: ". $courseid .
-                         "; Hole number: " . $holenumber;
-            $retValue = $err;
-            break;
-        }
-    }
-
-    return $retValue;
-}
 
 /** ****************************************************************************
  * Function for checking if player fits event quota or should be queued
@@ -1327,54 +1228,50 @@ function SetCourseHoles($courseid, $holes)
  */
 function CheckSignUpQuota($eventId, $playerId, $classId)
 {
-    $event = GetEventDetails($eventId);
-    $participants = $event->GetParticipants();
-    $limit = $event->playerLimit;
-    $total = count($participants);
+   $event = GetEventDetails($eventId);
+   $participants = $event->GetParticipants();
+   $limit = $event->playerLimit;
+   $total = count($participants);
 
-    // Too many players registered already
-    if ($limit > 0 && $total >= $limit) {
-        return false;
-    }
+   // Too many players registered already
+   if ($limit > 0 && $total >= $limit)
+      return false;
 
-    // Calculate some limits and counts
-    list($minquota, $maxquota) = GetEventClassQuota($eventId, $classId);
-    $classcounts = GetEventParticipantCounts($eventId);
-    $classcount = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
+   // Calculate some limits and counts
+   list($minquota, $maxquota) = GetEventClassQuota($eventId, $classId);
+   $classcounts = GetEventParticipantCounts($eventId);
+   $classcount = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
 
-    // Check versus class maxquota
-    if ($classcount >= $maxquota) {
-        return false;
-    }
+   // Check versus class maxquota
+   if ($classcount >= $maxquota)
+      return false;
 
-    // If there is unused quota in class, allow player in
-    if ($classcount < $minquota) {
-        return true;
-    }
+   // If there is unused quota in class, allow player in
+   if ($classcount < $minquota)
+      return true;
 
-    // Calculate unused quota in other divisions, if there is global limit set
-    if ($limit > 0) {
-        $unusedQuota = 0;
-        $quotas = GetEventQuotas($eventId);
+   // Calculate unused quota in other divisions, if there is global limit set
+   if ($limit > 0) {
+      $unusedQuota = 0;
+      $quotas = GetEventQuotas($eventId);
 
-        foreach ($quotas as $idx => $quota) {
-            $cquota = $quota['MinQuota'];
-            $ccount = (isset($classcounts[$quota['id']]) ? $classcounts[$quota['id']] : 0);
-            $cunused = $cquota - $ccount;
+      foreach ($quotas as $idx => $quota) {
+         $cquota = $quota['MinQuota'];
+         $ccount = (isset($classcounts[$quota['id']]) ? $classcounts[$quota['id']] : 0);
+         $cunused = $cquota - $ccount;
 
-            if ($cunused > 0)
-                $unusedQuota += $cunused;
-        }
-        $spots_left = $limit - $total - $unusedQuota;
+         if ($cunused > 0)
+            $unusedQuota += $cunused;
+      }
+      $spots_left = $limit - $total - $unusedQuota;
 
-        // Deny if there is no unreserved space left
-        if ($spots_left <= 0) {
-            return false;
-        }
-    }
+      // Deny if there is no unreserved space left
+      if ($spots_left <= 0)
+         return false;
+   }
 
-    // ok, we have space left
-    return true;
+   // ok, we have space left
+   return true;
 }
 
 
@@ -1385,16 +1282,9 @@ function CheckSignUpQuota($eventId, $playerId, $classId)
  */
 function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly = true)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-     return $dbError;
-   }
    $retValue = $signup_directly;
 
-   if ($signup_directly === true)
-      $table = "Participation";
-   else
-      $table = "EventQueue";
+   $table = ($signup_directly === true) ? "Participation" : "EventQueue";
 
    // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
    // and double checking that player will not be in competition table twice
@@ -1402,20 +1292,19 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
 
    $query = format_query("INSERT INTO :$table (Player, Event, Classification) VALUES (%d, %d, %d);",
                          (int) $playerid, (int) $eventid, (int) $classid);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-     log_mysql_error($query, __LINE__, false);
-     $err = new Error();
-     $err->title = "error_db_query";
-     $err->description = translate( "error_db_query_description");
-     $err->internalDescription = "Failed SQL INSERT query (Participation)";
-     $err->function = "SetPlayerParticipation()";
-     $err->IsMajor = true;
-     $err->data = "Player id: " . $playerid .
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL INSERT query (Participation)";
+      $err->function = "SetPlayerParticipation()";
+      $err->IsMajor = true;
+      $err->data = "Player id: " . $playerid .
                   "; Event id: " . $eventid .
                   "; Classification id: ". $classid;
-     $retValue = $err;
+      $retValue = $err;
    }
 
    return $retValue;
@@ -1432,9 +1321,8 @@ function CheckQueueForPromotions($eventId)
 
       if (CheckSignupQuota($eventId, $playerId, $classId)) {
          $retVal = PromotePlayerFromQueue($eventId, $playerId);
-         if (is_a($retVal, 'Error')) {
+         if (is_a($retVal, 'Error'))
             error_log("Error promoting player $playerId to event $eventId at class $classId");
-         }
       }
    }
 
@@ -1445,38 +1333,27 @@ function CheckQueueForPromotions($eventId)
 // Raise competitor from queue to the event
 function PromotePlayerFromQueue($eventId, $playerId)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-     return $dbError;
-   }
-
    // Get data from queue
    $query = format_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
-   $result = mysql_query($query);
    if (mysql_num_rows($result) > 0) {
       $row = mysql_fetch_assoc($result);
 
       // Insert into competition
       $query = format_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp) VALUES (%d, %d, %d, FROM_UNIXTIME(%d));",
                          (int) $row['Player'], (int) $row['Event'], (int) $row['Classification'], time());
-      $result = mysql_query($query);
+      $result = execute_query($query);
 
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
+      if (!$result)
          return Error::Query($query);
-      }
 
       // Remove data from queue
       $query = format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-      $result = mysql_query($query);
+      $result = execute_query($query);
 
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
+      if (!$result)
          return Error::Query($query);
-      }
 
       $user = GetPlayerUser($playerId);
       if ($user !== null) {
@@ -1484,9 +1361,8 @@ function PromotePlayerFromQueue($eventId, $playerId)
          error_log("Sending email to ".print_r($user, true));
          SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
       }
-      else {
+      else
          error_log("Cannot send promotion email: user !== null failed, playerId = ".$playerId);
-      }
    }
    mysql_free_result($result);
 
@@ -1497,21 +1373,12 @@ function PromotePlayerFromQueue($eventId, $playerId)
 // Cancels a players signup for an event
 function CancelSignup($eventId, $playerId, $check_promotion = true)
 {
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
     // Delete from event and queue
     $query = format_query("DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId");
-    $result = mysql_query($query);
-    if (!$result)
-      log_mysql_error($query, __LINE__, false);
+    execute_query($query);
 
     $query = format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-    $result = mysql_query($query);
-    if (!$result)
-      log_mysql_error($query, __LINE__, false);
+    execute_query($query);
 
     if ($check_promotion === false)
       return null;
@@ -1520,6 +1387,7 @@ function CancelSignup($eventId, $playerId, $check_promotion = true)
     return CheckQueueForPromotions($eventId);
 }
 
+
 /**
  * Function for setting the venue
  *
@@ -1527,109 +1395,78 @@ function CancelSignup($eventId, $playerId, $check_promotion = true)
  */
 function GetVenueId($venue)
 {
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
+   $venueid = null;
+   // Get the existing venue
+   $query = format_query("SELECT id FROM :Venue WHERE Name = '%s'", mysql_real_escape_string( $venue));
+   $result = execute_query($query);
 
-    $venueid = null;
-
-    // Get the existing venue
-    $query = format_query( "SELECT id FROM :Venue WHERE Name = '%s'",
-                      mysql_real_escape_string( $venue));
-    $result = mysql_query( $query);
-
-    if (!$result)
-      log_mysql_error($query, __LINE__, false);
-
-    if ( mysql_num_rows( $result) >= 1) {
-         $row = mysql_fetch_assoc( $result);
-         $venueid = $row['id'];
-
-         mysql_free_result($result);
-    }
-
-    if ( !isset( $venueid)) {
-        // Create a new venue
-        $query = format_query( "INSERT INTO :Venue (Name) VALUES ('%s');",
-                          mysql_real_escape_string( $venue));
-        $result = mysql_query($query);
-
-        if (!$result)
-            log_mysql_error($query, __LINE__, false);
-
-        if ($result) {
-            $venueid = mysql_insert_id();
-        }
-        else {
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL INSERT query (Venue)";
-            $err->function = "GetOrSetVenue()";
-            $err->IsMajor = true;
-            $err->data = "Venue: " . $venue;
-            $venueid = $err;
-        }
-    }
-
-    return $venueid;
-}
-
- function CreateNewsItem($eventid, $title, $text)
- {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
+   if (mysql_num_rows($result) >= 1) {
+      $row = mysql_fetch_assoc($result);
+      $venueid = $row['id'];
+      mysql_free_result($result);
    }
 
-    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
-                            (int) $eventid, mysql_real_escape_string($title), mysql_real_escape_string($text));
-    $result = mysql_query($query);
+   if (!isset( $venueid)) {
+      // Create a new venue
+      $query = format_query("INSERT INTO :Venue (Name) VALUES ('%s')", mysql_real_escape_string( $venue));
+      $result = execute_query($query);
+      if ($result)
+         $venueid = mysql_insert_id();
+      else {
+         $err = new Error();
+         $err->title = "error_db_query";
+         $err->description = translate( "error_db_query_description");
+         $err->internalDescription = "Failed SQL INSERT query (Venue)";
+         $err->function = "GetOrSetVenue()";
+         $err->IsMajor = true;
+         $err->data = "Venue: " . $venue;
+         $venueid = $err;
+      }
+   }
 
-    if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          $err = new Error();
-          $err->title = "error_db_query";
-          $err->description = translate( "error_db_query_description");
-          $err->internalDescription = "Failed SQL INSERT";
-          $err->function = "CreateNewsItem()";
-          $err->IsMajor = true;
-          $err->data = "Event id: " . $eventid;
-
-          return $err;
-    }
+   return $venueid;
 }
+
+
+function CreateNewsItem($eventid, $title, $text)
+{
+   $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
+                            (int) $eventid, mysql_real_escape_string($title), mysql_real_escape_string($text));
+   $result = execute_query($query);
+
+   if (!$result) {
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL INSERT";
+      $err->function = "CreateNewsItem()";
+      $err->IsMajor = true;
+      $err->data = "Event id: " . $eventid;
+
+      return $err;
+   }
+}
+
 
 function EditNewsItem($itemid, $title, $text)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("UPDATE :TextContent SET Title = '%s', Content = '%s' WHERE id = %d",
                           mysql_real_escape_string($title), mysql_real_escape_string($text), (int) $itemid);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
-    if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          $err = new Error();
-          $err->title = "error_db_query";
-          $err->description = translate( "error_db_query_description");
-          $err->internalDescription = "Failed SQL UPDATE";
-          $err->function = "EditNewsItem()";
-          $err->IsMajor = true;
-          $err->data = "Event id: " . $eventid;
+   if (!$result) {
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL UPDATE";
+      $err->function = "EditNewsItem()";
+      $err->IsMajor = true;
+      $err->data = "Event id: " . $eventid;
 
-          return $err;
-    }
- }
+      return $err;
+   }
+}
 
-/* ****************************************************************************
- * Functions for changing user data
- *
- * */
 
 /**
  * Function for setting or changing the user data.
@@ -1639,78 +1476,67 @@ function EditNewsItem($itemid, $title, $text)
 
 function SetUserDetails($user)
 {
-    $retValue = null;
+   $retValue = null;
 
-    if ( is_a( $user,"User")) {
-        $dbError = InitializeDatabaseConnection();
-        if ($dbError) {
-           return $dbError;
-        }
+   if (is_a($user,"User")) {
+      $u_username_quoted = $user->username ? escape_string($user->username) : 'NULL';
+      $u_email     = escape_string($user->email);
+      $u_password  = $user->password;
+      $u_hash      = $user->GetHashType();
+      $u_salt      = $user->salt ? "'$user->salt'" : 'NULL';
+      $u_role      = escape_string($user->role);
+      $u_firstname = escape_string(data_fixNameCase($user->firstname));
+      $u_lastname  = escape_string(data_fixNameCase($user->lastname));
 
-        if ($user->username !== null) {
-            $u_username_quoted  = "'" .  mysql_real_escape_string($user->username) . "'";
-        } else {
-            $u_username_quoted = 'NULL';
-        }
-        $u_email     = mysql_real_escape_string($user->email);
-        $u_password  = $user->password;
-        $u_hash      = $user->GetHashType();
-        $u_salt      = $user->salt ? "'$user->salt'" : 'NULL';
-        $u_role      = mysql_real_escape_string($user->role);
-        $u_firstname = mysql_real_escape_string(data_fixNameCase($user->firstname));
-        $u_lastname  = mysql_real_escape_string(data_fixNameCase($user->lastname));
+      // Check that username is not already in use
+      if (!GetUserId($user->username)) {
+         // Username is unique, proceed to insert into table
+         $query = format_query( "INSERT INTO :User (
+                                 Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
+                                 VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);",
+                           $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname,
+                           esc_or_null($user->player, 'int'), $u_hash, $u_salt);
+         $result = execute_query($query);
 
-        // Check that username is not already in use
-        if ( !GetUserId( $user->username)) {
-            // Username is unique, proceed to insert into table
-            $query = format_query( "INSERT INTO :User (
-                                    Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
-                                    VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %s);",
-                              $u_username_quoted, $u_email, $u_password, $u_role, $u_firstname, $u_lastname,
-                              esc_or_null($user->player, 'int'), $u_hash, $u_salt);
-            $result = mysql_query($query);
+         if (!$result)
+            return Error::Query($query);
 
-            if (!$result) {
-               log_mysql_error($query, __LINE__, false);
-               return Error::Query($query);
-            }
+         // Get id for the new user
+         $u_id = mysql_insert_id();
+         $user->SetId( $u_id);
+         $retValue = $user;
+      }
+      else {
+         // Username already in use, report error
+         $err = new Error();
+         $err->title = "error_invalid_argument";
+         $err->description = translate( "error_invalid_argument_description");
+         $err->internalDescription = "Username is already in use";
+         $err->function = "SetUserDetails()";
+         $err->IsMajor = false;
+         $err->data = "username:" . $u_username .
+                      "; role:" . $u_role .
+                      "; firstname:" . $u_firstname .
+                      "; lastname:" . $u_lastname;
+         $retValue = $err;
+      }
+   }
+   else {
+      // Wrong class as argument, report error
+      $err = new Error();
+      $err->title = "error_argument";
+      $err->description = translate( "error_argument_description");
+      $err->internalDescription = "Wrong class as argument";
+      $err->function = "SetUserDetails()";
+      $err->IsMajor = true;
+      $err->data = "argument class:" . get_class( $user) .
+                  ", expected User";
+      $retValue = $err;
+   }
 
-            if ($result) {
-                // Get id for the new user
-                $u_id = mysql_insert_id();
-                $user->SetId( $u_id);
-                $retValue = $user;
-            }
-
-        } else {
-            // Username already in use, report error
-            $err = new Error();
-            $err->title = "error_invalid_argument";
-            $err->description = translate( "error_invalid_argument_description");
-            $err->internalDescription = "Username is already in use";
-            $err->function = "SetUserDetails()";
-            $err->IsMajor = false;
-            $err->data = "username:" . $u_username .
-                         "; role:" . $u_role .
-                         "; firstname:" . $u_firstname .
-                         "; lastname:" . $u_lastname;
-            $retValue = $err;
-        }
-    } else {
-        // Wrong class as argument, report error
-        $err = new Error();
-        $err->title = "error_argument";
-        $err->description = translate( "error_argument_description");
-        $err->internalDescription = "Wrong class as argument";
-        $err->function = "SetUserDetails()";
-        $err->IsMajor = true;
-        $err->data = "argument class:" . get_class( $user) .
-                     ", expected User";
-        $retValue = $err;
-    }
-
-return $retValue;
+   return $retValue;
 }
+
 
 /**
  * Function for setting or changing the player data.
