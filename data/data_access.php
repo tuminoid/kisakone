@@ -3219,142 +3219,109 @@ function GetRoundResult($roundid, $playerid)
 }
 
 
-    function CreateSection($round, $baseClassId, $name)
-    {
-      //@@section
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+function CreateSection($round, $baseClassId, $name)
+{
+   $round = (int) $round;
+   $name = escape_string($name);
 
-      $round = (int) $round;
-      $name = mysql_real_escape_string($name);
+   $query = format_query("INSERT INTO :Section(Round, Classification, Name, Present)
+      VALUES(%d, %s, '%s', 1)", $round, esc_or_null($baseClassId, 'int'), $name);
+   $result = execute_query($query);
 
-      $query = format_query("INSERT INTO :Section(Round, Classification, Name, Present)
-         VALUES(%d, %s, '%s', 1)", $round, esc_or_null($baseClassId, 'int'), $name);
-      $result = mysql_query($query);
+   if (!$result) {
+      $retValue = new Error();
+      $retValue->title = "error_db_query";
+      $retValue->description = translate( "error_db_query_description");
+      $retValue->internalDescription = "Query failed";
+      $retValue->function = "CreateSubClass()";
+      $retValue->IsMajor = true;
+      $retValue->data = "Name: " . $name;
+      return $retValue;
+   }
 
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         $retValue = new Error();
-         $retValue->title = "error_db_query";
-         $retValue->description = translate( "error_db_query_description");
-         $retValue->internalDescription = "Query failed";
-         $retValue->function = "CreateSubClass()";
-         $retValue->IsMajor = true;
-         $retValue->data = "Name: " . $name;
-         return $retValue;
-      }
+   return mysql_insert_id();
+}
 
-      $classId = mysql_insert_id();
 
-      return $classId;
-    }
+function RenameSection($classId, $newName)
+{
+   $classId = (int) $classId;
+   $newName = mysql_real_escape_string($newName);
+   $query = format_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
+   $result = execute_query($query);
 
-    function RenameSection($classId, $newName)
-    {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   if (!$result) {
+       $retValue = new Error();
+       $retValue->title = "error_db_query";
+       $retValue->description = translate( "error_db_query_description");
+       $retValue->internalDescription = "Query failed";
+       $retValue->function = "RenameSubClass()";
+       $retValue->IsMajor = true;
+       $retValue->data = "ClassId: " . $classId;
 
-      $classId = (int) $classId;
-      $newName = mysql_real_escape_string($newName);
-      $query = format_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
-      $result = mysql_query($query);
+       return $retValue;
+   }
+}
 
-      if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          $retValue = new Error();
-          $retValue->title = "error_db_query";
-          $retValue->description = translate( "error_db_query_description");
-          $retValue->internalDescription = "Query failed";
-          $retValue->function = "RenameSubClass()";
-          $retValue->IsMajor = true;
-          $retValue->data = "ClassId: " . $classId;
 
-          return $retValue;
-      }
-    }
+function AssignPlayersToSection($roundId, $sectionid, $playerIds)
+{
+   $each = array();
+   foreach ($playerIds as $playerId)
+      $each[] = sprintf("(%d, %d)", GetParticipationIdByRound($roundId, $playerId), $sectionid);
 
-    function AssignPlayersToSection($roundId, $sectionid, $playerIds)
-    {
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   $data = implode(", ", $each);
+   $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES %s", $data);
+   $result = execute_query($query);
 
-      $each = array();
-      foreach ($playerIds as $playerId) $each[] = sprintf("(%d, %d)",
-                                                        GetParticipationIdByRound($roundId, $playerId),
-                                                        $sectionid);
+   if (!$result) {
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL UPDATE";
+      $err->function = "SectionMembership()";
+      $err->isMajor = true;
 
-      $data = implode(", ", $each);
-      $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES %s"
-                      , $data);
-      $result = mysql_query($query);
+      return $err;
+   }
+}
 
-      if (!$result) {
-             log_mysql_error($query, __LINE__, false);
-             $err = new Error();
-             $err->title = "error_db_query";
-             $err->description = translate( "error_db_query_description");
-             $err->internalDescription = "Failed SQL UPDATE";
-             $err->function = "SectionMembership()";
-             $err->isMajor = true;
 
-             return $err;
-       }
+function EditSection($roundId, $sectionId, $priority, $startTime)
+{
+   $roundId = (int) $roundId;
+   $classId = (int) $classId;
+   $priority = esc_or_null($priority, 'int');
+   $startTime = esc_or_null($startTime, 'int');
 
-    }
+   $query = format_query("UPDATE :ClassOnRound SET Priority = %s, StartTime = FROM_UNIXTIME(%s) WHERE Round = %d AND Classification = %d",
+                            $priority, $startTime, $roundId, $classId);
+   $result = execute_query($query);
 
-    function EditSection($roundId, $sectionId, $priority, $startTime)
-    {
-   //@@section
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+   if (!$result) {
+       $retValue = new Error();
+       $retValue->title = "error_db_query";
+       $retValue->description = translate( "error_db_query_description");
+       $retValue->internalDescription = "Query failed";
+       $retValue->function = "AdjustClassOnRound()";
+       $retValue->IsMajor = true;
+       $retValue->data = sprintf("RoundId: %d, ClassId: %d", $roundId, $classId);
 
-      $roundId = (int) $roundId;
-      $classId = (int) $classId;
-      $priority = esc_or_null($priority, 'int');
-      $startTime = esc_or_null($startTime, 'int');
+       return $retValue;
+   }
+}
 
-      $query = format_query("UPDATE :ClassOnRound SET Priority = %s, StartTime = FROM_UNIXTIME(%s) WHERE Round = %d AND Classification = %d",
-                               $priority, $startTime, $roundId, $classId);
-      $result = mysql_query($query);
-
-      if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          $retValue = new Error();
-          $retValue->title = "error_db_query";
-          $retValue->description = translate( "error_db_query_description");
-          $retValue->internalDescription = "Query failed";
-          $retValue->function = "AdjustClassOnRound()";
-          $retValue->IsMajor = true;
-          $retValue->data = sprintf("RoundId: %d, ClassId: %d", $roundId, $classId);
-
-          return $retValue;
-      }
-    }
 
 /**
  * Stores or removes the event fee payment of a single player
  */
 function MarkEventFeePayment($eventid, $participationId, $payment)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("UPDATE :Participation SET EventFeePaid = FROM_UNIXTIME(%s), Approved = 1 WHERE id = %d AND Event = %d",
                           ($payment ? time() : "NULL"), (int) $participationId, (int) $eventid);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
        $err = new Error();
        $err->title = "error_db_query";
        $err->description = translate( "error_db_query_description");
@@ -3367,13 +3334,9 @@ function MarkEventFeePayment($eventid, $participationId, $payment)
     }
 }
 
+
 function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course)
 {
-    $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("UPDATE :Round SET StartTime = FROM_UNIXTIME(%d), StartType = '%s', `Interval` = %d, ValidResults = %d, Course = %s WHERE id = %d",
                     (int) $date,
                     mysql_real_escape_string($startType),
@@ -3381,21 +3344,15 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
                     $valid ?  1:  0,
                     esc_or_null($course, 'int'),
                     $roundid);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
-   if (!$result) {
-      log_mysql_error($query, __LINE__, false);
+   if (!$result)
       return Error::Query($query);
-   }
 }
+
 
 function SaveHole($hole)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    if ($hole->id) {
       $query = format_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d, HoleText = '%s' WHERE id = %d",
                        (int) $hole->par,
@@ -3412,22 +3369,16 @@ function SaveHole($hole)
                        $hole->holeNumber,
                        $hole->holeText);
    }
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
-   if (!$result) {
-      log_mysql_error($query, __LINE__, false);
+   if (!$result)
       return Error::Query($query);
-   }
 }
+
 
 function PlayerOnRound($roundid, $playerid)
 {
-   $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
-    $query = format_query("SELECT :Participation.Player FROM :Participation
+   $query = format_query("SELECT :Participation.Player FROM :Participation
                      INNER JOIN :SectionMembership ON :SectionMembership.Participation = :Participation.id
                      INNER JOIN :Section ON :Section.id = :SectionMembership.Section
                      WHERE :Participation.Player = %d
@@ -3435,84 +3386,64 @@ function PlayerOnRound($roundid, $playerid)
                      LIMIT 1",
                      $playerid,
                      $roundid);
-    $result = mysql_query($query);
+   $result = execute_query($query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-
-    return mysql_num_rows($result) != 0;
-
+   return mysql_num_rows($result) != 0;
 }
+
 
 function GetParticipationIdByRound($roundid, $playerid)
 {
-   $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
-
-    $query = format_query("SELECT :Participation.id FROM :Participation
+   $query = format_query("SELECT :Participation.id FROM :Participation
                      INNER JOIN :Event ON :Event.id = :Participation.Event
                      INNER JOIN :Round ON :Round.Event = :Event.id
-
                      WHERE :Participation.Player = %d
                      AND :Round.id = %d
                      ",
                      $playerid,
                      $roundid);
-    $result = mysql_query($query);
+   $result = execute_query($query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   if ($result)
+      $row = mysql_fetch_assoc($result);
+   mysql_free_result($result);
 
-    $row = mysql_fetch_assoc($result);
-    mysql_free_result($result);
-
-    if ($row === false)
+   if ($row === false)
       return null;
-    return $row['id'];
+
+   return $row['id'];
 }
+
 
 function RemovePlayersFromRound($roundid, $playerids = null)
 {
+   if (!is_array($playerids))
+      $playerids = array($playerids);
 
-   if (!is_array($playerids)) $playerids = array($playerids);
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        return $dbError;
-    }
+   $retValue = null;
+   $playerids = array_filter($playerids, 'is_numeric');
 
-    $retValue = null;
-    $playerids = array_filter($playerids, 'is_numeric');
-
-    $query = format_query( "SELECT :SectionMembership.id FROM :SectionMembership
+   $query = format_query( "SELECT :SectionMembership.id FROM :SectionMembership
       INNER JOIN :Section ON :Section.id = :SectionMembership.Section
       INNER JOIN :Participation ON :Participation.id = :SectionMembership.Participation
       WHERE :Section.Round = %d AND :Participation.Player IN (%s)",
-      $roundid,
-      implode(", " ,$playerids));
-
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+      $roundid, implode(", " ,$playerids));
+   $result = execute_query($query);
 
    $ids = array();
    while (($row = mysql_fetch_assoc($result)) !== false) {
       $ids[] = $row['id'];
    }
-
    mysql_free_result($result);
 
-    if (!count($ids))
+   if (!count($ids))
       return;
 
-    $query = format_query( "DELETE FROM :SectionMembership WHERE id IN (%s)",
+   $query = format_query( "DELETE FROM :SectionMembership WHERE id IN (%s)",
       implode(", ", $ids ));
-    $result = mysql_query( $query);
+   $result = execute_query( $query);
 
     if (!$result) {
-        log_mysql_error($query, __LINE__, false);
         $err = new Error();
         $err->title = "error_db_query";
         $err->description = translate( "error_db_query_description");
@@ -3526,6 +3457,7 @@ function RemovePlayersFromRound($roundid, $playerids = null)
     return $retValue;
 }
 
+
 function ResetRound($roundid, $resetType = 'full')
 {
    $sections = GetSections((int) $roundid);
@@ -3536,31 +3468,16 @@ function ResetRound($roundid, $resetType = 'full')
    }
    $idList = implode(', ', $sectIds);
 
-   if ($resetType == 'groups' || $resetType == 'full') {
-      $query = format_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)");
-      $result = mysql_query($query);
+   if ($resetType == 'groups' || $resetType == 'full')
+      execute_query(format_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)"));
 
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-   }
+   if ($resetType == 'full' || $resetType == 'players')
+      execute_query(format_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)"));
 
-   if ($resetType == 'full' || $resetType == 'players') {
-      $query = format_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-   }
-
-   if ($resetType == 'full') {
-      $query = format_query("DELETE FROM :Section WHERE id IN ($idList)");
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
-   }
-
+   if ($resetType == 'full')
+      execute_query(format_query("DELETE FROM :Section WHERE id IN ($idList)"));
 }
+
 
 function RemoveEmptySections($round)
 {
@@ -3568,15 +3485,11 @@ function RemoveEmptySections($round)
    foreach ($sections as $section) {
       $players = $section->GetPlayers();
 
-      if (!count($players)) {
-         $query = format_query("DELETE FROM :Section WHERE id = %d", $section->id);
-         $result = mysql_query($query);
-
-         if (!$result)
-            log_mysql_error($query, __LINE__, false);
-      }
+      if (!count($players))
+         execute_query(format_query("DELETE FROM :Section WHERE id = %d", $section->id));
    }
 }
+
 
 function AdjustSection($sectionid, $priority, $sectionTime, $present)
 {
@@ -3584,76 +3497,71 @@ function AdjustSection($sectionid, $priority, $sectionTime, $present)
                      $priority,
                      esc_or_null($sectionTime, 'int'),
                      $present ? 1 : 0,
-                     $sectionid
-                    );
-   $result = mysql_query($query);
+                     $sectionid);
+   $result = execute_query($query);
 
-   if (!$result) {
-      log_mysql_error($query, __LINE__, false);
+   if (!$result)
       return Error::Query($query);
-   }
-
 }
+
 
 function GetGroups($sectid)
 {
-      $query = format_query("
-            SELECT
-               :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
-               :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
-               :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification, :Participation.OverallResult
-               FROM :StartingOrder
-               INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-               INNER JOIN :User ON :Player.player_id = :User.Player
-               INNER JOIN :Section ON :StartingOrder.Section = :Section.id
-               INNER JOIN :Round ON :Round.id = :Section.Round
-               INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-               INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-               WHERE :StartingOrder.`Section` = %d
-               ORDER BY GroupNumber, OverallResult",
-               $sectid);
+   $query = format_query("
+         SELECT
+            :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
+            :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
+            :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification, :Participation.OverallResult
+            FROM :StartingOrder
+            INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+            INNER JOIN :User ON :Player.player_id = :User.Player
+            INNER JOIN :Section ON :StartingOrder.Section = :Section.id
+            INNER JOIN :Round ON :Round.id = :Section.Round
+            INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+            INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+            WHERE :StartingOrder.`Section` = %d
+            ORDER BY GroupNumber, OverallResult",
+            $sectid);
+   $result = execute_query($query);
 
-      $result = mysql_query($query);
+   if (!$result)
+      return Error::Query($query);
 
-      if (!$result) {
-         log_mysql_error($query, __LINE__, false);
-         return Error::Query($query);
+   $current = null;
+   $out = array();
+   $group = null;
+
+   while (($row = mysql_fetch_assoc($result)) !== false) {
+      $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
+      $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
+
+      if ($row['GroupNumber'] != $current) {
+         if (count($group))
+            $out[] = $group;
+         $group = $row;
+         $group['People'] = array();
+         $current = $row['GroupNumber'];
+         $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['GroupNumber']);
+
+         if ($row['StartingHole'])
+            $group['DisplayName'] = $row['StartingHole'];
+         else
+            $group['DisplayName'] = date('H:i', $row['StartingTime']);
       }
+      $group['People'][] = $row;
+   }
 
-      $current = null;
-      $out = array();
-      $group = null;
+   if (count($group))
+      $out[] = $group;
 
-      while (($row = mysql_fetch_assoc($result)) !== false) {
-         $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
-         $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
-         if ($row['GroupNumber'] != $current) {
-            if (count($group))
-               $out[] = $group;
-            $group = $row;
-            $group['People'] = array();
-            $current = $row['GroupNumber'];
-            $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['GroupNumber']);
+   mysql_free_result($result);
 
-            if ($row['StartingHole']) {
-               $group['DisplayName'] = $row['StartingHole'];
-            }
-            else {
-               $group['DisplayName'] = date('H:i', $row['StartingTime']);
-            }
-         }
-         $group['People'][] = $row;
-      }
+   return $out;
+}
 
-      if (count($group))
-         $out[] = $group;
-      mysql_free_result($result);
 
-      return $out;
-  }
-
-  function InsertGroup($group)
-  {
+function InsertGroup($group)
+{
    foreach ($group['People'] as $player) {
       $query = format_query("INSERT INTO :StartingOrder
                        (Player, StartingTime, StartingHole, GroupNumber, Section)
@@ -3663,15 +3571,13 @@ function GetGroups($sectid)
                      esc_or_null($group['StartingHole'], 'int'),
                      $group['GroupNumber'],
                      $group['Section']);
-      $result = mysql_query($query);
-
-      if (!$result)
-         log_mysql_error($query, __LINE__, false);
+      execute_query($query);
    }
-  }
+}
 
-  function InsertGroupMember($data)
-  {
+
+function InsertGroupMember($data)
+{
    $query = format_query("INSERT INTO :StartingOrder
                     (Player, StartingTime, StartingHole, GroupNumber, Section)
                     VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
@@ -3680,11 +3586,9 @@ function GetGroups($sectid)
                     esc_or_null($data['StartingHole'], 'int'),
                     $data['GroupNumber'],
                     $data['Section']);
-   $result = mysql_query($query);
+   execute_query($query);
+}
 
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
-  }
 
   function GetAllRoundResults($eventid)
   {
