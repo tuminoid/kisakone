@@ -1730,8 +1730,10 @@ function EditClass($id, $name, $minage, $maxage, $gender, $available)
 
 function CreateClass($name, $minage, $maxage, $gender, $available)
 {
-   $query = format_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available) VALUES ('%s', %s, %s, %s, %d);",
-                    mysql_real_escape_string($name), esc_or_null($minage, 'int'), esc_or_null($maxage, 'int'), esc_or_null($gender, 'gender'), $available ? 1:0);
+   $query = format_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available)
+                  VALUES ('%s', %s, %s, %s, %d);",
+                    escape_string($name), esc_or_null($minage, 'int'), esc_or_null($maxage, 'int'),
+                    esc_or_null($gender, 'gender'), $available ? 1:0);
    $result = execute_query($query);
 
    if (!$result) {
@@ -1772,105 +1774,76 @@ function DeleteClass($id)
 // Returns true if the provided class is being used in any event, false otherwise
 function ClassBeingUsed($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $retValue = true;
    $id = (int) $id;
-
-   $query = format_query("SELECT COUNT(*)   AS Events FROM :ClassInEvent WHERE Classification = %d"
+   $query = format_query("SELECT COUNT(*) AS Events FROM :ClassInEvent WHERE Classification = %d"
                           , $id);
-   $result = mysql_query($query);
-
-   if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) > 0) {
       $temp = mysql_fetch_assoc($result);
       $retValue = ($temp['Events']) > 0;
    }
-
    mysql_free_result($result);
 
    return $retValue;
 }
 
+
 function EditLevel($id, $name, $method, $available)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("UPDATE :Level SET Name = '%s', ScoreCalculationMethod = '%s', Available = %d WHERE id = %d",
-                            mysql_real_escape_string($name), mysql_real_escape_string($method), $available ? 1:0, (int) $id);
-   $result = mysql_query($query);
+                            escape_string($name), escape_string($method), $available ? 1 : 0, (int) $id);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL UPDATE";
-       $err->function = "EditLevel()";
-       $err->IsMajor = true;
-       $err->data = "Level id: " . $id;
+      $err = new Error();
+      $err->title = "error_db_query";
+      $err->description = translate( "error_db_query_description");
+      $err->internalDescription = "Failed SQL UPDATE";
+      $err->function = "EditLevel()";
+      $err->IsMajor = true;
+      $err->data = "Level id: " . $id;
 
-       return $err;
+      return $err;
    }
+   mysql_free_result($result);
 }
+
 
 function CreateLevel($name, $method, $available)
 {
-    $retValue = null;
+   $retValue = null;
 
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-       return $dbError;
-    }
+   $query = format_query("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ('%s', '%s', %d)",
+                      escape_string( $name), escape_string($method), $available ? 1 : 0);
+   $result = execute_query($query);
 
-    $query = format_query( "INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ('%s', '%s', %d);",
-                      mysql_real_escape_string( $name), mysql_real_escape_string($method), $available ? 1:0);
-    $result = mysql_query($query);
+   if ($result) {
+      $id = mysql_insert_id();
+      mysql_free_result($result);
+      return $id;
+   }
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   // Insert query error
+   $err = new Error();
+   $err->title = "error_db_query";
+   $err->description = "error_db_query_description";
+   $err->internalDescription = "Failed SQL INSERT query";
+   $err->function = "CreateLevel()";
+   $err->IsMajor = true;
+   $err->data = "name:" . $name . " ;method:" . $method;
 
-    if ($result) {
-        // Get id for the new level
-        $level_id = mysql_insert_id();
-        $retValue = $level_id;
-    }
-    else {
-        // Insert query error
-        $err = new Error();
-        $err->title = "error_db_query";
-        $err->description = "error_db_query_description";
-        $err->internalDescription = "Failed SQL INSERT query";
-        $err->function = "CreateLevel()";
-        $err->IsMajor = true;
-        $err->data = "name:" . $name . " ;method:" . $method;
-        $retValue = $err;
-    }
-
-    return $retValue;
+   return $err;
 }
 
 
 function DeleteLevel($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("DELETE FROM :Level WHERE id = ". (int) $id);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
        $err = new Error();
        $err->title = "error_db_query";
        $err->description = translate( "error_db_query_description");
@@ -1881,53 +1854,40 @@ function DeleteLevel($id)
 
        return $err;
    }
+   mysql_free_result($result);
 }
 
 
 // Returns true if the provided level is being used in any event or tournament, false otherwise
 function LevelBeingUsed($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $retValue = true;
    $id = (int) $id;
 
    $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = %d) AS Events,
                            (SELECT COUNT(*) FROM :Tournament WHERE Level = %d) AS Tournaments", $id, $id);
-   $result = mysql_query($query);
-
-   if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) > 0) {
       $temp = mysql_fetch_assoc($result);
       $retValue = ($temp['Events'] + $temp['Tournaments']) > 0;
    }
-
    mysql_free_result($result);
 
-    return $retValue;
+   return $retValue;
 }
+
 
 function EditTournament($id, $name, $method, $level, $available, $year, $description)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("UPDATE :Tournament SET Name = '%s', ScoreCalculationMethod = '%s', Level = %d, Available = %d, Year = %d,
                        Description = '%s'
                        WHERE id = %d",
-                           mysql_real_escape_string($name), mysql_real_escape_string($method), (int) $level, $available ? 1:0, (int) $year,
-                           mysql_real_escape_string($description),(int) $id);
-   $result = mysql_query($query);
+                           escape_string($name), escape_string($method), (int) $level, $available ? 1 : 0, (int) $year,
+                           escape_string($description),(int) $id);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
        $err = new Error();
        $err->title = "error_db_query";
        $err->description = translate( "error_db_query_description");
@@ -1938,22 +1898,19 @@ function EditTournament($id, $name, $method, $level, $available, $year, $descrip
 
        return $err;
    }
+   mysql_free_result($result);
 }
+
 
 function CreateTournament($name, $method, $level, $available, $year, $description)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
-   $query = format_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description) VALUES('%s', '%s', %d, %d, %d, '%s')",
-                           mysql_real_escape_string($name), mysql_real_escape_string($method), (int) $level, $available ? 1:0, (int) $year,
-                           mysql_real_escape_string($description));
-   $result = mysql_query($query);
+   $query = format_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description)
+                        VALUES('%s', '%s', %d, %d, %d, '%s')",
+                           escape_string($name), escape_string($method), (int) $level, $available ? 1 : 0, (int) $year,
+                           escape_string($description));
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
        $err = new Error();
        $err->title = "error_db_query";
        $err->description = translate( "error_db_query_description");
@@ -1964,20 +1921,16 @@ function CreateTournament($name, $method, $level, $available, $year, $descriptio
 
        return $err;
    }
+   mysql_free_result($result);
 }
+
 
 function DeleteTournament($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $query = format_query("DELETE FROM :Tournament WHERE id = ". (int) $id);
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
        $err = new Error();
        $err->title = "error_db_query";
        $err->description = translate( "error_db_query_description");
@@ -1988,82 +1941,57 @@ function DeleteTournament($id)
 
        return $err;
    }
+   mysql_free_result($result);
 }
 
 
 // Returns true if the provided tournament is being used in any event, false otherwise
 function TournamentBeingUsed($id)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $retValue = true;
    $query = format_query("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = ". (int) $id);
-   $result = mysql_query($query);
-
-   if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) > 0) {
       $temp = mysql_fetch_assoc($result);
       $retValue = $temp['n'] > 0;
    }
-
    mysql_free_result($result);
 
-    return $retValue;
+   return $retValue;
 }
+
 
 function GetTournamentDetails($id)
 {
     require_once 'core/tournament.php';
 
-      $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
     $id = (int) $id;
     $retValue = array();
 
     $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description FROM :Tournament WHERE id = $id");
-    $result = mysql_query($query);
-
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+    $result = execute_query($query);
 
     if (mysql_num_rows($result) == 1) {
-      while ($row = mysql_fetch_assoc($result)) {
+      while ($row = mysql_fetch_assoc($result))
          $retValue = new Tournament($row['id'], $row['Level'], $row['Name'], $row['Year'], $row['ScoreCalculationMethod'], $row['Available'], $row['Description']);
-      }
     }
-
     mysql_free_result($result);
 
     return $retValue;
 }
 
+
 function GetTournamentYears()
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $retValue = array();
    $query = format_query("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
+      while ($row = mysql_fetch_assoc($result))
          $retValue[] = $row['Year'];
-      }
    }
-
    mysql_free_result($result);
 
    return $retValue;
@@ -2072,11 +2000,6 @@ function GetTournamentYears()
 
 function GetTournamentLeader($tournamentId)
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $tournamentId = (int) $tournamentId;
    $retValue = array();
    $query = format_query("SELECT :User.id FROM
@@ -2086,65 +2009,49 @@ function GetTournamentLeader($tournamentId)
                            WHERE :TournamentStanding.Tournament = $tournamentId
                            ORDER BY Standing
                            LIMIT 1");
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) == 1) {
-      while ($row = mysql_fetch_assoc($result)) {
-         $retValue = GetUserDetails($row['id']);
-      }
+      $row = mysql_fetch_assoc($result);
+      $retValue = GetUserDetails($row['id']);
    }
-
    mysql_free_result($result);
 
    return $retValue;
 }
 
+
 function GetEventsByYear($year)
 {
    $year = (int) $year;
-
    $start = mktime(0,0,0,1,1,$year);
    $end = mktime(0,0,0,12,31,$year);
 
    return GetEventsByDate($start, $end) ;
 }
 
+
 function GetEventYears()
 {
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
-
    $retValue = array();
    $query = format_query("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
+      while ($row = mysql_fetch_assoc($result))
          $retValue[] = $row['year'];
-      }
    }
-
    mysql_free_result($result);
 
-    return $retValue;
+   return $retValue;
 }
 
 
 function GetUserEvents($ignored, $eventType = 'all')
 {
-
    $conditions = '';
-   if ($eventType == 'participant' || $eventType == 'all') {
+   if ($eventType == 'participant' || $eventType == 'all')
       $conditions = ':Participation.Player IS NOT NULL';
-   }
 
    if ($eventType == 'manager' || $eventType == 'all') {
       if ($conditions)
@@ -2155,20 +2062,15 @@ function GetUserEvents($ignored, $eventType = 'all')
    return data_GetEvents($conditions);
 }
 
+
 function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $forcePlayer = null)
 {
-    require_once 'core/player.php';
-   $dbError = InitializeDatabaseConnection();
-   if ($dbError) {
-      return $dbError;
-   }
+   require_once 'core/player.php';
 
-    if ($forcePlayer) {
-        $search = format_query( ":Player.player_id = %d", (int) $forcePlayer);
-    }
-    else {
-        $search = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username'));
-    }
+   if ($forcePlayer)
+      $search = format_query( ":Player.player_id = %d", (int) $forcePlayer);
+   else
+      $search = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username'));
 
    $sortOrder = data_CreateSortOrder($sortedBy, array('name' => array('LastName', 'FirstName'), 'LastName' => true, 'FirstName' => true, 'pdga', 'gender' => 'sex', 'Username'));
    $year = date("Y");
@@ -2182,14 +2084,10 @@ function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $for
                   LEFT JOIN :MembershipPayment ON :MembershipPayment.Player = :Player.player_id ".($relevantOnly ? "AND :MembershipPayment.Year >= $year " : "")."
                   LEFT JOIN :LicensePayment ON :LicensePayment.Player = :Player.player_id".($relevantOnly ? " AND :LicensePayment.Year >= $year" : "").
                    " WHERE %s
-                   ORDER BY %s, UserId, :MembershipPayment.Year, :LicensePayment.Year"
-                  ;
+                   ORDER BY %s, UserId, :MembershipPayment.Year, :LicensePayment.Year";
 
    $query = format_query($query, $search, $sortOrder);
-   $result = mysql_query($query);
-
-   if (!$result)
-      log_mysql_error($query, __LINE__, false);
+   $result = execute_query($query);
 
    $userid = -1;
    $pdata = array();
@@ -2224,37 +2122,35 @@ function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $for
             $pdata['membershipfees'] = array();
          }
 
-         if ($row['MSPYear'] != null) {
+         if ($row['MSPYear'] != null)
             $pdata['membershipfees'][$row['MSPYear']] = true;
-         }
 
-         if ($row['LPYear'] != null) {
+         if ($row['LPYear'] != null)
             $pdata['licensefees'][$row['LPYear']] = true;
-         }
       }
 
       if (!empty($pdata)) {
-            if (!isset($pdata['licensefees'][$year ]))
-               $pdata['licensefees'][$year] = false;
-            if (!isset($pdata['licensefees'][$year + 1]))
-               $pdata['licensefees'][$year + 1] = false;
+         if (!isset($pdata['licensefees'][$year ]))
+            $pdata['licensefees'][$year] = false;
+         if (!isset($pdata['licensefees'][$year + 1]))
+            $pdata['licensefees'][$year + 1] = false;
 
-            if (!isset($pdata['membershipfees'][$year ]))
-               $pdata['membershipfees'][$year] = false;
-            if (!isset($pdata['membershipfees'][$year + 1]))
-               $pdata['membershipfees'][$year + 1] = false;
+         if (!isset($pdata['membershipfees'][$year ]))
+            $pdata['membershipfees'][$year] = false;
+         if (!isset($pdata['membershipfees'][$year + 1]))
+            $pdata['membershipfees'][$year + 1] = false;
 
-            ksort($pdata['membershipfees']);
-            ksort($pdata['licensefees']);
+         ksort($pdata['membershipfees']);
+         ksort($pdata['licensefees']);
 
-            $retValue[] = $pdata;
+         $retValue[] = $pdata;
       }
    }
-
    mysql_free_result($result);
 
    return $retValue;
 }
+
 
 /* Return event's participant counts by class */
 function GetEventParticipantCounts($eventId)
