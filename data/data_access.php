@@ -3590,97 +3590,86 @@ function InsertGroupMember($data)
 }
 
 
-  function GetAllRoundResults($eventid)
-  {
-      $query = format_query("SELECT :RoundResult.id, `Round`, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
-                        FROM :RoundResult
-                       INNER JOIN `:Round` ON `:Round`.id = :RoundResult.`Round`
-                       WHERE `:Round`.Event = %d", $eventid);
-      $result = mysql_query($query);
-
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-
-      $out = array();
-
-      while (($row = mysql_fetch_assoc($result)) !== false) {
-         $out[] = $row;
-      }
-      mysql_free_result($result);
-
-      return $out;
-
-  }
-
-  function GetHoleResults($rrid)
-  {
-   $query = format_query("SELECT Hole, Result FROM :HoleResult WHERE RoundResult = %d", $rrid);
-   $result = mysql_query($query);
-
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+function GetAllRoundResults($eventid)
+{
+   $query = format_query("SELECT :RoundResult.id, `Round`, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
+                     FROM :RoundResult
+                    INNER JOIN `:Round` ON `:Round`.id = :RoundResult.`Round`
+                    WHERE `:Round`.Event = %d", $eventid);
+   $result = execute_query($query);
 
    $out = array();
-   while (($row = mysql_fetch_assoc($result)) !== false) {
-      $out[] = $row;
+   if ($result) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
+         $out[] = $row;
    }
    mysql_free_result($result);
 
    return $out;
-  }
+}
 
-  function GetAllParticipations($eventid)
-  {
-      $query = format_query("SELECT Classification, :Classification.Name,
-                       :Participation.Player, :Participation.id,
-                       :Participation.Standing, :Participation.DidNotFinish, :Participation.TournamentPoints,
-                       :Participation.OverallResult
-                       FROM :Participation
-                       INNER JOIN :Classification ON :Classification.id = :Participation.Classification
 
-                       WHERE Event = %d AND EventFeePaid IS NOT NULL", $eventid);
+function GetHoleResults($rrid)
+{
+   $query = format_query("SELECT Hole, Result FROM :HoleResult WHERE RoundResult = %d", $rrid);
+   $result = execute_query($query);
 
-      $result = mysql_query($query);
-
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-
-      $out = array();
-
-      while (($row = mysql_fetch_assoc($result)) !== false) {
+   $out = array();
+   if ($result) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
          $out[] = $row;
-      }
-      mysql_free_result($result);
+   }
+   mysql_free_result($result);
 
-      return $out;
+   return $out;
+}
 
-  }
 
-  function SaveParticipationResults($entry)
-  {
-      $query = format_query("UPDATE :Participation
-                           SET OverallResult = %d,
-                           Standing = %d,
-                           DidNotFinish = %d,
-                           TournamentPoints = %d
-                        WHERE id = %d",
-                        $entry['OverallResult'],
-                        $entry['Standing'],
-                        $entry['DidNotFinish'],
-                        $entry['TournamentPoints'],
-                        $entry['id']
-                        );
+function GetAllParticipations($eventid)
+{
+   $query = format_query("SELECT Classification, :Classification.Name,
+                    :Participation.Player, :Participation.id,
+                    :Participation.Standing, :Participation.DidNotFinish, :Participation.TournamentPoints,
+                    :Participation.OverallResult
+                    FROM :Participation
+                    INNER JOIN :Classification ON :Classification.id = :Participation.Classification
+                    WHERE Event = %d AND EventFeePaid IS NOT NULL", $eventid);
+   $result = execute_query($query);
 
-      $result = mysql_query($query);
+   $out = array();
+   if ($result) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
+         $out[] = $row;
+   }
+   mysql_free_result($result);
 
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-  }
+   return $out;
+}
 
-  function data_CreateSortOrder($desiredOrder, $fields)
-  {
+
+function SaveParticipationResults($entry)
+{
+   $query = format_query("UPDATE :Participation
+                        SET OverallResult = %d,
+                        Standing = %d,
+                        DidNotFinish = %d,
+                        TournamentPoints = %d
+                     WHERE id = %d",
+                     $entry['OverallResult'],
+                     $entry['Standing'],
+                     $entry['DidNotFinish'],
+                     $entry['TournamentPoints'],
+                     $entry['id']
+                     );
+   execute_query($query);
+}
+
+
+function data_CreateSortOrder($desiredOrder, $fields)
+{
    if (trim($desiredOrder) == "")
       return '1';
+
    $bits = explode(',', $desiredOrder);
    $out = array();
 
@@ -3695,7 +3684,6 @@ function InsertGroupMember($data)
       $field = @$fields[$bit];
 
       if (!$field) {
-
         if (data_string_in_array($bit, $fields))
            $field = $bit;
         else {
@@ -3704,9 +3692,9 @@ function InsertGroupMember($data)
         }
       }
 
-      if ($field === true) {
+      if ($field === true)
          $field = $bit;
-      }
+
       if (is_array($field)) {
         if (!$ascending)
           foreach ($field as $k => $v)
@@ -3717,310 +3705,284 @@ function InsertGroupMember($data)
          return data_CreateSortOrder($newbits, $fields);
       }
 
-      if ($field[0] == '-') {
+      if ($field[0] == '-')
          $ascending = !$ascending;
-      }
 
-      if (strpos($field, "(") !== false) {
-        $out[] = $field . ' ' . ($ascending ? '' : ' DESC') ;
-      }
-      else {
-        $out[] = '`' . mysql_real_escape_string($field) . '`' . ($ascending ? '' : ' DESC') ;
-      }
-
+      if (strpos($field, "(") !== false)
+        $out[] = $field . ' ' . ($ascending ? '' : ' DESC');
+      else
+        $out[] = '`' . escape_string($field) . '`' . ($ascending ? '' : ' DESC') ;
    }
 
    return implode(', ', $out);
+}
 
-  }
 
-  function CreateFileRecord($filename, $displayname, $type)
-  {
-    $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES
-                     ('%s', '%s', '%s')",
-                     mysql_real_escape_string($filename),
-                     mysql_real_escape_string($displayname),
-                     mysql_real_escape_string($type)
-                    );
+function CreateFileRecord($filename, $displayname, $type)
+{
+   $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES
+                  ('%s', '%s', '%s')",
+                  escape_string($filename),
+                  escape_string($displayname),
+                  escape_string($type));
+   $result = execute_query($query);
 
-    $result = mysql_query($query);
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
+   if (!$result)
+      return Error::Query($query);
 
-    return mysql_insert_id();
-  }
+   return mysql_insert_id();
+}
 
-  function GetFile($id)
-  {
-    require_once 'core/files.php';
-    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = %d", $id);
-    $result = mysql_query($query);
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
+function GetFile($id)
+{
+   require_once 'core/files.php';
 
-    $row = mysql_fetch_Assoc($result);
-    mysql_free_result($result);
-    if ($row) {
-        return new File($row);
-    }
+   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = %d", $id);
+   $result = execute_query($query);
 
-  }
+   if (!$result)
+      return Error::Query($query);
 
-  function GetFilesOfType($type)
-  {
-    require_once 'core/files.php';
-    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", mysql_real_escape_string($type));
-    $result = mysql_query($query);
+   $row = mysql_fetch_Assoc($result);
+   mysql_free_result($result);
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
-    $retValue = array();
-    while (($row = mysql_fetch_Assoc($result)) !== false) {
-        $retValue[] = new File($row);
-    }
-    mysql_free_result($result);
+   if ($row)
+     return new File($row);
+}
 
-    return $retValue;
-  }
 
-  function SaveAd($ad)
-  {
-    $query = format_query("UPDATE :AdBanner SET URL = %s, ImageURL = %s, LongData = %s, ImageReference = %s, Type = %s WHERE id = %d",
-                     esc_or_null($ad->url),
-                     esc_or_null($ad->imageURL),
-                     esc_or_null($ad->longData),
-                     esc_or_null($ad->imageReference),
-                     esc_or_null($ad->type),
-                     $ad->id
-                     );
-    $result = mysql_query($query);
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
-  }
+function GetFilesOfType($type)
+{
+   require_once 'core/files.php';
 
-  function AnyGroupsDefined($roundid)
-  {
-    $query = format_query("SELECT 1
-                     FROM :StartingOrder
-                     INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                     INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                     WHERE `:Round`.id = %d LIMIT 1", $roundid);
-    $result = mysql_query($query);
+   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", mysql_real_escape_string($type));
+   $result = execute_query($query);
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
+   if (!$result)
+      return Error::Query($query);
 
-    return mysql_num_rows($res) != 0;
-  }
+   $retValue = array();
+   while (($row = mysql_fetch_Assoc($result)) !== false)
+     $retValue[] = new File($row);
+   mysql_free_result($result);
 
-  function GetRoundGroups($roundid)
-  {
-    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
-                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
-                     FROM :StartingOrder
-                     INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                     INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                     INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                     INNER JOIN :User ON :User.Player = :Player.player_id
-                     INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                     INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                     WHERE `:Round`.id = %d
-                     ORDER BY GroupNumber, :StartingOrder.id
-                     ", $roundid);
-    $result = mysql_query($query);
+   return $retValue;
+}
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
 
-    $out = array();
+function SaveAd($ad)
+{
+   $query = format_query("UPDATE :AdBanner SET URL = %s, ImageURL = %s, LongData = %s, ImageReference = %s, Type = %s WHERE id = %d",
+                  esc_or_null($ad->url),
+                  esc_or_null($ad->imageURL),
+                  esc_or_null($ad->longData),
+                  esc_or_null($ad->imageReference),
+                  esc_or_null($ad->type),
+                  $ad->id);
+   $result = execute_query($query);
 
-    while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
+   if (!$result)
+      return Error::Query($query);
+}
 
-    mysql_free_result($result);
-    return $out;
-  }
 
-  function GetSingleGroup($roundid, $playerid)
-  {
-    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
-                        :Classification.Name ClassificationName,
-                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                     FROM :StartingOrder
-                     INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                     INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                     INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                     INNER JOIN :User ON :User.Player = :Player.player_id
-                     INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                     INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                     INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section
-                                                          AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
-                     WHERE `:Round`.id = %d AND BaseGroup.Player = %d
-                     ORDER BY GroupNumber, :StartingOrder.id
-                     ", $roundid, $playerid);
-    $result = mysql_query($query);
+function AnyGroupsDefined($roundid)
+{
+   $query = format_query("SELECT 1
+                  FROM :StartingOrder
+                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
+                  WHERE `:Round`.id = %d LIMIT 1", $roundid);
+   $result = execute_query($query);
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
+   if (!$result)
+      return Error::Query($query);
 
-    $out = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-    mysql_free_result($result);
+   return mysql_num_rows($res) > 0;
+}
 
-    return $out;
-  }
 
-  function GetSingleGroupByPN($roundid, $groupNumber)
-  {
-    $query = format_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
-                        :Classification.Name ClassificationName,
-                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                     FROM :StartingOrder
-                     INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                     INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                     INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                     INNER JOIN :User ON :User.Player = :Player.player_id
-                     INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                     INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                     WHERE `:Round`.id = %d AND GroupNumber = %d
-                     ORDER BY GroupNumber, :StartingOrder.id
-                     ", $roundid, $groupNumber);
-    $result = mysql_query($query);
+function GetRoundGroups($roundid)
+{
+   $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
+                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
+                  FROM :StartingOrder
+                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
+                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                  INNER JOIN :User ON :User.Player = :Player.player_id
+                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                  WHERE `:Round`.id = %d
+                  ORDER BY GroupNumber, :StartingOrder.id", $roundid);
+   $result = execute_query($query);
 
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
+   if (!$result)
+      return Error::Query($query);
 
-    $out = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-    mysql_free_result($result);
-
-    return $out;
-  }
-
-  function GetUserGroupSummary($eventid, $playerid)
-  {
-    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
-                        :Classification.Name ClassificationName, :Round.GroupsFinished,
-                        :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                     FROM :StartingOrder
-                     INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                     INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                     INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                     INNER JOIN :User ON :User.Player = :Player.player_id
-                     INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                     INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                     WHERE `:Round`.Event = %d AND :StartingOrder.Player = %d
-                     ORDER BY `:Round`.StartTime
-                     ", $eventid, $playerid);
-    $result = mysql_query($query);
-
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
-
-    $out = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-    mysql_free_result($result);
-
-    if (!count($out))
-      return null;
-    return $out;
-  }
-
-  function GetRoundCourse($roundid)
-  {
-    $query = format_query("SELECT :Course.id, Name, Description, Link, Map
-                     FROM :Course
-                     INNER JOIN `:Round` ON `:Round`.Course = :Course.id
-                     WHERE `:Round`.id = %d", $roundid);
-    $result = mysql_query($query);
-
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
-
-    return mysql_fetch_assoc($result);
-  }
-
-  function SetParticipantClass($eventid, $playerid, $newClass)
-  {
-   $query = format_query("UPDATE :Participation SET Classification = %d WHERE Player = %d AND Event = %d",
-                    $newClass, $playerid, $eventid);
-   $result = mysql_query($query);
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
-
-   return mysql_affected_rows() == 1;
-  }
-
-  function GetCourses()
-  {
-   $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
-   $result = mysql_query($query);
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-    }
    $out = array();
-   while (($row = mysql_fetch_assoc($result)) !== false) {
-      $out[] = $row;
-   }
+   while (($row = mysql_fetch_array($result)) !== false)
+      $out[] =$row;
    mysql_free_result($result);
 
    return $out;
-  }
+}
 
-  function GetCourseDetails($id)
-  {
-   $db = InitializeDatabaseConnection();
-   if (is_a($db, 'Error'))
-      return $db;
 
-   $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = %d", $id);
-   $result = mysql_query($query);
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
-       return Error::Query($query);
-   }
+function GetSingleGroup($roundid, $playerid)
+{
+   $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+                     :Classification.Name ClassificationName,
+                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
+                  FROM :StartingOrder
+                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
+                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                  INNER JOIN :User ON :User.Player = :Player.player_id
+                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                  INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section
+                                                       AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
+                  WHERE `:Round`.id = %d AND BaseGroup.Player = %d
+                  ORDER BY GroupNumber, :StartingOrder.id", $roundid, $playerid);
+   $result = execute_query($query);
 
-   $out = null;
-   while (($row = mysql_fetch_assoc($result)) !== false) {
-      $out = $row;
-   }
+   if (!$result)
+      return Error::Query($query);
+
+   $out = array();
+   while (($row = mysql_fetch_array($result)) !== false)
+      $out[] =$row;
+   mysql_free_result($result);
 
    return $out;
-  }
+}
 
-  function SaveCourse($course)
-  {
-   $db = InitializeDatabaseConnection();
-   if (is_a($db, 'Error'))
-      return $db;
 
+function GetSingleGroupByPN($roundid, $groupNumber)
+{
+   $query = format_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
+                     :Classification.Name ClassificationName,
+                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
+                  FROM :StartingOrder
+                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
+                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                  INNER JOIN :User ON :User.Player = :Player.player_id
+                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                  WHERE `:Round`.id = %d AND GroupNumber = %d
+                  ORDER BY GroupNumber, :StartingOrder.id", $roundid, $groupNumber);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   $out = array();
+   while (($row = mysql_fetch_array($result)) !== false)
+      $out[] =$row;
+   mysql_free_result($result);
+
+   return $out;
+}
+
+
+function GetUserGroupSummary($eventid, $playerid)
+{
+   $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
+                     :Classification.Name ClassificationName, :Round.GroupsFinished,
+                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
+                  FROM :StartingOrder
+                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
+                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                  INNER JOIN :User ON :User.Player = :Player.player_id
+                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                  WHERE `:Round`.Event = %d AND :StartingOrder.Player = %d
+                  ORDER BY `:Round`.StartTime", $eventid, $playerid);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   $out = array();
+   while (($row = mysql_fetch_array($result)) !== false)
+      $out[] =$row;
+   mysql_free_result($result);
+
+   if (!count($out))
+      return null;
+
+   return $out;
+}
+
+
+function GetRoundCourse($roundid)
+{
+   $query = format_query("SELECT :Course.id, Name, Description, Link, Map
+                  FROM :Course
+                  INNER JOIN `:Round` ON `:Round`.Course = :Course.id
+                  WHERE `:Round`.id = %d", $roundid);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   return mysql_fetch_assoc($result);
+}
+
+
+function SetParticipantClass($eventid, $playerid, $newClass)
+{
+   $query = format_query("UPDATE :Participation SET Classification = %d WHERE Player = %d AND Event = %d",
+                 $newClass, $playerid, $eventid);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   return mysql_affected_rows() == 1;
+}
+
+
+function GetCourses()
+{
+   $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   $out = array();
+   while (($row = mysql_fetch_assoc($result)) !== false)
+      $out[] = $row;
+   mysql_free_result($result);
+
+   return $out;
+}
+
+
+function GetCourseDetails($id)
+{
+   $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = %d", $id);
+   $result = execute_query($query);
+
+   if (!$result)
+      return Error::Query($query);
+
+   $out = null;
+   while (($row = mysql_fetch_assoc($result)) !== false)
+      $out = $row;
+   mysql_free_result($result);
+
+   return $out;
+}
+
+
+function SaveCourse($course)
+{
    if ($course['id']) {
       $query = format_query("UPDATE :Course
                           SET Name = '%s',
@@ -4032,13 +3994,11 @@ function InsertGroupMember($data)
                           mysql_real_escape_string($course['Description']),
                           mysql_real_escape_string($course['Link']),
                           mysql_real_escape_string($course['Map']),
-                          $course['id']
-                                                   );
-      $result = mysql_query($query);
-       if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          return Error::Query($query);
-       }
+                          $course['id']);
+      $result = execute_query($query);
+
+      if (!$result)
+         return Error::Query($query);
    }
    else {
       $eventid = @$course['Event'];
@@ -4052,14 +4012,14 @@ function InsertGroupMember($data)
                           mysql_real_escape_string($course['Link']),
                           mysql_real_escape_string($course['Map']),
                           esc_or_null($eventid, 'int'));
-      $result = mysql_query($query);
-       if (!$result) {
-          log_mysql_error($query, __LINE__, false);
-          return Error::Query($query);
-       }
+      $result = execute_query($query);
+
+      if (!$result)
+         return Error::Query($query);
+
       return mysql_insert_id();
    }
-  }
+}
 
   function StorePayments($payments)
   {
