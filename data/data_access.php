@@ -4055,440 +4055,403 @@ function StorePayments($payments)
 }
 
 
-  function EventRequiresFees($eventid)
-  {
-    $query = format_query("SELECT FeesRequired FROM :Event WHERE id = %d", $eventid);
-    $result = mysql_query($query);
+function EventRequiresFees($eventid)
+{
+   $query = format_query("SELECT FeesRequired FROM :Event WHERE id = %d", $eventid);
+   $result = execute_query($query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   $row = mysql_fetch_assoc($result);
+   mysql_free_result($result);
 
-    $row = mysql_fetch_assoc($result);
-    mysql_free_result($result);
+   return $row['FeesRequired'];
+}
 
-    if ($row === false)
-      return null;
-    return $row['FeesRequired'];
-  }
 
-  function GetTournamentData($tid)
-  {
-    $query = format_query("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
-                            :Participation.TournamentPoints, :Participation.Classification,
-                            :TournamentStanding.id TSID, :Player.player_id PID, :Tournament.id TID,
-                            :Event.ResultsLocked, TieBreaker, :Participation.Standing EventStanding
-                            FROM :Tournament
-                            LEFT JOIN :Event ON :Event.Tournament = :Tournament.id
-                            LEFT JOIN :Participation ON :Event.id = :Participation.Event
-                            LEFT JOIN :Player ON :Participation.Player = :Player.player_id
+function GetTournamentData($tid)
+{
+   $query = format_query("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
+                         :Participation.TournamentPoints, :Participation.Classification,
+                         :TournamentStanding.id TSID, :Player.player_id PID, :Tournament.id TID,
+                         :Event.ResultsLocked, TieBreaker, :Participation.Standing EventStanding
+                         FROM :Tournament
+                         LEFT JOIN :Event ON :Event.Tournament = :Tournament.id
+                         LEFT JOIN :Participation ON :Event.id = :Participation.Event
+                         LEFT JOIN :Player ON :Participation.Player = :Player.player_id
+                         LEFT JOIN :TournamentStanding ON (:TournamentStanding.Tournament = :Tournament.id
+                             AND :TournamentStanding.Player = :Player.player_id)
+                         WHERE :Tournament.id = %d
+                         ORDER BY :Player.player_id", $tid);
+   $result = execute_query($query);
 
-                            LEFT JOIN :TournamentStanding ON (:TournamentStanding.Tournament = :Tournament.id
-                                AND :TournamentStanding.Player = :Player.player_id)
-                            WHERE :Tournament.id = %d
-                            ORDER BY :Player.player_id
-                        ", $tid);
-    $result = mysql_query($query);
-
-    if (!$result) {
-       log_mysql_error($query, __LINE__, false);
+   if (!$result)
       return Error::Query($results);
-    }
 
-    $lastrow = null;
-    $out = array();
-    while (($row = mysql_fetch_assoc($result)) !== false) {
-        if (!$lastrow || $row['player_id'] != $lastrow['player_id']) {
-            if ($lastrow) {
-                $out[$lastrow['player_id']] = $lastrow;
-            }
-            $lastrow = $row;
-            $lastrow['Events'] = array();
+   $lastrow = null;
+   $out = array();
+   while (($row = mysql_fetch_assoc($result)) !== false) {
+     if (!$lastrow || $row['player_id'] != $lastrow['player_id']) {
+         if ($lastrow)
+             $out[$lastrow['player_id']] = $lastrow;
+         $lastrow = $row;
+         $lastrow['Events'] = array();
+     }
+     $lastrow['Events'][] = $row;
+   }
 
-        }
-        $lastrow['Events'][] = $row;
-    }
+   if ($lastrow)
+      $out[$lastrow['player_id']] = $lastrow;
 
-    if ($lastrow) {
-        $out[$lastrow['player_id']] = $lastrow;
-    }
+   mysql_free_result($result);
 
-    mysql_free_result($result);
-
-    return $out;
-  }
-
-  function SaveTournamentStanding($item)
-  {
-    if ((int) $item['PID'] == 0)
-      return;
-
-    if (!$item['TSID']) {
-        $query = format_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
-                            VALUES (%d, %d, 0, NULL)", $item['PID'], $item['TID']);
-        $result = mysql_query($query);
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-    }
-
-    $query = format_query("UPDATE :TournamentStanding
-                        SET OverallScore = %d, Standing = %d
-                        WHERE Player = %d AND Tournament = %d",
-                        $item['OverallScore'],
-                        $item['Standing'],
-                        $item['PID'],
-                        $item['TID']
-                        );
-
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-  }
-
-  function UserParticipating($eventid, $userid)
-  {
-    $query = format_query("SELECT :Participation.id FROM :Participation
-                        INNER JOIN :Player ON :Participation.Player = :Player.player_id
-                        INNER JOIN :User ON :User.Player = :Player.player_id
-                        WHERE :User.id = %d AND :Participation.Event = %d",
-                        $userid, $eventid);
-    $result = mysql_query($query);
-
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-
-    return (mysql_num_rows($result) != 0);
-  }
-
-  function UserQueueing($eventid, $userid)
-  {
-    $query = format_query("SELECT :EventQueue.id FROM :EventQueue
-                        INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
-                        INNER JOIN :User ON :User.Player = :Player.player_id
-                        WHERE :User.id = %d AND :EventQueue.Event = %d",
-                        $userid, $eventid);
-    $result = mysql_query($query);
-
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-
-    return (mysql_num_rows($result) != 0);
-  }
-
-  function GetAllToRemind($eventid)
-  {
-    $query = format_query(
-        "SELECT :User.id FROM :User
-        INNER JOIN :Player ON :User.Player = :Player.player_id
-        INNER JOIN :Participation ON :Player.player_id = :Participation.Player
-        WHERE :Participation.Event = %d AND :Participation.EventFeePaid IS NULL", $eventid);
-
-    $result = mysql_query($query);
-    $out = array();
-
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-
-    while (($row = mysql_fetch_assoc($result)) !== false) {
-        $out[] = $row['id'];
-    }
-    mysql_free_result($result);
-
-    return $out;
-  }
+   return $out;
+}
 
 
-  function data_FinalizeResultSort($roundid, $data)
-  {
-    $needMoreInfoOn = array();
+function SaveTournamentStanding($item)
+{
+   if ((int) $item['PID'] == 0)
+     return;
 
-    foreach ($data as $results) {
-        $lastRes = -1;
-        $lastPlayer = -1;
-        $added = false;
-        foreach ($results as $player) {
-            if ($player['CumulativeTotal'] == $lastRes) {
-                if (!$added)
-                  $needMoreInfoOn[] = $lastPlayer;
-                $added = true;
-                $needMoreInfoOn[] = $player['PlayerId'];
-            } else {
-                $lastRes = $player['CumulativeTotal'];
-                $lastPlayer = $player['PlayerId'];
-                $added = false;
-            }
-        }
-    }
+   if (!$item['TSID']) {
+      $query = format_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
+                         VALUES (%d, %d, 0, NULL)", $item['PID'], $item['TID']);
+      execute_query($query);
+   }
 
-    global $data_extraSortInfo;
-    $data_extraSortInfo = data_GetExtraSortInfo($roundid, $needMoreInfoOn);
+   $query = format_query("UPDATE :TournamentStanding
+                     SET OverallScore = %d, Standing = %d
+                     WHERE Player = %d AND Tournament = %d",
+                     $item['OverallScore'],
+                     $item['Standing'],
+                     $item['PID'],
+                     $item['TID']);
+   execute_query($query);
+}
 
-    $out = array();
-    foreach ($data as $cn => $results) {
-        usort($results, 'data_Result_Sort');
-        $out[$cn] = $results;
-    }
 
-    return $out;
-  }
+function UserParticipating($eventid, $userid)
+{
+   $query = format_query("SELECT :Participation.id FROM :Participation
+                     INNER JOIN :Player ON :Participation.Player = :Player.player_id
+                     INNER JOIN :User ON :User.Player = :Player.player_id
+                     WHERE :User.id = %d AND :Participation.Event = %d",
+                     $userid, $eventid);
+   $result = execute_query($query);
 
-  function data_GetExtraSortInfo($roundid, $playerList)
-  {
-    if (!count($playerList)) return array();
-    $ids = array_filter($playerList, 'is_numeric');
-    $ids = implode(',', $ids);
+   return (mysql_num_rows($result) > 0);
+}
 
-    $query = format_query(
-        "SELECT `:Round`.id RoundId, :StartingOrder.id StartId, :RoundResult.Result, :StartingOrder.Player
-            FROM `:Round` LinkRound INNER JOIN `:Round` ON `:Round`.Event = LinkRound.Event
-            INNER JOIN :Section ON :Section.`Round` = `:Round`.id
-            INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
-            INNER JOIN :RoundResult ON (:RoundResult.`Round` = `:Round`.id AND :RoundResult.Player = :StartingOrder.Player)
-            WHERE :StartingOrder.Player IN (%s) AND `:Round`.id <= %d AND LinkRound.id = %d
-            ORDER BY :Round.StartTime, :StartingOrder.Player", $ids, $roundid, $roundid
-    );
 
-    $result = mysql_query($query);
+function UserQueueing($eventid, $userid)
+{
+   $query = format_query("SELECT :EventQueue.id FROM :EventQueue
+                     INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
+                     INNER JOIN :User ON :User.Player = :Player.player_id
+                     WHERE :User.id = %d AND :EventQueue.Event = %d",
+                     $userid, $eventid);
+   $result = execute_query($query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+   return (mysql_num_rows($result) > 0);
+}
 
-    $out = array();
-    while (($row = mysql_fetch_assoc($result)) !== false) {
-        if (!isset($out[$row['RoundId']])) $out[$row['RoundId']] = array();
-        $out[$row['RoundId']]  [$row['Player']] = $row;
-    }
-    mysql_free_result($result);
 
-    return array_reverse($out);
+function GetAllToRemind($eventid)
+{
+   $query = format_query("SELECT :User.id FROM :User
+      INNER JOIN :Player ON :User.Player = :Player.player_id
+      INNER JOIN :Participation ON :Player.player_id = :Participation.Player
+      WHERE :Participation.Event = %d AND :Participation.EventFeePaid IS NULL", $eventid);
+   $result = execute_query($query);
 
-  }
+   $out = array();
+   if ($result) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
+         $out[] = $row['id'];
+   }
+   mysql_free_result($result);
 
-  function data_Result_Sort($a, $b)
-  {
-    $dnfa = (bool) $a['DidNotFinish'];
-    $dnfb = (bool) $b['DidNotFinish'];
-    if ($dnfa != $dnfb) {
-        if ($dnfa) return 1;
-        return -1;
-    }
+   return $out;
+}
 
-    $compa = $a['Completed'];
-    $compb = $b['Completed'];
 
-    if ($compa != $compb && ($compa == 0 || $compb == 0)) {
-        if ($compa == 0) return 1;
-        return -1;
-    }
+function data_FinalizeResultSort($roundid, $data)
+{
+   $needMoreInfoOn = array();
 
-    $cpma = $a['CumulativePlusminus'];
-    $cpmb = $b['CumulativePlusminus'];
+   foreach ($data as $results) {
+      $lastRes = -1;
+      $lastPlayer = -1;
+      $added = false;
 
-    if ($cpma != $cpmb) {
-        if ($cpma > $cpmb) return 1;
-        return -1;
-    }
+      foreach ($results as $player) {
+         if ($player['CumulativeTotal'] == $lastRes) {
+            if (!$added)
+               $needMoreInfoOn[] = $lastPlayer;
+            $added = true;
+            $needMoreInfoOn[] = $player['PlayerId'];
+         }
+         else {
+            $lastRes = $player['CumulativeTotal'];
+            $lastPlayer = $player['PlayerId'];
+            $added = false;
+         }
+      }
+   }
 
-    $sda = $a['SuddenDeath'];
-    $sdb = $b['SuddenDeath'];
+   global $data_extraSortInfo;
+   $data_extraSortInfo = data_GetExtraSortInfo($roundid, $needMoreInfoOn);
 
-    if ($sda != $sdb) {
-        if ($sda < $sdb) return -1;
-        return 1;
-    }
+   $out = array();
+   foreach ($data as $cn => $results) {
+      usort($results, 'data_Result_Sort');
+      $out[$cn] = $results;
+   }
 
-    global $data_extraSortInfo;
+   return $out;
+}
 
-    foreach ($data_extraSortInfo as $round) {
-        $ad = null; $db = null;
 
-        $ad = @$round[$a['PlayerId']];
-        $bd = @$round[$b['PlayerId']];
+function data_GetExtraSortInfo($roundid, $playerList)
+{
+   if (!count($playerList))
+      return array();
 
-        //echo sprintf("%s; %s<br />", $a['PlayerId'], $b['PlayerId']);
+   $ids = array_filter($playerList, 'is_numeric');
+   $ids = implode(',', $ids);
 
-        if ($ad == null && $bd == null) continue;
-        if ($ad == null || $bd == null) {
-            if ($ad == null) return 1;
-            return -1;
-        }
+   $query = format_query(
+     "SELECT `:Round`.id RoundId, :StartingOrder.id StartId, :RoundResult.Result, :StartingOrder.Player
+         FROM `:Round` LinkRound INNER JOIN `:Round` ON `:Round`.Event = LinkRound.Event
+         INNER JOIN :Section ON :Section.`Round` = `:Round`.id
+         INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
+         INNER JOIN :RoundResult ON (:RoundResult.`Round` = `:Round`.id AND :RoundResult.Player = :StartingOrder.Player)
+         WHERE :StartingOrder.Player IN (%s) AND `:Round`.id <= %d AND LinkRound.id = %d
+         ORDER BY :Round.StartTime, :StartingOrder.Player", $ids, $roundid, $roundid);
+   $result = execute_query($query);
 
-        if ($ad['Result'] != $bd['Result']) {
-            if ($ad['Result'] < $bd['Result']) return -1;
+   $out = array();
+   while (($row = mysql_fetch_assoc($result)) !== false) {
+      if (!isset($out[$row['RoundId']]))
+         $out[$row['RoundId']] = array();
+      $out[$row['RoundId']]  [$row['Player']] = $row;
+   }
+   mysql_free_result($result);
+
+   return array_reverse($out);
+}
+
+
+function data_Result_Sort($a, $b)
+{
+   $dnfa = (bool) $a['DidNotFinish'];
+   $dnfb = (bool) $b['DidNotFinish'];
+   if ($dnfa != $dnfb) {
+      if ($dnfa)
+         return 1;
+      return -1;
+   }
+
+   $compa = $a['Completed'];
+   $compb = $b['Completed'];
+   if ($compa != $compb && ($compa == 0 || $compb == 0)) {
+      if ($compa == 0)
+         return 1;
+      return -1;
+   }
+
+   $cpma = $a['CumulativePlusminus'];
+   $cpmb = $b['CumulativePlusminus'];
+   if ($cpma != $cpmb) {
+      if ($cpma > $cpmb)
+         return 1;
+      return -1;
+   }
+
+   $sda = $a['SuddenDeath'];
+   $sdb = $b['SuddenDeath'];
+   if ($sda != $sdb) {
+      if ($sda < $sdb)
+         return -1;
+      return 1;
+   }
+
+   global $data_extraSortInfo;
+   foreach ($data_extraSortInfo as $round) {
+      $ad = @$round[$a['PlayerId']];
+      $bd = @$round[$b['PlayerId']];
+
+      if ($ad == null && $bd == null)
+         continue;
+      if ($ad == null || $bd == null) {
+         if ($ad == null)
             return 1;
-        }
-    }
+         return -1;
+      }
 
-    foreach ($data_extraSortInfo as $round) {
-        $ad = null; $db = null;
+      if ($ad['Result'] != $bd['Result']) {
+         if ($ad['Result'] < $bd['Result'])
+            return -1;
+         return 1;
+      }
+   }
 
-        $ad = @$round[$a['PlayerId']];
-        $bd = @$round[$b['PlayerId']];
+   foreach ($data_extraSortInfo as $round) {
+      $ad = @$round[$a['PlayerId']];
+      $bd = @$round[$b['PlayerId']];
 
-        if ($ad == null && $bd == null) continue;
+      if ($ad == null && $bd == null)
+         continue;
 
-        if ($ad['StartId'] < $bd['StartId']) return -1;
-        return 1;
+      if ($ad['StartId'] < $bd['StartId'])
+         return -1;
 
-    }
+      return 1;
+   }
+}
 
-  }
 
-  function SetRoundGroupsDone($roundid, $done)
-  {
-    $time = null;
-    if ($done)
+function SetRoundGroupsDone($roundid, $done)
+{
+   $time = null;
+   if ($done)
       $time = time();
-    $query = format_query("UPDATE `:Round` SET GroupsFinished = FROM_UNIXTIME(%s) WHERE id = %d", esc_or_null($time, 'int' ), $roundid);
-    $result = mysql_query($query);
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-  }
+   $query = format_query("UPDATE `:Round` SET GroupsFinished = FROM_UNIXTIME(%s) WHERE id = %d", esc_or_null($time, 'int' ), $roundid);
+   execute_query($query);
+}
 
-  function data_string_in_array($string, $array)
-  {
-    foreach ($array as $value)
+
+function data_string_in_array($string, $array)
+{
+   foreach ($array as $value)
       if ($string === $value)
          return true;
 
-    return false;
-  }
+   return false;
+}
 
-  /**
-   *Determines if license and membership fees have been paid for a given year
-   * Suggested usage:
-   * list($license, $membership) = GetUserFees($playerid, $year);
-  */
-  function GetUserFees($playerid, $year)
-  {
-    $query = format_query("SELECT 1 FROM :LicensePayment WHERE Player = %d AND Year = %d",
-                         $playerid, $year);
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-    $license = mysql_num_rows($result);
-    mysql_free_result($result);
 
-    $query = format_query("SELECT 1 FROM :MembershipPayment WHERE Player = %d AND Year = %d",
-                         $playerid, $year);
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-    $membership = mysql_num_rows($result);
-    mysql_free_result($result);
+/**
+*Determines if license and membership fees have been paid for a given year
+* Suggested usage:
+* list($license, $membership) = GetUserFees($playerid, $year);
+*/
+function GetUserFees($playerid, $year)
+{
+   $query = format_query("SELECT 1 FROM :LicensePayment WHERE Player = %d AND Year = %d",
+                      $playerid, $year);
+   $result = execute_query($query);
+   $license = mysql_num_rows($result);
+   mysql_free_result($result);
 
-    return array($license, $membership);
-  }
+   $query = format_query("SELECT 1 FROM :MembershipPayment WHERE Player = %d AND Year = %d",
+                      $playerid, $year);
+   $result = execute_query($query);
+   $membership = mysql_num_rows($result);
+   mysql_free_result($result);
 
-  function GetRegisteringEvents()
-  {
-    $now = time();
+   return array($license, $membership);
+}
 
-    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)", "SignupEnd");
-  }
 
-  function GetRegisteringSoonEvents()
-  {
-    $now = time();
-    $twoweeks = time() + 21*24*60*60;
+function GetRegisteringEvents()
+{
+   $now = time();
+   return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)", "SignupEnd");
+}
 
-    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)", "SignupStart");
-  }
 
-  function GetUpcomingEvents($onlySome)
-  {
-    $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
-    if ($onlySome) {
+function GetRegisteringSoonEvents()
+{
+   $now = time();
+   $twoweeks = time() + 21*24*60*60;
+
+   return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)", "SignupStart");
+}
+
+
+function GetUpcomingEvents($onlySome)
+{
+   $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
+   if ($onlySome)
       $data = array_slice($data, 0, 10);
-    }
 
-    return $data;
-  }
+   return $data;
+}
 
-  function GetPastEvents($onlySome, $onlyYear = null)
-  {
-    $thisYear = "";
-    if ($onlyYear != null)
-       $thisYear = "AND YEAR(Date) = $onlyYear";
 
-    $data = data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL");
-    $data = array_reverse($data);
+function GetPastEvents($onlySome, $onlyYear = null)
+{
+   $thisYear = "";
+   if ($onlyYear != null)
+      $thisYear = "AND YEAR(Date) = $onlyYear";
 
-    if ($onlySome) {
-        $data = array_slice($data, 0, 5);
-    }
+   $data = data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL");
+   $data = array_reverse($data);
 
-    return $data;
-  }
+   if ($onlySome)
+      $data = array_slice($data, 0, 5);
 
-  function DeleteTextContent($id)
-  {
-    $query = format_query("DELETE FROM :TextContent WHERE id = %d", $id);
-    $result = mysql_query($query);
+   return $data;
+}
 
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-  }
 
-  function DeleteCourse($id)
-  {
-    $query = format_query("DELETE FROM :Hole WHERE Course = %d", $id);
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
+function DeleteTextContent($id)
+{
+   $query = format_query("DELETE FROM :TextContent WHERE id = %d", $id);
+   execute_query($query);
+}
 
-    $query = format_query("DELETE FROM :Course WHERE id = %d", $id);
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-  }
 
-  function SetTournamentTieBreaker($tournament, $player, $value)
-  {
-    $dbError = InitializeDatabaseConnection();
-      if ($dbError) {
-         return $dbError;
-      }
+function DeleteCourse($id)
+{
+   $query = format_query("DELETE FROM :Hole WHERE Course = %d", $id);
+   execute_query($query);
 
-    $query = format_query("UPDATE :TournamentStanding SET TieBreaker = %d WHERE Player = %d AND Tournament = %d",
-                        $value, $player, $tournament);
-    $result = mysql_query($query);
-    if (!$result)
-       log_mysql_error($query, __LINE__, false);
-  }
+   $query = format_query("DELETE FROM :Course WHERE id = %d", $id);
+   execute_query($query);
+}
 
-  function data_sort_leaderboard($a, $b)
-  {
-    $ac = $a['Classification'];
-    $bc = $b['Classification'];
 
-    if ($ac != $bc) {
-        // we don't really need to sort by class, just making sure only items
-        // of the same class are compared
-        if ($ac < $bc) return -1;
-        return 1;
-    }
+function SetTournamentTieBreaker($tournament, $player, $value)
+{
+   $query = format_query("UPDATE :TournamentStanding SET TieBreaker = %d WHERE Player = %d AND Tournament = %d",
+                     $value, $player, $tournament);
+   execute_query($query);
+}
 
-    $astand = $a['Standing'];
-    $bstand = $b['Standing'];
-    if ($astand != $bstand) {
-        if ($astand < $bstand) return -1;
-        return 1;
-    }
 
-    $asd = $a['SuddenDeath'];
-    $bsd = $b['SuddenDeath'];
-    if ($asd != $bsd) {
+function data_sort_leaderboard($a, $b)
+{
+   $ac = $a['Classification'];
+   $bc = $b['Classification'];
+   if ($ac != $bc) {
+      if ($ac < $bc)
+         return -1;
+      return 1;
+   }
+
+   $astand = $a['Standing'];
+   $bstand = $b['Standing'];
+   if ($astand != $bstand) {
+      if ($astand < $bstand)
+         return -1;
+      return 1;
+   }
+
+   $asd = $a['SuddenDeath'];
+   $bsd = $b['SuddenDeath'];
+   if ($asd != $bsd) {
       if ($asd < $bsd)
          return -1;
       return 1;
-    }
+   }
 
-    $ar = $a['Results'];
-    $br = $b['Results'];
+   $ar = $a['Results'];
+   $br = $b['Results'];
 
-    $keys = array_reverse(array_keys($ar));
-    foreach ($keys as $key) {
+   $keys = array_reverse(array_keys($ar));
+   foreach ($keys as $key) {
       $ae = $ar[$key]['Total'];
       $be = $br[$key]['Total'];
       if ($ae != $be) {
@@ -4496,39 +4459,41 @@ function StorePayments($payments)
             return -1;
          return 1;
       }
-    }
+   }
 
-    $as = $ar[$keys[0]]['StartId'];
-    $bs = $br[$keys[0]]['StartId'];
-    if ($as < $bs)
+   $as = $ar[$keys[0]]['StartId'];
+   $bs = $br[$keys[0]]['StartId'];
+   if ($as < $bs)
       return -1;
-    return 1;
-  }
+   return 1;
+}
+
 
 function RemovePlayersDefinedforAnySection($a)
 {
    list($round, $section) = $GLOBALS['RemovePlayersDefinedforAnySectionRound'];
+
    static $data;
-   if (!is_array($data)) $data = array();
+   if (!is_array($data))
+      $data = array();
+
    $key = sprintf("%d_%d", $round, $section);
    if (!isset($data[$key])) {
       $query = format_query("SELECT Player FROM :StartingOrder
                           INNER JOIN :Section ON :StartingOrder.Section = :Section.id
                           WHERE :Section.Round = %d", $round);
-      $result = mysql_query($query);
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
+      $result = execute_query($query);
 
       $mydata = array();
-      while (($row = mysql_fetch_assoc($result)) !== false) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
          $mydata[$row['Player']] = true;
-      }
       $data[$key] = $mydata;
       mysql_free_result($result);
    }
 
    return !@$data[$key][$a['PlayerId']];
 }
+
 
 function DeleteEventPermanently($event)
 {
@@ -4553,15 +4518,10 @@ function DeleteEventPermanently($event)
       $queries[] = format_query("DELETE FROM :Section WHERE Round = %d", $rid);
 
       $query = format_query("SELECT id FROM :RoundResult WHERE Round = %d", $rid);
-      $result = mysql_query($query);
+      $result = execute_query($query);
 
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-
-      while (($row = mysql_fetch_assoc($result)) !== false) {
+      while (($row = mysql_fetch_assoc($result)) !== false)
          $queries[] = format_query("DELETE FROM :HoleResult WHERE RoundResult = %d", $row['id']);
-      }
-
       mysql_free_result($result);
 
       $queries[] = format_query("DELETE FROM :RoundResult WHERE Round = %d", $rid);
@@ -4572,24 +4532,19 @@ function DeleteEventPermanently($event)
    $queries[] = format_query("DELETE FROM :Participation WHERE Event = %d", $id);
    $queries[] = format_query("DELETE FROM :Event WHERE id = %d", $id);
 
-   foreach ($queries as $query) {
-      $result = mysql_query($query);
-       if (!$result)
-          log_mysql_error($query, __LINE__, false);
-   }
+   foreach ($queries as $query)
+      execute_query($query);
 }
+
 
 function data_fixNameCase($name)
 {
-    // from: http://fi.php.net/manual/en/function.ucwords.php
-    // by: jmarois at ca dot ibm dot com
-    $string =ucwords(strtolower($name));
+   $string = ucwords(strtolower($name));
 
-    foreach (array('-', '\'') as $delimiter) {
-      if (strpos($string, $delimiter)!==false) {
-        $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
-      }
-    }
+   foreach (array('-', '\'') as $delimiter) {
+      if (strpos($string, $delimiter)!==false)
+         $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+   }
 
-    return $string;
+   return $string;
 }
