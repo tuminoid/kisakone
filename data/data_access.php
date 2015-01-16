@@ -269,7 +269,7 @@ function GetPlayerUser($playerid = null)
                             :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
                          FROM :User
                          INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'");
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) === 1) {
       while ($row = mysql_fetch_assoc($result)) {
@@ -303,7 +303,7 @@ function GetUserPlayer($userid)
    $query = format_query("SELECT :Player.player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth, firstname, lastname, email
                                       FROM :Player INNER JOIN :User ON :User.Player = :Player.player_id
                                       WHERE :User.id = $id");
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (!$result)
       return Error::Query($query);
@@ -873,7 +873,7 @@ function GetRoundDetails($roundid)
    $query = format_query("SELECT
       id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) StartTime, `Interval`, ValidResults, GroupsFinished
       FROM `:Round` WHERE id = $id ORDER BY StartTime");
-   $result = mysql_query($query);
+   $result = execute_query($query);
 
    if (mysql_num_rows($result) == 1) {
       while ($row = mysql_fetch_assoc($result))
@@ -1056,7 +1056,7 @@ function SetClasses($eventid, $classes)
    if (isset($eventid)) {
       $quotas = GetEventQuotas($eventid);
       $query = format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid");
-      $result = mysql_query($query);
+      $result = execute_query($query);
 
       foreach ($classes as $class) {
          $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES (%d, %d);",
@@ -1561,14 +1561,11 @@ function SetPlayerDetails($player)
                           esc_or_null(data_fixNameCase($player->lastname)),
                           esc_or_null(data_fixNameCase($player->firstname)),
                           (int) $player->birthyear . '-1-1',
-                          esc_or_null($player->email)
-                          );
-        $result = mysql_query($query);
+                          esc_or_null($player->email));
+        $result = execute_query($query);
 
-        if (!$result) {
-            log_mysql_error($query, __LINE__, false);
+        if (!$result)
             return Error::Query($query);
-        }
 
         if ($result) {
             // Get id for the new user
@@ -3190,9 +3187,7 @@ function GetRoundResult($roundid, $playerid)
             /* Cleanest thing we can do is to throw away all the invalid scores and return error.
              * This way TD knows to reload the scoring page and can alleviate the error by re-entering. */
             $query = format_query("DELETE FROM :RoundResult WHERE `Round` = %d AND Player = %d", $roundid, $playerid);
-            $result = mysql_query($query);
-            if (!$result)
-               log_mysql_error($query, __LINE__, false);
+            $result = execute_query($query);
             // Fall thru the the end and return Error to get proper cleanup on the way
          }
          elseif (!mysql_num_rows($result)) {
