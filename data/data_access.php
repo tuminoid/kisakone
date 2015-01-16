@@ -4021,51 +4021,38 @@ function SaveCourse($course)
    }
 }
 
-  function StorePayments($payments)
-  {
-    foreach ($payments as $userid => $payments) {
-        $user = GetUserDetails($userid);
-        $playerid = $user->player;
 
-        if (isset($payments['license'])) {
-            foreach ($payments['license'] as $year => $paid) {
+function StorePayments($payments)
+{
+   foreach ($payments as $userid => $payments) {
+      $user = GetUserDetails($userid);
+      $playerid = $user->player;
 
-                $query = format_query("DELETE FROM :LicensePayment WHERE Player = %d AND Year = %d", $playerid, $year);
-                $result = mysql_query($query);
+      if (isset($payments['license'])) {
+         foreach ($payments['license'] as $year => $paid) {
+            $query = format_query("DELETE FROM :LicensePayment WHERE Player = %d AND Year = %d", $playerid, $year);
+            execute_query($query);
 
-                if (!$result)
-                   log_mysql_error($query, __LINE__, false);
-
-                if ($paid) {
-                    $query = format_query("INSERT INTO :LicensePayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
-                    $result = mysql_query($query);
-
-                   if (!$result)
-                      log_mysql_error($query, __LINE__, false);
-                }
+            if ($paid) {
+               $query = format_query("INSERT INTO :LicensePayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
+               execute_query($query);
             }
-        }
+         }
+     }
 
-        if (isset($payments['membership'])) {
-            foreach ($payments['membership'] as $year => $paid) {
+     if (isset($payments['membership'])) {
+         foreach ($payments['membership'] as $year => $paid) {
+            $query = format_query("DELETE FROM :MembershipPayment WHERE Player = %d AND Year = %d", $playerid, $year);
+            execute_query($query);
 
-                $query = format_query("DELETE FROM :MembershipPayment WHERE Player = %d AND Year = %d", $playerid, $year);
-                $result = mysql_query($query);
-
-                if (!$result)
-                   log_mysql_error($query, __LINE__, false);
-
-                if ($paid) {
-                    $query = format_query("INSERT INTO :MembershipPayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
-                    $result = mysql_query($query);
-
-                   if (!$result)
-                      log_mysql_error($query, __LINE__, false);
-                }
+            if ($paid) {
+               $query = format_query("INSERT INTO :MembershipPayment (Player, Year) VALUES (%d, %d)", $playerid, $year);
+               execute_query($query);
             }
-        }
-    }
-  }
+         }
+      }
+   }
+}
 
   function Ban($userid, $activate)
   {
