@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Access management form handler
  *
@@ -42,14 +42,17 @@ function processForm()
 
                 if ($newban != $value) {
                     $user = GetUserDetails($userid);
-                    Ban($user->id, $newban);
+                    return Error::notImplemented();
+                    //Ban($user->id, $newban);
                 }
-            } elseif (substr($key, 0, 7) == 'delete_') {
+            }
+            elseif (substr($key, 0, 7) == 'delete_') {
                 // Note: user removal is not supported in this version; the UI
                 // will never enter this code path and $user->Remove is not implemented90
                 list($ignore, $userid) = explode('_', $key);
                 $user = GetUserDetails($userid);
-                $user->Remove();
+                //$user->Remove();
+                return Error::notImplemented();
             }
         }
     }

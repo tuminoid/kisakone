@@ -4054,27 +4054,6 @@ function StorePayments($payments)
    }
 }
 
-  function Ban($userid, $activate)
-  {
-    $user = GetUserDetails($userid);
-    if (strpos($user->role, 'ban') === false) {
-        if ($activate) {
-            $newrole = "ban_".$user->role;
-            $query = format_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
-            $result = mysql_query($query);
-             if (!$result)
-                log_mysql_error($query, __LINE__, false);
-        }
-    } else {
-        if (!$activate) {
-            $newrole = substr($user->role, 4);
-            $query = format_query("UPDATE :User SET Role = '%s' WHERE id = %d", mysql_real_escape_string($newrole), $userid);
-            $result = mysql_query($query);
-             if (!$result)
-                log_mysql_error($query, __LINE__, false);
-        }
-    }
-  }
 
   function EventRequiresFees($eventid)
   {
