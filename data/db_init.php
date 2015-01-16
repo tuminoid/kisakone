@@ -4,7 +4,8 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Data access module. Init database connections.
+ * Data access module. Init database connections and provide
+ * data related utilities.
  *
  * --
  *
@@ -22,9 +23,15 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/error.php';
+require_once 'config.php';
+
 
 /**
  * Connects to the database
+ *
+ * @return Null on success
+ * @return Error object on failure
  */
 function InitializeDatabaseConnection()
 {
@@ -45,6 +52,9 @@ function InitializeDatabaseConnection()
 
 /**
  * Escapes string
+ *
+ * @param string $string string to escape
+ * @return escaped string
  */
 function escape_string($string)
 {
@@ -56,8 +66,9 @@ function escape_string($string)
 /**
  * Returns $param as a database safe string surrounded by apostrophes
  *
- * Returns 'NULL' if $param is null
- * The type controls how the parameter should be escaped
+ * @param mixed $param item to quote
+ * @return 'NULL' if $param is null
+ * @return On success, string good for sql insertion
  */
 function esc_or_null($param, $type = 'string')
 {
@@ -103,6 +114,9 @@ function esc_or_null($param, $type = 'string')
 /**
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
+ * @param string $query actual SQL query to format
+ * @param strings $args all other args that are passed to sprintf
+ * @return formatted SQL that is prefixed correctly
  */
 function format_query($query)
 {
@@ -121,7 +135,11 @@ function format_query($query)
 
 
 /**
- * Formats and executes SQL query
+ * Executes SQL query
+ *
+ * @param string $query SQL query to run
+ * @return null on failure
+ * @return result object on success
  */
 function execute_query($query)
 {
@@ -151,22 +169,13 @@ function execute_query($query)
 
 
 /**
- * Log mysql errors properly
- */
-function log_mysql_error($query, $line, $fatal = false)
-{
-   $err = mysql_error();
-   $msg = "mysql_query('" . $query . "') => error: '" . $err . "' on line $line";
-
-   if ($fatal)
-      die($msg);
-
-   error_log($msg);
-}
-
-
-/**
  * Simple helper function to pick one of two values
+ *
+ * FIXME, this is stupid
+ *
+ * @param mixed $a secondary item
+ * @param mixed $b primary item
+ * @return If B is defined, return B, else A
  */
 
 function data_GetOne($a, $b)
