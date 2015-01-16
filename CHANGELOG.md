@@ -5,7 +5,10 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * Fix combine.sh (reported by Niko Palokangas, thx!). GH #165 and GH #166.
+  * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
+  * Reformat `data_access.php` entirely to make it readable and as a first step, 
+      introduce `login.php` in `core/data` to handle login related functions.
+  * Database security on hashed password was greatly enhanced by switching from unsalted MD5 to salted crypt.
 
 2014.10.20:
 ===========
