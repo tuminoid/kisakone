@@ -25,7 +25,7 @@
 /**
  * Method for generating the user salt.
  *
- * Returns 32 character salt
+ * @return 32 character salt
  */
 function GenerateSalt()
 {
@@ -45,8 +45,8 @@ function GenerateSalt()
 /**
  * Method for getting a hash for password
  *
- * Returns hash for a password or
- * null if error
+ * @return hash for a password
+ * @return  null on error
  */
 function GenerateHash($password, $hash = "md5", $salt = "")
 {
@@ -76,7 +76,9 @@ function GenerateHash($password, $hash = "md5", $salt = "")
  * We will enforce password quality mainly by runtime JS checks
  * so this will just check the length is within boundaries
  *
- * Returns true for valid password and false for invalid password
+ * @param string $password password to be checked
+ * @return true for valid password
+ * @return false for invalid password
  */
 function IsValidPassword($password)
 {
@@ -96,15 +98,20 @@ function IsValidPassword($password)
 /**
  * Method for checking valid salt
  *
- * Returns true for valid salt and false for invalid salt
+ * @param string $salt salt to be checked
+ * @return true for valid salt
+ * @return false for invalid salt
  */
 function IsValidSalt($salt)
 {
     if (empty($salt))
         return false;
 
-    if (strlen($salt) == 32)
-        return true;
+    if (strlen($salt) != 32)
+        return false;
 
-    return false;
+    if (substr($salt, 30, 2) != "==")
+        return false;
+
+    return true;
 }
