@@ -46,21 +46,17 @@ function SFL_FeesPaidForYear($user, $year)
                         INNER JOIN :User ON :User.Player = :Player.player_id
                         WHERE :User.id = %d AND sfl_membership.year = %d ORDER BY sfl_player.pdga"
                         , $user, $year);
-    $result = mysql_query($query);
-    if (!$result) {
-        echo mysql_error();
+    $result = execute_query($query);
 
+    if (!$result)
         return array(false, false, false);
-    }
 
     $membership = $aLicense = $bLicense = false;
-
     while (($row = mysql_fetch_assoc($result)) !== false) {
         if ($row['license'] >= LICENSE_MEMBERSHIP) $membership = true;
         if ($row['license'] == LICENSE_A) $aLicense = true;
         if ($row['license'] == LICENSE_B) $bLicense = true;
     }
-
     mysql_free_result($result);
 
     return array($aLicense, $membership, $bLicense);
