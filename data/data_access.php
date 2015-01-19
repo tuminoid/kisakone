@@ -1003,13 +1003,12 @@ function SetOfficials($eventid, $officials)
    $eventid = (int) $eventid;
    $retValue = null;
 
-   if ( isset( $eventid)) {
-      $clearingQuery = format_query("DELETE FROM :EventManagement WHERE Event = %d AND Role = 'official'", $eventid);
-      $result = execute_query($clearingQuery);
-      mysql_free_result($result);
+   if (isset($eventid)) {
+      $query = format_query("DELETE FROM :EventManagement WHERE Event = %d AND Role = 'official'", $eventid);
+      execute_query($query);
 
       foreach ($officials as $official) {
-         $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
+         $query = format_query("INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
                            (int) $official, (int) $eventid, 'official');
          $result = execute_query($query);
 
@@ -1158,12 +1157,12 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
 function GetOrSetRoundCourse($roundid)
 {
    $courseid = null;
-   $query = format_query( "SELECT Course FROM :Round WHERE id = %d",
+   $query = format_query("SELECT Course FROM :Round WHERE id = %d",
                       (int) $roundid);
-   $result = execute_query( $query);
+   $result = execute_query($query);
 
-   if (mysql_num_rows( $result) == 1) {
-      $row = mysql_fetch_assoc( $result);
+   if (mysql_num_rows($result) == 1) {
+      $row = mysql_fetch_assoc($result);
       $course = $row['Course'];
       mysql_free_result($result);
    }
@@ -1179,7 +1178,7 @@ function GetOrSetRoundCourse($roundid)
    }
 
    // Create a new course for the round
-   $query = format_query( "INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
+   $query = format_query("INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
                      "", "", "", "");
    $result = execute_query($query);
 
@@ -1197,8 +1196,7 @@ function GetOrSetRoundCourse($roundid)
       return $err;
    }
 
-   $query = format_query( "UPDATE :Round SET Course = %d WHERE id = %d;",
-                     $courseid, $roundid);
+   $query = format_query("UPDATE :Round SET Course = %d WHERE id = %d;", $courseid, $roundid);
    $result = execute_query($query);
 
    if (!$result) {
@@ -3087,12 +3085,13 @@ function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null)
    $details = mysql_fetch_assoc($result);
    $round = GetRoundDetails($details['Round']);
    $numHoles = $round->NumHoles();
-   $holeQuery = format_query("SELECT Result, DidNotShow, :Hole.Par FROM :HoleResult
+   $query = format_query("SELECT Result, DidNotShow, :Hole.Par FROM :HoleResult
                         INNER JOIN :Hole ON :HoleResult.Hole = :Hole.id
                         WHERE RoundResult = %d", $rrid);
-   $result = execute_query($holeQuery);
+   $result = execute_query($query);
+
    if (!$result)
-      return Error::Query($holeQuery);
+      return Error::Query($query);
 
    $holes = $total = $plusminus = $dnf = 0;
    while (($row = mysql_fetch_assoc($result)) !== false) {
@@ -3434,9 +3433,8 @@ function RemovePlayersFromRound($roundid, $playerids = null)
    if (!count($ids))
       return;
 
-   $query = format_query( "DELETE FROM :SectionMembership WHERE id IN (%s)",
-      implode(", ", $ids ));
-   $result = execute_query( $query);
+   $query = format_query("DELETE FROM :SectionMembership WHERE id IN (%s)", implode(", ", $ids ));
+   $result = execute_query($query);
 
     if (!$result) {
         $err = new Error();
