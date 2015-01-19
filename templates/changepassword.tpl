@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Change password dialog
  *
@@ -32,7 +32,6 @@
 </p>
 
 <form method="post" class="evenform" id="regform">
-
     <input type="hidden" name="formid" value="changepassword" />
 
     <div>
@@ -44,25 +43,24 @@
         <input id="current" type="password" name="current" autocomplete="off" />
         {else}
         <input id="current" type="text" disabled="disabled" value="{translate id=admin_changing_password}" />
-
         {/if}
         {formerror field='current_password'}
 	{/if}
     </div>
     <div>
         <label for="password1">{translate id='new_password'}</label>
-        <input type="password" id="password1" name="password"  autocomplete="off"  />
+        <input type="password" id="password1" name="password" autocomplete="off" />
         {formerror field='password'}
     </div>
     <div>
         <label for="password2">{translate id='password_repeat'}</label>
-        <input type="password" name="password2"  autocomplete="off"  />
+        <input type="password" id="password2" name="password2" autocomplete="off" />
         {formerror field='password2'}
     </div>
 
     <hr />
     <div>
-        <input type="submit" value="{translate id='form_accept'}" name="register" />
+        <input type="submit" id="registerButton" value="{translate id='form_accept'}" name="register" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
     </div>
 </form>
@@ -73,7 +71,7 @@
 $(document).ready(function(){
     CheckedFormField('regform', 'current', NonEmptyField, null);
     CheckedFormField('regform', 'password', NonEmptyField, null);
-    CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");$
+    CheckedFormField('regform', 'password2', RepeatedPasswordField, "password1");
 
     $("#cancelButton").click(CancelSubmit);
 });
