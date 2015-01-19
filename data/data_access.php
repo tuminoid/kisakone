@@ -955,38 +955,20 @@ function SetTD($eventid, $td)
 {
    $retValue = Null;
 
-   if (isset( $eventid) and isset($td)) {
+   if (isset($eventid) and isset($td)) {
       $eventid  = (int) $eventid;
       $query = format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = 'td'");
-      $result = execute_query($query);
-      mysql_free_result($result);
+      execute_query($query);
 
       $query = format_query( "INSERT INTO :EventManagement (User, Event, Role) VALUES (%d, %d, '%s');",
                           (int) $td, (int) $eventid, 'td');
       $result = execute_query($query);
 
-      if (!$result) {
-         $err = new Error();
-         $err->title = "error_db_query";
-         $err->description = translate( "error_db_query_description");
-         $err->internalDescription = "Failed SQL INSERT query";
-         $err->function = "SetTD()";
-         $err->IsMajor = true;
-         $err->data = "Event id: " . $eventid . "; TD: ". $td;
-         $retValue = $err;
-      }
+      if (!$result)
+         return Error::Query($query);
    }
-   else {
-      $err = new Error();
-      $err->title = "error_invalid_argument";
-      $err->description = translate( "error_invalid_argument_description");
-      $err->internalDescription = "Event id or td argument is not set.";
-      $err->function = "SetTD()";
-      $err->IsMajor = true;
-      $err->data = "event id:" . $eventid . "; td:" . $td;
-      $retValue = $err;
-   }
-   mysql_free_result($result);
+   else
+      return Error::internalError("Event id or td argument is not set.");
 
    return $retValue;
 }
@@ -1012,30 +994,12 @@ function SetOfficials($eventid, $officials)
                            (int) $official, (int) $eventid, 'official');
          $result = execute_query($query);
 
-         if (!$result) {
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL INSERT query";
-            $err->function = "SetOfficials()";
-            $err->IsMajor = true;
-            $err->data = "Event id: " . $eventid . "; official: ". $official;
-            $retValue = $err;
-            break;
-         }
+         if (!$result)
+            return Error::Query($query);
       }
    }
-   else {
-      $err = new Error();
-      $err->title = "error_invalid_argument";
-      $err->description = translate( "error_invalid_argument_description");
-      $err->internalDescription = "Event id argument is not set.";
-      $err->function = "SetOfficials()";
-      $err->IsMajor = true;
-      $err->data = "event id:" . $eventid;
-      $retValue = $err;
-   }
-   mysql_free_result($result);
+   else
+      return Error::internalError("Event id argument is not set.");
 
    return $retValue;
 }
@@ -1075,21 +1039,13 @@ function SetClasses($eventid, $classes)
          $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d, MaxQuota = %d
                                  WHERE Event = %d AND Classification = %d",
                                  $min, $max, $eventid, $cid);
-         $result = execute_query($query);
+         execute_query($query);
       }
    }
-   else {
-      $err = new Error();
-      $err->title = "error_invalid_argument";
-      $err->description = translate( "error_invalid_argument_description");
-      $err->internalDescription = "Event id argument is not set.";
-      $err->function = "SetClasses()";
-      $err->IsMajor = true;
-      $err->data = "event id:" . $eventid;
-      $retValue = $err;
-   }
-   mysql_free_result($result);
+   else
+      return Error::internalError("Event id argument is not set.");
 
+   mysql_free_result($result);
    return $retValue;
 }
 
@@ -1130,17 +1086,8 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
 
          if ($result)
             $roundid = mysql_insert_id();
-         else {
-            $err = new Error();
-            $err->title = "error_db_query";
-            $err->description = translate( "error_db_query_description");
-            $err->internalDescription = "Failed SQL INSERT query (Round)\n$query\n" . mysql_error();
-            $err->function = "SetRounds()";
-            $err->IsMajor = true;
-            $err->data = "Event id: " . $r_event;
-            $retValue = $err;
-            break;
-         }
+         else
+            return Error::Query($query);
       }
    }
    mysql_free_result($result);
@@ -1166,50 +1113,23 @@ function GetOrSetRoundCourse($roundid)
       $course = $row['Course'];
       mysql_free_result($result);
    }
-   else {
-     $err = new Error();
-     $err->title = "error_invalid_argument";
-     $err->description = translate( "error_invalid_argument_description");
-     $err->internalDescription = "Invalid round id argument";
-     $err->function = "GetOrSetRoundCourse()";
-     $err->IsMajor = true;
-     $err->data = "Round id: " . $roundid;
-     return $err;
-   }
+   else
+      return Error::internalError("Invalid round id argument");
 
    // Create a new course for the round
    $query = format_query("INSERT INTO :Course (Venue, Name, Description, Link, Map) VALUES (NULL, '%s', '%s', '%s', '%s');",
                      "", "", "", "");
    $result = execute_query($query);
 
-   if ($result)
-       $courseid = mysql_insert_id();
-   else {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL INSERT query (Course)\n$query\n" . mysql_error();
-      $err->function = "GetOrSetRoundCourse()";
-      $err->IsMajor = true;
-      $err->data = "Round id: " . $roundid;
-      $courseid = $err;
-      return $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 
+   $courseid = mysql_insert_id();
    $query = format_query("UPDATE :Round SET Course = %d WHERE id = %d;", $courseid, $roundid);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL UPDATE query (Round)\n$query" . mysql_error();
-      $err->function = "GetOrSetRoundCourse()";
-      $err->IsMajor = true;
-      $err->data = "Course id: " . $courseid .
-                   "; Round id: " . $roundid;;
-      return $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 
   return $courseid;
 }
@@ -1292,18 +1212,8 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
                          (int) $playerid, (int) $eventid, (int) $classid);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL INSERT query (Participation)";
-      $err->function = "SetPlayerParticipation()";
-      $err->IsMajor = true;
-      $err->data = "Player id: " . $playerid .
-                  "; Event id: " . $eventid .
-                  "; Classification id: ". $classid;
-      $retValue = $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 
    return $retValue;
 }
@@ -1404,22 +1314,15 @@ function GetVenueId($venue)
       mysql_free_result($result);
    }
 
-   if (!isset( $venueid)) {
+   if (!isset($venueid)) {
       // Create a new venue
       $query = format_query("INSERT INTO :Venue (Name) VALUES ('%s')", mysql_real_escape_string( $venue));
       $result = execute_query($query);
-      if ($result)
-         $venueid = mysql_insert_id();
-      else {
-         $err = new Error();
-         $err->title = "error_db_query";
-         $err->description = translate( "error_db_query_description");
-         $err->internalDescription = "Failed SQL INSERT query (Venue)";
-         $err->function = "GetOrSetVenue()";
-         $err->IsMajor = true;
-         $err->data = "Venue: " . $venue;
-         $venueid = $err;
-      }
+
+      if (!$result)
+         return Query::Error($query);
+
+      $venueid = mysql_insert_id();
    }
 
    return $venueid;
@@ -1432,17 +1335,8 @@ function CreateNewsItem($eventid, $title, $text)
                             (int) $eventid, mysql_real_escape_string($title), mysql_real_escape_string($text));
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL INSERT";
-      $err->function = "CreateNewsItem()";
-      $err->IsMajor = true;
-      $err->data = "Event id: " . $eventid;
-
-      return $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1452,17 +1346,8 @@ function EditNewsItem($itemid, $title, $text)
                           mysql_real_escape_string($title), mysql_real_escape_string($text), (int) $itemid);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL UPDATE";
-      $err->function = "EditNewsItem()";
-      $err->IsMajor = true;
-      $err->data = "Event id: " . $eventid;
-
-      return $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1506,9 +1391,10 @@ function SetUserDetails($user)
       }
       else {
          // Username already in use, report error
+         // TODO: Maybe use some Error::<something>
          $err = new Error();
          $err->title = "error_invalid_argument";
-         $err->description = translate( "error_invalid_argument_description");
+         $err->description = translate("error_invalid_argument_description");
          $err->internalDescription = "Username is already in use";
          $err->function = "SetUserDetails()";
          $err->IsMajor = false;
@@ -1519,18 +1405,8 @@ function SetUserDetails($user)
          $retValue = $err;
       }
    }
-   else {
-      // Wrong class as argument, report error
-      $err = new Error();
-      $err->title = "error_argument";
-      $err->description = translate( "error_argument_description");
-      $err->internalDescription = "Wrong class as argument";
-      $err->function = "SetUserDetails()";
-      $err->IsMajor = true;
-      $err->data = "argument class:" . get_class( $user) .
-                  ", expected User";
-      $retValue = $err;
-   }
+   else
+      return Error::internalError("Wrong class as argument");
 
    return $retValue;
 }
@@ -1566,26 +1442,15 @@ function SetPlayerDetails($player)
             return Error::Query($query);
 
         if ($result) {
-            // Get id for the new user
             $p_id = mysql_insert_id();
-            $player->SetId( $p_id);
+            $player->SetId($p_id);
             $retValue = $player;
         }
     }
-    else {
-        // Wrong class as argument, report error
-        $err = new Error();
-        $err->title = "error_argument";
-        $err->description = translate( "error_argument_description");
-        $err->internalDescription = "Wrong class as argument";
-        $err->function = "SetPlayerDetails()";
-        $err->IsMajor = true;
-        $err->data = "argument class:" . get_class( $player) .
-                     ", expected Player";
-        $retValue = $err;
-    }
+    else
+      return Error::internalError("Wrong class as argument");
 
-return $retValue;
+   return $retValue;
 }
 
 
@@ -1708,18 +1573,8 @@ function EditClass($id, $name, $minage, $maxage, $gender, $available)
                     esc_or_null($gender, 'gender'), $available ? 1:0, $id);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL UPDATE";
-      $err->function = "EditClass()";
-      $err->IsMajor = true;
-      $err->data = "Class id: " . $id;
-
-      return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1731,18 +1586,8 @@ function CreateClass($name, $minage, $maxage, $gender, $available)
                     esc_or_null($gender, 'gender'), $available ? 1:0);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL INSERT";
-      $err->function = "CreateClass()";
-      $err->IsMajor = true;
-      $err->data = "Class name: " . $name;
-
-      return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1751,18 +1596,8 @@ function DeleteClass($id)
    $query = format_query("DELETE FROM :Classification WHERE id = ". (int) $id);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL DELETE";
-      $err->function = "DeleteClass()";
-      $err->IsMajor = true;
-      $err->data = "Class id: " . $id;
-
-      return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1791,18 +1626,8 @@ function EditLevel($id, $name, $method, $available)
                             escape_string($name), escape_string($method), $available ? 1 : 0, (int) $id);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL UPDATE";
-      $err->function = "EditLevel()";
-      $err->IsMajor = true;
-      $err->data = "Level id: " . $id;
-
-      return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1814,22 +1639,10 @@ function CreateLevel($name, $method, $available)
                       escape_string( $name), escape_string($method), $available ? 1 : 0);
    $result = execute_query($query);
 
-   if ($result) {
-      $id = mysql_insert_id();
-      mysql_free_result($result);
-      return $id;
-   }
+   if (!$result)
+      return Error::Query($query);
 
-   // Insert query error
-   $err = new Error();
-   $err->title = "error_db_query";
-   $err->description = "error_db_query_description";
-   $err->internalDescription = "Failed SQL INSERT query";
-   $err->function = "CreateLevel()";
-   $err->IsMajor = true;
-   $err->data = "name:" . $name . " ;method:" . $method;
-
-   return $err;
+   return mysql_insert_id();
 }
 
 
@@ -1838,18 +1651,8 @@ function DeleteLevel($id)
    $query = format_query("DELETE FROM :Level WHERE id = ". (int) $id);
    $result = execute_query($query);
 
-   if (!$result) {
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL DELETE";
-       $err->function = "DeleteLevel()";
-       $err->IsMajor = true;
-       $err->data = "Level id: " . $id;
-
-       return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1882,18 +1685,8 @@ function EditTournament($id, $name, $method, $level, $available, $year, $descrip
                            escape_string($description),(int) $id);
    $result = execute_query($query);
 
-   if (!$result) {
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL UPDATE";
-       $err->function = "EditTournament()";
-       $err->IsMajor = true;
-       $err->data = "Tournament id: " . $id;
-
-       return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1905,18 +1698,8 @@ function CreateTournament($name, $method, $level, $available, $year, $descriptio
                            escape_string($description));
    $result = execute_query($query);
 
-   if (!$result) {
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL INSERT";
-       $err->function = "CreateTournament()";
-       $err->IsMajor = true;
-       $err->data = "Tournament name: " . $name;
-
-       return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -1925,18 +1708,8 @@ function DeleteTournament($id)
    $query = format_query("DELETE FROM :Tournament WHERE id = ". (int) $id);
    $result = execute_query($query);
 
-   if (!$result) {
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL DELETE";
-       $err->function = "DeleteTournament()";
-       $err->IsMajor = true;
-       $err->data = "Tournament id: " . $id;
-
-       return $err;
-   }
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -2335,7 +2108,7 @@ function GetParticipantsForRound($previousRoundId)
 function SaveTextContent($page)
 {
    if (!is_a($page, 'TextContent'))
-      return new Error();
+      return Error::notFound('textcontent');
 
    if (!$page->id) {
       $query = format_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
@@ -2364,16 +2137,8 @@ function SaveTextContent($page)
    }
    $result = execute_query($query);
 
-   if (!$result) {
-      $retValue = new Error();
-      $retValue->title = "error_db_query";
-      $retValue->description = translate( "error_db_query_description");
-      $retValue->internalDescription = "Failed SQL INSERT query:" . $query;
-      $retValue->function = "SaveTextContent()";
-      $retValue->IsMajor = true;
-   }
-
-   mysql_free_result($result);
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -3222,16 +2987,8 @@ function CreateSection($round, $baseClassId, $name)
       VALUES(%d, %s, '%s', 1)", $round, esc_or_null($baseClassId, 'int'), $name);
    $result = execute_query($query);
 
-   if (!$result) {
-      $retValue = new Error();
-      $retValue->title = "error_db_query";
-      $retValue->description = translate( "error_db_query_description");
-      $retValue->internalDescription = "Query failed";
-      $retValue->function = "CreateSubClass()";
-      $retValue->IsMajor = true;
-      $retValue->data = "Name: " . $name;
-      return $retValue;
-   }
+   if (!$result)
+      return Error::Query($query);
 
    return mysql_insert_id();
 }
@@ -3244,17 +3001,8 @@ function RenameSection($classId, $newName)
    $query = format_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
    $result = execute_query($query);
 
-   if (!$result) {
-       $retValue = new Error();
-       $retValue->title = "error_db_query";
-       $retValue->description = translate( "error_db_query_description");
-       $retValue->internalDescription = "Query failed";
-       $retValue->function = "RenameSubClass()";
-       $retValue->IsMajor = true;
-       $retValue->data = "ClassId: " . $classId;
-
-       return $retValue;
-   }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -3268,16 +3016,8 @@ function AssignPlayersToSection($roundId, $sectionid, $playerIds)
    $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES %s", $data);
    $result = execute_query($query);
 
-   if (!$result) {
-      $err = new Error();
-      $err->title = "error_db_query";
-      $err->description = translate( "error_db_query_description");
-      $err->internalDescription = "Failed SQL UPDATE";
-      $err->function = "SectionMembership()";
-      $err->isMajor = true;
-
-      return $err;
-   }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -3292,17 +3032,8 @@ function EditSection($roundId, $sectionId, $priority, $startTime)
                             $priority, $startTime, $roundId, $classId);
    $result = execute_query($query);
 
-   if (!$result) {
-       $retValue = new Error();
-       $retValue->title = "error_db_query";
-       $retValue->description = translate( "error_db_query_description");
-       $retValue->internalDescription = "Query failed";
-       $retValue->function = "AdjustClassOnRound()";
-       $retValue->IsMajor = true;
-       $retValue->data = sprintf("RoundId: %d, ClassId: %d", $roundId, $classId);
-
-       return $retValue;
-   }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -3315,17 +3046,8 @@ function MarkEventFeePayment($eventid, $participationId, $payment)
                           ($payment ? time() : "NULL"), (int) $participationId, (int) $eventid);
    $result = execute_query($query);
 
-   if (!$result) {
-       $err = new Error();
-       $err->title = "error_db_query";
-       $err->description = translate( "error_db_query_description");
-       $err->internalDescription = "Failed SQL UPDATE";
-       $err->function = "MarkEventFeePayment()";
-       $err->IsMajor = true;
-       $err->data = "Event id: " . $eventid;
-
-       return $err;
-    }
+   if (!$result)
+      return Error::Query($query);
 }
 
 
@@ -3436,16 +3158,8 @@ function RemovePlayersFromRound($roundid, $playerids = null)
    $query = format_query("DELETE FROM :SectionMembership WHERE id IN (%s)", implode(", ", $ids ));
    $result = execute_query($query);
 
-    if (!$result) {
-        $err = new Error();
-        $err->title = "error_db_query";
-        $err->description = translate( "error_db_query_description");
-        $err->internalDescription = "Failed SQL INSERT query (Participation)";
-        $err->function = "RemovePlayersFromRound()";
-        $err->IsMajor = true;
-
-        $retValue = $err;
-    }
+    if (!$result)
+      return Error::Query($query);
 
     return $retValue;
 }
