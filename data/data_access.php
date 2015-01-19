@@ -2200,7 +2200,7 @@ function CourseUsed($courseId)
    if (!$result)
       return Error::Query($query);
 
-   return mysql_num_rows($res) == 1;
+   return mysql_num_rows($result) == 1;
 }
 
 
@@ -3506,7 +3506,7 @@ function AnyGroupsDefined($roundid)
    if (!$result)
       return Error::Query($query);
 
-   return mysql_num_rows($res) > 0;
+   return mysql_num_rows($result) > 0;
 }
 
 
@@ -3530,7 +3530,7 @@ function GetRoundGroups($roundid)
 
    $out = array();
    while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
+      $out[] = $row;
    mysql_free_result($result);
 
    return $out;
