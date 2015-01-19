@@ -2528,12 +2528,12 @@ function GetRoundResults($roundId, $sortedBy)
 
    switch ($sortedBy) {
      case 'group':
-         $query .= "ORDER BY :StartingOrder.GroupNumber, :StartingOrder.id";
+         $query .= " ORDER BY :StartingOrder.GroupNumber, :StartingOrder.id";
          break;
 
      case 'results':
      case 'resultsByClass':
-         $query .= "ORDER BY (:RoundResult.DidNotFinish IS NULL OR :RoundResult.DidNotFinish = 0) DESC,  :Hole.id IS NULL, :RoundResult.CumulativePlusminus, :Player.player_id";
+         $query .= " ORDER BY (:RoundResult.DidNotFinish IS NULL OR :RoundResult.DidNotFinish = 0) DESC,  :Hole.id IS NULL, :RoundResult.CumulativePlusminus, :Player.player_id";
          break;
 
      default:
@@ -2694,7 +2694,7 @@ function GetEventResultsWithoutHoles($eventId)
                          WHERE :Event.id = $eventId AND :Section.Present
                          ORDER BY :Participation.Standing, player_id, :Round.StartTime";
    $query = format_query($query);
-   $result = exeute_query($query);
+   $result = execute_query($query);
 
    if (!$result)
       return Error::Query($query);
