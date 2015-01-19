@@ -138,7 +138,7 @@ function format_query($query)
  * Executes SQL query
  *
  * @param string $query SQL query to run
- * @return null on failure
+ * @return false on failure
  * @return result object on success
  */
 function execute_query($query)
@@ -146,11 +146,11 @@ function execute_query($query)
     $dbError = InitializeDatabaseConnection();
     if ($dbError) {
         error_log("error: database connection init failed");
-        return null;
+        return FALSE;
     }
 
     if (empty($query))
-        return null;
+        return FALSE;
 
     $result = mysql_query($query);
     if (!$result) {
