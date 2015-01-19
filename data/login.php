@@ -124,18 +124,8 @@ function ChangeUserPassword($userid, $password)
     $query = format_query("UPDATE :User SET Password = '$password', Hash = '$hash', Salt = '$salt', PasswordChanged = NOW() WHERE id = $userid");
     $result = execute_query($query);
 
-    if (!$result) {
-        $err = new Error();
-        $err->title = "error_db_query";
-        $err->description = translate( "error_db_query_description");
-        $err->internalDescription = "Failed SQL UPDATE";
-        $err->function = "ChangeUserPassword()";
-        $err->IsMajor = true;
-        $err->data = "User id: " . $userid;
-
-        return $err;
-    }
-    mysql_free_result($result);
+    if (!$result)
+        return Error::Query($query);
 
     return null;
 }
