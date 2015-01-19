@@ -100,6 +100,20 @@ class Error
     // minimal effort  from the caller. Their use is highly recommended when
     // appropriate.
 
+    function internalError($string = "")
+    {
+        $e = new Error();
+        $e->isMajor = true;
+        $e->errorCode = 500;
+        $e->title = 'error_internal_error';
+        $e->description = translate('error_internal_error') . "<br />.\n" .
+            "$string <br />\n" .
+            "<code>\n" . debug_backtrace() . "\n</code>\n";
+        $e->errorPage = 'error';
+
+        return $e;
+    }
+
     function notImplemented()
     {
         $e = new Error();

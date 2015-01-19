@@ -25,6 +25,8 @@ error_db_connection_description Tietokantaan ei saatu yhteyttä tai tietokantapa
 error_db_query Tietokantakysely epäonnistui
 error_db_query_description Tietokantakysely epäonnistui.
 
+error_internal_error Sisäinen virhe.
+
 error_event_not_found       Kilpailua ei löytynyt
 error_event_not_found_description   Valittua kilpailua ei löytynyt.
 
