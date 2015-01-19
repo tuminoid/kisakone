@@ -312,9 +312,9 @@ class user
             $retVal = true;
         }
         elseif (!empty($email)) {
-            $validEmailExpr = "^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" .
-                              "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$";
-            if (eregi($validEmailExpr, $email)) {
+            $validEmailExpr = "/^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" .
+                              "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$/i";
+            if (preg_match($validEmailExpr, $email)) {
                 $retVal = true;
             }
         }
