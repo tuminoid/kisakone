@@ -10,6 +10,7 @@ next:
       introduce `login.php` in `core/data` to handle login related functions.
   * Database security on hashed password was greatly enhanced by switching from unsalted MD5 to salted crypt.
   * Fix missing hole number if custom hole text was empty. GH #178.
+  * Use jQuery core/UI from CDN for speed. GH #179.
 
 2014.10.20:
 ===========
