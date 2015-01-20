@@ -171,7 +171,7 @@
                 {assign var=parSoFar value=0}
                 {foreach from=$holes key=index item=hole}
                         {math assign=parSoFar equation="x+y" x=$parSoFar y=$hole->par}
-                        <th>{$hole->holeText}<br />{$hole->par}</th>
+                        <th>{if $hole->holeText} {$hole->holeText} {else} {$hole->holeNumber} {/if}<br />{$hole->par}</th>
                         {if $hole->holeNumber == $out_hole_index}<th class="out">{translate id=hole_out}<br />{$parSoFar}{assign var=parSoFar value=0}</th>{/if}
                 {/foreach}
                 <th class="in">{translate id=hole_in}<br />{$parSoFar}</th>
