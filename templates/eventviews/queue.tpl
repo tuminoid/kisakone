@@ -1,9 +1,8 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Competitor listing
+ * Competitor queue listing
  *
  * --
  *
@@ -25,11 +24,10 @@
     {$page->formattedText}
 </div>
 
-
 <form method="get" class="usersform" action="{url page=event view=queue id=$smarty.get.id}">
     {initializeGetFormFields  search=false }
     <div class="formelements">
-         <p>{translate id=users_searchhint} </p>
+         <p>{translate id=users_searchhint}</p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
     </div>
@@ -38,11 +36,11 @@
 <div class="SearchStatus" />
 <table class="narrow" style="min-width: 400px">
    <tr>
-      <th>{translate id=num}</th>
-      <th>{translate id=lastname}</th>
-      <th>{translate id=firstname}</th>
-      <th>{translate id=class}</th>
-      <th>{translate id=users_pdga}</th>
+      <th>{sortheading field=1 id=num sortType=integer}</th>
+      <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
+      <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
+      <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
+      <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
    </tr>
    {foreach from=$queue item=participant name=osallistuja}
    <tr>
@@ -68,11 +66,7 @@ $(document).ready(function(){
 
 });
 
-
-
 {/literal}
-
-
 //]]>
 </script>
 
