@@ -25,7 +25,6 @@
     {$page->formattedText}
 </div>
 
-
 <form method="get" class="usersform" action="{url page=event view=competitors id=$smarty.get.id}">
     {initializeGetFormFields  search=false }
     <div class="formelements">
@@ -68,11 +67,7 @@ $(document).ready(function(){
 
 });
 
-
-
 {/literal}
-
-
 //]]>
 </script>
 
