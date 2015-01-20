@@ -116,9 +116,7 @@ CREATE TABLE :Event
   ContactInfo VARCHAR(250) NOT NULL,
   FeesRequired TINYINT NOT NULL,
   AdBanner INT NULL,
-  -- added 2014.02.15
   PlayerLimit INT NOT NULL DEFAULT 0,
-  -- by Tumi
   PRIMARY KEY(id),
   FOREIGN KEY(Venue) REFERENCES :Venue(id),
   FOREIGN KEY(Level) REFERENCES :Level(id)
@@ -223,9 +221,7 @@ CREATE TABLE :Hole
   id INT NOT NULL AUTO_INCREMENT,
   Course INT NOT NULL,
   HoleNumber TINYINT NOT NULL,
-  -- added 2014.10.05
   HoleText VARCHAR(4),
-  -- by Tumi
   Par TINYINT NOT NULL,
   Length SMALLINT NOT NULL,
   PRIMARY KEY(id),
@@ -303,9 +299,7 @@ CREATE TABLE :StartingOrder
   Section INT NOT NULL,
   StartingTime DATETIME NOT NULL,
   StartingHole TINYINT,
-  -- Changed from PoolNumber to GroupNumber 2014.10.05
   GroupNumber SMALLINT NOT NULL,
-  -- by Tumi
   PRIMARY KEY(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
   FOREIGN KEY(Section) REFERENCES :Section(id)
@@ -345,10 +339,8 @@ CREATE TABLE :ClassInEvent
   id INT NOT NULL AUTO_INCREMENT,
   Classification INT NOT NULL,
   Event INT NOT NULL,
-  -- added 2014.02.15
   MinQuota INT NOT NULL DEFAULT 0,
   MaxQuota INT NOT NULL DEFAULT 999,
-  -- by Tumi
   PRIMARY KEY(id),
   FOREIGN KEY(Classification) REFERENCES :Classification(id),
   FOREIGN KEY(Event) REFERENCES :Event(id)
@@ -378,8 +370,6 @@ CREATE TABLE :MembershipPayment
 SHOW WARNINGS;
 
 
--- added 2012.02.15
--- if using previous version, add this to your database!
 CREATE TABLE :EventQueue (
   id INT NOT NULL AUTO_INCREMENT,
   Event INT NOT NULL,
@@ -393,5 +383,4 @@ CREATE TABLE :EventQueue (
   INDEX(Event)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
--- end 2012.02.15 migration
 
