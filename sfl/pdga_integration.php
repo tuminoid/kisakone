@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto for PDGA API.
  *
@@ -21,33 +21,70 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-define('PDGA_SERVER', "https://api.pdga.com");
+define('PDGA_API_SERVER', "https://api.pdga.com");
+
+require_once 'config.php';
+require_once 'data/db_init.php';
 
 
-/*
- * pdga_getSession
+/**
+ * pdga_api_settings
+ *
+ * Check sanity of pdga settings we import from global $settings
+ *
+ * @return array for usable settings
+ * @return false for bad settings
+ */
+function pdga_api_settings()
+{
+    global $settings;
+
+    if ($settings['PDGA_ENABLED'] != true)
+        return false;
+
+    $username = @$settings['PDGA_USERNAME'];
+    if (empty($username) || strlen($username) <= 0)
+        return false;
+
+    $password = @$settings['PDGA_PASSWORD'];
+    if (empty($password) || strlen($password) <= 0)
+        return false;
+
+    return array($username, $password);
+}
+
+
+/**
+ * pdga_api_getSession
  *
  * Login to PDGA API and return session cookie.
  *
- * Returns null on failure, session on success.
+ * @return session on success
+ * @return null on failure
  */
-function pdga_getSession()
+function pdga_api_getSession()
 {
     static $session;
+    static $timeout;
+
+    if ($timeout && $timeout > time())
+        $session = null;
 
     if ($session)
-        return $session;
+       return $session;
 
-    global $settings;
-    $request_url = PDGA_SERVER . '/services/json/user/login';
+    $credentials = pdga_api_settings();
+    if (!$credentials)
+        return null;
+
+    $request_url = PDGA_API_SERVER . '/services/json/user/login';
     $user_data = array(
-        'username' => $settings['PDGA_USERNAME'],
-        'password' => $settings['PDGA_PASSWORD'],
+        'username' => $credentials[0],
+        'password' => $credentials[1]
     );
 
     $user_data = http_build_query($user_data);
     $curl = curl_init($request_url);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($curl, CURLOPT_POST, 1);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $user_data);
     curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -65,39 +102,36 @@ function pdga_getSession()
         return null;
     }
     $session = $logged_user->session_name . '=' . $logged_user->sessid;
-
     curl_close($curl);
+
+    $timeout = time() + 10*60;
     return $session;
 }
 
 
-/*
- * pdga_getPlayer
+/**
+ * pdga_api_getPlayer
  *
  * Get full assoc array of player data from PDGA API.
  *
- * Takes player's PDGA# as int as parameter.
- * Returns null on failure, assoc array on success.
+ * @param int $pdga_number Player's PDGA number
+ * @return null on failure
+ * @return assoc array on success
  */
-function pdga_getPlayer($pdga_number = 0)
+function pdga_api_getPlayer($pdga_number = 0)
 {
-    static $cache;
-
-    if ($pdga_number == 0)
+    if (!is_integer($pdga_number) || $pdga_number <= 0)
         return null;
 
-    if (isset($cache["$pdga_number"]))
-        return $cache["$pdga_number"];
-
-    if (!($session = pdga_getSession()))
+    if (!($session = pdga_api_getSession()))
         return null;
 
-    $request_url = PDGA_SERVER . '/services/json/member/' . $pdga_number;
+    $request_url = PDGA_API_SERVER . '/services/json/member/' . $pdga_number;
     $curl = curl_init($request_url);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($curl, CURLOPT_COOKIE, $session);
     curl_setopt($curl, CURLOPT_URL, $request_url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_FAILONERROR, 1);
     $response = curl_exec($curl);
     $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -108,8 +142,9 @@ function pdga_getPlayer($pdga_number = 0)
             error_log("Getting data for PDGA#$pdga_number failed, status " . $decoded["status"]);
             return null;
         }
-        else
+        else {
             $cache["$pdga_number"] = $decoded;
+        }
     }
     else {
         $error = curl_error($curl);
@@ -122,13 +157,95 @@ function pdga_getPlayer($pdga_number = 0)
 }
 
 
-/*
+/**
+ * Access database to get last_updated field for player's status
+ *
+ * @param int $pdga_number PDGA number to get
+ * @return time of last update on success
+ * @return null on failure
+ */
+function pdga_getLastUpdated($pdga_number = 0)
+{
+    require_once 'data/db_init.php';
+
+    $query = "SELECT unix_timestamp(last_updated) AS last_update FROM pdga_players WHERE pdga_number = $pdga_number";
+    $result = execute_query($query);
+
+    if (!$result || mysql_num_rows($result) != 1)
+        return null;
+
+    $row = mysql_fetch_assoc($result);
+    return $row['last_update'];
+}
+
+
+/**
+ * Get player data from PDGA API and update it into our pdga_players table.
+ *
+ * @param int $pdga_number PDGA number to get
+ * @return true on success
+ * @return false on failure
+ */
+function pdga_updatePlayer($pdga_number)
+{
+    $data = pdga_api_getPlayer($pdga_number);
+
+    if (!is_array($data))
+        return false;
+
+    unset($data['sessid']);
+    foreach ($data as $key => $value)
+        $data[$key] = escape_string($value);
+
+    $keys = implode(", ", array_keys($data));
+    $vals = "'" . implode("', '", array_values($data)) . "'";
+
+    $query = "REPLACE INTO pdga_players ($keys, last_updated) VALUES($vals, NOW())";
+    return execute_query($query);
+}
+
+
+/* ************ ONlY FUNCTIONS CALLED OUTSIDE SHOULD BE ONES BELOW ************** */
+
+
+/**
+ * pdga_getPlayer
+ *
+ * Gets all fields from player's data.
+ * If data is more than one hour old, fetch that said data from API.
+ *
+ * @param int $pdga_number PDGA number
+ * @return data on success
+ * @return null on failure
+ */
+function pdga_getPlayer($pdga_number = 0)
+{
+    if (!is_integer($pdga_number) || $pdga_number <= 0)
+        return null;
+
+    $last_update = pdga_getLastUpdated($pdga_number);
+    if (($last_update + 60*60) < time())
+        pdga_updatePlayer($pdga_number);
+
+    $query = "SELECT * FROM pdga_players WHERE pdga_number = $pdga_number";
+    $result = execute_query($query);
+
+    if (!$result || mysql_num_rows($result) != 1)
+        return null;
+
+    return mysql_fetch_assoc($result);
+}
+
+
+/**
  * pdga_getPlayerData
  *
  * Gets a single field from player's data. Defaults to "rating".
  *
- * Takes player's PDGA# as int as first parameter, field as second.
- * Returns given data as-is or null on failure, or invalid field.
+ * @param int $pdga_number PDGA number
+ * @param string $field Key to return
+ * @return data on success
+ * @return null on failure or invalid field
  */
 function pdga_getPlayerData($pdga_number = 0, $field = "rating")
 {
@@ -136,20 +253,20 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating")
     if (!$data)
         return null;
 
-    if (isset($data{$field}))
-        return $data{$field};
+    if (isset($data[$field]))
+        return $data[$field];
 
     return null;
 }
 
 
-/*
+/**
  * pdga_getPlayerRating
  *
  * Get player's rating.
  *
- * Takes PDGA# as parameter.
- * Returns rating as int, or null on failure.
+ * @param int $pdga_number PDGA number
+ * @return rating on success
  */
 function pdga_getPlayerRating($pdga_number = 0)
 {
