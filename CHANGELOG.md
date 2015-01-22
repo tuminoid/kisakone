@@ -12,6 +12,8 @@ next:
   * Fix missing hole number if custom hole text was empty. GH #178.
   * Use jQuery core/UI from CDN for speed. GH #179.
   * Queue is sortable by the headers. GH #133.
+  * Upgrade scripts at 2013.09.20 we're updated to update the foreign keys to level of
+      clean install. It also automates conversion to InnoDB based tables.
 
 2014.10.20:
 ===========
