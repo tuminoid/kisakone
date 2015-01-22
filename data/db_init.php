@@ -43,7 +43,7 @@ function InitializeDatabaseConnection()
         $retValue = new Error();
         $retValue->isMajor = true;
         $retValue->title = 'error_db_connection';
-        $retValue->description = translate('error_db_connection_description');
+        $retValue->description = 'error_db_connection_description';
     }
 
     return $retValue;
