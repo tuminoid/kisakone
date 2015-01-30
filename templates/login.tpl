@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Stand-alone login form
  *
@@ -30,7 +31,6 @@
 {/if}
 
 <form method="post" class="evenform">
-
     <input type="hidden" name="formid" value="login" />
     <input type="hidden" name="loginAt" value="{$smarty.now}" />
 
@@ -47,7 +47,8 @@
         <input type="submit" value="{translate id='loginbutton'}" />
     </div>
     <div>
-    <input type="checkbox" name="rememberMe" /> Muista salasana
+        <label for="rememberMe">{translate id='rememberme'}</label>
+        <input type="checkbox" name="rememberMe" />
     </div>
     <p>
         <a href="{url page='register'}">{translate id=register}</a>

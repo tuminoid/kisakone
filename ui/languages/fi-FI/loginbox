@@ -11,3 +11,4 @@ loginform_loggedin_title Olet kirjautuneena tunnuksella:
 loginform_loggedin_as {user} ({firstname} {lastname})
 logout              Kirjaudu ulos
 my_info             Omat tiedot
+rememberme          Muista salasana
