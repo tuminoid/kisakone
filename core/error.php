@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2009-2010 Kisakone projektiryhmÃ¤
  * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Error class, which is used by all modules

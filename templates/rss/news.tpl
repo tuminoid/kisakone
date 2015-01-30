@@ -1,6 +1,6 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmº
+ * Copyright 2009-2010 Kisakone projektiryhmÂº
  *
  * RSS message for event news item
  *

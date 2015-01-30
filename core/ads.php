@@ -2,7 +2,7 @@
 
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm‰
+ * Copyright 2009-2010 Kisakone projektiryhm√§
  *
  * This file includes the Ad class, and other general support functionality for ads
  *

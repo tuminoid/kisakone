@@ -2,7 +2,7 @@
 This file implements quicksort with callback support for determining the order
 of items.
 
-The code is a modified version of the one found at 
+The code is a modified version of the one found at
 http://en.literateprograms.org/Quicksort_(JavaScript) under MIT/X11 license.
 
 The license here is only applied for this particular file.
@@ -13,7 +13,7 @@ The function quick_sort is the public interface to this file.
 
 {literal}
 /*
-Modifications Copyright 2009-2010 Kisakone projektiryhm‰
+Modifications Copyright 2009-2010 Kisakone projektiryhm√§
 Original copyright holders unknown
 Obtained from http://en.literateprograms.org/Quicksort_(JavaScript)
 

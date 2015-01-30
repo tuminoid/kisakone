@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmı
+ * Copyright 2009-2010 Kisakone projektiryhm√µ
  *
  * This file is the data delivery mechanism for doing form validation using AJAX
  *

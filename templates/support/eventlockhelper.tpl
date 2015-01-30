@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmı
+ * Copyright 2009-2010 Kisakone projektiryhm√µ
  *
  * If event is locked, this page shows error message telling edits aren't possible.
  * If JS is enabled, editing controls are also disabled
