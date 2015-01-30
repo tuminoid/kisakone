@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * TODO
+
 2015.01.30:
 ===========
   * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
