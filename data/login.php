@@ -47,8 +47,8 @@ function CheckUserAuthentication($username, $password)
     if (!$logindata)
         return null;
 
-    $db_hash = $logindata[0];
-    $usr_hash = GenerateHash($password, $logindata[1], $logindata[2]);
+    $db_hash = $logindata['Password'];
+    $usr_hash = GenerateHash($password, $logindata['Hash'], $logindata['Salt']);
 
     if (!strcmp($db_hash, $usr_hash)) {
         $query = format_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname,
@@ -92,13 +92,11 @@ function GetLoginData($username)
         return null;
 
     $usr = escape_string($username);
-    $query = format_query("SELECT Hash,Salt,Password FROM :User WHERE Username = '%s'", $usr);
+    $query = format_query("SELECT Hash,Salt,Password,PasswordChanged,LastLogin FROM :User WHERE Username = '%s'", $usr);
     $result = execute_query($query);
 
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = array($row['Password'], $row['Hash'], $row['Salt']);
-    }
+    if (mysql_num_rows($result) == 1)
+        $retValue = mysql_fetch_assoc($result);
     mysql_free_result($result);
 
     return $retValue;
