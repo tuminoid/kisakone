@@ -27,6 +27,7 @@
  */
 
 require_once 'core/login.php';
+require_once 'data/user.php';
 
 
 function processForm()

@@ -23,6 +23,8 @@
  * */
 
 require_once 'core/player.php';
+require_once 'data/player.php';
+
 
 /** ****************************************************************************
  * Function for registering a new user.
