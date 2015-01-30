@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * TODO
+  * Humongous data_access.php is split into 15 data/* files.
 
 2015.01.30:
 ===========
