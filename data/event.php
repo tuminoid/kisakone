@@ -23,6 +23,11 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'data/venue.php';
+require_once 'data/event_quota.php';
+require_once 'data/class.php';
+
+require_once 'core/sort.php';
 
 
 // Gets an array of Event objects where the conditions match
@@ -160,7 +165,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
 
     $query = format_query( "INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit, SignupStart, SignupEnd, ContactInfo, FeesRequired) VALUES
                      (%d, %d, %d, '%s', FROM_UNIXTIME(%d), %d, %d, FROM_UNIXTIME(%s), FROM_UNIXTIME(%s), '%s', %d)",
-                      esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), mysql_real_escape_string($name),
+                      esc_or_null($venue, 'int'), esc_or_null($tournament, 'int'), esc_or_null($level, 'int'), escape_string($name),
                       (int) $start, (int) $duration, (int) $playerlimit,
                       esc_or_null($signup_start, 'int'), esc_or_null($signup_end,'int'), mysql_escape_string($contact),
                       $requireFees );
@@ -291,17 +296,15 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
                     ActivationDate = FROM_UNIXTIME( %s), ResultsLocked = FROM_UNIXTIME(%s), ContactInfo = '%s', FeesRequired = %d
                     WHERE id = %d",
                             $venueid,
-                            esc_or_null($tournament, 'int'), $level, mysql_real_escape_string($name), (int) $start,
+                            esc_or_null($tournament, 'int'), $level, escape_string($name), (int) $start,
                             (int) $duration, (int) $playerlimit,
                             esc_or_null($signup_start,'int'), esc_or_null($signup_end,'int'), $activation,
                             $locking,
-                            mysql_real_escape_string($contact),  $requireFees , (int) $eventid);
+                            escape_string($contact),  $requireFees , (int) $eventid);
    $result = execute_query($query);
 
    if (!$result)
       return Error::Query($query);
-
-   mysql_free_result($result);
 }
 
 
@@ -693,7 +696,7 @@ function data_ProduceSearchConditions($queryString, $fields)
 
    $words = explode(' ', $queryString);
    $words = array_filter($words, 'data_RemoveEmptyStrings');
-   $words = array_map('mysql_real_escape_string', $words);
+   $words = array_map('escape_string', $words);
    $wordSpecificBits = array();
 
    if (!count($words))

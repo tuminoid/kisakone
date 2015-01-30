@@ -63,7 +63,7 @@ function GetFilesOfType($type)
 {
    require_once 'core/files.php';
 
-   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", mysql_real_escape_string($type));
+   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", escape_string($type));
    $result = execute_query($query);
 
    if (!$result)

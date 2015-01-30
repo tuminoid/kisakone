@@ -1,9 +1,8 @@
 <?php
-
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * General initialization for event editing form
  *
@@ -22,6 +21,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'data/tournament.php';
+require_once 'data/level.php';
+require_once 'data/class.php';
+
 
 function page_InitializeEventFormData(&$smarty, $creatingNew)
 {

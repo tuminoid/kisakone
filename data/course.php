@@ -103,10 +103,10 @@ function SaveCourse($course)
                           Link = '%s',
                           Map = '%s'
                           WHERE id = %d",
-                          mysql_real_escape_string($course['Name']),
-                          mysql_real_escape_string($course['Description']),
-                          mysql_real_escape_string($course['Link']),
-                          mysql_real_escape_string($course['Map']),
+                          escape_string($course['Name']),
+                          escape_string($course['Description']),
+                          escape_string($course['Link']),
+                          escape_string($course['Map']),
                           $course['id']);
       $result = execute_query($query);
 
@@ -120,10 +120,10 @@ function SaveCourse($course)
 
       $query = format_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
                           VALUES ('%s', '%s', '%s', '%s', %s)",
-                          mysql_real_escape_string($course['Name']),
-                          mysql_real_escape_string($course['Description']),
-                          mysql_real_escape_string($course['Link']),
-                          mysql_real_escape_string($course['Map']),
+                          escape_string($course['Name']),
+                          escape_string($course['Description']),
+                          escape_string($course['Link']),
+                          escape_string($course['Map']),
                           esc_or_null($eventid, 'int'));
       $result = execute_query($query);
 

@@ -53,14 +53,17 @@ function GetRoundDetails($roundid)
  * Returns null for success or
  * an Error in case there was an error in setting the round.
  */
-function SetRounds( $eventid, $rounds, $deleteRounds = array())
+function SetRounds($eventid, $rounds, $deleteRounds = array())
 {
-   $retValue = null;
    $eventid = (int) $eventid;
+
    foreach ($deleteRounds as $toDelete) {
       $toDelete = (int) $toDelete;
       $query = format_query("DELETE FROM :Round WHERE Event = $eventid AND id = $toDelete");
       $result = execute_query($query);
+
+      if (!$result)
+         return Error::Query($query);
    }
 
    foreach ($rounds as $round) {
@@ -81,15 +84,12 @@ function SetRounds( $eventid, $rounds, $deleteRounds = array())
                            $r_event, esc_or_null($r_course, 'int'), $r_starttype, $r_starttime, $r_interval, $r_validresults);
          $result = execute_query($query);
 
-         if ($result)
-            $roundid = mysql_insert_id();
-         else
+         if (!$result)
             return Error::Query($query);
       }
    }
-   mysql_free_result($result);
 
-   return $retValue;
+   return null;
 }
 
 
@@ -517,7 +517,7 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
 {
    $query = format_query("UPDATE :Round SET StartTime = FROM_UNIXTIME(%d), StartType = '%s', `Interval` = %d, ValidResults = %d, Course = %s WHERE id = %d",
                     (int) $date,
-                    mysql_real_escape_string($startType),
+                    escape_string($startType),
                     (int) $interval,
                     $valid ?  1:  0,
                     esc_or_null($course, 'int'),

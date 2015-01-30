@@ -93,7 +93,7 @@ function GetTextContentByTitle($eventid, $title)
 {
    $retValue = null;
    $id = (int) $eventid;
-   $title = mysql_real_escape_string($title);
+   $title = escape_string($title);
    $eventCond = $id ? "= $id" : "IS NULL";
 
    $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order` FROM :TextContent WHERE event $eventCond AND `title` = '$title' ");
@@ -133,8 +133,8 @@ function SaveTextContent($page)
                               `Type` = '%s'
                               WHERE id = %d",
 
-                              mysql_real_escape_string($page->title),
-                              mysql_real_escape_string($page->content),
+                              escape_string($page->title),
+                              escape_string($page->content),
                               time(),
                               $page->type,
                               (int) $page->id);

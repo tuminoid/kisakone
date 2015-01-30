@@ -126,9 +126,10 @@ function format_query($query)
        $prefix = $settings['DB_PREFIX'];
     }
 
-    $query = str_replace(':', $prefix, $query);
     $args = func_get_args();
     $args[0] = $query;
+    for ($i = 0; $i < count($args); $i++)
+        $args[$i] = str_replace(':', $prefix, $args[$i]);
 
     return call_user_func_array('sprintf', $args);
 }

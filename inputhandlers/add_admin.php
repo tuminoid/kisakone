@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Creates an admin or another manager user
  *
@@ -50,6 +51,7 @@ function processForm()
 
     $password = $_POST['password'];
     if ($password == '') $problems['password'] = translate('FormError_NotEmpty');
+    if (strlen($password) < 8 || strlen($password) > 40) $problems['password'] = translate('FormError_PasswordLength');
 
     $password2 = $_POST['password2'];
     if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');

@@ -112,7 +112,6 @@ function SetClasses($eventid, $classes)
    else
       return Error::internalError("Event id argument is not set.");
 
-   mysql_free_result($result);
    return $retValue;
 }
 

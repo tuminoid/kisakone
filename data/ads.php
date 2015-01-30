@@ -68,7 +68,7 @@ function GetAd($eventid, $contentId)
    $retValue = null;
 
    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
-   $contentId = mysql_real_escape_string($contentId);
+   $contentId = escape_string($contentId);
    $eventid =  esc_or_null( $eventid, 'int');
    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
                      FROM :AdBanner WHERE Event $eventCond AND ContentId = '%s'", $contentId);
@@ -92,10 +92,10 @@ function InitializeAd($eventid, $contentId)
    require_once 'core/ads.php';
    $retValue = array();
 
-   $contentId = mysql_real_escape_string($contentId);
+   $contentId = escape_string($contentId);
    $query = format_query( "INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
                     VALUES (%s, NULL, NULL, NULL, NULL, '%s', '%s')",
-                    esc_or_null($eventid, 'int'), ($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT), mysql_real_escape_string($contentId));
+                    esc_or_null($eventid, 'int'), ($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT), escape_string($contentId));
    $result = execute_query($query);
 
    if (!$result)

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file includes the Email class and other support functionality
  * used for sending e-mail messages.
@@ -22,6 +22,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'config.php';
+
 
 /**
  * E-mail tokens are bits of text which are converted within an e-mail message
@@ -53,6 +56,7 @@ define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
 define('EMAIL_PROMOTED_FROM_QUEUE', 'email_promoted');
 
+
 class Email
 {
     // E-mails are quite simply text content, using different processing.
@@ -66,12 +70,14 @@ class Email
     function Email($content)
     {
         require_once 'core/textcontent.php';
+
         if (is_a($content, 'TextContent')) {
             $this->textcontent = $content;
         } else {
             $this->textcontent = GetGlobalTextContent($content);
         }
     }
+
 
     /**
      * The contained e-mail message is prepared to be sent; all the tokens
@@ -170,6 +176,7 @@ class Email
         return $retval;
     }
 }
+
 
 /**
  * This function sends e-mail to a specific user of the system. E-mails are

@@ -1,8 +1,8 @@
 <?php
-
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file includes the Ad class, and other general support functionality for ads
  *
@@ -21,6 +21,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'data/file.php';
+
 
 // Space-separated list of ad types. Both event-specific and global ads are listed, in
 // their own functions. If colon is present in an ad name, special handling needs to take

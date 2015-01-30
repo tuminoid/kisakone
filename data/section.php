@@ -124,7 +124,7 @@ function CreateSection($round, $baseClassId, $name)
 function RenameSection($classId, $newName)
 {
    $classId = (int) $classId;
-   $newName = mysql_real_escape_string($newName);
+   $newName = escape_string($newName);
    $query = format_query("UPDATE :Section SET Name = '%s' WHERE id = %d", $newName, $classId);
    $result = execute_query($query);
 

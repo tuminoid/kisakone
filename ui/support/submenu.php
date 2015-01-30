@@ -24,6 +24,12 @@
 * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
 * */
 
+require_once 'data/event.php';
+require_once 'data/user.php';
+require_once 'data/textcontent.php';
+require_once 'data/tournament.php';
+
+
 /**
  * This function defines and returns the submenu tree
  * @return submenu. The structure is fairly complicated, so it is ideal just to look at the implementation.
@@ -64,9 +70,6 @@ function page_getSubMenu()
 
     // Some pages define themselves as being under the main menu item "unique"; this menu is not defined here, it's handled
     // as a special case in the submenu and breadcrumb templates.
-    require_once 'data/event.php';
-    require_once 'data/user.php';
-
 
     // First, gather any information we'll need for the menu
     $id = @$_GET['id'];

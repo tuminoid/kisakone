@@ -28,7 +28,7 @@ require_once 'data/db_init.php';
 function CreateNewsItem($eventid, $title, $text)
 {
    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
-                            (int) $eventid, mysql_real_escape_string($title), mysql_real_escape_string($text));
+                            (int) $eventid, escape_string($title), escape_string($text));
    $result = execute_query($query);
 
    if (!$result)
@@ -39,7 +39,7 @@ function CreateNewsItem($eventid, $title, $text)
 function EditNewsItem($itemid, $title, $text)
 {
    $query = format_query("UPDATE :TextContent SET Title = '%s', Content = '%s' WHERE id = %d",
-                          mysql_real_escape_string($title), mysql_real_escape_string($text), (int) $itemid);
+                          escape_string($title), escape_string($text), (int) $itemid);
    $result = execute_query($query);
 
    if (!$result)

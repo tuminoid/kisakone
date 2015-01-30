@@ -54,7 +54,7 @@ function GetVenueId($venue)
 {
    $venueid = null;
    // Get the existing venue
-   $query = format_query("SELECT id FROM :Venue WHERE Name = '%s'", mysql_real_escape_string( $venue));
+   $query = format_query("SELECT id FROM :Venue WHERE Name = '%s'", escape_string( $venue));
    $result = execute_query($query);
 
    if (mysql_num_rows($result) >= 1) {
@@ -65,7 +65,7 @@ function GetVenueId($venue)
 
    if (!isset($venueid)) {
       // Create a new venue
-      $query = format_query("INSERT INTO :Venue (Name) VALUES ('%s')", mysql_real_escape_string( $venue));
+      $query = format_query("INSERT INTO :Venue (Name) VALUES ('%s')", escape_string( $venue));
       $result = execute_query($query);
 
       if (!$result)
