@@ -36,11 +36,22 @@ function core_ProduceFieldName($dbfield)
     return strtolower($dbfield[0]) . substr($dbfield, 1);
 }
 
-function core_sort_by_count($a, $b)
+function data_fixNameCase($name)
 {
-    $ac = count($a);
-    $bc = count($b);
-    if ($ac == $bc) return 0;
-    if ($ac < $bc) return 1;
-    return -1;
+   $string = ucwords(strtolower($name));
+
+   foreach (array('-', '\'') as $delimiter) {
+      if (strpos($string, $delimiter)!==false)
+         $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+   }
+
+   return $string;
 }
+
+
+function data_RemoveEmptyStrings($item)
+{
+   return $item !== '';
+}
+
+
