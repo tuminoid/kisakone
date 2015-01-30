@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.01.30:
+===========
   * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
   * Reformat `data_access.php` entirely to make it readable and as a first step, 
       introduce `login.php` in `core/data` to handle login related functions.
