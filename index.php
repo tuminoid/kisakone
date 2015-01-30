@@ -2,7 +2,7 @@
 /**
 * Suomen Frisbeegolfliitto Kisakone
 * Copyright 2009-2010 Kisakone projektiryhmä
-* Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+* Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
 *
 * This file serves as the one and only interface users have for the PHP code. In fact,
 * whenever mod_rewrite is enabled, access to other php files is explicitly made
@@ -24,7 +24,7 @@
 * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
 * */
 
-setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+setlocale(LC_ALL, array('fi_FI.UTF-8', 'fi_FI@euro', 'fi_FI', 'finnish'));
 
 // Our configs
 require_once 'config.php';
@@ -42,7 +42,6 @@ require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
-require_once 'data/data_access.php';
 require_once 'data/login.php';
 
 // Suomen Frisbeegolfliitto-specific functionality
@@ -66,7 +65,6 @@ if (@$_COOKIE['kisakone_login']) {
 else {
     // Not logged in; see if the user enabled automatic login
     if (@$_COOKIE['kisakone_autologin_as']) {
-
         // Yes; ensure the automatic login token matches the one that can be
         // generated for the user from database, if so, log in, if not ignore;
         // we don't want to display error message for outdated cookies

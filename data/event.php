@@ -4,7 +4,7 @@
  * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Data access module. Access the database server directly.
+ * Data access module for Event
  *
  * --
  *
