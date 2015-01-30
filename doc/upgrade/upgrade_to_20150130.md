@@ -1,7 +1,6 @@
-Upgrading to version 201xxxxxxxx
+Upgrading to version 2015.01.30:
 ================================
 
-We need to alter two tables. 
 Upgrade script will read your database settings from `config.php`, no changes required.
 
 1. Check `upgrade.sql` for intended SQL changes.
