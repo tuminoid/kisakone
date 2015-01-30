@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Login box/login information
  *
@@ -31,6 +31,7 @@
     <a id="loginform_x" href="" class="dialogx" ><img src="{$url_base}images/loginx2.png" alt="{translate id=close}" /></a>
     <input type="hidden" name="loginAt" value="{$smarty.now}" />
     <input type="hidden" name="formid" value="login" />
+
     <div>
         <label for="loginUsernameInput">{translate id='username'}</label>
         <input type="text" name="username" id="loginUsernameInput" />
@@ -41,7 +42,8 @@
     </div>
 
     <div>
-        <input id="loginRememberMe" type="checkbox" name="rememberMe" /> Muista salasana
+        <input id="loginRememberMe" type="checkbox" name="rememberMe" />
+        <label for="loginRememberMe">{translate id='rememberme'}</label>
         <input id="loginSubmit" type="submit" value="{translate id='loginbutton'}" />
     </div>
     <div>
@@ -53,9 +55,9 @@
     <div class="loginbox">
     <div>{translate id='loginform_loggedin_title'}</div>
     <div>{translate id='loginform_loggedin_as' user=$user->username firstname=$user->firstname lastname=$user->lastname}</div>
-    <p>
-        <a id="loginMyInfo" href="{url page=myinfo}">{translate id='my_info'}</a> |
-        <a id="logout" href="{$url_base}?action=logout">{translate id='logout'}</a>
-    </p>
+        <p>
+            <a id="loginMyInfo" href="{url page=myinfo}">{translate id='my_info'}</a> |
+            <a id="logout" href="{$url_base}?action=logout">{translate id='logout'}</a>
+        </p>
     </div>
 {/if}
