@@ -23,7 +23,6 @@
 {translate id='changepassword_title' assign='title'}
 {include file='include/header.tpl'}
 
-
 <p>{if $smarty.get.mode == recover}
     {translate id=recover_password_help_final}
     {else}
@@ -49,12 +48,12 @@
     </div>
     <div>
         <label for="password1">{translate id='new_password'}</label>
-        <input type="password" id="password1" name="password" autocomplete="off" />
+        <input type="password" id="password1" name="password" autocomplete="off" minlength="8" maxlength="40" />
         {formerror field='password'}
     </div>
     <div>
         <label for="password2">{translate id='password_repeat'}</label>
-        <input type="password" id="password2" name="password2" autocomplete="off" />
+        <input type="password" id="password2" name="password2" autocomplete="off" minlength="8" maxlength="40" />
         {formerror field='password2'}
     </div>
 
@@ -75,9 +74,7 @@ $(document).ready(function(){
 
     $("#cancelButton").click(CancelSubmit);
 });
-
 {/literal}
-
 //]]>
 </script>
 
