@@ -95,6 +95,7 @@ function GetLoginData($username)
     $query = format_query("SELECT Hash,Salt,Password,PasswordChanged,LastLogin FROM :User WHERE Username = '%s'", $usr);
     $result = execute_query($query);
 
+    $retValue = null;
     if (mysql_num_rows($result) == 1)
         $retValue = mysql_fetch_assoc($result);
     mysql_free_result($result);
