@@ -1,8 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * UI backend for change password dialog
  *
@@ -29,37 +29,37 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   language_include('admin');
-   if (@$_GET['mode'] == 'recover') {
-      require_once 'data/login.php';
+    language_include('admin');
+    if (@$_GET['mode'] == 'recover') {
+        require_once 'data/login.php';
 
-      // Recover password mode: using a token instead of using the current password
-      $user = GetUserDetails(@$_GET['id']);
-      $token = GetUserSecurityToken(@$_GET['id']);
+        // Recover password mode: using a token instead of using the current password
+        $user = GetUserDetails(@$_GET['id']);
+        $token = GetUserSecurityToken(@$_GET['id']);
 
-      // If the token is incorrect, we dont even want to show the form
-      if (!$user || $token != @$_GET['token']) {
-         redirect("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => @$_GET['id'], 'failed' => 'yes'), $user));
-      }
-      $smarty->assign('username', $user->username);
+        // If the token is incorrect, we dont even want to show the form
+        if (!$user || $token != @$_GET['token'])
+            redirect("Location: " . url_smarty(array('page' => 'recover_password_info', 'id' => @$_GET['id'], 'failed' => 'yes'), $user));
 
-   } else {
-      // Normal "change password" form
-      $user = @$_SESSION['user'];
-      if (!$user)
-          return error::AccessDenied();
+        $smarty->assign('username', $user->username);
+    }
+    else {
+        // Normal "change password" form
+        $user = @$_SESSION['user'];
+        if (!$user)
+            return error::AccessDenied();
 
-       if (@$_GET['id']) {
-          // Only admins are allowed to change the password of other users
-          if (!IsAdmin())
-              return Error::AccessDenied();
-       }
+        if (@$_GET['id']) {
+            // Only admins are allowed to change the password of other users
+            if (!IsAdmin())
+                return Error::AccessDenied();
+        }
 
-       if ($error)
-           $smarty->assign('error', $error->data);
+        if ($error)
+            $smarty->assign('error', $error->data);
 
-       $smarty->assign('adminmode', @$_GET['id'] != '');
-   }
+        $smarty->assign('adminmode', @$_GET['id'] != '');
+    }
 }
 
 /**
@@ -68,6 +68,7 @@ function InitializeSmartyVariables(&$smarty, $error)
  */
 function getMainMenuSelection()
 {
-    if (@$_GET['mode'] == 'recover') return 'special';
-        return 'users';
+    if (@$_GET['mode'] == 'recover')
+        return 'special';
+    return 'users';
 }
