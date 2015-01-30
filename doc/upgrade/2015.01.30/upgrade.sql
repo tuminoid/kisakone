@@ -1,5 +1,5 @@
 
--- SQL migration from versions 2014.10.xx and earlier
+-- SQL migration from versions 2014.10.05 and earlier
 -- Use the upgrade script upgrade.php!
 
 -- Make Role a enum instead of varchar
