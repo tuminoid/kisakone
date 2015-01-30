@@ -1,12 +1,28 @@
 <?php
 /**
- * This file contains the definition for the submenu of the application.
- *
- * @author Tapani Haka
- * @package kisakone_pagedatarelay
- *
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
- * */
+* Suomen Frisbeegolfliitto Kisakone
+* Copyright 2009-2010 Kisakone projektiryhmä
+* Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+*
+* This file serves as the one and only interface users have for the PHP code. In fact,
+* whenever mod_rewrite is enabled, access to other php files is explicitly made
+* impossible.
+*
+* --
+*
+* This file is part of Kisakone.
+* Kisakone is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Kisakone is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
+* */
 
 /**
  * This function defines and returns the submenu tree
@@ -48,7 +64,7 @@ function page_getSubMenu()
 
     // Some pages define themselves as being under the main menu item "unique"; this menu is not defined here, it's handled
     // as a special case in the submenu and breadcrumb templates.
-
+    require_once 'data/event.php';
 
     // First, gather any information we'll need for the menu
     $id = @$_GET['id'];
