@@ -81,7 +81,18 @@ function processForm()
     $retvalue = new Error();
     $retvalue->internalDescription = 'Login page redirect; nothing to be concerned about';
     $retvalue->errorPage = 'redirect';
-    $retvalue->data = 'login';
+
+    // If password has never been changed, since changing crypto from md5 to crypt,
+    // redirect user to change password page
+    $loginData = getLoginData($username);
+    if (empty($loginData['PasswordChanged'])) {
+        $retvalue->data = 'login_change_password';
+        $retvalue->url = baseUrl().'changepassword';
+    }
+    else {
+        $retvalue->data = 'login';
+        $retvalue->url = baseUrl();
+    }
 
     return $retvalue;
 }

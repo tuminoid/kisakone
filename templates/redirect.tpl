@@ -21,22 +21,25 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
 
-{if $type == 'login'}
+{assign var=server value=$smarty.server.SERVER}
+{if $data == 'login'}
   {translate assign=title id=loginredirect_title}
   {translate assign=text id=loginredirect_text}
-  {assign var=url value=$smarty.server.REQUEST_URI}
+{elseif $data == 'login_change_password'}
+  {translate assign=title id=loginpassword_title}
+  {translate assign=text id=loginpassword_text}
 {/if}
+
 {include file=include/header.tpl}
 
 <p>{$text}</p>
-
-<p><a href="{$url|escape}">{translate id=redirect_proceed}</a></p>
+<p><a href="{$server}{$url|escape}">{translate id=redirect_proceed}</a></p>
 
 <script type="text/javascript">
 //<![CDATA[
 var url = "{$url|escape:"javascript"}";
 {literal}
-setTimeout(doRedirect, 1000);
+setTimeout(doRedirect, 3000);
 
 function doRedirect() {
     window.location = url;

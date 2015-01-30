@@ -149,6 +149,8 @@ not_used        Ei käytössä
 
 loginredirect_title     Sisäänkirjautuminen onnistui
 loginredirect_text      Olet nyt kirjautunut sisään. Pääset käyttämään kisakonetta muutaman sekunnin kuluessa. Jos mitään ei tapahdu, klikkaa alla olevaa linkkiä.
+loginpassword_title     Salasana täytyy vaihtaa
+loginpassword_text      Olet nyt kirjautunut sisään. Salasanasi täytyy vaihtaa. Sinut ohjataan salasananvaihtosivulle muutaman sekunnin kuluttua.
 redirect_proceed        Jatka eteenpäin
 save        Tallenna
 description Kuvaus

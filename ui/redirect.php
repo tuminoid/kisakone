@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Post-login redirect
  *
@@ -28,7 +29,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $data)
 {
-    $smarty->assign('type', $data->data);
+    $smarty->assign('data', $data->data);
+    $smarty->assign('url', $data->url);
 }
 
 /**

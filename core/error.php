@@ -86,6 +86,11 @@ class Error
      */
     var $data;
 
+    /**
+     * URL to redirect to (kinda invalid use of Error class by redirect)
+     */
+    var $url;
+
     /*
      * Trace of function calls, helpful for trying to locate the error in vague cases
     */
