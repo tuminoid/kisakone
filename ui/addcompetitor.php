@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the UI backend for adding competitors to an event

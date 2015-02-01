@@ -22,6 +22,9 @@
  * */
 
 define('PDGA_SERVER', "https://api.pdga.com");
+
+require_once 'config.php';
+
 global $settings;
 
 
@@ -36,9 +39,8 @@ function pdga_getSession()
 {
     static $session;
 
-    if ($session) {
-       return $session;
-    }
+    if ($session)
+        return $session;
 
     $request_url = PDGA_SERVER . '/services/json/user/login';
     $user_data = array(
@@ -84,13 +86,11 @@ function pdga_getPlayer($pdga_number = 0)
 {
     static $cache;
 
-    if ($pdga_number == 0) {
+    if ($pdga_number == 0)
         return null;
-    }
 
-    if (isset($cache{"$pdga_number"})) {
+    if (isset($cache{"$pdga_number"}))
         return $cache{"$pdga_number"};
-    }
 
     if (!($session = pdga_getSession()))
         return null;
@@ -105,12 +105,15 @@ function pdga_getPlayer($pdga_number = 0)
 
     if ($http_code == 200) {
         $decoded = json_decode($response, true);
+
         if (!$decoded || isset($decoded{"status"})) {
             error_log("Getting data for PDGA#$pdga_number failed, status " . $decoded{"status"});
             return null;
-        } else
+        }
+        else
             $cache{"$pdga_number"} = $decoded;
-    } else {
+    }
+    else {
         $error = curl_error($curl);
         error_log("Getting player data failed: ". $error);
         return null;
@@ -137,6 +140,7 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating")
 
     if (isset($data{$field}))
         return $data{$field};
+
     return null;
 }
 
