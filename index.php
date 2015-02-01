@@ -105,7 +105,6 @@ language_include('errors');
 gate_MapURLParameters();
 
 // Support libraries that do or might rely on data from the user.
-
 require_once 'core/inputmapping.php';
 
 // Process sent form data. The function itself can be found in inputmapping.php
@@ -141,7 +140,6 @@ if (!is_array($pagename))
 $pagename[0] = basename($pagename[0]);
 
 // Now it's time to show the actual page.
-
 global $fullPageName, $fullTemplateName;
 $fullPageName = implode('/', $pagename);
 $fullTemplateName = $fullPageName . '.tpl';
@@ -149,7 +147,6 @@ $fullTemplateName = $fullPageName . '.tpl';
 // Ensure both the template and the PDR module exist
 if (!file_exists("templates/" . $fullTemplateName) || !file_exists("ui/$pagename[0].php")) {
     // Todo: support this
-
     if (gate_AttemptLanguageDetection($pagename)) {
         gate_ReloadPage();
     }
@@ -161,7 +158,6 @@ if (!file_exists("templates/" . $fullTemplateName) || !file_exists("ui/$pagename
     $pageData->errorCode = 404;
     $pageData->cause = $_GET['page'];
     $pageData->function = 'Gatekeeper:(automatic)';
-
 }
 
 require_once("ui/$pagename[0].php");
@@ -233,7 +229,6 @@ if ($isXhtml)
     echo '<?xml version="1.0" encoding="UTF-8" ?>';
 $smarty->display($fullTemplateName);
 
-
 /**
 * This function maps parameters passed within the URL (when mod_rewrite is used)
 * into parameters found in the $_GET and $_REQUEST arrays.
@@ -254,7 +249,6 @@ function gate_mapURLParameters()
     // ./pagename/id/arg1/value1/arg2/value2/.../argn/valuen .
     // None of the elements is mandatory. Pagename defaults to "index" and id
     // defaults to "default".
-
     if (@$_GET['page'] && !$_GET['path'])
         $_GET['path'] = @$_GET['page'];
     $pathnodes = explode('/', $_GET['path']);
@@ -281,7 +275,6 @@ function gate_mapURLParameters()
     //
     // For example, there's template javascript/base.tpl, but it's served by the
     // PDR module ui/javascript.php
-
     if ($templatePath != '' && !file_exists($templatePath . ".tpl")) {
         for ($offset = 1; $offset < count($pathnodes); ++$offset) {
             $element = gate_TranslatePathNode($pathnodes[$offset]);
@@ -350,7 +343,7 @@ function gate_TranslatePathNode($node)
 {
     global $language;
     if (array_key_exists("page:" . $node, $language->data))
-        $node = substr(translate("page:" .  $node), 5);
+        $node = substr(translate("page:" . $node), 5);
     return $node;
 }
 
@@ -368,7 +361,7 @@ function gate_remapGet()
         if (array_key_exists("param:" . $param, $language->data))
             $param = substr(translate("param:" . $param), 6);;
         if (array_key_exists("$param:" . $value, $language->data))
-            $value = substr(translate("$param:" .  $value), strlen($param) + 1);
+            $value = substr(translate("$param:" . $value), strlen($param) + 1);
 
         $_GET[$param] = $value;
     }
@@ -439,7 +432,7 @@ function gate_AttemptLanguageDetection($pagename)
         $token = "page:" . $pagename[0];
 
         while (($file = readdir($dir)) !== false) {
-            if ($file == 'mapping' || $file{0} == '.')
+            if ($file == 'mapping' || $file[0] == '.')
                 continue;
             $l = LoadLanguage($file, true);
             $l->LoadSingleFile('pageNameMapping');
@@ -475,6 +468,6 @@ function redirect($url)
     if (substr($url, 0, 9) == "Location:")
         header($url);
     else
-        redirect("Location: ".$url);
+        redirect("Location: " . $url);
     die();
 }
