@@ -23,85 +23,79 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/ads.php';
 
 
 function SaveAd($ad)
 {
-   $query = format_query("UPDATE :AdBanner SET URL = %s, ImageURL = %s, LongData = %s, ImageReference = %s, Type = %s WHERE id = %d",
-                  esc_or_null($ad->url),
-                  esc_or_null($ad->imageURL),
-                  esc_or_null($ad->longData),
-                  esc_or_null($ad->imageReference),
-                  esc_or_null($ad->type),
-                  $ad->id);
-   $result = execute_query($query);
+    $url = esc_or_null($ad->url);
+    $imageurl = esc_or_null($ad->imageURL);
+    $longdata = esc_or_null($ad->longData);
+    $imagereference = esc_or_null($ad->imageReference);
+    $type = esc_or_null($ad->type);
+    $id = $ad->id;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :AdBanner
+                            SET URL = $url, ImageURL = $imageurl, LongData = $longdata, ImageReference = $imagereference, Type = $type
+                            WHERE id = $id");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function GetAllAds($eventid)
 {
-   $retValue = array();
+    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
 
-   $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
-   $eventid =  esc_or_null( $eventid, 'int');
-   $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId  FROM :AdBanner WHERE Event $eventCond");
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId FROM :AdBanner WHERE Event $eventCond");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
-         $temp = new Ad($row);
-         $retValue[] = $temp;
-      }
-   }
-   mysql_free_result($result);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = new Ad($row);
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
-function GetAd($eventid, $contentId)
+function GetAd($eventid, $contentid)
 {
-   require_once 'core/ads.php';
-   $retValue = null;
+    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
+    $contentid = esc_or_null($contentid);
 
-   $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
-   $contentId = escape_string($contentId);
-   $eventid =  esc_or_null( $eventid, 'int');
-   $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
-                     FROM :AdBanner WHERE Event $eventCond AND ContentId = '%s'", $contentId);
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
+                            FROM :AdBanner WHERE Event $eventCond AND ContentId = $contentid");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      $row = mysql_fetch_assoc($result);
-      $retValue = new Ad($row);
-   }
-   mysql_free_result($result);
+    $retValue = null;
+    if (mysql_num_rows($result) > 0)
+        $retValue = new Ad(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
-function InitializeAd($eventid, $contentId)
+function InitializeAd($eventid, $contentid)
 {
-   require_once 'core/ads.php';
-   $retValue = array();
+    $eventid = esc_or_null($eventid, 'int');
+    $contentid = esc_or_null($contentid);
+    $type = $eventid ? AD_EVENT_DEFAULT : AD_DEFAULT;
 
-   $contentId = escape_string($contentId);
-   $query = format_query( "INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
-                    VALUES (%s, NULL, NULL, NULL, NULL, '%s', '%s')",
-                    esc_or_null($eventid, 'int'), ($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT), escape_string($contentId));
-   $result = execute_query($query);
+    $query = format_query("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
+                    VALUES ($eventid, NULL, NULL, NULL, NULL, $type, $contentid)");
+    $result = execute_query($query);
 
-   if (!$result)
-     return Error::Query($query, 'InitializeAd');
+    if (!$result)
+        return Error::Query($query, 'InitializeAd');
 
-   return GetAd($eventid, $contentId);
+    return GetAd($eventid, $contentid);
 }
-
-
