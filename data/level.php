@@ -23,105 +23,105 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/level.php';
 
 
 // Gets an array of Level objects (optionally filtered by the Available bit)
 function GetLevels($availableOnly = false)
 {
-   require_once 'core/level.php';
+    $query = "SELECT id, Name, ScoreCalculationMethod, Available FROM :Level";
 
-   $retValue = array();
-   $query = "SELECT id, Name, ScoreCalculationMethod, Available FROM :Level";
+    if ($availableOnly)
+        $query .= " WHERE Available <> 0";
+    $query = format_query($query);
+    $result = execute_query($query);
 
-   if ($availableOnly)
-      $query .= " WHERE Available <> 0";
-   $query = format_query($query);
-   $result = execute_query($query);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = new Level($row);
+    }
+    mysql_free_result($result);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result))
-         $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-   }
-   mysql_free_result($result);
-
-   return $retValue;
+    return $retValue;
 }
 
 
 // Gets a Level object by id
 function GetLevelDetails($levelId)
 {
-   require_once 'core/level.php';
+    $levelId = (int) $levelId;
 
-   $retValue = array();
-   $levelId = (int) $levelId;
+    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
+    $result = execute_query($query);
 
-   $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
-   $result = execute_query($query);
+    $retValue = array();
+    if (mysql_num_rows($result) == 1)
+        $retValue = new Level(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   if (mysql_num_rows($result) == 1) {
-      $row = mysql_fetch_assoc($result);
-      $retValue = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-   }
-   mysql_free_result($result);
-
-   return $retValue;
+    return $retValue;
 }
 
 
 function EditLevel($id, $name, $method, $available)
 {
-   $query = format_query("UPDATE :Level SET Name = '%s', ScoreCalculationMethod = '%s', Available = %d WHERE id = %d",
-                            escape_string($name), escape_string($method), $available ? 1 : 0, (int) $id);
-   $result = execute_query($query);
+    $id = (int) $id;
+    $name = esc_or_null($name);
+    $method = esc_or_null($method);
+    $available = $available ? 1 : 0;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :Level SET Name = $name, ScoreCalculationMethod = $method, Available = $available WHERE id = $id");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function CreateLevel($name, $method, $available)
 {
-   $retValue = null;
+    $name = esc_or_null($name);
+    $method = esc_or_null($method);
+    $available = $available ? 1 : 0;
 
-   $query = format_query("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ('%s', '%s', %d)",
-                      escape_string( $name), escape_string($method), $available ? 1 : 0);
-   $result = execute_query($query);
+    $query = format_query("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ($name, $method, $available)");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   return mysql_insert_id();
+    return mysql_insert_id();
 }
 
 
 function DeleteLevel($id)
 {
-   $query = format_query("DELETE FROM :Level WHERE id = ". (int) $id);
-   $result = execute_query($query);
+    $id = (int) $id;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("DELETE FROM :Level WHERE id = $id");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 // Returns true if the provided level is being used in any event or tournament, false otherwise
 function LevelBeingUsed($id)
 {
-   $retValue = true;
-   $id = (int) $id;
+    $id = (int) $id;
 
-   $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = %d) AS Events,
-                           (SELECT COUNT(*) FROM :Tournament WHERE Level = %d) AS Tournaments", $id, $id);
-   $result = execute_query($query);
+    $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = $id) AS Events,
+                           (SELECT COUNT(*) FROM :Tournament WHERE Level = $id) AS Tournaments");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      $temp = mysql_fetch_assoc($result);
-      $retValue = ($temp['Events'] + $temp['Tournaments']) > 0;
-   }
-   mysql_free_result($result);
+    $retValue = true;
+    if (mysql_num_rows($result) > 0) {
+        $temp = mysql_fetch_assoc($result);
+        $retValue = ($temp['Events'] + $temp['Tournaments']) > 0;
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
-
-
