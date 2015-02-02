@@ -27,228 +27,209 @@ require_once 'data/db_init.php';
 
 function GetGroups($sectid)
 {
-   $query = format_query("
-         SELECT
-            :Player.player_id PlayerId, :Player.pdga PDGANumber, :StartingOrder.Section,
-            :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
-            :User.UserFirstName, :User.UserLastName, firstname pFN, lastname pLN, :Classification.Name Classification, :Participation.OverallResult
-            FROM :StartingOrder
-            INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-            INNER JOIN :User ON :Player.player_id = :User.Player
-            INNER JOIN :Section ON :StartingOrder.Section = :Section.id
-            INNER JOIN :Round ON :Round.id = :Section.Round
-            INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-            INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-            WHERE :StartingOrder.`Section` = %d
-            ORDER BY GroupNumber, OverallResult",
-            $sectid);
-   $result = execute_query($query);
+    $sectid = (int) $sectid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = "SELECT :Player.player_id AS PlayerId, :Player.pdga AS PDGANumber, :StartingOrder.Section,
+                    :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
+                    :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
+                    :User.UserFirstName, :User.UserLastName, firstname AS pFN, lastname AS pLN,
+                    :Classification.Name AS Classification, :Participation.OverallResult
+                FROM :StartingOrder
+                INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                INNER JOIN :User ON :Player.player_id = :User.Player
+                INNER JOIN :Section ON :StartingOrder.Section = :Section.id
+                INNER JOIN :Round ON :Round.id = :Section.Round
+                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                WHERE :StartingOrder.Section = $sectid
+                ORDER BY GroupNumber, OverallResult";
+    $query = format_query($query);
+    $result = execute_query($query);
 
-   $current = null;
-   $out = array();
-   $group = null;
+    if (!$result)
+        return Error::Query($query);
 
-   while (($row = mysql_fetch_assoc($result)) !== false) {
-      $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
-      $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
+    $current = null;
+    $group = null;
+    $retValue = array();
 
-      if ($row['GroupNumber'] != $current) {
-         if (count($group))
-            $out[] = $group;
-         $group = $row;
-         $group['People'] = array();
-         $current = $row['GroupNumber'];
-         $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['GroupNumber']);
+    while (($row = mysql_fetch_assoc($result)) !== false) {
+        $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
+        $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
 
-         if ($row['StartingHole'])
-            $group['DisplayName'] = $row['StartingHole'];
-         else
-            $group['DisplayName'] = date('H:i', $row['StartingTime']);
-      }
-      $group['People'][] = $row;
-   }
+        if ($row['GroupNumber'] != $current) {
+            if (count($group))
+                $retValue[] = $group;
+            $group = $row;
+            $group['People'] = array();
+            $current = $row['GroupNumber'];
+            $group['GroupId'] = sprintf("%d-%d", $row['Section'], $row['GroupNumber']);
 
-   if (count($group))
-      $out[] = $group;
+            if ($row['StartingHole'])
+                $group['DisplayName'] = $row['StartingHole'];
+            else
+                $group['DisplayName'] = date('H:i', $row['StartingTime']);
+        }
+        $group['People'][] = $row;
+    }
 
-   mysql_free_result($result);
+    if (count($group))
+        $retValue[] = $group;
 
-   return $out;
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
 function InsertGroup($group)
 {
-   foreach ($group['People'] as $player) {
-      $query = format_query("INSERT INTO :StartingOrder
-                       (Player, StartingTime, StartingHole, GroupNumber, Section)
-                     VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
-                     $player['PlayerId'],
-                     $group['StartingTime'],
-                     esc_or_null($group['StartingHole'], 'int'),
-                     $group['GroupNumber'],
-                     $group['Section']);
-      execute_query($query);
-   }
+    foreach ($group['People'] as $player) {
+        $data = $group;
+        $data['Player'] = $player['PlayerId'];
+        InsertGroupMember($data);
+    }
 }
 
 
 function InsertGroupMember($data)
 {
-   $query = format_query("INSERT INTO :StartingOrder
-                    (Player, StartingTime, StartingHole, GroupNumber, Section)
-                    VALUES (%d, FROM_UNIXTIME(%d), %s, %d, %d)",
-                    $data['Player'],
-                    $data['StartingTime'],
-                    esc_or_null($data['StartingHole'], 'int'),
-                    $data['GroupNumber'],
-                    $data['Section']);
-   execute_query($query);
+    $playerid = $data['Player'];
+    $start = $data['StartingTime'];
+    $hole = esc_or_null($data['StartingHole'], 'int');
+    $groupnumber = $data['GroupNumber'];
+    $section = $data['Section'];
+
+    $query = format_query("INSERT INTO :StartingOrder (Player, StartingTime, StartingHole, GroupNumber, Section)
+                    VALUES ($playerid, FROM_UNIXTIME($start), $hole, $groupnumber, $section)");
+    execute_query($query);
 }
 
 
 function AnyGroupsDefined($roundid)
 {
-   $query = format_query("SELECT 1
-                  FROM :StartingOrder
-                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                  WHERE `:Round`.id = %d LIMIT 1", $roundid);
-   $result = execute_query($query);
+    $roundid = (int) $roundid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT 1 FROM :StartingOrder
+                            INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                            INNER JOIN :Round ON :Round.id = :Section.Round
+                            WHERE :Round.id = $roundid LIMIT 1");
+    $result = execute_query($query);
 
-   return mysql_num_rows($result) > 0;
+    if (!$result)
+        return Error::Query($query);
+
+    $retValue = mysql_num_rows($result) > 0;
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
 function GetRoundGroups($roundid)
 {
-   $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name ClassificationName,
-                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId, :Participation.OverallResult
-                  FROM :StartingOrder
-                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                  INNER JOIN :User ON :User.Player = :Player.player_id
-                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                  WHERE `:Round`.id = %d
-                  ORDER BY GroupNumber, :StartingOrder.id", $roundid);
-   $result = execute_query($query);
+    $roundid = (int) $roundid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name AS ClassificationName,
+                                :Player.lastname AS LastName, :Player.firstname AS FirstName,
+                                :User.id AS UserId, :Participation.OverallResult
+                            FROM :StartingOrder
+                            INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                            INNER JOIN :Round ON :Round.id = :Section.Round
+                            INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                            INNER JOIN :User ON :User.Player = :Player.player_id
+                            INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                            INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                            WHERE :Round.id = $roundid
+                            ORDER BY GroupNumber, :StartingOrder.id");
+    $result = execute_query($query);
 
-   $out = array();
-   while (($row = mysql_fetch_array($result)) !== false)
-      $out[] = $row;
-   mysql_free_result($result);
+    if (!$result)
+        return Error::Query($query);
 
-   return $out;
+    $retValue = array();
+    while (($row = mysql_fetch_array($result)) !== false)
+        $retValue[] = $row;
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
 function GetSingleGroup($roundid, $playerid)
 {
-   $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
-                     :Classification.Name ClassificationName,
-                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                  FROM :StartingOrder
-                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                  INNER JOIN :User ON :User.Player = :Player.player_id
-                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                  INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section
-                                                       AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
-                  WHERE `:Round`.id = %d AND BaseGroup.Player = %d
-                  ORDER BY GroupNumber, :StartingOrder.id", $roundid, $playerid);
-   $result = execute_query($query);
+    $roundid = (int) $roundid;
+    $playerid = (int) $playerid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
+                                :StartingOrder.StartingHole, :Classification.Name AS ClassificationName,
+                                :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
+                            FROM :StartingOrder
+                            INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                            INNER JOIN :Round ON :Round.id = :Section.Round
+                            INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                            INNER JOIN :User ON :User.Player = :Player.player_id
+                            INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                            INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                            INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
+                            WHERE :Round.id = $roundid AND BaseGroup.Player = $playerid
+                            ORDER BY GroupNumber, :StartingOrder.id");
+    $result = execute_query($query);
 
-   $out = array();
-   while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-   mysql_free_result($result);
+    if (!$result)
+        return Error::Query($query);
 
-   return $out;
-}
+    $retValue = array();
+    while (($row = mysql_fetch_array($result)) !== false)
+        $retValue[] = $row;
+    mysql_free_result($result);
 
-
-function GetSingleGroupByPN($roundid, $groupNumber)
-{
-   $query = format_query("SELECT :StartingOrder.GroupNumber, :StartingOrder.StartingTime, :StartingOrder.StartingHole,
-                     :Classification.Name ClassificationName,
-                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                  FROM :StartingOrder
-                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                  INNER JOIN :User ON :User.Player = :Player.player_id
-                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                  WHERE `:Round`.id = %d AND GroupNumber = %d
-                  ORDER BY GroupNumber, :StartingOrder.id", $roundid, $groupNumber);
-   $result = execute_query($query);
-
-   if (!$result)
-      return Error::Query($query);
-
-   $out = array();
-   while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-   mysql_free_result($result);
-
-   return $out;
+    return $retValue;
 }
 
 
 function GetUserGroupSummary($eventid, $playerid)
 {
-   $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) StartingTime, :StartingOrder.StartingHole,
-                     :Classification.Name ClassificationName, :Round.GroupsFinished,
-                     :Player.lastname LastName, :Player.firstname FirstName, :User.id UserId
-                  FROM :StartingOrder
-                  INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                  INNER JOIN `:Round` ON `:Round`.id = :Section.`Round`
-                  INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                  INNER JOIN :User ON :User.Player = :Player.player_id
-                  INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
-                  INNER JOIN :Classification ON :Participation.Classification = :Classification.id
-                  WHERE `:Round`.Event = %d AND :StartingOrder.Player = %d
-                  ORDER BY `:Round`.StartTime", $eventid, $playerid);
-   $result = execute_query($query);
+    $eventid = (int) $eventid;
+    $playerid = (int) $playerid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
+                                :StartingOrder.StartingHole, :Classification.Name AS ClassificationName, :Round.GroupsFinished,
+                                :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
+                            FROM :StartingOrder
+                            INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                            INNER JOIN :Round ON :Round.id = :Section.Round
+                            INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                            INNER JOIN :User ON :User.Player = :Player.player_id
+                            INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+                            INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                            WHERE :Round.Event = $eventid AND :StartingOrder.Player = $playerid
+                            ORDER BY :Round.StartTime");
+    $result = execute_query($query);
 
-   $out = array();
-   while (($row = mysql_fetch_array($result)) !== false)
-      $out[] =$row;
-   mysql_free_result($result);
+    if (!$result)
+        return Error::Query($query);
 
-   if (!count($out))
-      return null;
+    $retValue = array();
+    while (($row = mysql_fetch_array($result)) !== false)
+        $retValue[] = $row;
+    mysql_free_result($result);
 
-   return $out;
+    if (!count($retValue))
+        return null;
+
+    return $retValue;
 }
+
 
 function SetRoundGroupsDone($roundid, $done)
 {
-   $time = null;
-   if ($done)
-      $time = time();
+    $roundid = (int) $roundid;
 
-   $query = format_query("UPDATE `:Round` SET GroupsFinished = FROM_UNIXTIME(%s) WHERE id = %d", esc_or_null($time, 'int' ), $roundid);
-   execute_query($query);
+    $time = null;
+    if ($done)
+        $time = time();
+
+    $query = format_query("UPDATE :Round SET GroupsFinished = FROM_UNIXTIME($time) WHERE id = $roundid");
+    execute_query($query);
 }
-
-
