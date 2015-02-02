@@ -23,54 +23,55 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/textcontent.php';
 
 
 function CreateNewsItem($eventid, $title, $text)
 {
-   $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES(%d, '%s', NOW(), '%s', 'news')",
-                            (int) $eventid, escape_string($title), escape_string($text));
-   $result = execute_query($query);
+    $eventid = (int) $eventid;
+    $title = esc_or_null($title);
+    $text = esc_or_null($text);
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES($eventid, $title, NOW(), $text, 'news')");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function EditNewsItem($itemid, $title, $text)
 {
-   $query = format_query("UPDATE :TextContent SET Title = '%s', Content = '%s' WHERE id = %d",
-                          escape_string($title), escape_string($text), (int) $itemid);
-   $result = execute_query($query);
+    $itemid = (int) $itemid;
+    $title = esc_or_null($title);
+    $text = esc_or_null($text);
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :TextContent SET Title = $title, Content = $text WHERE id = $itemid");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function GetEventNews($eventid, $from, $count)
 {
-   require_once 'core/textcontent.php';
+    $eventid = (int) $eventid;
+    $from = (int) $from;
+    $count = (int) $count;
 
-   $retValue = array();
-   $eventid = (int) $eventid;
-   $from = (int) $from;
-   $count = (int) $count;
+    $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
+                            FROM :TextContent
+                            WHERE Event = $eventid AND Type = 'news' ORDER BY `date` DESC
+                            LIMIT $from, $count");
+    $result = execute_query($query);
 
-   $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) Date,
-                                    Type, `Order`  FROM :TextContent
-                                    WHERE Event = $eventid AND Type =  'news' ORDER BY `date` DESC
-                                    LIMIT $from, $count");
-   $result = execute_query($query);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = new TextContent($row);
+    }
+    mysql_free_result($result);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result)) {
-         $temp = new TextContent($row);
-         $retValue[] = $temp;
-      }
-   }
-   mysql_free_result($result);
-
-   return $retValue;
+    return $retValue;
 }
-
-
