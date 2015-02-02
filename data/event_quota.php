@@ -27,71 +27,74 @@ require_once 'data/db_init.php';
 /* Get Quotas for Classes in Event */
 function GetEventQuotas($eventId)
 {
-   $retValue = array();
-   $event = (int) $eventId;
+    $event = (int) $eventId;
 
-   // All classes as assoc array
-   $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
-                  FROM :Classification, :ClassInEvent
-                  WHERE :ClassInEvent.Classification = :Classification.id AND
-                        :ClassInEvent.Event = $eventId
-                        ORDER BY Name");
-   $result = execute_query($query);
+    $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
+                            FROM :Classification, :ClassInEvent
+                            WHERE :ClassInEvent.Classification = :Classification.id AND :ClassInEvent.Event = $event
+                            ORDER BY Name");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result))
-         $retValue[] = $row;
-   }
-   mysql_free_result($result);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = $row;
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
 // Return min and max quota for a class
 function GetEventClassQuota($eventid, $classid)
 {
-   $quotas = GetEventQuotas($eventid);
-   foreach ($quotas as $quota) {
-      if ($quota['id'] == $classid)
-         return array($quota['MinQuota'], $quota['MaxQuota']);
-   }
+    $quotas = GetEventQuotas($eventid);
+    foreach ($quotas as $quota) {
+        if ($quota['id'] == $classid)
+            return array($quota['MinQuota'], $quota['MaxQuota']);
+    }
 
-   // not found, give defaults
-   return array(0, 999);
+    // not found, give defaults
+    return array(0, 999);
 }
 
 
 // Set class's min quota
 function SetEventClassMinQuota($eventid, $classid, $quota)
 {
-   $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d WHERE Event = %d AND Classification = %d",
-                 $quota, $eventid, $classid);
-   $result = execute_query($query);
+    $eventid = (int) $eventid;
+    $classid = (int) $classid;
+    $quota = (int) $quota;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :ClassInEvent SET MinQuota = $quota WHERE Event = $eventid AND Classification = $classid");
+    $result = execute_query($query);
 
-   return mysql_affected_rows() == 1;
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_affected_rows() == 1;
 }
 
 
 // Set class's max quota
 function SetEventClassMaxQuota($eventid, $classid, $quota)
 {
-   $query = format_query("UPDATE :ClassInEvent SET MaxQuota = %d WHERE Event = %d AND Classification = %d",
-                 $quota, $eventid, $classid);
-   $result = execute_query($query);
+    $eventid = (int) $eventid;
+    $classid = (int) $classid;
+    $quota = (int) $quota;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :ClassInEvent SET MaxQuota = $quota WHERE Event = $eventid AND Classification = $classid");
+    $result = execute_query($query);
 
-   return mysql_affected_rows() == 1;
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_affected_rows() == 1;
 }
 
 
-
-/** ****************************************************************************
+/**
  * Function for checking if player fits event quota or should be queued
  *
  * Returns true for direct signup, false for queue
@@ -102,50 +105,48 @@ function SetEventClassMaxQuota($eventid, $classid, $quota)
  */
 function CheckSignUpQuota($eventId, $playerId, $classId)
 {
-   $event = GetEventDetails($eventId);
-   $participants = $event->GetParticipants();
-   $limit = $event->playerLimit;
-   $total = count($participants);
+    $event = GetEventDetails($eventId);
+    $participants = $event->GetParticipants();
+    $limit = $event->playerLimit;
+    $total = count($participants);
 
-   // Too many players registered already
-   if ($limit > 0 && $total >= $limit)
-      return false;
+    // Too many players registered already
+    if ($limit > 0 && $total >= $limit)
+        return false;
 
-   // Calculate some limits and counts
-   list($minquota, $maxquota) = GetEventClassQuota($eventId, $classId);
-   $classcounts = GetEventParticipantCounts($eventId);
-   $classcount = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
+    // Calculate some limits and counts
+    list($minquota, $maxquota) = GetEventClassQuota($eventId, $classId);
+    $classcounts = GetEventParticipantCounts($eventId);
+    $classcount = isset($classcounts[$classId]) ? $classcounts[$classId] : 0;
 
-   // Check versus class maxquota
-   if ($classcount >= $maxquota)
-      return false;
+    // Check versus class maxquota
+    if ($classcount >= $maxquota)
+        return false;
 
-   // If there is unused quota in class, allow player in
-   if ($classcount < $minquota)
-      return true;
+    // If there is unused quota in class, allow player in
+    if ($classcount < $minquota)
+        return true;
 
-   // Calculate unused quota in other divisions, if there is global limit set
-   if ($limit > 0) {
-      $unusedQuota = 0;
-      $quotas = GetEventQuotas($eventId);
+    // Calculate unused quota in other divisions, if there is global limit set
+    if ($limit > 0) {
+        $unusedQuota = 0;
+        $quotas = GetEventQuotas($eventId);
 
-      foreach ($quotas as $idx => $quota) {
-         $cquota = $quota['MinQuota'];
-         $ccount = (isset($classcounts[$quota['id']]) ? $classcounts[$quota['id']] : 0);
-         $cunused = $cquota - $ccount;
+        foreach ($quotas as $idx => $quota) {
+            $cquota = $quota['MinQuota'];
+            $ccount = (isset($classcounts[$quota['id']]) ? $classcounts[$quota['id']] : 0);
+            $cunused = $cquota - $ccount;
 
-         if ($cunused > 0)
-            $unusedQuota += $cunused;
-      }
-      $spots_left = $limit - $total - $unusedQuota;
+            if ($cunused > 0)
+                $unusedQuota += $cunused;
+        }
+        $spots_left = $limit - $total - $unusedQuota;
 
-      // Deny if there is no unreserved space left
-      if ($spots_left <= 0)
-         return false;
-   }
+        // Deny if there is no unreserved space left
+        if ($spots_left <= 0)
+            return false;
+    }
 
-   // ok, we have space left
-   return true;
+    // ok, we have space left
+    return true;
 }
-
-
