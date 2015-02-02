@@ -23,58 +23,49 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/hole.php';
 
 
 function GetHoleDetails($holeid)
 {
-   require_once 'core/hole.php';
+    $holeid = (int) $holeid;
 
-   $retValue = null;
-   $holeid = (int) $holeid;
-   $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
-                         :Course.id CourseId, :Round.id RoundId FROM :Hole
-                         LEFT JOIN :Course ON (:Course.id = :Hole.Course)
-                         LEFT JOIN :Round ON (:Round.Course = :Course.id)
-                         WHERE :Hole.id = $holeid
-                         ORDER BY HoleNumber");
-   $result = execute_query($query);
+    $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
+                                :Course.id AS CourseId, :Round.id AS RoundId
+                            FROM :Hole
+                            LEFT JOIN :Course ON (:Course.id = :Hole.Course)
+                            LEFT JOIN :Round ON (:Round.Course = :Course.id)
+                            WHERE :Hole.id = $holeid
+                            ORDER BY HoleNumber");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      $index = 1;
-      $row = mysql_fetch_assoc($result);
-      $retValue =  new Hole($row);
-   }
-   mysql_free_result($result);
+    $retValue = null;
+    if (mysql_num_rows($result) > 0)
+        $retValue = new Hole(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
 function SaveHole($hole)
 {
-   if ($hole->id) {
-      $query = format_query("UPDATE :Hole SET Par = %d, Length = %d, HoleNumber = %d, HoleText = '%s' WHERE id = %d",
-                       (int) $hole->par,
-                       (int) $hole->length,
-                       $hole->holeNumber,
-                       $hole->holeText,
-                       (int) $hole->id);
-   }
-   else {
-      $query = format_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES (%d, %d, %d, %d, '%s')",
-                       (int) $hole->par,
-                       (int) $hole->length,
-                       (int) $hole->course,
-                       $hole->holeNumber,
-                       $hole->holeText);
-   }
-   $result = execute_query($query);
+    $par = (int) $hole->par;
+    $len = (int) $hole->length;
+    $number = (int) $hole->holeNumber;
+    $text = esc_or_null($hole->holeText);
+    $id = (int) $hole->id;
+    $course = (int) $hole->course;
 
-   if (!$result)
-      return Error::Query($query);
+    if ($id)
+        $query = format_query("UPDATE :Hole SET Par = $par, Length = $len, HoleNumber = $number, HoleText = $text WHERE id = $id");
+    else
+        $query = format_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES ($par, $len, $course, $number, $text)");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
-
-
