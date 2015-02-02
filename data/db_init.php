@@ -35,10 +35,10 @@ require_once 'config.php';
  */
 function InitializeDatabaseConnection()
 {
-    $retValue = null;
     global $settings;
     $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
 
+    $retValue = null;
     if (!($con && @mysql_select_db($settings['DB_DB']))) {
         $retValue = new Error();
         $retValue->isMajor = true;
@@ -94,7 +94,7 @@ function esc_or_null($param, $type = 'string')
             case 'gender':
                 $param = strtoupper($param);
                 if ($param == 'M' || $param == 'F')
-                  $retValue = "'" . $param . "'";
+                    $retValue = "'" . $param . "'";
                 break;
 
             case 'bool':
@@ -122,8 +122,8 @@ function format_query($query)
 {
     static $prefix = false;
     if ($prefix === false) {
-       global $settings;
-       $prefix = $settings['DB_PREFIX'];
+        global $settings;
+        $prefix = $settings['DB_PREFIX'];
     }
 
     $args = func_get_args();
@@ -147,11 +147,11 @@ function execute_query($query)
     $dbError = InitializeDatabaseConnection();
     if ($dbError) {
         error_log("error: database connection init failed");
-        return FALSE;
+        return false;
     }
 
     if (empty($query))
-        return FALSE;
+        return false;
 
     $result = mysql_query($query);
     if (!$result) {
@@ -161,7 +161,7 @@ function execute_query($query)
         if (isset($db_error_log) && $db_error_log) {
             error_log("error: execute_query failed");
             error_log("query: $query");
-            error_log("message: ". mysql_error());
+            error_log("message: " . mysql_error());
         }
     }
 
@@ -172,13 +172,12 @@ function execute_query($query)
 /**
  * Simple helper function to pick one of two values
  *
- * FIXME, this is stupid
+ * FIXME: this is stupid function
  *
  * @param mixed $a secondary item
  * @param mixed $b primary item
  * @return If B is defined, return B, else A
  */
-
 function data_GetOne($a, $b)
 {
     if ($b)
