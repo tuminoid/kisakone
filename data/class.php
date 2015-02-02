@@ -23,52 +23,44 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/classification.php';
 
 
 // Gets an array of Classification objects (optionally filtered by the Available bit)
 function GetClasses($onlyAvailable = false)
 {
-   require_once 'core/classification.php';
+    $query = "SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification";
+    if ($onlyAvailable)
+        $query .= " WHERE Available <> 0";
+    $query .= " ORDER BY Name";
+    $query = format_query($query);
+    $result = execute_query($query);
 
-   $retValue = array();
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = new Classification($row);
+    }
+    mysql_free_result($result);
 
-   $query = "SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification";
-   if ($onlyAvailable)
-      $query .= " WHERE Available <> 0";
-   $query .= " ORDER BY Name";
-   $query = format_query($query);
-   $result = execute_query($query);
-
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result))
-         $retValue[] = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-                                                   $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
-   }
-   mysql_free_result($result);
-
-   return $retValue;
+    return $retValue;
 }
 
 
 // Gets a Classification object by id
 function GetClassDetails($classId)
 {
-   require_once 'core/classification.php';
+    $classId = (int) $classId;
 
-   $retValue = null;
-   $classId = (int) $classId;
+    $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
+    $result = execute_query($query);
 
-   $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
-   $result = execute_query($query);
+    $retValue = null;
+    if (mysql_num_rows($result) == 1)
+        $retValue = new Classification(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   if (mysql_num_rows($result) == 1) {
-      $row = mysql_fetch_assoc($result);
-      $retValue = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-                                                   $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
-   }
-   mysql_free_result($result);
-
-   return $retValue;
+    return $retValue;
 }
 
 
@@ -80,132 +72,143 @@ function GetClassDetails($classId)
  */
 function SetClasses($eventid, $classes)
 {
-   $retValue = null;
-   $eventid = (int) $eventid;
+    $eventid = (int) $eventid;
 
-   if (isset($eventid)) {
-      $quotas = GetEventQuotas($eventid);
-      $query = format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid");
-      $result = execute_query($query);
+    if (!isset($eventid))
+        return Error::internalError("Event id argument is not set.");
 
-      foreach ($classes as $class) {
-         $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES (%d, %d);",
-                           (int) $class, (int) $eventid);
-         $result = execute_query($query);
+    $quotas = GetEventQuotas($eventid);
+    execute_query(format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid"));
 
-         if (!$result)
+    foreach ($classes as $class) {
+        $class = (int) $class;
+        $eventid = (int) $eventid;
+
+        $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES ($class, $eventid)");
+        $result = execute_query($query);
+
+        if (!$result)
             return Error::Query($query);
-      }
+    }
 
-      // Fix limits back.. do not bother handling errors as some classes may be removed
-      foreach ($quotas as $quota) {
-         $cid = (int) $quota['id'];
-         $min = (int) $quota['MinQuota'];
-         $max = (int) $quota['MaxQuota'];
+    // Fix limits back.. do not bother handling errors as some classes may be removed
+    foreach ($quotas as $quota) {
+        $cid = (int) $quota['id'];
+        $minquota = (int) $quota['MinQuota'];
+        $maxquota = (int) $quota['MaxQuota'];
 
-         $query = format_query("UPDATE :ClassInEvent SET MinQuota = %d, MaxQuota = %d
-                                 WHERE Event = %d AND Classification = %d",
-                                 $min, $max, $eventid, $cid);
-         execute_query($query);
-      }
-   }
-   else
-      return Error::internalError("Event id argument is not set.");
-
-   return $retValue;
+        $query = format_query("UPDATE :ClassInEvent
+                                SET MinQuota = $minquota, MaxQuota = $maxquota
+                                WHERE Event = $eventid AND Classification = $cid");
+        execute_query($query);
+    }
 }
 
 
 function EditClass($id, $name, $minage, $maxage, $gender, $available)
 {
-   $query = format_query("UPDATE :Classification SET Name = '%s', MinimumAge = %s, MaximumAge = %s, GenderRequirement = %s, Available = %d
-                           WHERE id = %d",
-                    escape_string($name), esc_or_null($minage,'int'), esc_or_null($maxage, 'int'),
-                    esc_or_null($gender, 'gender'), $available ? 1:0, $id);
-   $result = execute_query($query);
+    $id = (int) $id;
+    $name = esc_or_null($name);
+    $minage = esc_or_null($minage, 'int');
+    $maxage = esc_or_null($maxage, 'int');
+    $gender = esc_or_null($gender, 'gender');
+    $available = $available ? 1 : 0;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = "UPDATE :Classification
+                SET Name = $name, MinimumAge = $minage, MaximumAge = $maxage, GenderRequirement = $gender, Available = $available
+                WHERE id = $id";
+    $query = format_query($query);
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function CreateClass($name, $minage, $maxage, $gender, $available)
 {
-   $query = format_query("INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available)
-                  VALUES ('%s', %s, %s, %s, %d);",
-                    escape_string($name), esc_or_null($minage, 'int'), esc_or_null($maxage, 'int'),
-                    esc_or_null($gender, 'gender'), $available ? 1:0);
-   $result = execute_query($query);
+    $name = esc_or_null($name);
+    $minage = esc_or_null($minage, 'int');
+    $maxage = esc_or_null($maxage, 'int');
+    $gender = esc_or_null($gender, 'gender');
+    $available = $available ? 1 : 0;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = "INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available)
+                  VALUES ($name, $minage, $maxage, $gender, $available)";
+    $query = format_query($query);
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 function DeleteClass($id)
 {
-   $query = format_query("DELETE FROM :Classification WHERE id = ". (int) $id);
-   $result = execute_query($query);
+    $id = (int) $id;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("DELETE FROM :Classification WHERE id = $id");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 }
 
 
 // Returns true if the provided class is being used in any event, false otherwise
 function ClassBeingUsed($id)
 {
-   $retValue = true;
-   $id = (int) $id;
-   $query = format_query("SELECT COUNT(*) AS Events FROM :ClassInEvent WHERE Classification = %d"
-                          , $id);
-   $result = execute_query($query);
+    $id = (int) $id;
 
-   if (mysql_num_rows($result) > 0) {
-      $temp = mysql_fetch_assoc($result);
-      $retValue = ($temp['Events']) > 0;
-   }
-   mysql_free_result($result);
+    $query = format_query("SELECT COUNT(*) AS Events FROM :ClassInEvent WHERE Classification = %d", $id);
+    $result = execute_query($query);
 
-   return $retValue;
+    $retValue = true;
+    if (mysql_num_rows($result) > 0) {
+        $temp = mysql_fetch_assoc($result);
+        $retValue = ($temp['Events']) > 0;
+    }
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
 function GetSignupsForClass($event, $class)
 {
-   $classId = (int) $class;
-   $eventId = (int) $event;
+    $classId = (int) $class;
+    $eventId = (int) $event;
 
-   $retValue = array();
-   $query = format_query("SELECT :Player.id PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber,
-                    :Participation.id ParticipationId
-                 FROM :User
-                 INNER JOIN :Player ON User.id = :Player.User
-                 INNER JOIN :Participation ON :Participation.Player = :Player.id
-                 WHERE :Participation.Classification = $classId
-                   AND :Participation.Event = $eventId");
-   $result = execute_query($query);
+    $query = "SELECT :Player.id AS PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber, :Participation.id AS ParticipationId
+                FROM :User
+                INNER JOIN :Player ON User.id = :Player.User
+                INNER JOIN :Participation ON :Participation.Player = :Player.id
+                WHERE :Participation.Classification = $classId AND :Participation.Event = $eventId";
+    $query = format_query($query);
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result))
-         $retValue[] = $row;
-   }
-   mysql_free_result($result);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = $row;
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
 function SetParticipantClass($eventid, $playerid, $newClass)
 {
-   $query = format_query("UPDATE :Participation SET Classification = %d WHERE Player = %d AND Event = %d",
-                 $newClass, $playerid, $eventid);
-   $result = execute_query($query);
+    $eventid = (int) $eventid;
+    $playerid = (int) $playerid;
+    $newClass = (int) $newClass;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("UPDATE :Participation SET Classification = $newClass WHERE Player = $playerid AND Event = $eventid");
+    $result = execute_query($query);
 
-   return mysql_affected_rows() == 1;
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_affected_rows() == 1;
 }
-
-
