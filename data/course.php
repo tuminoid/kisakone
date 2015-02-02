@@ -23,126 +23,115 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/hole.php';
 
 
-function GetCourseHoles($courseId)
+function GetCourseHoles($courseid)
 {
-   require_once 'core/hole.php';
+    $courseid = (int) $courseid;
 
-   $retValue = array();
-   $query= format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
-                         WHERE Course = %d
-                         ORDER BY HoleNumber", $courseId);
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
+                            WHERE Course = $courseid ORDER BY HoleNumber");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      $index = 1;
-      while ($row = mysql_fetch_assoc($result)) {
-         $hole =  new Hole($row);
-         $retValue[] = $hole;
-      }
-   }
-   mysql_free_result($result);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = new Hole($row);
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
-function CourseUsed($courseId)
+function CourseUsed($courseid)
 {
-   $query = format_query("SELECT id FROM `:Round` WHERE `:Round`.Course = %d LIMIT 1", $courseId);
-   $result = execute_query($query);
+    $courseid = (int) $courseid;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT id FROM :Round WHERE :Round.Course = $courseid LIMIT 1");
+    $result = execute_query($query);
 
-   return mysql_num_rows($result) == 1;
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_num_rows($result) > 1;
 }
 
 
 function GetCourses()
 {
-   $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   $out = array();
-   while (($row = mysql_fetch_assoc($result)) !== false)
-      $out[] = $row;
-   mysql_free_result($result);
+    $retVaue = array();
+    while (($row = mysql_fetch_assoc($result)) !== false)
+        $retValue[] = $row;
+    mysql_free_result($result);
 
-   return $out;
+    return $retValue;
 }
 
 
 function GetCourseDetails($id)
 {
-   $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = %d", $id);
-   $result = execute_query($query);
+    $id = (int) $id;
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = $id");
+    $result = execute_query($query);
 
-   $out = null;
-   while (($row = mysql_fetch_assoc($result)) !== false)
-      $out = $row;
-   mysql_free_result($result);
+    if (!$result)
+        return Error::Query($query);
 
-   return $out;
+    $retValue = null;
+    if (mysql_num_rows($result) > 0)
+        $retValue = mysql_fetch_assoc($result);
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
 function SaveCourse($course)
 {
-   if ($course['id']) {
-      $query = format_query("UPDATE :Course
-                          SET Name = '%s',
-                          Description = '%s',
-                          Link = '%s',
-                          Map = '%s'
-                          WHERE id = %d",
-                          escape_string($course['Name']),
-                          escape_string($course['Description']),
-                          escape_string($course['Link']),
-                          escape_string($course['Map']),
-                          $course['id']);
-      $result = execute_query($query);
+    $name = esc_or_null($course['Name']);
+    $description = esc_or_null($course['Description']);
+    $link = esc_or_null($course['Link']);
+    $map = esc_or_null($course['Map']);
 
-      if (!$result)
-         return Error::Query($query);
-   }
-   else {
-      $eventid = @$course['Event'];
-      if (!$eventid)
-         $eventid = null;
+    if ($course['id']) {
+        $id = (int) $course['id'];
 
-      $query = format_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
-                          VALUES ('%s', '%s', '%s', '%s', %s)",
-                          escape_string($course['Name']),
-                          escape_string($course['Description']),
-                          escape_string($course['Link']),
-                          escape_string($course['Map']),
-                          esc_or_null($eventid, 'int'));
-      $result = execute_query($query);
+        $query = format_query("UPDATE :Course
+                                SET Name = $name, Description = $description, Link = $link, Map = $map
+                                WHERE id = $id");
+        $result = execute_query($query);
 
-      if (!$result)
-         return Error::Query($query);
+        if (!$result)
+            return Error::Query($query);
+    }
+    else {
+        $eventid = esc_or_null(@$course['Event'], 'int');
 
-      return mysql_insert_id();
-   }
+        $query = format_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
+                                VALUES ($name, $description, $link, $map, $eventid)");
+        $result = execute_query($query);
+
+        if (!$result)
+            return Error::Query($query);
+
+        return mysql_insert_id();
+    }
 }
-
 
 
 function DeleteCourse($id)
 {
-   $query = format_query("DELETE FROM :Hole WHERE Course = %d", $id);
-   execute_query($query);
+    $id = (int) $id;
 
-   $query = format_query("DELETE FROM :Course WHERE id = %d", $id);
-   execute_query($query);
+    execute_query(format_query("DELETE FROM :Hole WHERE Course = $id"));
+    execute_query(format_query("DELETE FROM :Course WHERE id = $id"));
 }
-
-
