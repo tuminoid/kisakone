@@ -23,58 +23,59 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'core/files.php';
+
 
 
 function CreateFileRecord($filename, $displayname, $type)
 {
-   $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES
-                  ('%s', '%s', '%s')",
-                  escape_string($filename),
-                  escape_string($displayname),
-                  escape_string($type));
-   $result = execute_query($query);
+    $filename = esc_or_null($filename);
+    $displayname = esc_or_null($displayname);
+    $type = esc_or_null($type);
 
-   if (!$result)
-      return Error::Query($query);
+    $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES ($filename, $displayname, $type)");
+    $result = execute_query($query);
 
-   return mysql_insert_id();
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_insert_id();
 }
 
 
 function GetFile($id)
 {
-   require_once 'core/files.php';
+    $id = (int) $id;
 
-   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = %d", $id);
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = $id");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   $row = mysql_fetch_Assoc($result);
-   mysql_free_result($result);
+    $retValue = null;
+    if (mysql_num_rows($result) > 0)
+        $retValue = new File(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   if ($row)
-     return new File($row);
+    return $retValue;
 }
 
 
 function GetFilesOfType($type)
 {
-   require_once 'core/files.php';
+    $type = esc_or_null($type);
 
-   $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = '%s' ORDER BY DisplayName", escape_string($type));
-   $result = execute_query($query);
+    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = $type ORDER BY DisplayName");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   $retValue = array();
-   while (($row = mysql_fetch_Assoc($result)) !== false)
-     $retValue[] = new File($row);
-   mysql_free_result($result);
+    $retValue = array();
+    while (($row = mysql_fetch_Assoc($result)) !== false)
+        $retValue[] = new File($row);
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
-
-
