@@ -32,7 +32,8 @@ function CreateNewsItem($eventid, $title, $text)
     $title = esc_or_null($title);
     $text = esc_or_null($text);
 
-    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type) VALUES($eventid, $title, NOW(), $text, 'news')");
+    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type)
+                            VALUES($eventid, $title, NOW(), $text, 'news')");
     $result = execute_query($query);
 
     if (!$result)
@@ -62,7 +63,8 @@ function GetEventNews($eventid, $from, $count)
 
     $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
                             FROM :TextContent
-                            WHERE Event = $eventid AND Type = 'news' ORDER BY `date` DESC
+                            WHERE Event = $eventid AND Type = 'news'
+                            ORDER BY `date` DESC
                             LIMIT $from, $count");
     $result = execute_query($query);
 
