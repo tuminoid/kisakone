@@ -58,10 +58,10 @@ function data_GetEvents($conditions, $sort_mode = null)
         $playerid = $player ? $player->id : - 1;
 
         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
-                                    Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-                                    UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
-                                    UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-                                    :Level.Name LevelName, :EventManagement.Role AS Management, :Participation.Approved,
+                                    Level, :Event.Name, UNIX_TIMESTAMP(Date) AS Date, Duration,
+                                    UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
+                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked,
+                                    :Level.Name AS LevelName, :EventManagement.Role AS Management, :Participation.Approved,
                                     :Participation.EventFeePaid, :Participation.Standing
                                 FROM :Event
                                 LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
@@ -73,10 +73,9 @@ function data_GetEvents($conditions, $sort_mode = null)
     }
     else {
         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
-                                    Level, :Event.Name, UNIX_TIMESTAMP(Date) Date, Duration,
-                                    UNIX_TIMESTAMP(ActivationDate) ActivationDate, UNIX_TIMESTAMP(SignupStart) SignupStart,
-                                    UNIX_TIMESTAMP(SignupEnd) SignupEnd, ResultsLocked,
-                                    :Level.Name LevelName
+                                    Level, :Event.Name, UNIX_TIMESTAMP(Date) AS Date, Duration,
+                                    UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
+                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, :Level.Name AS LevelName
                                 FROM :Event
                                 INNER Join :Venue ON :Venue.id = :Event.Venue
                                 LEFT JOIN :Level ON :Event.Level = :Level.id
@@ -137,7 +136,7 @@ function GetEventDetails($eventid)
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,
                                     ResultsLocked, :Level.id AS LevelId, :Level.Name AS Level,
-                                    :Tournament.id TournamentId, :Tournament.Name Tournament
+                                    :Tournament.id AS TournamentId, :Tournament.Name AS Tournament
                                 FROM :Event
                                 LEFT JOIN :Level ON :Level.id = :Event.Level
                                 LEFT JOIN :Tournament ON :Tournament.id = :Event.Tournament
@@ -243,7 +242,9 @@ function GetEventRounds($event)
 
     $query = format_query("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
                                 `Interval`, ValidResults, GroupsFinished
-                            FROM :Round WHERE Event = $event ORDER BY StartTime");
+                            FROM :Round
+                            WHERE Event = $event
+                            ORDER BY StartTime");
     $result = execute_query($query);
 
     $retValue = array();
@@ -455,6 +456,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
 
     if (is_a($sortOrder, 'Error'))
         return $sortOrder;
+
     if ($sortOrder == 1)
         $sortOrder = " LastName, FirstName";
     $where = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate'));
@@ -488,7 +490,6 @@ function GetEventParticipants($eventId, $sortedBy, $search)
 
             $pdata['user'] = $user;
             $pdata['player'] = $player;
-
             $pdata['eventFeePaid'] = $row['EventFeePaid'];
             $pdata['participationId'] = $row['ParticipationID'];
             $pdata['signupTimestamp'] = $row['SignupTimestamp'];
@@ -512,8 +513,8 @@ function GetParticipantsForRound($previousRoundId)
                     Role, :Player.email AS Email, Sex, YEAR(birthdate) AS YearOfBirth,
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Classification,
                     :Participation.id AS ParticipationID, :RoundResult.Result, :Participation.DidNotFinish
-                FROM `:Round`
-                INNER JOIN :RoundResult ON :RoundResult.`Round` = `:Round`.id
+                FROM :Round
+                INNER JOIN :RoundResult ON :RoundResult.Round = :Round.id
                 INNER JOIN :Participation ON (:Participation.Player = :RoundResult.Player AND :Participation.Event = :Round.Event)
                 INNER JOIN :Player ON :RoundResult.Player = :Player.player_id
                 INNER JOIN :User ON :Player.player_id = :User.Player
@@ -552,8 +553,8 @@ function GetEventHoles($eventId)
 
     $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round
                             FROM :Hole
-                            INNER JOIN :Course ON (:Course.id = :Hole.Course)
-                            INNER JOIN :Round ON (:Round.Course = :Course.id)
+                            INNER JOIN :Course ON :Course.id = :Hole.Course
+                            INNER JOIN :Round ON :Round.Course = :Course.id
                             INNER JOIN :Event ON :Round.Event = :Event.id
                             WHERE :Event.id = $eventId
                             ORDER BY :Round.StartTime, HoleNumber");
@@ -578,7 +579,7 @@ function GetEventResults($eventId)
                     :Player.pdga AS PDGANumber, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
-                    :Classification.Name AS ClassName, TournamentPoints, :Round.id RoundId,
+                    :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
                     :Participation.Standing
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
@@ -593,7 +594,6 @@ function GetEventResults($eventId)
                 LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber";
-
     $query = format_query($query);
     $result = execute_query($query);
 
@@ -603,7 +603,6 @@ function GetEventResults($eventId)
     $retValue = array();
     $penalties = array();
     if (mysql_num_rows($result) > 0) {
-        $index = 1;
         $lastrow = null;
 
         while ($row = mysql_fetch_assoc($result)) {
@@ -668,7 +667,6 @@ function GetEventResultsWithoutHoles($eventId)
     $retValue = array();
     $penalties = array();
     if (mysql_num_rows($result) > 0) {
-        $index = 1;
         $lastrow = null;
 
         while ($row = mysql_fetch_assoc($result)) {
@@ -749,8 +747,8 @@ function GetAllParticipations($eventid)
 
     $query = format_query("SELECT Classification, :Classification.Name,
                                 :Participation.Player, :Participation.id,
-                                :Participation.Standing, :Participation.DidNotFinish, :Participation.TournamentPoints,
-                                :Participation.OverallResult
+                                :Participation.Standing, :Participation.DidNotFinish,
+                                :Participation.TournamentPoints, :Participation.OverallResult
                             FROM :Participation
                             INNER JOIN :Classification ON :Classification.id = :Participation.Classification
                             WHERE Event = $eventid AND EventFeePaid IS NOT NULL");
@@ -787,7 +785,8 @@ function UserParticipating($eventid, $userid)
     $eventid = (int) $eventid;
     $userid = (int) $userid;
 
-    $query = format_query("SELECT :Participation.id FROM :Participation
+    $query = format_query("SELECT :Participation.id
+                            FROM :Participation
                             INNER JOIN :Player ON :Participation.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :Participation.Event = $eventid");
