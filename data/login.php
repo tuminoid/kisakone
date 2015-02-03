@@ -37,8 +37,6 @@ require_once 'core/login.php';
  */
 function CheckUserAuthentication($username, $password)
 {
-    $retValue = null;
-
     if (empty($username) || empty($password))
         return null;
 
@@ -51,13 +49,14 @@ function CheckUserAuthentication($username, $password)
     $usr_hash = GenerateHash($password, $logindata['Hash'], $logindata['Salt']);
 
     if (!strcmp($db_hash, $usr_hash)) {
-        $query = format_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                                    :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, Player
+        $query = format_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname, Player,
+                                    :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
                                 FROM :User
                                 LEFT JOIN :Player ON :User.Player = :Player.player_id
                                 WHERE Username = $usr");
         $result = execute_query($query);
 
+        $retValue = null;
         if (mysql_num_rows($result) == 1) {
             $row = mysql_fetch_assoc($result);
             $retValue = array($row['id'], $row['Username'], $row['Role'],
@@ -90,7 +89,7 @@ function GetLoginData($username)
         return null;
 
     $usr = esc_or_null($username);
-    $query = format_query("SELECT Hash,Salt,Password,PasswordChanged,LastLogin FROM :User WHERE Username = %s", $usr);
+    $query = format_query("SELECT Hash, Salt, Password, PasswordChanged, LastLogin FROM :User WHERE Username = $usr");
     $result = execute_query($query);
 
     $retValue = null;
@@ -114,17 +113,22 @@ function GetLoginData($username)
 function ChangeUserPassword($userid, $password)
 {
     $userid = (int) $userid;
+
     $salt = GenerateSalt();
     $hash = "crypt";
     $password = GenerateHash($password, $hash, $salt);
 
-    $query = format_query("UPDATE :User SET Password = '$password', Hash = '$hash', Salt = '$salt', PasswordChanged = NOW() WHERE id = $userid");
+    $salt = esc_or_null($salt);
+    $hash = esc_or_null($hash);
+    $password = esc_or_null($password);
+
+    $query = format_query("UPDATE :User
+                            SET Password = $password, Hash = $hash, Salt = $salt, PasswordChanged = NOW()
+                            WHERE id = $userid");
     $result = execute_query($query);
 
     if (!$result)
         return Error::Query($query);
-
-    return null;
 }
 
 
@@ -140,8 +144,6 @@ function GetUserSecurityToken($userid)
     $token = GetAutoLoginToken($userid);
     if ($token)
         return substr($token, 0, 10);
-
-    return $retValue;
 }
 
 
@@ -157,12 +159,12 @@ function GetAutoLoginToken($userid)
     if (empty($userid))
         return null;
 
-    $retValue = null;
     $id = (int) $userid;
 
     $query = format_query("SELECT id, Username, UserEmail, Password FROM :User WHERE id = $id");
     $result = execute_query($query);
 
+    $retValue = null;
     if (mysql_num_rows($result) == 1) {
         $row = mysql_fetch_assoc($result);
         $text = '';
