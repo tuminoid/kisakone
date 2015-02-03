@@ -149,35 +149,6 @@ function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
 }
 
 
-// Gets a User object by the PDGA number of the associated Player
-// Returns null if no user was found
-function GetUsersByPdga($pdga)
-{
-    $pdga = (int) $pdga;
-
-    $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                                :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
-                            FROM :User
-                            INNER JOIN :Player ON :Player.player_id = :User.Player
-                            WHERE :Player.pdga = $pdga");
-    $result = execute_query($query);
-
-    $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $temp = new User($row['id'], $row['Username'], $row['Role'],
-                data_GetOne($row['UserFirstname'], $row['pFN']),
-                data_GetOne($row['UserLastname'], $row['pLN']),
-                data_GetOne($row['UserEmail'], $row['pEM']));
-            $retValue[] = $temp;
-        }
-    }
-    mysql_free_result($result);
-
-    return $retValue;
-}
-
-
 // Gets a User object by the id number
 // Returns null if no user was found
 function GetUserDetails($userid)
