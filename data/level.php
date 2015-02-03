@@ -29,17 +29,14 @@ require_once 'core/level.php';
 // Gets an array of Level objects (optionally filtered by the Available bit)
 function GetLevels($availableOnly = false)
 {
-    $query = "SELECT id, Name, ScoreCalculationMethod, Available FROM :Level";
-
-    if ($availableOnly)
-        $query .= " WHERE Available <> 0";
-    $query = format_query($query);
+    $where = $availableOnly ? "WHERE Available <> 0" : "";
+    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level $where");
     $result = execute_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Level($row);
+            $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
     }
     mysql_free_result($result);
 
@@ -56,8 +53,10 @@ function GetLevelDetails($levelId)
     $result = execute_query($query);
 
     $retValue = array();
-    if (mysql_num_rows($result) == 1)
-        $retValue = new Level(mysql_fetch_assoc($result));
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $retValue = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
+    }
     mysql_free_result($result);
 
     return $retValue;
