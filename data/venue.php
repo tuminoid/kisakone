@@ -29,6 +29,7 @@ require_once 'data/db_init.php';
 function GetVenueNames($searchQuery = '')
 {
     $search = data_ProduceSearchConditions($searchQuery, array('Name'));
+
     $query = format_query("SELECT DISTINCT Name FROM :Venue WHERE $search ORDER BY Name");
     $result = execute_query($query);
 
