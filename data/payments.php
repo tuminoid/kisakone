@@ -28,8 +28,10 @@ require_once 'core/player.php';
 
 function GetFeePayments($relevantOnly = true, $search = '', $sortedBy = '', $forcePlayer = null)
 {
-    if ($forcePlayer)
-        $search = format_query(":Player.player_id = %d", (int) $forcePlayer);
+    if ($forcePlayer) {
+        $forcePlayer = (int) $forcePlayer;
+        $search = format_query(":Player.player_id = $forcePlayer");
+    }
     else
         $search = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username'));
 
@@ -169,7 +171,8 @@ function EventRequiresFees($eventid)
     $query = format_query("SELECT FeesRequired FROM :Event WHERE id = $eventid");
     $result = execute_query($query);
 
-    $row = mysql_fetch_assoc($result);
+    if (mysql_num_rows($result) > 0)
+        $row = mysql_fetch_assoc($result);
     mysql_free_result($result);
 
     return $row['FeesRequired'];
