@@ -76,12 +76,11 @@ function SetRounds($eventid, $rounds, $deleteRounds = array())
     foreach ($rounds as $round) {
         $date = $round['date'];
         $time = $round['time'];
-        $datestring = $round['datestring'];
         $roundid = $round['roundid'];
 
         $r_event = (int) $eventid;
         $r_course = esc_or_null(null, 'int');
-        $r_starttype = esc_or_null("simultaneous");
+        $r_starttype = esc_or_null('simultaneous');
         $r_starttime = (int) $date;
         $r_interval = 10;
         $r_validresults = 1;
@@ -493,8 +492,8 @@ function GetRoundResult($roundid, $playerid)
         $id = Error::internalError("Double score detected, please reload...");
     }
     elseif (!mysql_num_rows($result)) {
-        $query = format_query("INSERT INTO :RoundResult (`Round`, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
-                     VALUES (%d, %d, 0, 0, 0, 0, NOW())", $roundid, $playerid);
+        $query = format_query("INSERT INTO :RoundResult (Round, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)
+                     VALUES ($roundid, $playerid, 0, 0, 0, 0, NOW())");
         $result = execute_query($query);
 
         if ($result)
