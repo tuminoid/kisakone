@@ -45,8 +45,8 @@ function GetRoundDetails($roundid)
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
         $row = mysql_fetch_assoc($result);
-        // FIXME: round should accept array
-        $retValue = new Round($row['id'], $row['Event'], $row['StartType'], $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
+        $retValue = new Round($row['id'], $row['Event'], $row['StartType'],
+            $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
     }
     mysql_free_result($result);
 
@@ -81,7 +81,7 @@ function SetRounds($eventid, $rounds, $deleteRounds = array())
 
         $r_event = (int) $eventid;
         $r_course = esc_or_null(null, 'int');
-        $r_starttype = "simultaneous";
+        $r_starttype = esc_or_null("simultaneous");
         $r_starttime = (int) $date;
         $r_interval = 10;
         $r_validresults = 1;
