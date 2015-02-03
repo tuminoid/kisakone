@@ -65,10 +65,8 @@ function GetTournaments($year, $onlyAvailable = false)
     if ($year && ($year < 2000 || $year > 2100))
         return Error::InternalError();
 
-    if ($year)
-        $$year = " AND Year = ". (int) $year;
-    if ($onlyAvailable)
-        $available = " AND Available <> 0";
+    $year = $year ? " AND Year = ". (int) $year : "";
+    $available = $onlyAvailable ? " AND Available <> 0" : "";
 
     $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available
                             FROM :Tournament
