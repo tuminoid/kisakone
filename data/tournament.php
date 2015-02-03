@@ -215,11 +215,11 @@ function GetTournamentData($tid)
         return Error::Query($results);
 
     $lastrow = null;
-    $out = array();
+    $retValue = array();
     while (($row = mysql_fetch_assoc($result)) !== false) {
         if (!$lastrow || $row['player_id'] != $lastrow['player_id']) {
             if ($lastrow)
-                $out[$lastrow['player_id']] = $lastrow;
+                $retValue[$lastrow['player_id']] = $lastrow;
             $lastrow = $row;
             $lastrow['Events'] = array();
         }
@@ -227,11 +227,11 @@ function GetTournamentData($tid)
     }
 
     if ($lastrow)
-        $out[$lastrow['player_id']] = $lastrow;
+        $retValue[$lastrow['player_id']] = $lastrow;
 
     mysql_free_result($result);
 
-    return $out;
+    return $retValue;
 }
 
 
