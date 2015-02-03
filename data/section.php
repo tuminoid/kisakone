@@ -31,10 +31,9 @@ function GetSections($round, $order = 'time')
 {
     $roundid = (int) $round;
 
+    $order = "Classification, Name";
     if ($order == 'time')
         $order = "Priority, StartTime, Name";
-    else
-        $order = "Classification, Name";
 
     $query = format_query("SELECT :Section.id, Name, UNIX_TIMESTAMP(StartTime) AS StartTime,
                                 Priority, Classification, Round, Present
@@ -186,6 +185,7 @@ function AdjustSection($sectionid, $priority, $sectiontime, $present)
 }
 
 
+// FIXME: What the hell this is doing for real?
 function RemovePlayersDefinedforAnySection($a)
 {
     list($round, $section) = $GLOBALS['RemovePlayersDefinedforAnySectionRound'];
