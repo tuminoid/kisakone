@@ -58,17 +58,16 @@ function GetEventQueue($eventId, $sortedBy, $search)
     $where = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate'));
 
     $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
-                    :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM, :Player.player_id AS PlayerId,
-                    pdga PDGANumber, Sex, YEAR(birthdate) YearOfBirth, :Classification.Name AS ClassName,
+                    :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
+                    pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth, :Classification.Name AS ClassName,
                     :EventQueue.id AS QueueId,
-                    UNIX_TIMESTAMP(SignupTimestamp) SignupTimestamp, :Classification.id AS ClassId
+                    UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp, :Classification.id AS ClassId
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
-                INNER JOIN :EventQueue ON :EventQueue.Player = :Player.player_id AND :EventQueue.Event = $eventId
+                INNER JOIN :EventQueue ON (:EventQueue.Player = :Player.player_id AND :EventQueue.Event = $eventId)
                 INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
                 WHERE $where
                 ORDER BY SignupTimestamp ASC, :EventQueue.id ASC";
-
     $query = format_query($query);
     $result = execute_query($query);
 
@@ -105,7 +104,8 @@ function GetQueueForClass($event, $class)
     $eventId = (int) $event;
 
     $retValue = array();
-    $query = format_query("SELECT :Player.id AS PlayerId, :User.FirstName, :User.LastName, :Player.PDGANumber, :EventQueue.id AS ParticipationId
+    $query = format_query("SELECT :Player.id AS PlayerId, :User.FirstName, :User.LastName,
+                                :Player.PDGANumber, :EventQueue.id AS ParticipationId
                             FROM :User
                             INNER JOIN :Player ON User.id = :Player.User
                             INNER JOIN :Participation ON :EventQueue.Player = :Player.id
@@ -194,10 +194,11 @@ function UserQueueing($eventid, $userid)
     $eventid = (int) $eventid;
     $userid = (int) $userid;
 
-    $query = format_query("SELECT :EventQueue.id FROM :EventQueue
-                     INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
-                     INNER JOIN :User ON :User.Player = :Player.player_id
-                     WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
+    $query = format_query("SELECT :EventQueue.id
+                            FROM :EventQueue
+                            INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
+                            INNER JOIN :User ON :User.Player = :Player.player_id
+                            WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
     $result = execute_query($query);
 
     $retValue = (mysql_num_rows($result) > 0);
