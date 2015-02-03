@@ -127,6 +127,11 @@ function format_query($query)
     }
 
     $args = func_get_args();
+
+    if (count($args) > 1) {
+        error_log("format_query has multiple args=".count($args));
+        error_log("backtrace=".print_r(debug_backtrace(), true));
+    }
     $args[0] = $query;
     for ($i = 0; $i < count($args); $i++)
         $args[$i] = str_replace(':', $prefix, $args[$i]);
