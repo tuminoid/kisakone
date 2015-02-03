@@ -28,56 +28,51 @@ require_once 'data/db_init.php';
 // Gets a Player object by id or null if the player was not found
 function GetPlayerDetails($playerid)
 {
-   if (empty($playerid))
-      return null;
+    if (empty($playerid))
+        return null;
 
-   $retValue = null;
-   $id = (int) $playerid;
+    $id = (int) $playerid;
 
-   $query = format_query("SELECT player_id id, pdga PDGANumber, sex Sex, YEAR(birthdate) YearOfBirth
-        FROM :Player
-        WHERE player_id = $id");
-   $result = execute_query($query);
+    $query = format_query("SELECT player_id AS id, pdga AS PDGANumber, sex AS Sex, YEAR(birthdate) AS YearOfBirth
+                            FROM :Player WHERE player_id = $id");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) == 1) {
-      $row = mysql_fetch_assoc($result);
-      $retValue = new Player($row['id'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth']);
-   }
-   mysql_free_result($result);
+    $retValue = null;
+    if (mysql_num_rows($result) == 1)
+        $retValue = new Player(mysql_fetch_assoc($result));
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
 // Gets a User object associated with Playerid
 function GetPlayerUser($playerid = null)
 {
-   if ($playerid === null)
-      return null;
+    if ($playerid === null)
+        return null;
 
-   $playerid = (int) $playerid;
-   $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                            :Player.firstname pFN, :Player.lastname pLN, :Player.email pEM
-                         FROM :User
-                         INNER JOIN :Player ON :Player.player_id = :User.Player WHERE :Player.player_id = '$playerid'");
-   $result = execute_query($query);
+    $playerid = (int) $playerid;
 
-   if (mysql_num_rows($result) === 1) {
-      while ($row = mysql_fetch_assoc($result)) {
-         $temp = new User($row['id'],
-                        $row['Username'],
-                        $row['Role'],
-                        data_GetOne($row['UserFirstname'], $row['pFN']),
-                        data_GetOne($row['UserLastname'], $row['pLN']),
-                        data_GetOne($row['UserEmail'], $row['pEM']),
-                        $playerid);
+    $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+                                :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
+                            FROM :User
+                            INNER JOIN :Player ON :Player.player_id = :User.Player
+                            WHERE :Player.player_id = $playerid");
+    $result = execute_query($query);
 
-         return $temp;
-      }
-   }
-   mysql_free_result($result);
+    $retValue = null;
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $retValue = new User($row['id'], $row['Username'], $row['Role'],
+            data_GetOne($row['UserFirstname'], $row['pFN']),
+            data_GetOne($row['UserLastname'], $row['pLN']),
+            data_GetOne($row['UserEmail'], $row['pEM']),
+            $playerid);
+    }
+    mysql_free_result($result);
 
-   return null;
+    return $retValue;
 }
 
 
@@ -88,22 +83,24 @@ function GetPlayerUser($playerid = null)
  */
 function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly = true)
 {
-   $retValue = $signup_directly;
+    $playerid = (int) $playerid;
+    $eventid = (int) $eventid;
+    $classid = (int) $classid;
 
-   $table = ($signup_directly === true) ? "Participation" : "EventQueue";
+    $retValue = $signup_directly;
+    $table = ($signup_directly === true) ? "Participation" : "EventQueue";
 
-   // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
-   // and double checking that player will not be in competition table twice
-   CancelSignup($eventid, $playerid, false);
+    // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
+    // and double checking that player will not be in competition table twice
+    CancelSignup($eventid, $playerid, false);
 
-   $query = format_query("INSERT INTO :$table (Player, Event, Classification) VALUES (%d, %d, %d);",
-                         (int) $playerid, (int) $eventid, (int) $classid);
-   $result = execute_query($query);
+    $query = format_query("INSERT INTO :$table (Player, Event, Classification) VALUES ($playerid, $eventid, $classid)");
+    $result = execute_query($query);
 
-   if (!$result)
-      return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-   return $retValue;
+    return $retValue;
 }
 
 
@@ -112,40 +109,21 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
  *
  * @param class Player $player - single system users player data
  */
-
 function SetPlayerDetails($player)
 {
-    $retValue = null;
-    if ( is_a( $player, "Player")) {
-        $dbError = InitializeDatabaseConnection();
-        if ($dbError) {
-           return $dbError;
-        }
+    if (!is_a($player, "Player"))
+        return Error::internalError("Wrong class as argument");
 
-        $query = format_query( "INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email) VALUES (
-                            %s, '%s', %s, %s, '%s', %s
-                            );",
-                          esc_or_null($player->pdga),
-                          $player->gender == 'M' ? 'male' : 'female',
-                          esc_or_null(data_fixNameCase($player->lastname)),
-                          esc_or_null(data_fixNameCase($player->firstname)),
-                          (int) $player->birthyear . '-1-1',
-                          esc_or_null($player->email));
-        $result = execute_query($query);
+    $query = format_query("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email) VALUES (
+                        %s, '%s', %s, %s, '%s', %s
+                        );", esc_or_null($player->pdga), $player->gender == 'M' ? 'male' : 'female', esc_or_null(data_fixNameCase($player->lastname)), esc_or_null(data_fixNameCase($player->firstname)), (int) $player->birthyear . '-1-1', esc_or_null($player->email));
+    $result = execute_query($query);
 
-        if (!$result)
-            return Error::Query($query);
+    if (!$result)
+        return Error::Query($query);
 
-        if ($result) {
-            $p_id = mysql_insert_id();
-            $player->SetId($p_id);
-            $retValue = $player;
-        }
-    }
-    else
-      return Error::internalError("Wrong class as argument");
+    $p_id = mysql_insert_id();
+    $player->SetId($p_id);
 
-   return $retValue;
+    return $player;
 }
-
-
