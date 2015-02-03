@@ -94,11 +94,11 @@ function InsertGroup($group)
 
 function InsertGroupMember($data)
 {
-    $playerid = $data['Player'];
-    $start = $data['StartingTime'];
+    $playerid = (int) $data['Player'];
+    $start = (int) $data['StartingTime'];
     $hole = esc_or_null($data['StartingHole'], 'int');
-    $groupnumber = $data['GroupNumber'];
-    $section = $data['Section'];
+    $groupnumber = (int) $data['GroupNumber'];
+    $section = (int) $data['Section'];
 
     $query = format_query("INSERT INTO :StartingOrder (Player, StartingTime, StartingHole, GroupNumber, Section)
                     VALUES ($playerid, FROM_UNIXTIME($start), $hole, $groupnumber, $section)");
@@ -110,10 +110,12 @@ function AnyGroupsDefined($roundid)
 {
     $roundid = (int) $roundid;
 
-    $query = format_query("SELECT 1 FROM :StartingOrder
+    $query = format_query("SELECT 1
+                            FROM :StartingOrder
                             INNER JOIN :Section ON :Section.id = :StartingOrder.Section
                             INNER JOIN :Round ON :Round.id = :Section.Round
-                            WHERE :Round.id = $roundid LIMIT 1");
+                            WHERE :Round.id = $roundid
+                            LIMIT 1");
     $result = execute_query($query);
 
     if (!$result)
