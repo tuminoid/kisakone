@@ -241,7 +241,7 @@ function GetEventRounds($event)
 {
     $event = (int) $event;
 
-    $query = format_query("SELECT id, Event, Course, StartType,UNIX_TIMESTAMP(StartTime) AS StartTime,
+    $query = format_query("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
                                 `Interval`, ValidResults, GroupsFinished
                             FROM :Round WHERE Event = $event ORDER BY StartTime");
     $result = execute_query($query);
@@ -250,8 +250,9 @@ function GetEventRounds($event)
     if (mysql_num_rows($result) > 0) {
         $index = 1;
         while ($row = mysql_fetch_assoc($result)) {
-            $row['Holes'] = 0;
-            $newRound = new Round($row);
+            $newRound =  new Round($row['id'], $row['Event'], $row['StartType'],
+                $row['StartTime'], $row['Interval'], $row['ValidResults'],
+                0, $row['Course'], $row['GroupsFinished']);
             $newRound->roundnumber = $index++;
             $retValue[] = $newRound;
         }
