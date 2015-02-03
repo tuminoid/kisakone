@@ -33,7 +33,7 @@ function SaveAd($ad)
     $longdata = esc_or_null($ad->longData);
     $imagereference = esc_or_null($ad->imageReference);
     $type = esc_or_null($ad->type);
-    $id = $ad->id;
+    $id = (int) $ad->id;
 
     $query = format_query("UPDATE :AdBanner
                             SET URL = $url, ImageURL = $imageurl, LongData = $longdata, ImageReference = $imagereference, Type = $type
@@ -49,7 +49,9 @@ function GetAllAds($eventid)
 {
     $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
 
-    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId FROM :AdBanner WHERE Event $eventCond");
+    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
+                            FROM :AdBanner
+                            WHERE Event $eventCond");
     $result = execute_query($query);
 
     $retValue = array();
@@ -69,7 +71,8 @@ function GetAd($eventid, $contentid)
     $contentid = esc_or_null($contentid);
 
     $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
-                            FROM :AdBanner WHERE Event $eventCond AND ContentId = $contentid");
+                            FROM :AdBanner
+                            WHERE Event $eventCond AND ContentId = $contentid");
     $result = execute_query($query);
 
     if (!$result)
@@ -91,7 +94,7 @@ function InitializeAd($eventid, $contentid)
     $type = $eventid ? AD_EVENT_DEFAULT : AD_DEFAULT;
 
     $query = format_query("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
-                    VALUES ($eventid, NULL, NULL, NULL, NULL, $type, $contentid)");
+                            VALUES ($eventid, NULL, NULL, NULL, NULL, $type, $contentid)");
     $result = execute_query($query);
 
     if (!$result)
