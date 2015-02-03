@@ -76,7 +76,7 @@ function GetUserIdByEmail($email)
 // Returns an array of User objects
 function GetUsers($searchQuery = '', $sortOrder = '')
 {
-    $sort = " Username";
+    $sort = "Username";
     if ($sortOrder)
         $sort = data_CreateSortOrder($sortOrder,
             array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username'));
@@ -258,9 +258,9 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
 
     if ($player) {
         $playerid = (int) $player->id;
-        $gender = strtoupper($gender) == 'M' ? "'male'" : "'female'";
+        $gender = esc_or_null(strtoupper($gender) == 'M' ? "'male'" : "'female'");
         $pdga = esc_or_null($pdga, 'int');
-        $dobyear = (int) $dobyear . '-1-1';
+        $dobyear = esc_or_null((int) $dobyear . '-1-1');
 
         $query = format_query("UPDATE :Player
                                 SET sex = $gender, pdga = $pdga, birthdate = $dobyear,
@@ -269,7 +269,7 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
         $result = execute_query($query);
 
         if (!$result)
-            return Error::Query($plr_query);
+            return Error::Query($query);
     }
 }
 
