@@ -25,27 +25,6 @@
 require_once 'data/db_init.php';
 
 
-// Gets a Player object by id or null if the player was not found
-function GetPlayerDetails($playerid)
-{
-    if (empty($playerid))
-        return null;
-
-    $id = (int) $playerid;
-
-    $query = format_query("SELECT player_id AS id, pdga AS PDGANumber, sex AS Sex, YEAR(birthdate) AS YearOfBirth
-                            FROM :Player WHERE player_id = $id");
-    $result = execute_query($query);
-
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new Player(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
-}
-
-
 // Gets a User object associated with Playerid
 function GetPlayerUser($playerid = null)
 {
