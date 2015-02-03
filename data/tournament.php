@@ -195,30 +195,6 @@ function GetTournamentYears()
 }
 
 
-function GetTournamentLeader($tournamentId)
-{
-    $tournamentId = (int) $tournamentId;
-
-    $query = format_query("SELECT :User.id
-                            FROM :TournamentStanding
-                            INNER JOIN :Player ON :TournamentStanding.Player = :Player.player_id
-                            INNER JOIN :User ON :Player.player_id = :User.Player
-                            WHERE :TournamentStanding.Tournament = $tournamentId
-                            ORDER BY Standing
-                            LIMIT 1");
-    $result = execute_query($query);
-
-    $retValue = array();
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = GetUserDetails($row['id']);
-    }
-    mysql_free_result($result);
-
-    return $retValue;
-}
-
-
 function GetTournamentData($tid)
 {
     $tid = (int) $tid;

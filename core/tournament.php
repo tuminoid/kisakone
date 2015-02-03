@@ -81,14 +81,6 @@ class Tournament
     }
 
     /**
-     * Fails atm
-    */
-    function GetLeader()
-    {
-       GetTournamentLeader($this->id);
-    }
-
-    /**
      * Returns the level of this tournament
      */
     function GetLevel()
