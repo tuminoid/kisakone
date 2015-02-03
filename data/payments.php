@@ -162,30 +162,6 @@ function StorePayments($payments)
 }
 
 
-/**
-*Determines if license and membership fees have been paid for a given year
-* Suggested usage:
-* list($license, $membership) = GetUserFees($playerid, $year);
-*/
-function GetUserFees($playerid, $year)
-{
-    $playerid = (int) $playerid;
-    $year = (int) $year;
-
-    $query = format_query("SELECT 1 FROM :LicensePayment WHERE Player = $playerid AND Year = $year");
-    $result = execute_query($query);
-    $license = mysql_num_rows($result);
-    mysql_free_result($result);
-
-    $query = format_query("SELECT 1 FROM :MembershipPayment WHERE Player = $playerid AND Year = $year");
-    $result = execute_query($query);
-    $membership = mysql_num_rows($result);
-    mysql_free_result($result);
-
-    return array($license, $membership);
-}
-
-
 function EventRequiresFees($eventid)
 {
     $eventid = (int) $eventid;
