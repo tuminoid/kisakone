@@ -30,8 +30,10 @@ function GetCourseHoles($courseid)
 {
     $courseid = (int) $courseid;
 
-    $query = format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length FROM :Hole
-                            WHERE Course = $courseid ORDER BY HoleNumber");
+    $query = format_query("SELECT id, Course, HoleNumber, HoleText, Par, Length
+                            FROM :Hole
+                            WHERE Course = $courseid
+                            ORDER BY HoleNumber");
     $result = execute_query($query);
 
     $retValue = array();
