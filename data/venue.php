@@ -28,20 +28,18 @@ require_once 'data/db_init.php';
 // Gets an array of strings containing Venue names that match the searchQuery
 function GetVenueNames($searchQuery = '')
 {
-   $retValue = array();
-   $query = "SELECT DISTINCT Name FROM :Venue";
-   $query .= " WHERE %s";
-   $query .= " ORDER BY Name";
-   $query = format_query($query, data_ProduceSearchConditions($searchQuery, array('Name')));
-   $result = execute_query($query);
+    $search = data_ProduceSearchConditions($searchQuery, array('Name'));
+    $query = format_query("SELECT DISTINCT Name FROM :Venue WHERE $search ORDER BY Name");
+    $result = execute_query($query);
 
-   if (mysql_num_rows($result) > 0) {
-      while ($row = mysql_fetch_assoc($result))
-         $retValue[] = $row['Name'];
-   }
-   mysql_free_result($result);
+    $retValue = array();
+    if (mysql_num_rows($result) > 0) {
+        while ($row = mysql_fetch_assoc($result))
+            $retValue[] = $row['Name'];
+    }
+    mysql_free_result($result);
 
-   return $retValue;
+    return $retValue;
 }
 
 
@@ -52,29 +50,27 @@ function GetVenueNames($searchQuery = '')
  */
 function GetVenueId($venue)
 {
-   $venueid = null;
-   // Get the existing venue
-   $query = format_query("SELECT id FROM :Venue WHERE Name = '%s'", escape_string( $venue));
-   $result = execute_query($query);
+    $venue = esc_or_null($venue);
 
-   if (mysql_num_rows($result) >= 1) {
-      $row = mysql_fetch_assoc($result);
-      $venueid = $row['id'];
-      mysql_free_result($result);
-   }
+    $query = format_query("SELECT id FROM :Venue WHERE Name = $venue");
+    $result = execute_query($query);
 
-   if (!isset($venueid)) {
-      // Create a new venue
-      $query = format_query("INSERT INTO :Venue (Name) VALUES ('%s')", escape_string( $venue));
-      $result = execute_query($query);
+    $venueid = null;
+    if (mysql_num_rows($result) > 0) {
+        $row = mysql_fetch_assoc($result);
+        $venueid = $row['id'];
+        mysql_free_result($result);
+    }
 
-      if (!$result)
-         return Query::Error($query);
+    if (!isset($venueid)) {
+        $query = format_query("INSERT INTO :Venue (Name) VALUES ($venue)");
+        $result = execute_query($query);
 
-      $venueid = mysql_insert_id();
-   }
+        if (!$result)
+            return Query::Error($query);
 
-   return $venueid;
+        $venueid = mysql_insert_id();
+    }
+
+    return $venueid;
 }
-
-
