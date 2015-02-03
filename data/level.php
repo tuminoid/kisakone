@@ -30,6 +30,7 @@ require_once 'core/level.php';
 function GetLevels($availableOnly = false)
 {
     $where = $availableOnly ? "WHERE Available <> 0" : "";
+
     $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level $where");
     $result = execute_query($query);
 
@@ -45,11 +46,13 @@ function GetLevels($availableOnly = false)
 
 
 // Gets a Level object by id
-function GetLevelDetails($levelId)
+function GetLevelDetails($levelid)
 {
-    $levelId = (int) $levelId;
+    $levelid = (int) $levelid;
 
-    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level WHERE id = $levelId");
+    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available
+                            FROM :Level
+                            WHERE id = $levelid");
     $result = execute_query($query);
 
     $retValue = array();
@@ -70,7 +73,9 @@ function EditLevel($id, $name, $method, $available)
     $method = esc_or_null($method);
     $available = $available ? 1 : 0;
 
-    $query = format_query("UPDATE :Level SET Name = $name, ScoreCalculationMethod = $method, Available = $available WHERE id = $id");
+    $query = format_query("UPDATE :Level
+                            SET Name = $name, ScoreCalculationMethod = $method, Available = $available
+                            WHERE id = $id");
     $result = execute_query($query);
 
     if (!$result)
