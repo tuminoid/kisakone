@@ -67,13 +67,13 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     $classid = (int) $classid;
 
     $retValue = $signup_directly;
-    $table = ($signup_directly === true) ? "Participation" : "EventQueue";
+    $table = ($signup_directly === true) ? ":Participation" : ":EventQueue";
 
     // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
     // and double checking that player will not be in competition table twice
     CancelSignup($eventid, $playerid, false);
 
-    $query = format_query("INSERT INTO :$table (Player, Event, Classification) VALUES ($playerid, $eventid, $classid)");
+    $query = format_query("INSERT INTO $table (Player, Event, Classification) VALUES ($playerid, $eventid, $classid)");
     $result = execute_query($query);
 
     if (!$result)
@@ -93,9 +93,15 @@ function SetPlayerDetails($player)
     if (!is_a($player, "Player"))
         return Error::internalError("Wrong class as argument");
 
-    $query = format_query("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email) VALUES (
-                        %s, '%s', %s, %s, '%s', %s
-                        );", esc_or_null($player->pdga), $player->gender == 'M' ? 'male' : 'female', esc_or_null(data_fixNameCase($player->lastname)), esc_or_null(data_fixNameCase($player->firstname)), (int) $player->birthyear . '-1-1', esc_or_null($player->email));
+    $pdga = esc_or_null($player->pdga, 'int');
+    $gender = esc_or_null($player->gender == 'M' ? 'male' : 'female');
+    $lastname = esc_or_null(data_fixNameCase($player->lastname));
+    $firstname = esc_or_null(data_fixNameCase($player->firstname));
+    $dobyear = esc_or_null((int) $player->birthyear . '-1-1');
+    $email = esc_or_null($player->email);
+
+    $query = format_query("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email)
+                            VALUES ($pdga, $gender, $lastname, $firstname, $dobyear, $email)");
     $result = execute_query($query);
 
     if (!$result)
