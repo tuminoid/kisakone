@@ -55,7 +55,8 @@ class Ad
     {
         if (is_array($idOrArray)) {
             $this->InitializeFromArray($idOrArray);
-        } else {
+        }
+        else {
             $this->id = $idOrArray;
             $this->contentId = $contentId;
             $this->imageUrl = $imageUrl;
@@ -64,7 +65,6 @@ class Ad
             $this->longData = $longData;
             $this->imageReference = $imageReference;
             $this->type = $adType;
-
         }
     }
 
@@ -72,7 +72,6 @@ class Ad
      * This set of functions converts an existing ad object into an ad of the
      * type specified by the name. All necessary data is provided in parameters
     */
-
     function MakeDefault()
     {
         $this->type = AD_DEFAULT;
@@ -80,7 +79,6 @@ class Ad
         $this->imageURL = null;
         $this->longData = null;
         $this->imageReference = null;
-
     }
 
     function MakeEventDefault()
@@ -90,7 +88,6 @@ class Ad
         $this->imageURL = null;
         $this->longData = null;
         $this->imageReference = null;
-
     }
 
     function MakeDisabled()
@@ -100,7 +97,6 @@ class Ad
         $this->imageURL = null;
         $this->longData = null;
         $this->imageReference = null;
-
     }
 
     function MakeHTML($html)
@@ -110,14 +106,12 @@ class Ad
         $this->imageURL = null;
         $this->longData = $html;
         $this->imageReference = null;
-
     }
 
     function MakeReference($to)
     {
         if (strpos(" " . GLOBAL_AD_TYPES . " ", $to) === false) {
-            if (substr($to, 2) == "e:" &&
-                strpos(" " . EVENT_AD_TYPES . " ", $to) === false) {
+            if (substr($to, 2) == "e:" && strpos(" " . EVENT_AD_TYPES . " ", $to) === false) {
                 // Todo: should really be an error message instead
                 $to = "default";
             }
@@ -125,7 +119,7 @@ class Ad
 
         $this->type = AD_REFERENCE;
         $this->url = null;
-        $this->imageURL =null;
+        $this->imageURL = null;
         $this->longData = $to;
         $this->imageReference = null;
     }
@@ -142,10 +136,10 @@ class Ad
 
         if ($imageRef) {
             $this->imageReference = $imageRef;
-        } else {
+        }
+        else {
             $this->imageURL = $imageUrl;
         }
-
     }
 
     function Render()
@@ -165,16 +159,17 @@ class Ad
     }
 
     /* Below are functions that render ads of various types */
-
     function RenderDefault()
     {
         if ($this->contentId == 'default') {
             return '';
-        } else {
+        }
+        else {
             $ad = GetAd($this->event, 'default');
             if ($ad === null) {
                 return '';
-            } if (is_a($ad, 'Error')) {
+            }
+            if (is_a($ad, 'Error')) {
                 return $ad;
             }
 
@@ -189,11 +184,13 @@ class Ad
             // what we were told to do -- if event's default ad is told to render itself,
             // it is replaced by global default ad
             return $this->RenderDefault();
-        } else {
+        }
+        else {
             $ad = GetAd($this->event, 'eventdefault');
             if ($ad === null) {
                 return $this->RenderDefault();
-            } if (is_a($ad, 'Error')) {
+            }
+            if (is_a($ad, 'Error')) {
                 return $ad;
             }
 
@@ -213,13 +210,12 @@ class Ad
             require_once 'core/files.php';
             $file = GetFile($this->imageReference);
             $image = baseurl() . "images/uploaded/" . $file->filename;
-        } else {
+        }
+        else {
             $image = $this->imageURL;
         }
 
-        return sprintf('<a target="_blank" href="%s"><img src="%s" /></a>',
-                       htmlentities($url),
-                       htmlentities($image));
+        return sprintf('<a target="_blank" href="%s"><img src="%s" /></a>', htmlentities($url), htmlentities($image));
     }
 
     function RenderReference()
@@ -229,8 +225,9 @@ class Ad
         if (substr($ref, 0, 2) == 'e-') {
             $ref = substr($ref, 2);
             $event = $this->event;
-        } else {
-            $event= null;
+        }
+        else {
+            $event = null;
         }
 
         $ad = GetAd($event, $ref);
@@ -249,7 +246,6 @@ class Ad
         }
         $this->url = $data['URL'];
         $this->imageURL = $data['ImageURL'];
-
     }
 
     function Save()
