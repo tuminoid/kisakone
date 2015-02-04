@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 function ProcessAction()
 {
     language_include('events');
@@ -49,20 +48,18 @@ function ProcessAction()
     $playerid = $bits[0];
     $holeid = $specialid = null;
 
-    if (is_numeric(@$bits[1])) {
+    if ($bits[1] == 'p')
+        $specialid = 'Penalty';
+    elseif ($bits[1] == 'sd')
+        $specialid = 'Sudden Death';
+    elseif (is_numeric($bits[1]))
         $holeid = $bits[1];
-    } else {
-        if ($bits[1] == 'p') {
-            $specialid = 'Penalty';
-        } else {
-            $specialid = 'Sudden Death';
-        }
-    }
+    else
+        error_log("unknown bit: " . print_r($bits, true) . (0/0));
 
     $result = SaveResult($round->id, $playerid, $holeid, $specialid, $value);
     if (is_a($result, 'Error'))
         return translate('save_failed');
 
-    //return translate('saved', array('time' => date('H:i:s')));
     return $playerid;
 }
