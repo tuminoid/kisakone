@@ -26,7 +26,6 @@ define('PDGA_API_SERVER', "https://api.pdga.com");
 require_once 'config.php';
 require_once 'data/db_init.php';
 
-
 /**
  * pdga_api_settings
  *
@@ -53,7 +52,6 @@ function pdga_api_settings()
     return array($username, $password);
 }
 
-
 /**
  * pdga_api_getSession
  *
@@ -71,17 +69,14 @@ function pdga_api_getSession()
         $session = null;
 
     if ($session)
-       return $session;
+        return $session;
 
     $credentials = pdga_api_settings();
     if (!$credentials)
         return null;
 
     $request_url = PDGA_API_SERVER . '/services/json/user/login';
-    $user_data = array(
-        'username' => $credentials[0],
-        'password' => $credentials[1]
-    );
+    $user_data = array('username' => $credentials[0], 'password' => $credentials[1]);
 
     $user_data = http_build_query($user_data);
     $curl = curl_init($request_url);
@@ -98,16 +93,15 @@ function pdga_api_getSession()
     }
     else {
         $error = curl_error($curl);
-        error_log("Getting PDGA session failed: ". $error);
+        error_log("Getting PDGA session failed: " . $error);
         return null;
     }
     $session = $logged_user->session_name . '=' . $logged_user->sessid;
     curl_close($curl);
 
-    $timeout = time() + 10*60;
+    $timeout = time() + 10 * 60;
     return $session;
 }
-
 
 /**
  * pdga_api_getPlayer
@@ -156,7 +150,6 @@ function pdga_api_getPlayer($pdga_number = 0)
     return $decoded;
 }
 
-
 /**
  * Access database to get last_updated field for player's status
  *
@@ -177,7 +170,6 @@ function pdga_getLastUpdated($pdga_number = 0)
     $row = mysql_fetch_assoc($result);
     return $row['last_update'];
 }
-
 
 /**
  * Get player data from PDGA API and update it into our pdga_players table.
@@ -204,10 +196,7 @@ function pdga_updatePlayer($pdga_number)
     return execute_query($query);
 }
 
-
 /* ************ ONlY FUNCTIONS CALLED OUTSIDE SHOULD BE ONES BELOW ************** */
-
-
 /**
  * pdga_getPlayer
  *
@@ -224,7 +213,7 @@ function pdga_getPlayer($pdga_number = 0)
         return null;
 
     $last_update = pdga_getLastUpdated($pdga_number);
-    if (($last_update + 60*60) < time())
+    if (($last_update + 60 * 60) < time())
         pdga_updatePlayer($pdga_number);
 
     $query = "SELECT * FROM pdga_players WHERE pdga_number = $pdga_number";
@@ -235,7 +224,6 @@ function pdga_getPlayer($pdga_number = 0)
 
     return mysql_fetch_assoc($result);
 }
-
 
 /**
  * pdga_getPlayerData
@@ -258,7 +246,6 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating")
 
     return null;
 }
-
 
 /**
  * pdga_getPlayerRating
