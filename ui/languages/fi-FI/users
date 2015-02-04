@@ -52,12 +52,32 @@ blicense_paid      B-lisenssimaksu maksettu
 reg_termsandconditions Käyttöehdot
 termsandconditions <HTML>Olen lukenut ja hyv&auml;ksyn {link}
 termsandconditionslinktitle käyttöehdot
-reg_finalize    Vahvista rekisteröityminen
+reg_finalize           Vahvista rekisteröityminen
+reg_finalize_create    Luo uusi kilpailija
+
 license_status_header  Lisenssitilanne
 license_status         Onko pelaajalla kilpailuun vaaditut lisenssit
-licenses_ok            Lisenssit ovat kunnossa!
-licenses_fail          Lisenssit eivät ole kunnossa! Voit lisätä pelaajan kilpailuun vain jos kyseessä on ulkomaalainen pelaaja, jolla on voimassaoleva PDGA-jäsenyys!
+license_ok_a           A-lisenssi OK.
+license_ok_b           B-lisenssi OK.
+license_ok_foreign     Ulkomaalaisen pelaajan PDGA-jäsenyys on kunnossa.
+licenses_fail          Lisenssit eivät ole kunnossa. Pelaajaa ei voi lisätä kilpailuun.\n\nTarkastakaa, että henkilön nimi, syntymävuosi ja PDGA-numero ovat oikein Kisakoneen tiedoissa ja täsmäävät Jäsenrekisterin tietoihin.
+licenses_fail_onlyb    Kilpailuun vaaditaan A-lisenssi ja pelaajalla on vain B-lisenssi.
+license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pelaajaa ei voi ilmoittaa kilpailuun tällä hetkellä.
 
+pdga_rating            Rating
+pdga_status            Luokitus
+pdga_data_match        Tieto on sama kuin PDGA:lla
+pdga_data_mismatch     Tieto on eri kuin PDGA:lla
+pdga_membership_current PDGA jäsenyys on voimassa
+pdga_membership_expired PDGA jäsenyys ei ole voimassa
+pdga_server_error      Yhteys PDGA:n tietokantaan epäonnistui. Yritä hetken päästä uudelleen.
+pdga_membership        PDGA jäsenyys
+pdga_membership_current Voimassa
+pdga_membership_expired Päättynyt
+pdga_official          Sääntötesti
+pdga_official_yes      Suoritettu
+pdga_official_no       Ei
+pdga_country           Maa
 
 user_ban    Estä käyttö
 ban         Estä

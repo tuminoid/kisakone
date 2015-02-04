@@ -31,21 +31,22 @@ require_once 'data/round.php';
 
 
 // Valid Event->signupState attribute values
-$event_signupstate_disabled     = 'disabled'; // Default signup state
-$event_signupstate_available    = 'available';
-$event_signupstate_signedup     = 'signedup';
-$event_signupstate_accepted     = 'accepted';
+$event_signupstate_disabled = 'disabled';
+$event_signupstate_available = 'available';
+$event_signupstate_signedup = 'signedup';
+$event_signupstate_accepted = 'accepted';
 $event_signupstate_participated = 'participated';
 
 // Valid Event->management attribute values
-$event_management_none     = ''; // Default management role
+$event_management_none = '';
 $event_management_official = 'official';
-$event_management_td       = 'td';
-$event_management_admin    = 'admin';
+$event_management_td = 'td';
+$event_management_admin = 'admin';
 
 // Days before and after current date within to include events as relevant
-$relevant_events_days_before = 60 * 60 * 24 * 7; // 7 days
-$relevant_events_days_after  = 60 * 60 * 24 * 7; // 7 days
+$relevant_events_days_before = 60 * 60 * 24 * 7;
+$relevant_events_days_after = 60 * 60 * 24 * 7;
+
 
 /* *****************************************************************************
  * This class represents a single event in the system.
@@ -73,8 +74,8 @@ class Event
     var $management;
     var $isOngoing;
 
-    var $activationDate; // to/from db
-    var $isActive; //to/from user
+    var $activationDate;
+    var $isActive;
     var $tournamentId;
     var $tournament;
     var $levelId;
@@ -84,19 +85,19 @@ class Event
     var $resultsLocked;
     var $tdId;
 
+    var $pdgaEventId;
+
     var $approved;
 
     // User-specific fields (for logged in user)
-    var $eventFeePaid; // null if not signed up at all
+    var $eventFeePaid;
+    // null if not signed up at all
+
 
     /** ************************************************************************
      * Class constructor
      */
-    function Event($data_or_id = null,
-                    $name = null,
-                    $startdate = 0,
-                    $venue = null,
-                    $duration = 1)
+    function Event($data_or_id = null, $name = null, $startdate = 0, $venue = null, $duration = 1)
     {
         if (is_array($data_or_id)) {
             $this->initializeFromArray($data_or_id);
@@ -118,7 +119,7 @@ class Event
         $this->signupEnd = 0;
         $this->signupState = $event_signupstate_disabled;
         $this->contact = "";
-        $this->fulldate = date( 'd.m.Y', $startdate);
+        $this->fulldate = date('d.m.Y', $startdate);
         $this->management = $event_management_none;
         $this->isOngoing = false;
         $this->isActive = false;
@@ -128,15 +129,15 @@ class Event
         $this->resultslocked = false;
         $this->tdId = null;
         $this->playerLimit = 0;
+        $this->pdgaEventId = null;
 
         if ($duration > 1) {
-            $enddate = $startdate + ( $duration - 1) * 60 *  60 * 24;
-            if ( date( 'm', $startdate) == date( 'm', $enddate)) {
-                $this->fulldate = date( 'd', $startdate) . ' - ' .
-                                  date( 'd.m.Y', $enddate);
-            } else {
-                $this->fulldate = date( 'd.m.Y', $startdate) . ' - ' .
-                                  date( 'd.m.Y', $enddate);
+            $enddate = $startdate + ($duration - 1) * 60 * 60 * 24;
+            if (date('m', $startdate) == date('m', $enddate)) {
+                $this->fulldate = date('d', $startdate) . ' - ' . date('d.m.Y', $enddate);
+            }
+            else {
+                $this->fulldate = date('d.m.Y', $startdate) . ' - ' . date('d.m.Y', $enddate);
             }
         }
 
@@ -150,17 +151,16 @@ class Event
             $this->$fieldName = $value;
         }
         $this->startdate = $this->date;
-        $this->fulldate = date( 'd.m.Y', $this->date);
+        $this->fulldate = date('d.m.Y', $this->date);
 
         if ($this->duration > 1) {
-            $enddate = $this->startdate + ( $this->duration - 1) * 60 *  60 * 24;
+            $enddate = $this->startdate + ($this->duration - 1) * 60 * 60 * 24;
 
-            if ( date( 'm', $this->startdate) == date( 'm', $enddate)) {
-                $this->fulldate = date( 'd', $this->startdate) . ' - ' .
-                                  date( 'd.m.Y', $enddate);
-            } else {
-                $this->fulldate = date( 'd.m.Y', $this->startdate) . ' - ' .
-                                  date( 'd.m.Y', $enddate);
+            if (date('m', $this->startdate) == date('m', $enddate)) {
+                $this->fulldate = date('d', $this->startdate) . ' - ' . date('d.m.Y', $enddate);
+            }
+            else {
+                $this->fulldate = date('d.m.Y', $this->startdate) . ' - ' . date('d.m.Y', $enddate);
             }
         }
 
@@ -185,7 +185,7 @@ class Event
      */
     function GetRounds()
     {
-        return GetEventRounds( $this->id);
+        return GetEventRounds($this->id);
     }
 
     /** ************************************************************************
@@ -195,7 +195,7 @@ class Event
      */
     function GetOfficials()
     {
-        return GetEventOfficials( $this->id);
+        return GetEventOfficials($this->id);
     }
 
     /** ************************************************************************
@@ -205,7 +205,7 @@ class Event
      */
     function GetNews($startIndex, $count)
     {
-        return GetEventNews( $this->id, $startIndex, $count);
+        return GetEventNews($this->id, $startIndex, $count);
     }
 
     /** ************************************************************************
@@ -215,7 +215,7 @@ class Event
      */
     function GetParticipants($sortedBy = '', $search = '')
     {
-        return GetEventParticipants( $this->id, $sortedBy, $search);
+        return GetEventParticipants($this->id, $sortedBy, $search);
     }
 
     /** ************************************************************************
@@ -262,7 +262,6 @@ class Event
         return 'notsigned';
     }
 
-
     /** ************************************************************************
      * Method for checking if the current user is TD.
      *
@@ -281,13 +280,14 @@ class Event
     function GetTextContent($contentId)
     {
         require_once 'core/textcontent.php';
-        if ( is_numeric( $contentId)) {
-            $content = GetTextContent( $contentId);
+        if (is_numeric($contentId)) {
+            $content = GetTextContent($contentId);
             if (!$content || $content->event != $this->id) {
                 return Error::accessDenied();
             }
-        } else {
-            $content = GetTextContentByEvent( $this->id, $contentId);
+        }
+        else {
+            $content = GetTextContentByEvent($this->id, $contentId);
         }
 
         return $content;
@@ -296,10 +296,9 @@ class Event
     /**
      * Returns true if the event is currently ongoing (or at least if it might be)
     */
-
     function EventOngoing()
     {
-        $enddate = $this->startdate + ( $this->duration) * 60 *  60 * 24;
+        $enddate = $this->startdate + ($this->duration) * 60 * 60 * 24;
         $retVal = (time() > $this->startdate && time() < $enddate);
 
         return $retVal;
@@ -328,12 +327,16 @@ class Event
     */
     function SignupPossible()
     {
-        if (!$this->IsAccessible()) return false;
-        if ($this->signupStart === null) return false;
-        if ($this->signupStart > time()) return false;
-        if ($this->signupEnd != null && $this->signupEnd < time()) return false;
-        return true;
+        if (!$this->IsAccessible())
+            return false;
+        if ($this->signupStart === null)
+            return false;
+        if ($this->signupStart > time())
+            return false;
+        if ($this->signupEnd != null && $this->signupEnd < time())
+            return false;
 
+        return true;
     }
 
     /**
@@ -369,8 +372,7 @@ function GetRelevantEvents()
 
     $current_time = time();
 
-    return GetEventsByDate( $current_time - $relevant_events_days_before,
-                            $current_time + $relevant_events_days_after);
+    return GetEventsByDate($current_time - $relevant_events_days_before, $current_time + $relevant_events_days_after);
 }
 
 /* *****************************************************************************
@@ -393,22 +395,20 @@ function GetRelevantEvents()
  * @param array    $officialIds  - array of official user ids
  * @param array    $rounds       - array of rounds (date, time, holes, datestring, roundid)
  */
-function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level,
-                   $start, $signup_start, $signup_end, $classes,
-                   $td, $officialIds, $rounds, $requireFees)
+function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaId)
 {
     $retvalue = null;
 
-    $user = GetUserDetails( $td);
-    if ( !is_a( $user, 'Error')) {
-        if ( !empty( $user)) {
+    $user = GetUserDetails($td);
+    if (!is_a($user, 'Error')) {
+        if (!empty($user)) {
             foreach ($officialIds as $official) {
-                $user = GetUserDetails( $official);
-                if ( !is_a( $user, 'Error')) {
-                    if ( empty( $user)) {
+                $user = GetUserDetails($official);
+                if (!is_a($user, 'Error')) {
+                    if (empty($user)) {
                         $retValue = new Error();
                         $retValue->title = "error_invalid_argument";
-                        $retValue->description = translate( "error_invalid_argument_description");
+                        $retValue->description = translate("error_invalid_argument_description");
                         $retValue->internalDescription = "Invalid official user id";
                         $retValue->function = "NewEvent()";
                         $retValue->IsMajor = false;
@@ -417,35 +417,35 @@ function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament,
                     }
                 }
             }
-        } else {
+        }
+        else {
             // User details for TD returned null
             $retValue = new Error();
             $retValue->title = "error_invalid_argument";
-            $retValue->description = translate( "error_invalid_argument_description");
+            $retValue->description = translate("error_invalid_argument_description");
             $retValue->internalDescription = "Invalid TD user id";
             $retValue->function = "NewEvent()";
             $retValue->IsMajor = false;
             $retValue->data = "TD user id: " . $td;
         }
-    } else {
+    }
+    else {
         // User details for TD returned an Error
         $retValue = $user;
     }
 
-    $venueid = GetVenueId( $venue);
-    if ( is_a( $venueid, 'Error')) {
+    $venueid = GetVenueId($venue);
+    if (is_a($venueid, 'Error')) {
         $retValue = $venueid;
         $venueid = null;
     }
 
-    if ( !isset( $retValue)) {
-        $eventId = CreateEvent( $name, $venueid, $duration, $playerlimit, $contact, $tournament, $level,
-                                $start, $signup_start, $signup_end, $classes,
-                                $td, $officialIds, $requireFees);
+    if (!isset($retValue)) {
+        $eventId = CreateEvent($name, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requireFees, $pdgaId);
         $retValue = $eventId;
-        if ( !is_a( $eventId, 'Error')) {
-            $err = SetRounds( $eventId, $rounds);
-            if ( is_a( $err, 'Error')) {
+        if (!is_a($eventId, 'Error')) {
+            $err = SetRounds($eventId, $rounds);
+            if (is_a($err, 'Error')) {
                 $retValue = $err;
             }
         }
@@ -472,7 +472,6 @@ function UpdateEventResults($eventid)
     global $holes;
 
     // Preload hole information
-
     $holes = array();
     foreach ($rounds as $round) {
         $h = array();
@@ -491,23 +490,24 @@ function UpdateEventResults($eventid)
         $part['Rounds'] = array();
         $class = $part['Classification'];
         $classMap[$part['Player']] = $class;
-        if (!isset($partsByPlayerC[$class])) $partsByPlayerC[$class] = array();
+
+        if (!isset($partsByPlayerC[$class]))
+            $partsByPlayerC[$class] = array();
+
         $partsByPlayerC[$class][$part['Player']] = $part;
     }
 
     // Combine round results with the overall results of each player
     foreach ($results as $result) {
-        $class = @$classMap[ $result['Player']];
+        $class = @$classMap[$result['Player']];
 
         if (!isset($partsByPlayerC[$class][$result['Player']])) {
             continue;
         }
 
-
         $partsByPlayerC[$class][$result['Player']]['Rounds'][] = $result;
 
         if ($result['Completed'] != count($holes[$result['Round']])) {
-
             // Determine which rounds have incomplete results
             // (that is, someone doesn't have result for all holes and is not
             // DNS either)
@@ -521,19 +521,20 @@ function UpdateEventResults($eventid)
         usort($partsByPlayer, 'core_sortResults');
 
         $activePlayers = 0;
-        $last = array('OverallResult' => -1, 'SuddenDeath' => 0);
+        $last = array('OverallResult' => - 1, 'SuddenDeath' => 0);
         // Assign standings to the players
         foreach ($partsByPlayer as $index => $player) {
             $newResult = array('DidNotFinish' => 0);
             $total = 0;
             $isActive = false;
-            foreach ($player['Rounds'] as $round) {
 
+            foreach ($player['Rounds'] as $round) {
                 if ($round['DidNotFinish']) {
                     $newResult['DidNotFinish'] = 1;
                     $total = 999;
                     break;
-                } else {
+                }
+                else {
                     $total += $round['Result'];
                     // Already included in $round['Result'], don't add twice!
                     //$total += $round['Penalty'];
@@ -543,31 +544,32 @@ function UpdateEventResults($eventid)
                 // Normally people with the same score share the standing of the first
                 // one, but the opposite is true with DNF's
                 $newResult['Standing'] = core_GetDnfStanding($partsByPlayer, $index);
-            } elseif ($total == $last['OverallResult']) {
+            }
+            elseif ($total == $last['OverallResult']) {
                 $sdnow = core_SuddenDeathUsed($player);
                 $sdlast = core_SuddenDeathUsed($last);
                 if ($sdnow != $sdlast) {
                     // sudden death has ensured these 2 people are in the right order
                     $newResult['Standing'] = $index + 1;
-                } else {
+                }
+                else {
                     $newResult['Standing'] = $last['Standing'];
                 }
-            } else {
+            }
+            else {
                 $newResult['Standing'] = $index + 1;
             }
-
             $newResult['OverallResult'] = $total;
 
-            if ($total != 0) $activePlayers++;
+            if ($total != 0)
+                $activePlayers++;
 
-            $last  = core_CombineResultArrays($player, $newResult);
+            $last = core_CombineResultArrays($player, $newResult);
             $partsByPlayer[$index] = $last;
         }
 
         // Now that we have final standings, we can calculate the tournament scores
         $scorecalc->CalculateScores($partsByPlayer, $totalHoles, $event, $activePlayers);
-
-        //print_r($partsByPlayer);
 
         // Lastly save any changes that have been made
         foreach ($partsByPlayer as $player) {
@@ -576,7 +578,6 @@ function UpdateEventResults($eventid)
             }
         }
     }
-
 }
 
 /**
@@ -586,7 +587,8 @@ function UpdateEventResults($eventid)
 function core_SuddenDeathUsed($player)
 {
     $rounds = $player['Rounds'];
-    if (!count($rounds)) return false;
+    if (!count($rounds))
+        return false;
     $round = $rounds[count($rounds) - 1];
 
     return $round['SuddenDeath'];
@@ -615,13 +617,16 @@ function core_SortResults($a, $b)
 {
     // Note: some of the gathered data is needless due to changes that have
     // taken place
-    $a_total = 0; $b_total = 0;
-    $a_plusminus = 0; $b_plusminus = 0;
-    $a_completed = 0; $b_completed = 0;
-    $a_sd = 0; $b_sd = 0;
+    $a_total = 0;
+    $b_total = 0;
+    $a_plusminus = 0;
+    $b_plusminus = 0;
+    $a_completed = 0;
+    $b_completed = 0;
+    $a_sd = 0;
+    $b_sd = 0;
     $a_activeRounds = 0;
     $b_activeRounds = 0;
-
     $anythingIncomplete = false;
 
     global $incompleteRounds;
@@ -630,59 +635,69 @@ function core_SortResults($a, $b)
     $b_dnf = false;
 
     // Gather data for each round
-
     foreach ($a['Rounds'] as $round) {
         $a_total += $round['Result'];
         $a_completed += $round['Completed'];
         $a_sd += $round['SuddenDeath'];
-        if ($round['Result'] || $round['DidNotFinish']) $a_activeRounds++;
+
+        if ($round['Result'] || $round['DidNotFinish'])
+            $a_activeRounds++;
         $a_plusminus += $round['PlusMinus'];
-        if (@$incompleteRounds[$round['Round']]) $anythingIncomplete = true;
-        if ($round['DidNotFinish']) $a_dnf = true;
+
+        if (@$incompleteRounds[$round['Round']])
+            $anythingIncomplete = true;
+        if ($round['DidNotFinish'])
+            $a_dnf = true;
     }
 
     foreach ($b['Rounds'] as $round) {
         $b_total += $round['Result'];
         $b_completed += $round['Completed'];
         $b_sd += $round['SuddenDeath'];
-        if ($round['Result'] || $round['DidNotFinish']) $b_activeRounds++;
+
+        if ($round['Result'] || $round['DidNotFinish'])
+            $b_activeRounds++;
         $b_plusminus += $round['PlusMinus'];
 
-        if (@$incompleteRounds[$round['Round']]) $anythingIncomplete = true;
-        if ($round['DidNotFinish']) $b_dnf = true;
+        if (@$incompleteRounds[$round['Round']])
+            $anythingIncomplete = true;
+        if ($round['DidNotFinish'])
+            $b_dnf = true;
     }
 
     // Of these 2, if one has participated in more rounds than the other, he'll
     // be above the other in the listing
     if ($a_activeRounds != $b_activeRounds) {
-
-        if ($a_activeRounds < $b_activeRounds) return 1;
-        return -1;
+        if ($a_activeRounds < $b_activeRounds)
+            return 1;
+        return - 1;
     }
 
 
     if ($a_dnf != $b_dnf) {
         // Same number of rounds, but one did not finish; he'll be below the other
-        if ($a_dnf) return 1;
-        return -1;
+        if ($a_dnf)
+            return 1;
+        return - 1;
     }
 
     // We're past special cases now;
     // plusminus is the primary factor for sorting the players
     if ($a_plusminus != $b_plusminus) {
-        if ($a_plusminus < $b_plusminus) return -1;
+        if ($a_plusminus < $b_plusminus)
+            return - 1;
         return 1;
     }
 
     // Sudden death field, if used, can be used as tie breaker
     if ($a_sd != $b_sd) {
-        if (abs($a_sd) < abs($b_sd)) return -1;
+        if (abs($a_sd) < abs($b_sd))
+            return - 1;
         return 1;
     }
 
     // Otherwise we'll have to decide using other means
     return core_TieBreaker($a, $b);
-
 }
 
 /**
@@ -732,7 +747,6 @@ function core_EventScoreCalculation($event)
     require_once 'core/scorecalculation.php';
 
     return GetScoreCalculationMethod('level', $level->scoreCalculationMethod);
-
 }
 
 /**
@@ -743,15 +757,14 @@ function core_GetDnfStanding($participants, $forIndex)
     while (array_key_exists($forIndex, $participants)) {
         $p = $participants[$forIndex];
         $dnf = false;
-        foreach ($p['Rounds'] as $round) if ($round['DidNotFinish']) $dnf = true;
-        if (!$dnf) return $forIndex;
+        foreach ($p['Rounds'] as $round)
+            if ($round['DidNotFinish'])
+                $dnf = true;
+        if (!$dnf)
+            return $forIndex;
 
         $forIndex++;
     }
 
     return $forIndex;
 }
-
-/* *****************************************************************************
- * End of file
- * */

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event editor UI backend
  *
@@ -38,9 +38,9 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         if (!is_array($error->data)) {
             print_r($error);
-
             return $error;
         }
+
         $smarty->assign('error', $error->data);
         $e['name'] = $_POST['name'];
         $e['contact'] = $_POST['contact'];
@@ -65,7 +65,11 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $e['td'] = $_POST['td'];
         $e['oldtd'] = $_POST['oldtd'];
-    } else {
+
+        $e['pdgaeventid'] = @$_POST['pdgaeventid'];
+        $e['oldpdgaeventid'] = @$_POST['oldpdgaeventid'];
+    }
+    else {
         $event = GetEventDetails($_GET['id']);
 
         if (!$event)
@@ -87,7 +91,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         if ($event->resultsLocked) {
             $e['event_state'] = 'done';
-        } elseif ($event->isActive) {
+        }
+        elseif ($event->isActive) {
             $e['event_state'] = 'active';
         }
 
@@ -114,11 +119,16 @@ function InitializeSmartyVariables(&$smarty, $error)
             if ($record->role == 'td') {
                 $e['td'] = $record->user->username;
                 $e['oldtd'] = $record->user->id;
-            } else {
+            }
+            else {
                 $e['officials'][] = $record->user->username;
             }
         }
+
+        $e['pdgaeventid'] = $event->pdgaEventId;
+        $e['oldpdgaeventid'] = $event->pdgaEventId;
     }
+
     global $user;
     $event = GetEventDetails($_GET['id']);
     if (!$event || (!IsAdmin() && $event->management != 'td' )) {

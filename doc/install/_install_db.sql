@@ -117,6 +117,7 @@ CREATE TABLE :Event
   ContactInfo VARCHAR(250) NOT NULL,
   FeesRequired TINYINT NOT NULL,
   AdBanner INT NULL,
+  PdgaEventId INT,
   PlayerLimit INT NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
   FOREIGN KEY(Venue) REFERENCES :Venue(id),

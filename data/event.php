@@ -117,7 +117,7 @@ function GetEventDetails($eventid)
         $query = format_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     AdBanner, :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
-                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked,
+                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId,
                                     :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid,
                                     :Participation.Standing, :Level.id AS LevelId,
                                     :Level.Name AS Level, :Tournament.id AS TournamentId, :Tournament.Name AS Tournament,
@@ -135,7 +135,7 @@ function GetEventDetails($eventid)
                                     UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,
-                                    ResultsLocked, :Level.id AS LevelId, :Level.Name AS Level,
+                                    ResultsLocked, PdgaEventId, :Level.id AS LevelId, :Level.Name AS Level,
                                     :Tournament.id AS TournamentId, :Tournament.Name AS Tournament
                                 FROM :Event
                                 LEFT JOIN :Level ON :Level.id = :Event.Level
@@ -163,7 +163,7 @@ function GetEventDetails($eventid)
  * an Error in case there was an error in creating a new event.
  */
 function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start,
-    $signup_start, $signup_end, $classes, $td, $officials, $requireFees)
+    $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid)
 {
     $venue = esc_or_null($venue, 'int');
     $tournament = esc_or_null($tournament, 'int');
@@ -176,11 +176,12 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
     $signup_end = esc_or_null($signup_end, 'int');
     $contact = esc_or_null($contact);
     $requireFees = (int) $requireFees;
+    $pdgaid = esc_or_null($pdgaid, 'int');
 
     $query = format_query("INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
-                                SignupStart, SignupEnd, ContactInfo, FeesRequired)
+                                SignupStart, SignupEnd, ContactInfo, FeesRequired, PdgaEventId)
                             VALUES ($venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
-                                FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees)");
+                                FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees, $pdgaid)");
     $result = execute_query($query);
 
     $retValue = null;
@@ -296,7 +297,7 @@ function GetEventOfficials($event)
 
 // Edit event information
 function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contact, $tournament,
-    $level, $start, $signup_start, $signup_end, $state, $requireFees)
+    $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaid)
 {
     $venueid = GetVenueId($venuename);
     $activation = ($state == 'active' || $state == 'done') ? time() : 'NULL';
@@ -312,13 +313,14 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
     $contact = esc_or_null($contact);
     $requireFees = (int) $requireFees;
     $eventid = (int) $eventid;
+    $pdgaid = esc_or_null($pdgaid, 'int');
 
     $query = format_query("UPDATE :Event
                             SET Venue = $venueid, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
                                 Duration = $duration, PlayerLimit = $playerlimit,
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
-                                ContactInfo = $contact, FeesRequired = $requireFees
+                                ContactInfo = $contact, FeesRequired = $requireFees, PdgaEventId = $pdgaid
                             WHERE id = $eventid");
     $result = execute_query($query);
 

@@ -123,15 +123,5 @@ function processForm()
     if (is_a($u, 'Error'))
         return $u;
 
-    $player = $u->GetPlayer();
-    $classobj = GetClassDetails($_POST['class']);
-
-    if (!$player->IsSuitableClass($classobj))
-        return translate("error_invalid_class");
-
-    $retVal = SignupUser($eventid, $u->id, $class, @$_POST['accept_queue'] ? false : $godmode);
-    if (is_a($retVal, 'Error'))
-        return $retVal;
-
-    redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
+    redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => 1), $_GET));
 }

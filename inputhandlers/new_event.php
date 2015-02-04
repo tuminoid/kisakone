@@ -1,8 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * New event creation handler
  *
@@ -102,11 +102,13 @@ function processForm()
             list($operation, $class) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $classes[] = $class;
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 $index = array_search($class, $classes);
                 if ($index !== false)
                     unset($classes[$index]);
-            } else
+            }
+            else
                 fail();
         }
     }
@@ -120,7 +122,8 @@ function processForm()
                 preg_match('/\s(\d+)$/', $date, $parts);
                 $rdate = $start + 60 * 60 * 24 * ((int) $parts[1] - 1);
                 $rounds[$index] = array('date' => input_ParseDate(date("Y-m-d", $rdate) . " " . $time), 'time' => $time, 'datestring' => $date, 'roundid' => $roundid);
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 unset($rounds[$index]);
             }
         }
@@ -138,7 +141,8 @@ function processForm()
             list($operation, $official) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $officials[] = $official;
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
                     unset($officials[$index]);
@@ -149,7 +153,8 @@ function processForm()
     $officialIds = array();
     foreach ($officials as $official) {
         $oid = input_GetUser($official);
-        if ($oid === null) $problems['officials'] = translate('FormError_InvalidUser');
+        if ($oid === null)
+            $problems['officials'] = translate('FormError_InvalidUser');
         $officialIds[] = $oid;
     }
 
@@ -168,10 +173,11 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees);
+    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level,
+        $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaId);
+
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
-
         return $result;
     }
 

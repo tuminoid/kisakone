@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmÃ¤
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event creation and editing form
  *
@@ -36,7 +36,6 @@
 {translate id='month_default' assign='month_default'}
 {translate id='day_default' assign='day_default'}
 
-
 <div class="nojs">
 {translate id=page_requires_javascript}
 </div>
@@ -50,7 +49,6 @@
         <input type="hidden" name="formid" value="edit_event" />
         <input type="hidden" name="eventid" value="{$event.id}" />
     {/if}</h2>
-
 
     <div>
         <label for="name">{translate id=event_name}</label>
@@ -82,12 +80,9 @@
         {formerror field='level'}
     </div>
 
-
     <div>
         <label for="start">{translate id=event_start}</label>
-
         <input type="text" name="start" value="{$event.start|escape}" id="start" class="useDatePicker" />
-
         {formerror field='start'}
     </div>
 
@@ -126,7 +121,6 @@
     <div>
         <input id="requireFees_member" type="checkbox" name="requireFees_member" {if $event.requireFees_member} checked="checked" {/if}/>
         <label class="checkboxlabel" for="requireFees_member">{translate id="event_require_member_fee"}</label>
-
         <br />
         <input id="requireFees_license_A" type="radio" name="requireFees_license" value="requireFees_license_A"  {if $event.requireFees_aLicense} checked="checked" {/if}/>
         <label class="checkboxlabel" for="requireFees_license_A" >{translate id="event_require_alicense_fee"}</label>
@@ -137,9 +131,7 @@
     </div>
 
 
-
     <h2>{translate id='event_classes'}</h2>
-
     <div>
         <label for="classList">{translate id=event_classes}</label>
         <select name="classList" id="classList">
@@ -152,7 +144,6 @@
     </div>
 
     <ul class="editList" id="classListList">
-
     </ul>
     {formerror field='classes'}
 
@@ -161,14 +152,12 @@
         <label for="roundStart">{translate id="round_start_time"}</label>
 
         <select name="roundStart" id="roundStart">
-
         </select>
 
         <span>{translate id="event_round_time"}</span>
         {html_select_time
             prefix=round_start time='12:0:0' display_seconds=false
             minute_interval=5}
-
 
         <button href="#" id="addRound">{translate id=event_add_round}</button>
         {formerror field='round'}
@@ -180,7 +169,6 @@
     {formerror field='rounds'}
 
     <h2>{translate id='event_management'}</h2>
-
     <div>
         <label for="td">{translate id=event_td}</label>
         <input type="hidden" name="oldtd" value="{$event.oldtd|escape}" />
@@ -201,11 +189,17 @@
     </div>
 
     <ul class="editList" id="officialList">
-
     </ul>
 
-    {if !$new}
+    <h2>{translate id='event_pdga'}</h2>
+    <div>
+        <label for="pdgaeventid">{translate id=event_pdga_id}</label>
+        <input type="hidden" name="oldpdgaeventid" value="{$event.oldpdgaeventid|escape}" />
+        <input type="text" name="pdgaeventid" id="pdgaeventid" value="{$event.pdgaeventid|escape}" />
+        {formerror field='pdgaeventid'}
+    </div>
 
+    {if !$new}
         <h2>{translate id=event_state}</h2>
         <ul class="nobullets">
             <li><input type="radio" name="event_state" value="preliminary" {if $event.event_state == 'preliminary' || $event.event_state == ''}checked="checked"{/if} />

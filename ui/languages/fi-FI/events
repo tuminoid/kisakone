@@ -32,7 +32,8 @@ event_management    Hallinnointi
 event_td        TD
 event_official  Toimitsija
 event_add_official  Lisää toimitsija
-
+event_pdga      PDGA asetukset
+event_pdga_id   Kilpailunumero
 
 
 round_start_time    Kierroksen ajankohta

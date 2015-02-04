@@ -11,6 +11,7 @@ form_save       Tallenna
 
 form_add_competitor Lisää suoraan kilpailuun
 form_add_competitor_queue Lisää jonoon
+form_new_competitor Tallenna
 
 No_Search_Results   Ei hakutuloksia.
 Restore_AutoSearch  Pikahaku ei ole käytössä.

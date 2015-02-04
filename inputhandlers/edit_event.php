@@ -150,7 +150,18 @@ function processForm()
 
     $td = input_GetUser($_POST['td']);
     if ($td === null) {
-         $problems['td'] = translate('FormError_InvalidUser');
+        $problems['td'] = translate('FormError_InvalidUser');
+    }
+
+    $pdgaId = @$_POST['pdgaeventid'];
+    if (!empty($pdgaId)) {
+        if (!is_numeric($pdgaId)) {
+            $problems['pdgaeventid'] = translate('FormError_NotPositiveInteger');
+        }
+        $pdgaId = (int) $pdgaId;
+        if (!(is_int($pdgaId) && $pdgaId >= 0)) {
+            $problems['pdgaeventid'] = translate('FormError_NotPositiveInteger');
+        }
     }
 
     $officials = array();
@@ -200,7 +211,7 @@ function processForm()
         return $error;
     }
 
-    $result = EditEvent($eventid, $name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees);
+    $result = EditEvent($eventid, $name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId);
     if (is_a($result, 'Error'))
         return $result;
 

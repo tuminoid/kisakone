@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm√§
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhm‰
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the UI for adding competitors to an event
  *
@@ -97,8 +97,11 @@ $(document).ready(function(){
     <input type="hidden" name="userid" value="{$user->id}" />
     <input type="hidden" name="formid" value="add_competitor" />
 
-    <h2>{translate id='reg_contact_info'}</h2>
+    {if $pdga_error}
+        <div class="error">{translate id=pdga_server_error}</div>
+    {/if}
 
+    <h2>{translate id='reg_contact_info'}</h2>
     <div>
         <label for="firstname">{translate id='first_name'}</label>
         <input type="text" id="firstname" name="firstname" {if !$edit}disabled="disabled"{/if}  value="{$userdata->firstname|escape}" />
@@ -129,6 +132,9 @@ $(document).ready(function(){
      <div>
         <label for="pdga">{translate id='pdga_number'}</label>
         <input id="pdga" type="text" {if !$edit}disabled="disabled"{/if} name="pdga"  value="{$player->pdga|escape}" />
+        {if $pdga && $pdga_membership_status != "current"}
+            <img src="/images/exclamation.png" height="16" alt="error!"  title="{translate id=pdga_membership_expired} ({$pdga_membership_status}: {$pdga_membership_expiration_date})" />
+        {/if}
         {formerror field='pdga'}
     </div>
 
@@ -136,7 +142,9 @@ $(document).ready(function(){
         <label for="gender">{translate id='gender'}</label>
         <input id="gender" type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
-
+        {if $pdga && $pdga_gender != $player->gender}
+            <img src="/images/exclamation.png" height="16" alt="error!" title="{translate id=pdga_data_mismatch} ({$player->gender} vs {$pdga_gender})" />
+        {/if}
     </div>
 
 
@@ -144,39 +152,85 @@ $(document).ready(function(){
         <label>{translate id='dob'}</label>
         {translate id='year_default' assign='year_default'}
         {if $edit}
-        {html_select_date time=0-0-0 field_order=DMY month_format=%m
-            prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
-            all_extra='style="min-width: 0"' }
-        {else}
-        <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
+            {html_select_date time=0-0-0 field_order=DMY month_format=%m
+                prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
+                all_extra='style="min-width: 0"' }
+            {else}
+            <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
+            {if $pdga && $pdga_birth_year != $player->birthyear}
+                <img src="/images/exclamation.png" height="16" alt="error!" title="{translate id=pdga_data_mismatch} ({$player->birthyear|escape} vs {$pdga_birth_year})" />
+            {/if}
         {/if}
 
         {formerror field='dob'}
     </div>
 
-     <h2>{translate id='add_competitor_class'}</h2>
-     <div>
+    {if $edit}
+        <h2>{translate id='reg_finalize_create'}</h2>
+        <div>
+            <input type="submit" value="{translate id='form_new_competitor'}" name="accept" />
+        </div>
+    {else}
+        <h2>{translate id='add_competitor_class'}</h2>
+        <div>
+            {if $pdga}
+            <div class="searcharea">
+                <label for="membership">{translate id='pdga_membership'}</label>
+                    <span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span><br />
+                <label for="official">{translate id='pdga_official'}</label>
+                    <span name="official">{translate id=pdga_official_$pdga_official_status}</span><br />
+                <label for="rating">{translate id='pdga_rating'}</label>
+                    <span name="rating">{$pdga_rating}</span><br />
+                <label for="status">{translate id='pdga_status'}</label>
+                    <span name="status">{$pdga_classification}</span><br />
+                <label for="status">{translate id='pdga_country'}</label>
+                    <span name="status">{$pdga_country}</span><br />
+            </div>
+            {/if}
 
-        <label for="class">{translate id='class'}</label>
+            <label for="class">{translate id='class'}</label>
+            <select id="class" name="class">
+                {html_options options=$classOptions}
+            </select>
 
-        <select id="class" name="class">
-            {html_options options=$classOptions}
-        </select>
+            {formerror field='class'}
+        </div>
 
-        {formerror field='class'}
-     </div>
+        <h2>{translate id='license_status_header'}</h2>
+        <div>
+            {if $licenses_ok}
+                <div class="searcharea">
+                {if $sfl_license_a}
+                    {translate id='license_ok_a'}
+                {else}
+                    {translate id='license_ok_b'}
+                {/if}
+                </div>
+            {else}
+                {if $pdga && $pdga_country != "FI"}
+                    {if $pdga_membership_status != "current"}
+                        <div class="error">{translate id='license_fail_foreign'}</div>
+                        {assign var="licenses_ok" value=false}
+                    {else}
+                        <div class="searcharea">{translate id='license_ok_foreign'}</div>
+                    {/if}
+                {else}
+                    {if $sfl_license_b && $licenses_ok == false}
+                        <div class="error">{translate id='licenses_fail_onlyb'}</div>
+                    {else}
+                        <div class="error">{translate id='licenses_fail'}</div>
+                    {/if}
+                {/if}
+            {/if}
+        </div>
 
-    <h2>{translate id='license_status_header'}</h2>
-    <div>
-        {if $licenses_ok}<div class="searcharea">{translate id='licenses_ok'}</div>{else}<div class="error">{translate id='licenses_fail'}</div>{/if}
-    </div>
-
-    <h2>{translate id='reg_finalize'}</h2>
-    <div>
-        <input type="submit" value="{translate id='form_add_competitor'}" name="accept" />
-        <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-    </div>
+        <h2>{translate id='reg_finalize'}</h2>
+        <div>
+            <input type="submit" value="{translate id='form_add_competitor'}" name="accept" {if !$licenses_ok}disabled="disabled"{/if} />
+            <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" {if !$licenses_ok}disabled="disabled"{/if} />
+            <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
+        </div>
+    {/if}
 </form>
 
 <script type="text/javascript">
