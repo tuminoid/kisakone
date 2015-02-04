@@ -3,6 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * PDGA integration during sign up/add competitor.
+  * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
+
 2015.02.04:
 ===========
   * Humongous data_access.php is split into 15 data/* files.
@@ -12,7 +17,7 @@ Kisakone versions are simply release date tags:
 2015.01.30:
 ===========
   * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
-  * Reformat `data_access.php` entirely to make it readable and as a first step, 
+  * Reformat `data_access.php` entirely to make it readable and as a first step,
       introduce `login.php` in `core/data` to handle login related functions.
   * Database security on hashed password was greatly enhanced by switching from unsalted MD5 to salted crypt.
   * Fix missing hole number if custom hole text was empty. GH #178.
