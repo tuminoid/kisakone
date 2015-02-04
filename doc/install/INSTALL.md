@@ -4,13 +4,14 @@ Setting up Kisakone:
 For the purposes of this file, we'll assume the installation happens at the
 directory `.` and is accessible through `http://example.com/kisakone/`
 
-1. Extract and/or copy the extracted files to a location which is accessible
+1. `git clone` Kisakone files to a location which is accessible
 through the web server you intend to use. This should be the final location as well.
+Using a git clone enables you much easier upgrades than installing from a tarball.
 
 2. You need to make sure `config.php` in the installation root directory can be
 written to by the web server.
 
-3. Have a database available in mysql, or insert admin credentials to allow
+3. Have a database available in MySQL, or insert admin credentials to allow
 install script to create one for Kisakone.
 
 4. Access the page `doc/install/install.php` in the installation root using your browser,
@@ -24,8 +25,8 @@ server from writing to `config.php` again.
 7. The directory `images/uploaded` and `Smarty/templetes_c` needs to be
 writable by the web server.
 
-8. Copy `config_site.php.sample` to `config_site.php` and modify the email
-address for the administration and Kisakone's name.
+8. Copy `config_site.php.example` to `config_site.php` and modify the email
+address and other configuration information for the administration and Kisakone's name.
 
 
 Setting up LAMP for Kisakone:
@@ -37,7 +38,7 @@ https://help.ubuntu.com/community/ApacheMySQLPHP
 
 Step by step:
 ```
-$ sudo apt-get install mysql-server apache2 libapache2-mod-php5 php5 php5-mysql
+$ sudo apt-get install mysql-server apache2 libapache2-mod-php5 php5 php5-mysql php5-curl php5-mcrypt
 $ sudo a2enmod php5
 $ sudo a2enmod rewrite
 ```
@@ -59,25 +60,3 @@ When prompted, select `Internet Site` and enter your domain name.
 ```
 $ sudo apt-get install postfix
 ```
-
-
-Using VagrantUp as development:
--------------------------------
-
-VagrantUp is a headless virtual machine that can be instantiated and destroyed
-at a whim, to be recreated identically again. This way it can provide exact same
-development environment for all developers. System works on Linux, Windows, Mac
-etc, so host is not an issue. You just ssh in to your vagrantup box.
-
-Steps to run development on vagrantup:
-
-1. Install VagrantUp for your host: http://www.vagrantup.com/
-2. Install Virtualbox and Extensions: http://www.virtualbox.org/
-3. In Kisakone git, go to `tools/vagrantup/apache2`, execute `vagrant up`
-4. When it says it has completed, execute `vagrant ssh` to have shell to your
-   installation. `sudo` is passwordless for you.
-5. Webroot is set to `/kisakone`, which is shared from Kisakone folder from your host,
-   so you can edit files your host with your favourite editor and it is synced
-   to vagrant automatically.
-6. Go to Kisakone installation guide on top of this file.
-7. Hack & enjoy.
