@@ -314,7 +314,7 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
     $eventid = (int) $eventid;
 
     $query = format_query("UPDATE :Event
-                            SET Venue = $venue, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
+                            SET Venue = $venueid, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
                                 Duration = $duration, PlayerLimit = $playerlimit,
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
@@ -438,7 +438,7 @@ function GetEventParticipantCounts($eventId)
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result)) {
-            $clas = $row['Classification'];
+            $class = $row['Classification'];
             $retValue[$class] = $row['cnt'];
         }
     }
@@ -469,13 +469,15 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Classification.id AS ClassId
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
-                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId
+                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                 WHERE $where
                 ORDER BY $sortOrder";
-
     $query = format_query($query);
     $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -770,7 +772,7 @@ function SaveParticipationResults($entry)
     $overall = $entry['OverallResult'];
     $standing = $entry['Standing'];
     $dnf = $entry['DidNotFinish'];
-    $points = $entry['TournamentPoints'];
+    $points = esc_or_null($entry['TournamentPoints'], 'int');
     $id = $entry['id'];
 
     $query = format_query("UPDATE :Participation
