@@ -23,7 +23,8 @@ Upgrading
 =========
 
 You can upgrade by doing a `git fetch` followed by `git checkout <version you want>` AND then executing upgrade steps,
-in order, up to the version to chose to upgrade to.
+in order, up to the version to chose to upgrade to. See 
+[UPGRADE.md](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/UPGRADE.md)
 
 List of ugprades that require additional steps is available at
 [upgrade](https://github.com/tuminoid/kisakone/tree/master/doc/upgrade) directory.
