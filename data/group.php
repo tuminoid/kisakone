@@ -228,9 +228,7 @@ function SetRoundGroupsDone($roundid, $done)
 {
     $roundid = (int) $roundid;
 
-    $time = null;
-    if ($done)
-        $time = time();
+    $time = esc_or_null($done ? time() : null, 'int');
 
     $query = format_query("UPDATE :Round SET GroupsFinished = FROM_UNIXTIME($time) WHERE id = $roundid");
     execute_query($query);
