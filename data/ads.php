@@ -89,16 +89,16 @@ function GetAd($eventid, $contentid)
 
 function InitializeAd($eventid, $contentid)
 {
-    $eventid = esc_or_null($eventid, 'int');
-    $contentid = esc_or_null($contentid);
-    $type = $eventid ? AD_EVENT_DEFAULT : AD_DEFAULT;
+    $eid = esc_or_null($eventid, 'int');
+    $cid = esc_or_null($contentid);
+    $type = esc_or_null($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT);
 
     $query = format_query("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
-                            VALUES ($eventid, NULL, NULL, NULL, NULL, $type, $contentid)");
+                            VALUES ($eid, NULL, NULL, NULL, NULL, $type, $cid)");
     $result = execute_query($query);
 
     if (!$result)
-        return Error::Query($query, 'InitializeAd');
+        return Error::Query($query);
 
     return GetAd($eventid, $contentid);
 }
