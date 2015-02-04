@@ -44,8 +44,7 @@ function SFL_FeesPaidForYear($user, $year)
                             AND  cast( cast(:Player.lastname as binary) as char character set utf8) = sfl_player.lastname
                             AND YEAR(:Player.birthdate) = YEAR(sfl_player.birthdate))
                         INNER JOIN :User ON :User.Player = :Player.player_id
-                        WHERE :User.id = %d AND sfl_membership.year = %d ORDER BY sfl_player.pdga"
-                        , $user, $year);
+                        WHERE :User.id = $user AND sfl_membership.year = $year ORDER BY sfl_player.pdga");
     $result = execute_query($query);
 
     if (!$result)
