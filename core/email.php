@@ -25,7 +25,6 @@
 
 require_once 'config.php';
 
-
 /**
  * E-mail tokens are bits of text which are converted within an e-mail message
  * with appropriate content.
@@ -34,20 +33,9 @@ function GetEmailTokens()
 {
     // The key stands for the token itself, the value is instruction for
     // the Email::Prepare function letting it know how to deal with it
-    return array(
-        'event' => 'event.name',
-        'pdga' => 'player.pdga',
-        'lastname' => 'user.lastname',
-        'firstname' => 'user.firstname',
-        'username' => 'user.username',
-        //'admin_firstname' => 'user.firstname',
-        //'admin_lastname' => 'user.lastname',
-        'startdate' => 'event.startdate/d',
-        'signup_end' => 'event.signupEnd/d',
-        'link' => 'special.link',
-        'token' => 'special.token',
-
-    );
+    return array('event' => 'event.name', 'pdga' => 'player.pdga', 'lastname' => 'user.lastname', 'firstname' => 'user.firstname', 'username' => 'user.username', //'admin_firstname' => 'user.firstname',
+    //'admin_lastname' => 'user.lastname',
+    'startdate' => 'event.startdate/d', 'signup_end' => 'event.signupEnd/d', 'link' => 'special.link', 'token' => 'special.token',);
 }
 
 // E-mail types
@@ -56,11 +44,9 @@ define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
 define('EMAIL_PROMOTED_FROM_QUEUE', 'email_promoted');
 
-
 class Email
 {
     // E-mails are quite simply text content, using different processing.
-
     var $textcontent;
     var $text;
     var $title;
@@ -73,11 +59,11 @@ class Email
 
         if (is_a($content, 'TextContent')) {
             $this->textcontent = $content;
-        } else {
+        }
+        else {
             $this->textcontent = GetGlobalTextContent($content);
         }
     }
-
 
     /**
      * The contained e-mail message is prepared to be sent; all the tokens
@@ -109,10 +95,11 @@ class Email
                     if (!$event)
                         $value = '';
                     else {
-                        if (substr($field, -2) == '/d') {
-                            $field = substr($field, 0, -2);
+                        if (substr($field, - 2) == '/d') {
+                            $field = substr($field, 0, - 2);
                             $date = true;
-                        } else
+                        }
+                        else
                             $date = false;
                         $value = $event->$field;
                         if (!is_object($event))
@@ -122,12 +109,14 @@ class Email
                     }
                     break;
 
+
                 case 'player':
                     if (!$player)
                         $value = '';
                     else
                         $value = $player->$field;
                     break;
+
 
                 case 'user':
                     if (!$user)
@@ -136,10 +125,10 @@ class Email
                         $value = $user->$field;
                     break;
 
+
                 case 'special':
                     $value = @$special[$field];
                     break;
-
             }
 
             $to[] = $value;
@@ -165,18 +154,11 @@ class Email
             return;
         }
 
-        $retval = mail(
-            $recipientAddress,
-            utf8_decode($this->title),
-            utf8_decode($this->text),
-            "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer,
-            "-f$from"
-        );
+        $retval = mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text), "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer, "-f$from");
 
         return $retval;
     }
 }
-
 
 /**
  * This function sends e-mail to a specific user of the system. E-mails are

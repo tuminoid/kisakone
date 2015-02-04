@@ -23,14 +23,14 @@
  * */
 
 // TODO: Is there need to check the password minimum length
-
 /* *****************************************************************************
  * Configuration
  *
  * */
 
 // Valid User->role attribute values
-define('USER_ROLE_PLAYER', 'player'); // Default role
+define('USER_ROLE_PLAYER', 'player');
+// Default role
 define('USER_ROLE_ADMIN', 'admin');
 
 // Valid User->username field length
@@ -38,12 +38,12 @@ define('USER_USERNAME_MIN_LENGTH', 3);
 define('USER_USERNAME_MAX_LENGTH', 40);
 
 // User access levels
-$user_access_level_none         = '';
-$user_access_level_login        = 'login';
-$user_access_level_official     = 'official';
+$user_access_level_none = '';
+$user_access_level_login = 'login';
+$user_access_level_official = 'official';
 $user_access_level_officialonly = 'officialonly';
-$user_access_level_td           = 'td';
-$user_access_level_admin        = 'admin';
+$user_access_level_td = 'td';
+$user_access_level_admin = 'admin';
 
 /* *****************************************************************************
  * This class represents a single user in the system.
@@ -52,30 +52,33 @@ class user
 {
     var $id;
     var $username;
-    var $role;      // $user_role_player or $user_role_admin
+    var $role;
+    // $user_role_player or $user_role_admin
     var $firstname;
     var $lastname;
-    var $fullname;  // derived attribute
+    var $fullname;
+    // derived attribute
     var $email;
-    var $gender;    // Player class attribute, repeated here for convenience
-    var $pdga;      // Player class attribute, repeated here for convenience
-    var $birthyear; // Player class attribute, repeated here for convenience
-    var $password;  // password as hash
-    var $hash;      // what type of hash password is
-    var $salt;      // salt for the password
-    var $lastlogin; // time of last login
-    var $passwordchanged; // time of last password change
-
+    var $gender;
+    // Player class attribute, repeated here for convenience
+    var $pdga;
+    // Player class attribute, repeated here for convenience
+    var $birthyear;
+    // Player class attribute, repeated here for convenience
+    var $password;
+    // password as hash
+    var $hash;
+    // what type of hash password is
+    var $salt;
+    // salt for the password
+    var $lastlogin;
+    // time of last login
+    var $passwordchanged;
+    // time of last password change
     /** ************************************************************************
      * Class constructor
      */
-    function User($id = null,
-                   $uname = "",
-                   $role = null,
-                   $fname = "",
-                   $lname = "",
-                   $email = "",
-                   $player = "none")
+    function User($id = null, $uname = "", $role = null, $fname = "", $lname = "", $email = "", $player = "none")
     {
         if ($email && $player === 'none')
             die('Invalid user initialization' . print_r(debug_backtrace(), true));
@@ -165,9 +168,7 @@ class user
                 $err->internalDescription = "Attempt to change valid User->id.";
                 $err->function = "User->SetId()";
                 $err->IsMajor = true;
-                $err->data = "username:" . $this->username .
-                             "; existing id:" . $this->id .
-                             "; new id:" . $id;
+                $err->data = "username:" . $this->username . "; existing id:" . $this->id . "; new id:" . $id;
             }
         }
 
@@ -261,8 +262,7 @@ class user
             $err->internalDescription = "User->email attribute is not valid.";
             $err->function = "User->ValidateUser()";
             $err->IsMajor = false;
-            $err->data = "User->username:" . $this->username .
-                         "; User->email:" . $this->email;
+            $err->data = "User->username:" . $this->username . "; User->email:" . $this->email;
             return $err;
         }
 
@@ -274,7 +274,9 @@ class user
      *
      * Returns true if the username is valid, otherwise returns false.
      */
-    static function IsValidUsername($username)
+    static
+
+    function IsValidUsername($username)
     {
 
         $retVal = false;
@@ -285,9 +287,7 @@ class user
             $retVal = true;
         }
         elseif (!empty($username)) {
-            if ((is_string($username)) and
-                    (strlen($username) >= USER_USERNAME_MIN_LENGTH) and
-                    (strlen($username) <= USER_USERNAME_MAX_LENGTH))
+            if ((is_string($username)) and (strlen($username) >= USER_USERNAME_MIN_LENGTH) and (strlen($username) <= USER_USERNAME_MAX_LENGTH))
                 $retVal = true;
 
             if (!preg_match('/^[\pL\d_-]+$/', $username)) {
@@ -312,8 +312,7 @@ class user
             $retVal = true;
         }
         elseif (!empty($email)) {
-            $validEmailExpr = "/^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" .
-                              "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$/i";
+            $validEmailExpr = "/^[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*" . "@[0-9A-Za-z~!#$%&_-]([.]?[0-9A-Za-z~!#$%&_-])*$/i";
             if (preg_match($validEmailExpr, $email)) {
                 $retVal = true;
             }
@@ -337,7 +336,7 @@ class user
      */
     function GetMyEvents($eventType)
     {
-        return GetUserEvents(null,  $eventType);
+        return GetUserEvents(null, $eventType);
     }
 
     /** ************************************************************************
@@ -370,7 +369,7 @@ class user
         if ($settings['USE_MOD_REWRITE'])
             $url = $protocol . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         else
-            $url = $protocol . $_SERVER['HTTP_HOST'] . baseurl() .  url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
+            $url = $protocol . $_SERVER['HTTP_HOST'] . baseurl() . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
     }
@@ -435,25 +434,26 @@ function access($level)
                     $retVal = true;
                     break;
 
+
                 case $user_access_level_official:
                     $event = GetEventDetails($eventid);
-                    if ($event && ($admin_user or $event->management == $user_access_level_td
-                       or $event->management == $user_access_level_official))
-                    {
+                    if ($event && ($admin_user or $event->management == $user_access_level_td or $event->management == $user_access_level_official)) {
                         $retVal = true;
                     }
                     break;
 
+
                 case $user_access_level_officialonly:
                     // Only officials have access to features with this type of protection, no-one else
-                     $event = GetEventDetails($eventid);
+                    $event = GetEventDetails($eventid);
                     if ($event && $event->management == $user_access_level_official) {
                         $retVal = true;
                     }
                     break;
 
+
                 case $user_access_level_td:
-                     $event = GetEventDetails($eventid);
+                    $event = GetEventDetails($eventid);
 
 
                     if ($event && ($admin_user || $event->management == $user_access_level_td)) {
@@ -461,11 +461,13 @@ function access($level)
                     }
                     break;
 
+
                 case $user_access_level_admin:
                     if ($admin_user) {
                         $retVal = true;
                     }
                     break;
+
 
                 default:
                     // Invalid access level, report internal error
@@ -475,9 +477,7 @@ function access($level)
                     $err->internalDescription = "Unexpected access level as argument.";
                     $err->function = "access()";
                     $err->IsMajor = true;
-                    $err->data = "level:" . $level .
-                                 "; user id:" . $this->id .
-                                 "; username:" . $this->username;
+                    $err->data = "level:" . $level . "; user id:" . $this->id . "; username:" . $this->username;
                     break;
             }
         }

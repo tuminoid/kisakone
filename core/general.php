@@ -38,20 +38,19 @@ function core_ProduceFieldName($dbfield)
 
 function data_fixNameCase($name)
 {
-   $string = ucwords(strtolower($name));
+    $string = ucwords(strtolower($name));
 
-   foreach (array('-', '\'') as $delimiter) {
-      if (strpos($string, $delimiter)!==false)
-         $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
-   }
+    foreach (array('-', '\'') as $delimiter) {
+        if (strpos($string, $delimiter) !== false)
+            $string = implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+    }
 
-   return $string;
+    return $string;
 }
-
 
 function data_RemoveEmptyStrings($item)
 {
-   return $item !== '';
+    return $item !== '';
 }
 
 

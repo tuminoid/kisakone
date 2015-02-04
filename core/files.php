@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class File
 {
     var $filename;
@@ -79,20 +78,23 @@ function core_GetUniqueFileDisplayName($base, $type)
 {
     $files = GetFilesOfType($type);
     $names = array();
-    foreach ($files as $file) $names[$file->displayName] = true;
+    foreach ($files as $file)
+        $names[$file->displayName] = true;
 
     if (@$names[$base]) {
         $ind = 2;
         do {
-            $nfn = $base . ' ('. $ind .')';
+            $nfn = $base . ' (' . $ind . ')';
 
             if (!@$names[$nfn]) {
                 return $nfn;
             }
 
             $ind++;
-        } while (true);
-    } else {
+        }
+        while (true);
+    }
+    else {
         return $base;
     }
 }
@@ -107,25 +109,25 @@ function core_GetExtension($filename)
     $slash = strrpos($filename, '/');
     $backslash = strrpos($filename, '\\');
 
-    if ($dot < $slash || $dot < $backslash) return '';
+    if ($dot < $slash || $dot < $backslash)
+        return '';
     return substr($filename, $dot);
 }
 
 /**
  * Chosoes a name for an uploaded file. Extension of the file must be provided.
  */
-
 function core_ChooseUploadFilename($extension)
 {
     $dir = "images/uploaded/";
     do {
-        $filename = core_GenerateFilename();
+        $filename = core_GenerateFilename ();
         $fullname = $dir . $filename . $extension;
-    } while (file_exists($fullname));
+    }
+    while (file_exists($fullname));
 
     return $filename . $extension;
 }
-
 
 /**
  * Generates a rendom filename

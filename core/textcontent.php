@@ -25,7 +25,6 @@
 
 require_once 'data/textcontent.php';
 
-
 class TextContent
 {
     // Sometimes title is not used,
@@ -50,10 +49,10 @@ class TextContent
 
         if ($this->type == 'submenu' || $this->type == 'index') {
             $this->FormatText(false);
-        } else {
+        }
+        else {
             $this->FormatText();
         }
-
     }
 
     function Delete()
@@ -67,7 +66,8 @@ class TextContent
     */
     function GetProperTitle()
     {
-        if ($this->title) return $this->title;
+        if ($this->title)
+            return $this->title;
         return translate('pagetitle_' . $this->type);
     }
 
@@ -86,10 +86,9 @@ class TextContent
 
         // can't guarantee that the contained text is valid xhtml
         if ($disableXHTML && trim($this->formattedText) != '') {
-            $GLOBALS['disable_xhtml']  = true;
+            $GLOBALS['disable_xhtml'] = true;
         }
     }
-
 }
 
 /**
@@ -98,18 +97,19 @@ class TextContent
  * of the page and it's searched as such.
  */
 function GetGlobalTextContent($contentId, $searchByTitle = false)
-    {
-        if ( is_numeric( $contentId)) {
-            $content = GetTextContent( $contentId);
-            if (!$content || $content->event !== null) {
-                return Error::accessDenied();
-            }
-        } else {
-            $content = GetTextContentByEvent(null, $contentId);
-            if ($searchByTitle && !$content) {
-                $content = GetTextContentByTitle(null, $contentId);
-            }
+{
+    if (is_numeric($contentId)) {
+        $content = GetTextContent($contentId);
+        if (!$content || $content->event !== null) {
+            return Error::accessDenied();
         }
-
-        return $content;
     }
+    else {
+        $content = GetTextContentByEvent(null, $contentId);
+        if ($searchByTitle && !$content) {
+            $content = GetTextContentByTitle(null, $contentId);
+        }
+    }
+
+    return $content;
+}

@@ -34,9 +34,7 @@ class Level
     /** ************************************************************************
      * Class constructor
      */
-    function Level($id = null,
-                    $name = "",
-                    $scoreCalculationMethod = null, $available = false)
+    function Level($id = null, $name = "", $scoreCalculationMethod = null, $available = false)
     {
         $this->id = $id;
         $this->name = $name;
@@ -56,7 +54,7 @@ class Level
         require_once 'core/scorecalculation.php';
         $methodName = "";
 
-        if ( !($this->scoreCalculationMethod == "")) {
+        if (!($this->scoreCalculationMethod == "")) {
             $obj = GetScoreCalculationMethod('level', $this->scoreCalculationMethod);
             $methodName = $obj->name;
         }

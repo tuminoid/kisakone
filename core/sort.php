@@ -35,136 +35,135 @@ function core_sort_by_count($a, $b)
 {
     $ac = count($a);
     $bc = count($b);
-    if ($ac == $bc) return 0;
-    if ($ac < $bc) return 1;
-    return -1;
+    if ($ac == $bc)
+        return 0;
+    if ($ac < $bc)
+        return 1;
+    return - 1;
 }
 
 function data_string_in_array($string, $array)
 {
-   foreach ($array as $value)
-      if ($string === $value)
-         return true;
+    foreach ($array as $value)
+        if ($string === $value)
+            return true;
 
-   return false;
+    return false;
 }
-
-
 
 function data_sort_leaderboard($a, $b)
 {
-   $ac = $a['Classification'];
-   $bc = $b['Classification'];
-   if ($ac != $bc) {
-      if ($ac < $bc)
-         return -1;
-      return 1;
-   }
+    $ac = $a['Classification'];
+    $bc = $b['Classification'];
+    if ($ac != $bc) {
+        if ($ac < $bc)
+            return - 1;
+        return 1;
+    }
 
-   $astand = $a['Standing'];
-   $bstand = $b['Standing'];
-   if ($astand != $bstand) {
-      if ($astand < $bstand)
-         return -1;
-      return 1;
-   }
+    $astand = $a['Standing'];
+    $bstand = $b['Standing'];
+    if ($astand != $bstand) {
+        if ($astand < $bstand)
+            return - 1;
+        return 1;
+    }
 
-   $asd = $a['SuddenDeath'];
-   $bsd = $b['SuddenDeath'];
-   if ($asd != $bsd) {
-      if ($asd < $bsd)
-         return -1;
-      return 1;
-   }
+    $asd = $a['SuddenDeath'];
+    $bsd = $b['SuddenDeath'];
+    if ($asd != $bsd) {
+        if ($asd < $bsd)
+            return - 1;
+        return 1;
+    }
 
-   $ar = $a['Results'];
-   $br = $b['Results'];
+    $ar = $a['Results'];
+    $br = $b['Results'];
 
-   $keys = array_reverse(array_keys($ar));
-   foreach ($keys as $key) {
-      $ae = @$ar[$key]['Total'];
-      $be = @$br[$key]['Total'];
-      if ($ae != $be) {
-         if ($ae < $be)
-            return -1;
-         return 1;
-      }
-   }
+    $keys = array_reverse(array_keys($ar));
+    foreach ($keys as $key) {
+        $ae = @$ar[$key]['Total'];
+        $be = @$br[$key]['Total'];
+        if ($ae != $be) {
+            if ($ae < $be)
+                return - 1;
+            return 1;
+        }
+    }
 
-   $as = $ar[$keys[0]]['StartId'];
-   $bs = $br[$keys[0]]['StartId'];
-   if ($as < $bs)
-      return -1;
-   return 1;
+    $as = $ar[$keys[0]]['StartId'];
+    $bs = $br[$keys[0]]['StartId'];
+    if ($as < $bs)
+        return - 1;
+    return 1;
 }
-
 
 function data_Result_Sort($a, $b)
 {
-   $dnfa = (bool) $a['DidNotFinish'];
-   $dnfb = (bool) $b['DidNotFinish'];
-   if ($dnfa != $dnfb) {
-      if ($dnfa)
-         return 1;
-      return -1;
-   }
-
-   $compa = $a['Completed'];
-   $compb = $b['Completed'];
-   if ($compa != $compb && ($compa == 0 || $compb == 0)) {
-      if ($compa == 0)
-         return 1;
-      return -1;
-   }
-
-   $cpma = $a['CumulativePlusminus'];
-   $cpmb = $b['CumulativePlusminus'];
-   if ($cpma != $cpmb) {
-      if ($cpma > $cpmb)
-         return 1;
-      return -1;
-   }
-
-   $sda = $a['SuddenDeath'];
-   $sdb = $b['SuddenDeath'];
-   if ($sda != $sdb) {
-      if ($sda < $sdb)
-         return -1;
-      return 1;
-   }
-
-   global $data_extraSortInfo;
-   foreach ($data_extraSortInfo as $round) {
-      $ad = @$round[$a['PlayerId']];
-      $bd = @$round[$b['PlayerId']];
-
-      if ($ad == null && $bd == null)
-         continue;
-      if ($ad == null || $bd == null) {
-         if ($ad == null)
+    $dnfa = (bool) $a['DidNotFinish'];
+    $dnfb = (bool) $b['DidNotFinish'];
+    if ($dnfa != $dnfb) {
+        if ($dnfa)
             return 1;
-         return -1;
-      }
+        return - 1;
+    }
 
-      if ($ad['Result'] != $bd['Result']) {
-         if ($ad['Result'] < $bd['Result'])
-            return -1;
-         return 1;
-      }
-   }
+    $compa = $a['Completed'];
+    $compb = $b['Completed'];
+    if ($compa != $compb && ($compa == 0 || $compb == 0)) {
+        if ($compa == 0)
+            return 1;
+        return - 1;
+    }
 
-   foreach ($data_extraSortInfo as $round) {
-      $ad = @$round[$a['PlayerId']];
-      $bd = @$round[$b['PlayerId']];
+    $cpma = $a['CumulativePlusminus'];
+    $cpmb = $b['CumulativePlusminus'];
+    if ($cpma != $cpmb) {
+        if ($cpma > $cpmb)
+            return 1;
+        return - 1;
+    }
 
-      if ($ad == null && $bd == null)
-         continue;
+    $sda = $a['SuddenDeath'];
+    $sdb = $b['SuddenDeath'];
+    if ($sda != $sdb) {
+        if ($sda < $sdb)
+            return - 1;
+        return 1;
+    }
 
-      if ($ad['StartId'] < $bd['StartId'])
-         return -1;
+    global $data_extraSortInfo;
+    foreach ($data_extraSortInfo as $round) {
+        $ad = @$round[$a['PlayerId']];
+        $bd = @$round[$b['PlayerId']];
 
-      return 1;
-   }
+        if ($ad == null && $bd == null)
+            continue;
+        if ($ad == null || $bd == null) {
+            if ($ad == null)
+                return 1;
+            return - 1;
+        }
+
+        if ($ad['Result'] != $bd['Result']) {
+            if ($ad['Result'] < $bd['Result'])
+                return - 1;
+            return 1;
+        }
+    }
+
+    foreach ($data_extraSortInfo as $round) {
+        $ad = @$round[$a['PlayerId']];
+        $bd = @$round[$b['PlayerId']];
+
+        if ($ad == null && $bd == null)
+            continue;
+
+        if ($ad['StartId'] < $bd['StartId'])
+            return - 1;
+
+        return 1;
+    }
 }
 
 

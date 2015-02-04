@@ -21,7 +21,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-
 /**
  * Method for generating the user salt.
  *
@@ -32,7 +31,7 @@ function GenerateSalt()
     try {
         $rawsalt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
     }
-    catch (Exception $e) {
+    catch(Exception$e) {
         error_log("error: php5-crypt missing, cannot create salt");
         return null;
     }
@@ -40,7 +39,6 @@ function GenerateSalt()
     $salt = str_replace('+', '.', $salt);
     return $salt;
 }
-
 
 /**
  * Method for getting a hash for password
@@ -63,12 +61,11 @@ function GenerateHash($password, $hash = "md5", $salt = "")
     // Correct way is to use salting and strong crypto
     if ($hash == "crypt") {
         if (IsValidSalt($salt))
-            return crypt($password, '$2y$10$' . $salt  . '$');
+            return crypt($password, '$2y$10$' . $salt . '$');
     }
 
     return null;
 }
-
 
 /**
  * Method for enforcing password quality
@@ -93,7 +90,6 @@ function IsValidPassword($password)
 
     return true;
 }
-
 
 /**
  * Method for checking valid salt

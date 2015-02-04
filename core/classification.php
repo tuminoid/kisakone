@@ -22,7 +22,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class Classification
 {
     var $id;
@@ -37,16 +36,17 @@ class Classification
      */
     function Classification($id = null, $name = null, $minAge = 0, $maxAge = 0, $gender = null, $available = 0)
     {
-      if (is_array($id)) {
-        $this->initializeFromArray($id);
-      } else {
-        $this->id = $id;
-        $this->name = $name;
-        $this->minAge = $minAge;
-        $this->maxAge = $maxAge;
-        $this->gender = $gender;
-        $this->available = $available;
-      }
+        if (is_array($id)) {
+            $this->initializeFromArray($id);
+        }
+        else {
+            $this->id = $id;
+            $this->name = $name;
+            $this->minAge = $minAge;
+            $this->maxAge = $maxAge;
+            $this->gender = $gender;
+            $this->available = $available;
+        }
     }
 
     function initializeFromArray($array)

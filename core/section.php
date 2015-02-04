@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class Section
 {
     var $id;
@@ -57,7 +56,8 @@ class Section
         if ($this->classification) {
             $class = GetClassDetails($this->classification);
             return $class->name;
-        } else {
+        }
+        else {
             return translate('combined_group_name');
         }
     }
@@ -110,7 +110,7 @@ class Section
         }
 
         $playersById = array();
-        foreach($players as $player) {
+        foreach ($players as $player) {
             $playersById[$player['PlayerId']] = $player;
         }
 
@@ -149,13 +149,7 @@ class Section
         $groupsizes = core_GetGroupSizes(count($players));
         foreach ($groupsizes as $size => $groups) {
             while ($groups--) {
-                $group = array(
-                    'StartingTime' => 0,
-                    'GroupNumber' => 0,
-                    'Section' => $this->id,
-                    'StartingHole' => null,
-                    'People' => array()
-                );
+                $group = array('StartingTime' => 0, 'GroupNumber' => 0, 'Section' => $this->id, 'StartingHole' => null, 'People' => array());
 
                 $leftForThis = $size;
                 while ($leftForThis--) {
@@ -199,6 +193,7 @@ class Section
                 }
                 break;
 
+
             case 'sequential':
                 if ($group['StartingTime'] != $start) {
                     $group['StartingTime'] = $start;
@@ -211,6 +206,7 @@ class Section
 
                 $start = $start + $round->interval * 60;
                 break;
+
 
             default:
                 fail();
@@ -229,46 +225,49 @@ class Section
  */
 function core_GetGroupSizes($people)
 {
-    $groupsof  = array(3 => 0, 4 => 0, 5 => 0);
+    $groupsof = array(3 => 0, 4 => 0, 5 => 0);
 
     switch ($people) {
         case 6:
             $groupsof[3] = 2;
             break;
 
+
         case 9:
             $groupsof[4] = 1;
             $groupsof[5] = 1;
             break;
 
+
         default:
             if ($people <= 5) {
                 $groupsof[$people] = 1;
-            } else {
+            }
+            else {
                 $four = floor($people / 4);
                 $three = $people % 4 ? 1 : 0;
 
                 while ($four * 4 + $three * 3 != $people) {
                     if ($four * 4 + $three * 3 > $people) {
                         $four--;
-
-                    } else {
+                    }
+                    else {
                         $three++;
                     }
                 }
                 $groupsof[4] = $four;
                 $groupsof[3] = $three;
             }
+        }
+
+        return $groupsof;
     }
 
-    return $groupsof;
-}
-
-function core_UpdateGroups($groups)
-{
-    foreach ($groups as $group) {
-        if (isset($group['changed'])) {
-            UpdateGroup($group);
-        }
+    function core_UpdateGroups($groups)
+    {
+        foreach ($groups as $group) {
+            if (isset($group['changed'])) {
+                UpdateGroup($group);
+            }
     }
 }

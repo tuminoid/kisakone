@@ -33,7 +33,8 @@ function GetScoreCalculationMethods($type)
 
     if ($dir !== false) {
         while (($file = readdir($dir)) !== false) {
-            if ($file[0] == '.') continue;
+            if ($file[0] == '.')
+                continue;
             require_once($dirname . '/' . $file);
             $basename = basename($file, '.php');
             $classname = sprintf("scorecalc_%s_%s", $type, $basename);
@@ -52,7 +53,8 @@ function GetScoreCalculationMethods($type)
  */
 function GetScoreCalculationMethod($type, $name)
 {
-    if ($name != basename($name)) return Error::AccessDenied();
+    if ($name != basename($name))
+        return Error::AccessDenied();
 
     $filename = "core/${type}Scores/$name.php";
     require_once($filename);

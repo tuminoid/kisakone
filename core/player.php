@@ -28,7 +28,7 @@ define('PLAYER_GENDER_FEMALE', 'F');
 
 // Valid User->birthyear attribute values
 define('PLAYER_BIRTHYEAR_MIN', 1900);
-define('PLAYER_BIRTHYEAR_MAX', intval( date( "Y")));
+define('PLAYER_BIRTHYEAR_MAX', intval(date("Y")));
 
 /* *****************************************************************************
  * This class represents a single player in the system.
@@ -47,27 +47,25 @@ class Player
     /** ************************************************************************
      * Class constructor
      */
-    function Player($id = null,
-                     $pdga = 0,
-                     $gender = null,
-                     $birthyear = 0,
-                     $firstname = null,
-                     $lastname = null,
-                     $email = null)
+    function Player($id = null, $pdga = 0, $gender = null, $birthyear = 0, $firstname = null, $lastname = null, $email = null)
     {
         if ($pdga && $email == null) {
             die('Invalid player construction call ' . print_r(debug_backtrace()));
         }
 
-        if ($gender == 'male') $gender = 'M';
-        else if ($gender =='female') $gender = 'F';
+        if ($gender == 'male')
+            $gender = 'M';
+        elseif ($gender == 'female')
+            $gender = 'F';
 
         $this->id = $id;
         $this->user = null;
-        if ($pdga == null) $this->pdga = null;
-        else $this->pdga = (int) $pdga;
-        $this->SetGender( $gender);
-        $this->birthyear = intval( $birthyear);
+        if ($pdga == null)
+            $this->pdga = null;
+        else
+            $this->pdga = (int) $pdga;
+        $this->SetGender($gender);
+        $this->birthyear = intval($birthyear);
         $this->lastname = $lastname;
         $this->firstname = $firstname;
         $this->email = $email;
@@ -83,11 +81,10 @@ class Player
     function SetGender($gender)
     {
 
-        if( ( $gender == PLAYER_GENDER_MALE) or
-            ( $gender == PLAYER_GENDER_FEMALE))
-        {
+        if (($gender == PLAYER_GENDER_MALE) or ($gender == PLAYER_GENDER_FEMALE)) {
             $this->gender = $gender;
-        } else {
+        }
+        else {
             $this->gender = null;
         }
 
@@ -104,19 +101,19 @@ class Player
     {
         $err = null;
 
-        if ( !isset( $this->id)) {
-            $this->id = intval( $id);
-        } else {
+        if (!isset($this->id)) {
+            $this->id = intval($id);
+        }
+        else {
             if ($this->id !== $id) {
                 // Attempt to change a valid id, report internal error
                 $err = new Error();
                 $err->title = "error_invalid_argument";
-                $err->description = translate( "error_invalid_argument_description");
+                $err->description = translate("error_invalid_argument_description");
                 $err->internalDescription = "Attempt to change valid Player->id.";
                 $err->function = "Player->SetId()";
                 $err->IsMajor = true;
-                $err->data = "pdga:" . $this->pdga .
-                             "; id argument:" . $id;
+                $err->data = "pdga:" . $this->pdga . "; id argument:" . $id;
             }
         }
 
@@ -134,50 +131,38 @@ class Player
 
         $err = null;
 
-        if (( !is_int( $this->pdga) or ( $this->pdga < 0)) && $this->pdga !== null) {
+        if ((!is_int($this->pdga) or ($this->pdga < 0)) && $this->pdga !== null) {
             // Invalid pdga attribute
             $err = new Error();
             $err->title = "error_invalid_attribute1";
-            $err->description = translate( "error_invalid_attribute_description");
+            $err->description = translate("error_invalid_attribute_description");
             $err->internalDescription = "Invalid Player->pdga attribute.";
             $err->function = "Player->ValidatePlayer()";
             $err->IsMajor = true;
-            $err->data = "player id:" . $this->id .
-                         "; user:" . $this->user .
-                         "; pdga:" . $this->pdga;
-        } else {
-            if( ( $this->gender != PLAYER_GENDER_MALE) and
-                ( $this->gender != PLAYER_GENDER_FEMALE))
-            {
+            $err->data = "player id:" . $this->id . "; user:" . $this->user . "; pdga:" . $this->pdga;
+        }
+        else {
+            if (($this->gender != PLAYER_GENDER_MALE) and ($this->gender != PLAYER_GENDER_FEMALE)) {
                 // invalid gender attribute
                 $err = new Error();
                 $err->title = "error_invalid_attribute2";
-                $err->description = translate( "error_invalid_attribute_description");
+                $err->description = translate("error_invalid_attribute_description");
                 $err->internalDescription = "Invalid Player->gender attribute.";
                 $err->function = "Player->ValidatePlayer()";
                 $err->IsMajor = true;
-                $err->data = "player id:" . $this->id .
-                             "; user:" . $this->user .
-                             "; pdga:" . $this->pdga .
-                             "; gender:" . $this->gender;
-            } else {
-                if( !is_int( $this->birthyear) or
-                    ( $this->birthyear < PLAYER_BIRTHYEAR_MIN) or
-                    ( $this->birthyear > PLAYER_BIRTHYEAR_MAX))
-                {
+                $err->data = "player id:" . $this->id . "; user:" . $this->user . "; pdga:" . $this->pdga . "; gender:" . $this->gender;
+            }
+            else {
+                if (!is_int($this->birthyear) or ($this->birthyear < PLAYER_BIRTHYEAR_MIN) or ($this->birthyear > PLAYER_BIRTHYEAR_MAX)) {
 
                     // invalid birthyear attribute
                     $err = new Error();
                     $err->title = "error_invalid_attribute3";
-                    $err->description = translate( "error_invalid_attribute_description");
+                    $err->description = translate("error_invalid_attribute_description");
                     $err->internalDescription = "Invalid Player->birthyear attribute.";
                     $err->function = "Player->ValidatePlayer()";
                     $err->IsMajor = true;
-                    $err->data = "player id:" . $this->id .
-                                 "; user:" . $this->user .
-                                 "; pdga:" . $this->pdga .
-                                 "; gender:" . $this->gender.
-                                 "; birthyear:" . $this->birthyear;
+                    $err->data = "player id:" . $this->id . "; user:" . $this->user . "; pdga:" . $this->pdga . "; gender:" . $this->gender . "; birthyear:" . $this->birthyear;
                 }
             }
         }

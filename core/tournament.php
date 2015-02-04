@@ -24,8 +24,6 @@
 
 require_once 'data/tournament.php';
 
-
-
 class Tournament
 {
     var $id;
@@ -38,13 +36,13 @@ class Tournament
 
     function Tournament($id = 0, $level = null, $name = null, $year = null, $scoreCalculationMethod = null, $available, $description = '')
     {
-      $this->id = $id;
-      $this->level = $level;
-      $this->name = $name;
-      $this->scoreCalculationMethod = $scoreCalculationMethod;
-      $this->available = $available;
-      $this->year = $year;
-      $this->description = $description;
+        $this->id = $id;
+        $this->level = $level;
+        $this->name = $name;
+        $this->scoreCalculationMethod = $scoreCalculationMethod;
+        $this->available = $available;
+        $this->year = $year;
+        $this->description = $description;
     }
 
     /**
@@ -64,7 +62,8 @@ class Tournament
         $count = 0;
         foreach ($e as $event) {
 
-            if ($event->resultsLocked) $count++;
+            if ($event->resultsLocked)
+                $count++;
         }
 
         return $count;
@@ -117,7 +116,7 @@ class Tournament
     function GetResultsByClass()
     {
         $results = $this->GetResults();
-        if (is_a($results,' Error'))
+        if (is_a($results, ' Error'))
             return $results;
 
         $out = array();

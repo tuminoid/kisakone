@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class scorecalc_level_sm
 {
     var $name;
@@ -33,7 +32,7 @@ class scorecalc_level_sm
         $this->name = 'SM';
     }
 
-    function CalculateScores(&$participants, $totalHoles, $event ,$active)
+    function CalculateScores(&$participants, $totalHoles, $event, $active)
     {
         // Classes where 10 players only get points
         // All other classes, 30 players get points
@@ -47,12 +46,12 @@ class scorecalc_level_sm
 
         // By default, class is top 30 points
         $className = $participants[0]['Name'];
-        $scores = array(100,93,87,82,78,75,72,69,66,63,60,57,54,51,48,45,42,39,36,33,30,27,24,21,18,15,12,9,6,3);
+        $scores = array(100, 93, 87, 82, 78, 75, 72, 69, 66, 63, 60, 57, 54, 51, 48, 45, 42, 39, 36, 33, 30, 27, 24, 21, 18, 15, 12, 9, 6, 3);
 
         // If class matches one on the array above, it is top 10 points
         foreach ($lowPoints as $low) {
             if (substr($className, 0, 3) == $low) {
-                $scores = array(100,80,65,52,40,30,20,10);
+                $scores = array(100, 80, 65, 52, 40, 30, 20, 10);
                 break;
             }
         }
@@ -68,19 +67,24 @@ class scorecalc_level_sm
             $standing = $participant['Standing'];
             $same = 0;
             for ($i = $index - 1; $i >= 0; --$i) {
-                if ($participants[$i]['Standing'] == $standing) $same++;
-                else break;
+                if ($participants[$i]['Standing'] == $standing)
+                    $same++;
+                else
+                    break;
             }
 
             for ($i = $index + 1; $i < count($participants); ++$i) {
-                if ($participants[$i]['Standing'] == $standing) $same++;
-                else break;
+                if ($participants[$i]['Standing'] == $standing)
+                    $same++;
+                else
+                    break;
             }
 
             if ($same == 0) {
                 $score = 0;
                 $score = @$scores[$standing - 1];
-            } else {
+            }
+            else {
                 $score = 0;
 
                 $left = $same + 1;
@@ -88,7 +92,6 @@ class scorecalc_level_sm
                     $score += @$scores[$standing + $left - 1];
                 }
                 $score = round($score * 10 / ($same + 1)) / 10;
-
             }
             $score *= 10;
 

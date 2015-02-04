@@ -25,7 +25,6 @@
 require_once 'core/player.php';
 require_once 'data/player.php';
 
-
 /** ****************************************************************************
  * Function for registering a new user.
  *
@@ -40,9 +39,7 @@ require_once 'data/player.php';
  * @param int    $pdga      - players pdga
  * @param int    $birthyear - players birthyear
  */
-
-function RegisterPlayer($username, $password, $email, $firstname, $lastname,
-                        $gender, $pdga , $birthyear)
+function RegisterPlayer($username, $password, $email, $firstname, $lastname, $gender, $pdga, $birthyear)
 {
     $err = null;
 
@@ -61,8 +58,7 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname,
     else
         return $err;
 
-    $user = new User(null, $username, USER_ROLE_PLAYER,
-                     $firstname, $lastname, $email, $player->id);
+    $user = new User(null, $username, USER_ROLE_PLAYER, $firstname, $lastname, $email, $player->id);
     $err = $user->ValidateUser();
     if (!isset($err)) {
         if ($user->username !== null) {
@@ -75,7 +71,6 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname,
             $err = SetUserDetails($user);
             if (is_a($err, "Error"))
                 $user = null;
-
         }
     }
     else

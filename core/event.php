@@ -47,7 +47,6 @@ $event_management_admin = 'admin';
 $relevant_events_days_before = 60 * 60 * 24 * 7;
 $relevant_events_days_after = 60 * 60 * 24 * 7;
 
-
 /* *****************************************************************************
  * This class represents a single event in the system.
  */
@@ -92,8 +91,6 @@ class Event
     // User-specific fields (for logged in user)
     var $eventFeePaid;
     // null if not signed up at all
-
-
     /** ************************************************************************
      * Class constructor
      */

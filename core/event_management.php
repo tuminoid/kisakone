@@ -49,10 +49,11 @@ function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
             $can_signup_directly = CheckSignUpQuota($eventId, $playerId, $classId);
 
         return SetPlayerParticipation($playerId, $eventId, $classId, $can_signup_directly);
-    } else {
+    }
+    else {
         $retValue = new Error();
         $retValue->title = "error_invalid_argument";
-        $retValue->description = translate( "error_invalid_argument_description");
+        $retValue->description = translate("error_invalid_argument_description");
         $retValue->internalDescription = "Invalid user id, no corresponding player found";
         $retValue->function = "SignUpUser()";
         $retValue->IsMajor = true;
@@ -87,6 +88,7 @@ function MarkEventFeePayments($eventId, $payments)
 
     return $retValue;
 }
+
 /* ****************************************************************************
  * End of file
  * */

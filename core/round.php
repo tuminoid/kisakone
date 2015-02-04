@@ -26,7 +26,6 @@ require_once 'data/round.php';
 require_once 'data/group.php';
 require_once 'data/section.php';
 
-
 /* *****************************************************************************
  * This class represents a single round in the system.
  */
@@ -35,8 +34,10 @@ class Round
     var $id;
     var $eventId;
     var $starttype;
-    var $starttime;    // datetime in unixtime format
-    var $holes;   // number of holes on this round
+    var $starttime;
+    // datetime in unixtime format
+    var $holes;
+    // number of holes on this round
     var $interval;
     var $validresults;
     var $course;
@@ -47,15 +48,7 @@ class Round
     /** ************************************************************************
      * Class constructor
      */
-    function Round($id = null,
-                    $eventId = null,
-                    $starttype = null,
-                    $starttime = "",
-                    $interval = 0,
-                    $validresults = false,
-                    $holes = 0,
-                    $course = null,
-                    $groupsFinished = null)
+    function Round($id = null, $eventId = null, $starttype = null, $starttime = "", $interval = 0, $validresults = false, $holes = 0, $course = null, $groupsFinished = null)
     {
         $this->id = $id;
         $this->eventId = $eventId;
@@ -201,9 +194,11 @@ class Round
                 $start = $this->starttime;
                 break;
 
+
             case 'simultaneous':
                 $start = 1;
                 break;
+
 
             default:
                 fail();
@@ -223,8 +218,8 @@ class Round
     {
         if ($this->IsFirstRound()) {
             return $this->InitializeFirstRound();
-
-        } else {
+        }
+        else {
             $lastRound = $this->GetPreviousRound();
             $event = GetEventDetails($this->eventId);
             $classes = $event->GetClasses();
@@ -241,7 +236,7 @@ class Round
                     continue;
                 }
 
-                $id = CreateSection($this->id, $class->id,  $class->name);
+                $id = CreateSection($this->id, $class->id, $class->name);
                 if (is_a($id, 'Error')) {
                     die(print_r($id, true));
                 }
@@ -269,8 +264,9 @@ class Round
                             $changes = true;
                         }
 
-                    // Player has DNS/DNF, remove him
-                    } else {
+                        // Player has DNS/DNF, remove him
+                    }
+                    else {
                         $class = $participant['Classification'];
                         $s = $sections[$class];
                         if (!isset($remove[$s->id])) {
@@ -316,13 +312,13 @@ class Round
         $changes = false;
 
         if (!count($sections)) {
-            $id = CreateSection($this->id, null,  translate('combined_group_name'));
+            $id = CreateSection($this->id, null, translate('combined_group_name'));
             if (is_a($id, 'Error')) {
                 die(print_r($id));
             }
             $classToUse = GetSectionDetails($id);
-
-        } else {
+        }
+        else {
             $classToUse = $sections[count($sections) - 1];
         }
 
@@ -336,15 +332,15 @@ class Round
                     $assign[] = $participant['player']->id;
                     $changes = true;
                 }
-
-            } else {
+            }
+            else {
                 $remove[] = $participant['player']->id;
                 $changes = true;
             }
         }
 
         if (count($assign)) {
-            AssignPlayersToSection($this->id, $classToUse->id, $assign );
+            AssignPlayersToSection($this->id, $classToUse->id, $assign);
         }
 
         if (count($remove)) {

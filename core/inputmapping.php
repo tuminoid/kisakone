@@ -29,28 +29,29 @@
 function gate_ProcessInputData()
 {
     $actionresult = gate_ProcessActionRequest();
-    if (is_a($actionresult, 'Error')) return $actionresult;
+    if (is_a($actionresult, 'Error'))
+        return $actionresult;
 
     // If anything sensible was returned, skip form processing entirely
-    if ($actionresult) return $actionresult;
-    if (count($_POST) == 0) return;
+    if ($actionresult)
+        return $actionresult;
+    if (count($_POST) == 0)
+        return;
 
     // Verify that a form id is defined, and that it's valid
-
     $formid = @$_POST['formid'];
-    if (!$formid) return gate_InvalidForm($formid);
+    if (!$formid)
+        return gate_InvalidForm($formid);
 
     $formid = basename($formid);
-    if (!file_exists("inputhandlers/$formid.php")) return gate_InvalidForm($formid);
+    if (!file_exists("inputhandlers/$formid.php"))
+        return gate_InvalidForm($formid);
 
     // Include the form handler, and call it. The function is defined in the
     // included file.
-
     include("inputhandlers/$formid.php");
 
     return ProcessForm();
-
-
 }
 
 /**
@@ -59,16 +60,17 @@ function gate_ProcessInputData()
  */
 function gate_ProcessActionRequest()
 {
-    if (!array_key_exists('action', $_GET)) return;
+    if (!array_key_exists('action', $_GET))
+        return;
 
     $action = $_GET['action'];
 
     $action = basename($action);
-    if (!file_exists("inputhandlers/action_$action.php")) return gate_InvalidForm($action);
+    if (!file_exists("inputhandlers/action_$action.php"))
+        return gate_InvalidForm($action);
 
     // Include the action handler, and call it. The function is defined in the
     // included file.
-
     include("inputhandlers/action_$action.php");
 
     return ProcessAction();

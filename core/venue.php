@@ -34,9 +34,7 @@ class Venue
     /** ************************************************************************
      * Class constructor
      */
-    function Venue($id = null,
-                   $name = "",
-                   $location = "")
+    function Venue($id = null, $name = "", $location = "")
     {
         $this->id = $id;
         $this->name = $name;

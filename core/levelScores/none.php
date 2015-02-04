@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class scorecalc_level_none
 {
     var $name;
@@ -32,18 +31,17 @@ class scorecalc_level_none
         $this->name = translate('not_used');
     }
 
-    function CalculateScores(&$participants, $totalHoles, $event ,$active)
+    function CalculateScores(&$participants, $totalHoles, $event, $active)
     {
         $participantCount = $active;
 
         foreach ($participants as $index => $participant) {
-           $score = 0;
+            $score = 0;
 
             if ($score != $participant['TournamentPoints']) {
                 $participants[$index]['TournamentPoints'] = $score;
                 $participants[$index]['Changed'] = true;
             }
-
         }
     }
 }

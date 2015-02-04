@@ -22,7 +22,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class Error
 {
     /**
@@ -104,16 +103,13 @@ class Error
     // The functions below create Error objects for specific error types with
     // minimal effort  from the caller. Their use is highly recommended when
     // appropriate.
-
     function internalError($string = "")
     {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 500;
         $e->title = 'error_internal_error';
-        $e->description = translate('error_internal_error') . "<br />.\n" .
-            "$string <br />\n" .
-            "<code>\n" . debug_backtrace() . "\n</code>\n";
+        $e->description = translate('error_internal_error') . "<br />.\n" . "$string <br />\n" . "<code>\n" . debug_backtrace() . "\n</code>\n";
         $e->errorPage = 'error';
 
         return $e;

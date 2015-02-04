@@ -36,10 +36,7 @@ class EventOfficial
     /** ************************************************************************
      * Class constructor
      */
-    function EventOfficial($id = 0,
-                   $eventId = 0,
-                   $user = null,
-                   $role = "")
+    function EventOfficial($id = 0, $eventId = 0, $user = null, $role = "")
     {
         $this->id = $id;
         $this->eventid = $eventId;

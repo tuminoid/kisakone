@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 class scorecalc_tournament_full
 {
     var $name;
@@ -40,10 +39,12 @@ class scorecalc_tournament_full
             foreach ($pdetails['Events'] as $event) {
                 if ($event['ResultsLocked'] === null) {
                     $minScore = 0;
-                } else {
-                    $s =  (int) $event['TournamentPoints'];
+                }
+                else {
+                    $s = (int) $event['TournamentPoints'];
                     $score += $s;
-                    if ($minScore === null || $s < $minScore) $minScore = $s;
+                    if ($minScore === null || $s < $minScore)
+                        $minScore = $s;
                 }
             }
 
@@ -61,7 +62,7 @@ class scorecalc_tournament_full
         $events = $tournament->GetEvents();
         $this->numEvents = count($events);
         $this->AssignScores($data, count($events));
-        usort($data ,array($this, 'tournament_sort'));
+        usort($data, array($this, 'tournament_sort'));
 
         $this->BreakTop3Ties($data);
 
@@ -71,13 +72,15 @@ class scorecalc_tournament_full
             $class = $item['Classification'];
             if (!isset($last_by_class[$class])) {
                 $standing = 1;
-            } else {
+            }
+            else {
                 $last = $last_by_class[$class];
                 if ($last['OverallScore'] == $item['OverallScore'] && $last['TieBreaker'] == $item['TieBreaker']) {
                     $standing = $last['Standing'];
 
                     $item['Skipped'] = (int) @$last['Skipped'] + 1;
-                } else {
+                }
+                else {
                     $standing = $last['Standing'] + (int) @$last['Skipped'] + 1;
                 }
             }
@@ -101,7 +104,8 @@ class scorecalc_tournament_full
         $top3 = array();
         foreach ($data as $id => $item) {
             $top3 = @$top3byclass[$item['Classification']];
-            if (!is_array($top3)) $top3 = array();
+            if (!is_array($top3))
+                $top3 = array();
             if (count($top3) >= 3) {
                 $done = true;
                 $last = $top3[count($top3) - 1];
@@ -110,7 +114,8 @@ class scorecalc_tournament_full
                         $done = false;
                     }
                 }
-                if ($done) break;
+                if ($done)
+                    break;
             }
             $item['original_index'] = $id;
             $top3[] = $item;
@@ -119,14 +124,15 @@ class scorecalc_tournament_full
 
         foreach ($top3byclass as $class => $top3) {
             if (count($top3) == 3) {
-                $last = -1;
+                $last = - 1;
                 $allok = true;
                 foreach ($top3 as $item) {
-                    if ($item['OverallScore'] == $last) $allok = false;
+                    if ($item['OverallScore'] == $last)
+                        $allok = false;
                     $last = $item['OverallScore'];
-
                 }
-                if ($allok ) continue;
+                if ($allok)
+                    continue;
             }
 
             foreach ($top3 as $key => $item) {
@@ -142,9 +148,10 @@ class scorecalc_tournament_full
 
                 if ($last && $this->top3_sort($last, $item) == 0) {
                     $item['TieBreaker'] = $last['TieBreaker'];
-                } else {
+                }
+                else {
 
-                    $item['TieBreaker'] = $key  + 99;
+                    $item['TieBreaker'] = $key + 99;
                 }
 
                 $data[$item['original_index']] = $item;
@@ -158,11 +165,14 @@ class scorecalc_tournament_full
         $as = $a['OverallScore'];
         $bs = $b['OverallScore'];
 
-        if ($as > $bs) return -1;
-        if ($as < $bs) return 1;
+        if ($as > $bs)
+            return - 1;
+        if ($as < $bs)
+            return 1;
 
         if ($a['TieBreaker'] != $b['TieBreaker']) {
-            if ($a['TieBreaker'] < $b['TieBreaker']) return -1;
+            if ($a['TieBreaker'] < $b['TieBreaker'])
+                return - 1;
             return 1;
         }
 
@@ -174,11 +184,14 @@ class scorecalc_tournament_full
         $as = $a['OverallScore'];
         $bs = $b['OverallScore'];
 
-        if ($as > $bs) return -1;
-        if ($as < $bs) return 1;
+        if ($as > $bs)
+            return - 1;
+        if ($as < $bs)
+            return 1;
 
         if ($a['OTieBreaker'] != $b['OTieBreaker']) {
-            if ($a['OTieBreaker'] < $b['OTieBreaker']) return -1;
+            if ($a['OTieBreaker'] < $b['OTieBreaker'])
+                return - 1;
             return 1;
         }
 
@@ -186,7 +199,8 @@ class scorecalc_tournament_full
         $wb = @$b['Positions'][1];
 
         if ($wa != $wb) {
-            if ($wa > $wb) return -1;
+            if ($wa > $wb)
+                return - 1;
             return 1;
         }
 
@@ -200,21 +214,21 @@ class scorecalc_tournament_full
 
             if ($av != $bv) {
 
-                if ($av > $bp) return -1;
+                if ($av > $bp)
+                    return - 1;
                 return 1;
             }
-
         }
 
         return 0;
-
     }
 
     function GetTournamentPositions($row)
     {
         $positions = array();
         foreach ($row['Events'] as $event) {
-            if (!$event['EventStanding']) continue;
+            if (!$event['EventStanding'])
+                continue;
             $positions[] = $event['EventStanding'];
         }
 
