@@ -23,10 +23,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
- /* Initializes the variables and other data necessary for showing the matching template
- * @param Smarty $smarty Reference to the smarty object being initialized
- * @param Error $error If input processor encountered a minor error, it will be present here
- */
+/* Initializes the variables and other data necessary for showing the matching template
+* @param Smarty $smarty Reference to the smarty object being initialized
+* @param Error $error If input processor encountered a minor error, it will be present here
+*/
 function InitializeSmartyVariables(&$smarty, $error)
 {
     if ($error)
@@ -38,7 +38,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     if ($event->resultsLocked)
-        $smarty->assign('locked' , true);
+        $smarty->assign('locked', true);
     $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
 
     // Bad classes: classe which are not part of the event, but are used

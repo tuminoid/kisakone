@@ -29,63 +29,68 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
+    $event = GetEventDetails($_GET['id']);
 
-   $smarty->assign('event', $event);
+    $smarty->assign('event', $event);
 
-   if (is_a($event, 'Error')) return $event;
+    if (is_a($event, 'Error'))
+        return $event;
 
-   if (!IsAdmin() && $event->management == '') return Error::AccessDenied();
+    if (!IsAdmin() && $event->management == '')
+        return Error::AccessDenied();
 
-   if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
-   if (!isAdmin() && !$event->isTD() && !$event->isActive) {
-      $error = new Error();
-      $error->isMajor = true;
-      $error->title = 'error_event_not_active';
-      $error->description = translate('error_event_not_active_description');
-      $error->source = 'PDR:Event:InitializeSmartyVariables';
+    if (!isAdmin() && !$event->isTD() && !$event->isActive) {
+        $error = new Error();
+        $error->isMajor = true;
+        $error->title = 'error_event_not_active';
+        $error->description = translate('error_event_not_active_description');
+        $error->source = 'PDR:Event:InitializeSmartyVariables';
 
-      return $error;
-   }
+        return $error;
+    }
 
-         $rounds = $event->GetRounds();
+    $rounds = $event->GetRounds();
 
-         foreach ($rounds as $index => $round) {
-            if ($_GET['round'] == $index + 1) {
-               $round->roundNumber = $index + 1;
-               break;
-            }
-         }
-         if (!$round->roundNumber) return Error::NotFound('round');
+    foreach ($rounds as $index => $round) {
+        if ($_GET['round'] == $index + 1) {
+            $round->roundNumber = $index + 1;
+            break;
+        }
+    }
+    if (!$round->roundNumber)
+        return Error::NotFound('round');
 
-         $holes = $round->GetHoles();
-         $smarty->assign('holes', $holes);
-         $smarty->assign('round', $round);
-         $smarty->assign('numHoles', count($holes));
-         $smarty->assign('out_hole_index', ceil(count($holes) / 2) );
+    $holes = $round->GetHoles();
+    $smarty->assign('holes', $holes);
+    $smarty->assign('round', $round);
+    $smarty->assign('numHoles', count($holes));
+    $smarty->assign('out_hole_index', ceil(count($holes) / 2));
 
-         $smarty->assign('groups', pdr_GroupByGroup($round->GetAllGroups()));
-
+    $smarty->assign('groups', pdr_GroupByGroup($round->GetAllGroups()));
 }
 
 function pdr_GroupByGroup($data)
 {
-   $out = array();
+    $out = array();
 
-   $currentGroup = array();
-   $currentNum = -1;
-   foreach ($data as $row) {
-      if ($row['GroupNumber'] != $currentNum) {
-         if (count($currentGroup)) $out[] = $currentGroup;
-         $currentGroup = array();
-         $currentNum = $row['GroupNumber'];
-      }
+    $currentGroup = array();
+    $currentNum = - 1;
+    foreach ($data as $row) {
+        if ($row['GroupNumber'] != $currentNum) {
+            if (count($currentGroup))
+                $out[] = $currentGroup;
+            $currentGroup = array();
+            $currentNum = $row['GroupNumber'];
+        }
 
-      $currentGroup[] = $row;
-   }
-   if (count($currentGroup)) $out[] = $currentGroup;
-   return $out;
+        $currentGroup[] = $row;
+    }
+    if (count($currentGroup))
+        $out[] = $currentGroup;
+    return $out;
 }
 
 /**

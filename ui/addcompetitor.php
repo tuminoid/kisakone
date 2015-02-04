@@ -36,7 +36,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!$event)
         return Error::NotFound('event');
     if ($event->resultsLocked)
-        $smarty->assign('locked' , true);
+        $smarty->assign('locked', true);
     if (is_a($event, 'Error'))
         return $event;
     if (!IsAdmin() && $event->management != 'td')
@@ -56,7 +56,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             // the fields from an empty user
             $smarty->assign('userdata', new User());
             $smarty->assign('edit', true);
-        } else {
+        }
+        else {
             $smarty->assign('userdata', GetUserDetails($user));
             $player = GetUserPlayer($user);
 
@@ -98,7 +99,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
             // if PDGA API is enabled and player has PDGA number assigned, do the checks
             if (@$settings['PDGA_ENABLED'] && $player->pdga && $player->pdga > 0) {
-                error_log("Checking PDGA data for #".$player->pdga);
+                error_log("Checking PDGA data for #" . $player->pdga);
                 $smarty->assign('pdga', true);
                 $pdga_data = pdga_getPlayer($player->pdga);
 
@@ -131,13 +132,11 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
         }
         $smarty->assign('classOptions', $classOptions);
-
     }
     elseif (@$_GET['op_s'] || $player) {
         // "Search" button has been pressed
-
         // Due to autocomplete we have some extra characters which cause the search to fail, remove them
-        if (substr($player, -4, 4) == ", 0)") {
+        if (substr($player, - 4, 4) == ", 0)") {
             $has_pdga_number = false;
             $player = str_replace(", 0)", ")", $player);
         }
@@ -149,7 +148,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         if (count($players) == 1) {
             // Single player, skip the listing
             redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
-        } else {
+        }
+        else {
             $smarty->assign('many', $players);
         }
     }
@@ -161,7 +161,6 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('errorString', $error);
     }
 }
-
 
 /**
  * Determines which main menu option this page falls under.

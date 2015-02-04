@@ -29,15 +29,15 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-  $event = GetEventDetails(@$_GET['id']);
-  if (!$event || is_a($event, 'Error'))
-    return Error::NotFound('event');
+    $event = GetEventDetails(@$_GET['id']);
+    if (!$event || is_a($event, 'Error'))
+        return Error::NotFound('event');
 
-  if (!IsAdmin() && $event->management != 'td')
-    return Error::AccessDenied('manageevent_official');
+    if (!IsAdmin() && $event->management != 'td')
+        return Error::AccessDenied('manageevent_official');
 
-  $smarty->assign('event', $event);
-  $smarty->assign('rounds', $event->GetRounds());
+    $smarty->assign('event', $event);
+    $smarty->assign('rounds', $event->GetRounds());
 }
 
 /**

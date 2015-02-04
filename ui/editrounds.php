@@ -33,7 +33,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!$event) {
         return Error::NotFound('event');
     }
-    if (!IsAdmin() && $event->management !='td') {
+    if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
     }
 

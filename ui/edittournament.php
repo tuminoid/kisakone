@@ -28,7 +28,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     require_once 'core/scorecalculation.php';
 
@@ -36,22 +37,26 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('error', $error->data);
 
         $smarty->assign('tournament', $_POST);
-    } else {
+    }
+    else {
         $tournament = GetTournamentDetails(@$_GET['id']);
-        if (@$_GET['id'] != 'new' && !$tournament || is_a($tournament, 'Error')) return Error::NotFound('object');
+        if (@$_GET['id'] != 'new' && !$tournament || is_a($tournament, 'Error'))
+            return Error::NotFound('object');
         $smarty->assign('tournament', $tournament);
     }
 
-    $scoremethods =  GetScoreCalculationMethods('tournament');
+    $scoremethods = GetScoreCalculationMethods('tournament');
     $scoreOptions = array();
 
-    foreach ($scoremethods as $method) $scoreoptions[$method->id] = $method->name;
+    foreach ($scoremethods as $method)
+        $scoreoptions[$method->id] = $method->name;
 
     $smarty->assign('scoreOptions', $scoreoptions);
 
     $levelList = GetLevels();
     $levels = array();
-    foreach ($levelList as $level) $levels[$level->id] = $level->name;
+    foreach ($levelList as $level)
+        $levels[$level->id] = $level->name;
 
     $smarty->assign('levelOptions', $levels);
 

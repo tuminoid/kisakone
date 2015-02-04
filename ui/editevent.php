@@ -25,7 +25,6 @@
 require_once 'ui/support/eventform_init.php';
 require_once 'config_site.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized

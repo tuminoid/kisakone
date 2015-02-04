@@ -28,7 +28,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 }
 
 /**

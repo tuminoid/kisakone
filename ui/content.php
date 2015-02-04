@@ -33,34 +33,38 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     require_once 'core/textcontent.php';
 
-    $evp = GetGlobalTextContent(@$_GET['id'], true );
+    $evp = GetGlobalTextContent(@$_GET['id'], true);
 
 
-    if (is_a($evp, 'Error')) return $evp;
-    if (!$evp) return Error::NotFound('textcontent');
+    if (is_a($evp, 'Error'))
+        return $evp;
+    if (!$evp)
+        return Error::NotFound('textcontent');
 
     // The actualy type of the content determines access people have to the page
-
     switch ($evp->type) {
         case 'custom':
             // default case, everyone has access
             break;
+
         case 'custom_man':
             global $user;
 
-            if (!IsAdmin() && (!$user || !UserIsManagerAnywhere($user->id)) ) return Error::AccessDenied();
+            if (!IsAdmin() && (!$user || !UserIsManagerAnywhere($user->id)))
+                return Error::AccessDenied();
             break;
+
         case 'custom_adm':
-            if (!IsAdmin() ) return Error::AccessDenied();
+            if (!IsAdmin())
+                return Error::AccessDenied();
             break;
+
         default:
             break;
     }
 
     $smarty->assign('page', $evp);
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.

@@ -28,13 +28,14 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails(@$_GET['id']);
-   if (!$event || is_a($event, 'Error')) return Error::NotFound('event');
+    $event = GetEventDetails(@$_GET['id']);
+    if (!$event || is_a($event, 'Error'))
+        return Error::NotFound('event');
 
-   if (!IsAdmin()) return Error::AccessDenied('manageevent_official');
+    if (!IsAdmin())
+        return Error::AccessDenied('manageevent_official');
 
     $smarty->assign('event', $event);
-
 }
 
 /**

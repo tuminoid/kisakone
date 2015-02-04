@@ -24,7 +24,6 @@
 
 require_once 'data/course.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -34,13 +33,15 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     $event = GetEventDetails(@$_GET['id']);
 
-    if ($event->resultsLocked) $smarty->assign('locked' , true);
+    if ($event->resultsLocked)
+        $smarty->assign('locked', true);
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied('eventads');
     }
 
-    $smarty->assign('rounds', $event->GetRounds());//print_r($event->GetRounds());
+    $smarty->assign('rounds', $event->GetRounds());
+    //print_r($event->GetRounds());
     $smarty->assign('courses', GetCourses());
 }
 

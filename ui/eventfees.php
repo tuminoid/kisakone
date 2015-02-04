@@ -28,18 +28,18 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
+    $event = GetEventDetails($_GET['id']);
 
-   if ($event->resultsLocked) $smarty->assign('locked' , true);
+    if ($event->resultsLocked)
+        $smarty->assign('locked', true);
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied('eventfees');
     }
 
-   $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
+    $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
 
-   $smarty->assign('users', $users);
-
+    $smarty->assign('users', $users);
 }
 
 /**

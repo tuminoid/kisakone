@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -28,7 +29,8 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     language_include('formvalidation');
-    if (!IsAdmin()) return Error::AccessDenied('newEvent');
+    if (!IsAdmin())
+        return Error::AccessDenied('newEvent');
 
     require_once 'ui/support/eventform_init.php';
 
@@ -55,7 +57,6 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('event', $e);
 
     page_InitializeEventFormData($smarty, true);
-
 }
 
 /**

@@ -32,17 +32,14 @@ function InitializeSmartyVariables(&$smarty, $error)
         return Error::AccessDenied('eventfees');
     }
 
-   $users = GetUsers(@$_GET['search'], @$_GET['sort']);
+    $users = GetUsers(@$_GET['search'], @$_GET['sort']);
 
-   $users2 =array();
-   foreach ($users as $user) {
-        $users2[] = array('user' => $user,
-                          'player' => $user->getPlayer(),
-                          'banned' => strpos($user->role, 'ban') !== false);
-   }
+    $users2 = array();
+    foreach ($users as $user) {
+        $users2[] = array('user' => $user, 'player' => $user->getPlayer(), 'banned' => strpos($user->role, 'ban') !== false);
+    }
 
-   $smarty->assign('users', $users2);
-
+    $smarty->assign('users', $users2);
 }
 
 /**

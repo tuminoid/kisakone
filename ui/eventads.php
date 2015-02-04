@@ -48,7 +48,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     foreach ($adTypes as $adType => $userd) {
-        if ($userd === false) continue;
+        if ($userd === false)
+            continue;
 
         $ads[] = new Ad(null, $adType, null, AD_EVENT_DEFAULT, null, null, null, null);
     }

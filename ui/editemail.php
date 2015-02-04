@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,12 +33,13 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     language_include('email');
 
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     if (is_a($error, 'TextContent')) {
         $evp = $error;
-
-    } else {
+    }
+    else {
         $evp = GetGlobalTextContent(@$_GET['id']);
     }
 
@@ -73,14 +75,14 @@ function getMainMenuSelection()
 }
 
 // We need some functions to get data for the preview
-
 function pdr_GetDemoPlayer()
 {
     $us = GetUsers();
     $user = null;
     $player = null;
     foreach ($us as $u) {
-        if (!$user && $u->firstname) $user = $u;
+        if (!$user && $u->firstname)
+            $user = $u;
         if (!$player) {
 
             $p = $u->GetPlayer();
@@ -88,7 +90,8 @@ function pdr_GetDemoPlayer()
                 $player = $p;
             }
         }
-        if ($user && $player) return array($user, $player);
+        if ($user && $player)
+            return array($user, $player);
     }
 
     return array($user, $player);
@@ -98,8 +101,10 @@ function pdr_GetDemoEvent()
 {
     $events = data_GetEvents("1");
     foreach ($events as $event) {
-        if ($event->signupEnd) return $event;
+        if ($event->signupEnd)
+            return $event;
     }
-    if (count($events)) return $events[0];
+    if (count($events))
+        return $events[0];
     return null;
 }

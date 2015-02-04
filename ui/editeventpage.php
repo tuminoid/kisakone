@@ -34,7 +34,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if (is_a($error, 'TextContent')) {
         $evp = $error;
-    } else {
+    }
+    else {
         $evp = $event->GetTextContent(@$_GET['content']);
     }
 
@@ -50,15 +51,17 @@ function InitializeSmartyVariables(&$smarty, $error)
 
                 $evp->content = "<h2>" . $evp->GetProperTitle() . "</h2><br /><br />";
             }
-        } else {
+        }
+        else {
             $evp->type = 'custom';
         }
     }
 
     if (!IsAdmin() && $event->management != 'td') {
-        if ($evp->type == 'news' && $event->management == 'official' || ( @$_GET['content'] == '*' && @$_GET['mode'] == 'news')) {
+        if ($evp->type == 'news' && $event->management == 'official' || (@$_GET['content'] == '*' && @$_GET['mode'] == 'news')) {
             // allowed in
-        } else {
+        }
+        else {
             return Error::AccessDenied('eventfees');
         }
     }

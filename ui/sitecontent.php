@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -29,13 +28,15 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     require_once 'core/textcontent.php';
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     $GLOBALS['disable_xhtml'] = true;
 
     if (is_a($error, 'TextContent')) {
         $evp = $error;
-    } else {
+    }
+    else {
         $evp = GetGlobalTextContent(@$_GET['id']);
     }
 
@@ -48,7 +49,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         if (!is_numeric($evp->type)) {
             //$evp->content = "<h2>" . $evp->GetProperTitle() . "</h2><br /><br />";
-        } else {
+        }
+        else {
             $evp->type = 'custom';
         }
     }

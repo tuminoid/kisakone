@@ -31,7 +31,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     header("Content-Type: text/javascript");
     $id = basename(@$_GET['id']);
 
-    if (!file_exists("ui/autocomplete/$id.php")) return new Error();
+    if (!file_exists("ui/autocomplete/$id.php"))
+        return new Error();
 
     include("ui/autocomplete/$id.php");
 
@@ -46,10 +47,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if ($options['useKeys']) {
         $smarty->assign('data', array_keys($suggestions));
-    } else {
+    }
+    else {
         if (array_key_exists('data', $options)) {
             $smarty->assign('data', $options['data']);
-        } else {
+        }
+        else {
             $smarty->assign('data', false);
         }
     }

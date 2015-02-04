@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,41 +31,46 @@ require_once 'data/round.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
+    $event = GetEventDetails($_GET['id']);
 
-   if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
-    if ($event->resultsLocked) $smarty->assign('locked' , true);
+    if ($event->resultsLocked)
+        $smarty->assign('locked', true);
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
     }
 
-   if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
+    if (!@$_REQUEST['round'] && @$_GET['round'])
+        $_REQUEST['round'] = $_GET['round'];
 
-   if (!@$_REQUEST['round']) {
-      require_once 'ui/support/roundselection.php';
+    if (!@$_REQUEST['round']) {
+        require_once 'ui/support/roundselection.php';
 
-      return page_SelectRound($event, $smarty);
-   }
+        return page_SelectRound($event, $smarty);
+    }
 
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if (!$round || $round->eventId != $event->id)
+        return Error::Notfound('round');
 
-   if (@$_GET['regenerate']) {
-      $round->RegenerateSections();
-      redirect("Location: " . url_smarty(array('page' => 'splitclasses', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
-   } else {
-      if ($round->InitializeSections()) {
-         $smarty->assign('suggestRegeneration', true);
-      }
-   }
+    if (@$_GET['regenerate']) {
+        $round->RegenerateSections();
+        redirect("Location: " . url_smarty(array('page' => 'splitclasses', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
+    }
+    else {
+        if ($round->InitializeSections()) {
+            $smarty->assign('suggestRegeneration', true);
+        }
+    }
 
-   $smarty->assign('eventid', $event->id);
+    $smarty->assign('eventid', $event->id);
 
-   $smarty->assign('data', GetSections($round->id, 'name'));
+    $smarty->assign('data', GetSections($round->id, 'name'));
 
-   $smarty->assign('firstRound', $round->IsFirstRound());
+    $smarty->assign('firstRound', $round->IsFirstRound());
 }
 
 /**

@@ -20,12 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function page_Autocomplete($query)
 {
     $venues = GetVenueNAmes($query);
     //$venues = array();
     //foreach ($allvenues as $venue) $venues[] = $venue->name;
-    return array('suggestions' => $venues,
-                 'useKeys' => false);
+    return array('suggestions' => $venues, 'useKeys' => false);
 }

@@ -29,17 +29,22 @@
 function InitializeSmartyVariables(&$smarty, $data)
 {
     $id = @$_GET['id'];
-    if ($id == 'default') $id = null;
+    if ($id == 'default')
+        $id = null;
     if ($id) {
         $event = GetEventDetails($id);
-        if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
-    } else {
-        if (!IsAdmin()) return Error::AccessDenied();
+        if (!IsAdmin() && $event->management != 'td')
+            return Error::AccessDenied();
+    }
+    else {
+        if (!IsAdmin())
+            return Error::AccessDenied();
     }
 
     if (is_a($data, 'Ad')) {
         $ad = $data;
-    } else {
+    }
+    else {
 
         $ad = GetAd($id, @$_GET['adType']);
 
@@ -54,7 +59,7 @@ function InitializeSmartyVariables(&$smarty, $data)
     $smarty->assign('globalReferenceOptions', $adTypes);
 
     if ($id) {
-        $eventAds = explode( ' ', EVENT_AD_TYPES);
+        $eventAds = explode(' ', EVENT_AD_TYPES);
         $smarty->assign('eventReferenceOptions', $eventAds);
     }
 
@@ -78,7 +83,6 @@ function pdr_FileArray($files)
     return $out;
 }
 
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
@@ -89,7 +93,8 @@ function getMainMenuSelection()
     $id = @$_GET['id'];
     if ($id && $id != 'default') {
         return 'events';
-    } else {
+    }
+    else {
         return 'administration';
     }
 }

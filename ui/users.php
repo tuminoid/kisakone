@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -28,14 +27,14 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   if (IsAdmin()) {
-      $users = GetUsers(@$_GET['search'], @$_GET['sort']);
-   } else {
-      $users = GetPlayerUsers(@$_GET['search'], @$_GET['sort']);
-   }
+    if (IsAdmin()) {
+        $users = GetUsers(@$_GET['search'], @$_GET['sort']);
+    }
+    else {
+        $users = GetPlayerUsers(@$_GET['search'], @$_GET['sort']);
+    }
 
     $smarty->assign('users', $users);
-
 }
 
 /**

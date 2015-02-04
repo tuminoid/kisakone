@@ -27,13 +27,15 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   if (@$_GET['inline']) SetContentType('text/xml');
+    if (@$_GET['inline'])
+        SetContentType('text/xml');
 
-   $helpfile = @$_GET['id'];
-   if (@$_GET['showhelp'] && $_GET['showhelp'] !== '1') $helpfile = @$_GET['showhelp'];
-   $helpfile =basename($helpfile);
+    $helpfile = @$_GET['id'];
+    if (@$_GET['showhelp'] && $_GET['showhelp'] !== '1')
+        $helpfile = @$_GET['showhelp'];
+    $helpfile = basename($helpfile);
 
-   $smarty->assign('helpfile', $helpfile);
+    $smarty->assign('helpfile', $helpfile);
 }
 
 /**

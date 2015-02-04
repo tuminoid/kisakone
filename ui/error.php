@@ -29,7 +29,6 @@
 if (!is_callable('InitializeSmartyVariables')) {
     // Some other page might already have been included, so these functions are
     // included conditionally
-
     function InitializeSmartyVariables(&$smarty, $error)
     {
         Error_InitializeSmartyVariables($smarty, $error);
@@ -49,26 +48,25 @@ if (!is_callable('InitializeSmartyVariables')) {
 
 function Error_InitializeSmartyVariables(&$smarty, $error)
 {
-    $smarty->assign('error',
-                    $error
-
-                    );
+    $smarty->assign('error', $error);
 
     switch ($error->errorCode) {
         case 403:
             header("HTTP/1.1 403 Access Denied");
             break;
+
         case 404:
             header("HTTP/1.1 404 Not Found");
             break;
+
         case 500:
             header("HTTP/1.1 500 Internal Server Error");
             break;
 
+
         default:
             // No HTTP error
+        }
 
+        $smarty->assign('backtrace', print_r($error->backtrace, true));
     }
-
-    $smarty->assign('backtrace', print_r($error->backtrace, true));
-}

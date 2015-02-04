@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * This class contains the details of a loaded language.
  */
@@ -97,7 +96,9 @@ class Language
                 $line = trim(fgets($langfile));
 
                 // Ignoring empty lines and comments
-                if ($line == "" || $line{0} == '#')
+                if ($line == "" || $line {
+                    0
+                } == '#')
                     continue;
 
                 $parts = explode(" ", $line, 2);
@@ -129,7 +130,9 @@ class Language
             $line = trim(fgets($langfile));
 
             // Ignoring empty lines and comments
-            if ($line == "" || $line{0} == '#')
+            if ($line == "" || $line {
+                0
+            } == '#')
                 continue;
 
             $parts = explode(" ", $line, 2);
@@ -138,7 +141,6 @@ class Language
             if ($parts[0][0] == ':') {
                 $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
             }
-
         }
 
         fclose($langfile);
@@ -168,14 +170,16 @@ class Language
             $data = $this->ExtractFromID($id);
             $id = $data[0];
             $arguments = $data[1];
-        } elseif (isset($arguments['arguments'])) {
+        }
+        elseif (isset($arguments['arguments'])) {
             $arguments = $arguments['arguments'];
         }
 
         if (!array_key_exists($id, $this->data)) {
             if ($this->allLoaded) {
                 return "[Missing $id]";
-            } else {
+            }
+            else {
                 $this->LoadAllFiles();
 
                 return $this->translate($id, $arguments);
@@ -191,7 +195,8 @@ class Language
         // Convert any HTML entities found -- if necessary
         if (substr($text, 0, 6) == "<HTML>") {
             $text = substr($text, 6);
-        } else {
+        }
+        else {
             $text = htmlspecialchars($text);
         }
 
@@ -200,7 +205,6 @@ class Language
 
         return $text;
     }
-
 
     /**
      * Callback function for preg_replace_callback, when used for replacing subtokens
@@ -214,7 +218,6 @@ class Language
         return $this->tokens[$token[1]];
     }
 
-
     /**
      * A function used for making sure the language was loaded properly.
      * @return boolean True if the language contains data, false if not.
@@ -223,7 +226,6 @@ class Language
     {
         return count($this->data) > 0;
     }
-
 
     /**
      * This function extracts the id and arguments when they are provided in the
@@ -238,10 +240,10 @@ class Language
     {
         $parts = explode('/', $id);
         $arguments = array();
-        $id  = $parts[0];
+        $id = $parts[0];
 
         // Prevent the id from being used as an argument
-        unset ($parts[0]);
+        unset($parts[0]);
 
         foreach ($parts as $part) {
             list($key, $value) = explode(':', $part, 2);

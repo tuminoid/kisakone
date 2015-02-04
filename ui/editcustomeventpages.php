@@ -28,8 +28,9 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-     $event = GetEventDetails($_GET['id']);
-    if (!$event) return Error::NotFound('event');
+    $event = GetEventDetails($_GET['id']);
+    if (!$event)
+        return Error::NotFound('event');
 
     if (!IsAdmin() && !$event->IsTD()) {
         return Error::AccessDenied();
@@ -41,15 +42,14 @@ function InitializeSmartyVariables(&$smarty, $error)
     // Filtering is done here, as there's not all that much data that needs to be ignored
     $links = array();
     foreach ($pages as $page) {
-        if ($page->type != 'custom') continue;
+        if ($page->type != 'custom')
+            continue;
 
         $links[] = array('title' => $page->title, 'link' => array('page' => 'editeventpage', 'id' => @$_GET['id'], 'mode' => 'custom', 'content' => $page->id));
     }
 
     $smarty->assign('links', $links);
 }
-
-
 
 /**
  * Determines which main menu option this page falls under.

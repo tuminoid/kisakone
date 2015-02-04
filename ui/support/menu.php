@@ -21,17 +21,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Returns the main menu as an array for arrays. Each item has 'url' and 'title' subitems.
  * @return array
 */
 function page_initializeMainMenu()
 {
-    $mainmenu = array(
-        array('title' => 'events', 'url' => 'events'),
-        array('title' => 'tournaments', 'url' => 'tournaments')
-    );
+    $mainmenu = array(array('title' => 'events', 'url' => 'events'), array('title' => 'tournaments', 'url' => 'tournaments'));
 
     if (IsAdmin()) {
         $mainmenu[] = array('title' => 'users', 'url' => 'users');

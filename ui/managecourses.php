@@ -24,7 +24,6 @@
 
 require_once 'data/course.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -35,10 +34,14 @@ function InitializeSmartyVariables(&$smarty, $error)
     $id = @$_GET['id'];
     if ($id) {
         $event = GetEventDetails($id);
-        if (!$event) return Error::Notfound('event');
-        if (!IsAdmin() && $event->management != 'td') return Error::AccessDenied();
-    } else {
-        if (!IsAdmin()) return Error::AccessDenied();
+        if (!$event)
+            return Error::Notfound('event');
+        if (!IsAdmin() && $event->management != 'td')
+            return Error::AccessDenied();
+    }
+    else {
+        if (!IsAdmin())
+            return Error::AccessDenied();
     }
 
     $smarty->assign('courses', GetCourses());
@@ -50,6 +53,8 @@ function InitializeSmartyVariables(&$smarty, $error)
  */
 function getMainMenuSelection()
 {
-    if (@$_GET['id'])  return 'events';
-    else return 'administration';
+    if (@$_GET['id'])
+        return 'events';
+    else
+        return 'administration';
 }

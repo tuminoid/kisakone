@@ -28,11 +28,11 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $user = @$_SESSION['user'];
-   if (!$user) return error::AccessDenied();
+    $user = @$_SESSION['user'];
+    if (!$user)
+        return error::AccessDenied();
 
-   header('Location: ' . url_smarty(array('page' => 'user', 'id' => $user->username), $user));
-
+    header('Location: ' . url_smarty(array('page' => 'user', 'id' => $user->username), $user));
 }
 
 /**

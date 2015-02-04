@@ -24,7 +24,6 @@
 
 require_once 'data/course.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -49,7 +48,7 @@ function InitializeSmartyVariables(&$smarty, $error)
                 return Error::AccessDenied();
         }
 
-        if (!(int) @$_GET['holes'] && !@$_GET['template'] ) {
+        if (!(int) @$_GET['holes'] && !@$_GET['template']) {
             // New item, no holes defined, no template either
             $smarty->assign('holeChooser', true);
             return;
@@ -57,7 +56,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         if (@$_GET['template']) {
             // Initialize data from template
-            $course =  GetCourseDetails(@$_GET['template']);
+            $course = GetCourseDetails(@$_GET['template']);
             $course['id'] = 'new';
             $smarty->assign('course', $course);
             $oh = GetCourseHoles(@$_GET['template']);
@@ -75,7 +74,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $h = array();
             $ind = 1;
             do {
-                $h[] = new Hole(array('holeNumber' => $ind, 'par' => 0, 'length' => 0));
+                $h[] = new Hole (array('holeNumber' => $ind, 'par' => 0, 'length' => 0));
             }
             while ($ind++ != $holes);
             $smarty->assign('holes', $h);
@@ -83,7 +82,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
     else {
         // Edit mode
-        $course =  GetCourseDetails(@$_GET['id']);
+        $course = GetCourseDetails(@$_GET['id']);
         if (!IsAdmin()) {
             $eventid = $course['Event'];
             if (!$eventid)
@@ -94,7 +93,7 @@ function InitializeSmartyVariables(&$smarty, $error)
                 return Error::AccessDenied();
         }
 
-        $smarty->assign('course',$course);
+        $smarty->assign('course', $course);
         $smarty->assign('holes', GetCourseHoles(@$_GET['id']));
 
         if (CourseUsed($course['id'])) {

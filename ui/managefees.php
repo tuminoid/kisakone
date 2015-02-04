@@ -29,16 +29,16 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (USE_SFL_PAYMENTS) return Error::AccessDenied();
+    if (USE_SFL_PAYMENTS)
+        return Error::AccessDenied();
 
     if (!IsAdmin()) {
         return Error::AccessDenied('eventfees');
     }
 
-   $users = GetFeePayments(true, @$_GET['search'], @$_GET['sort']);
+    $users = GetFeePayments(true, @$_GET['search'], @$_GET['sort']);
 
-   $smarty->assign('users', $users);
-
+    $smarty->assign('users', $users);
 }
 
 /**

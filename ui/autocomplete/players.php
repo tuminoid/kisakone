@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function page_Autocomplete($query)
 {
     $users = GetPlayerUsers($query);
@@ -28,15 +27,11 @@ function page_Autocomplete($query)
     $data = array();
 
     //print_r($users);
-
     foreach ($users as $user) {
         $player = $user->GetPlayer();
-        $display[] = sprintf("%s (%s%s%d)",  $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
-        $data[] = sprintf("%s (%s%s%d)",  $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
+        $display[] = sprintf("%s (%s%s%d)", $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
+        $data[] = sprintf("%s (%s%s%d)", $user->fullname, $user->username, ($user->username ? ', ' : ''), $player->pdga);
     }
 
-    return array('suggestions' => $display,
-                 'data' => $data,
-                 'useKeys' => false);
-
+    return array('suggestions' => $display, 'data' => $data, 'useKeys' => false);
 }

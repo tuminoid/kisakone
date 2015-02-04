@@ -24,7 +24,6 @@
 
 require_once 'data/user.php';
 
-
 function page_Autocomplete($query)
 {
     $users = GetUsers($query);
@@ -32,14 +31,10 @@ function page_Autocomplete($query)
     $data = array();
 
     //print_r($users);
-
     foreach ($users as $user) {
         $display[] = $user->fullname . " (" . $user->username . ")";
         $data[] = $user->username . " (" . $user->fullname . ")";
     }
 
-    return array('suggestions' => $display,
-                 'data' => $data,
-                 'useKeys' => false);
-
+    return array('suggestions' => $display, 'data' => $data, 'useKeys' => false);
 }

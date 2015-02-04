@@ -28,7 +28,7 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   if ($error) {
+    if ($error) {
         $smarty->assign('error', $error->data);
         $user = new User();
         $player = new Player();
@@ -46,12 +46,11 @@ function InitializeSmartyVariables(&$smarty, $error)
 
             $getId = $_GET['id'];
             if (is_numeric($getId) && is_a(GetUserDetails($getId), 'User'))
-                $userid= $getId;
+                $userid = $getId;
             else
                 $userid = GetUserId($getId);
 
             $user = GetUserDetails($userid);
-
         }
         else {
             $user = @$_SESSION['user'];

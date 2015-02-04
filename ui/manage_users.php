@@ -30,7 +30,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     language_include('admin');
 
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 }
 
 /**

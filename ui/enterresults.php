@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,54 +31,54 @@ require_once 'data/round.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
-   if (!$event) return Error::NotFound('event');
-   if ($event->resultsLocked) $smarty->assign('locked' , true);
+    $event = GetEventDetails($_GET['id']);
+    if (!$event)
+        return Error::NotFound('event');
+    if ($event->resultsLocked)
+        $smarty->assign('locked', true);
 
-   $smarty->assign('event', $event);
+    $smarty->assign('event', $event);
 
-   $smarty->assign('eventid', $event->id);
-   if (!IsAdmin() && $event->management == '') {
+    $smarty->assign('eventid', $event->id);
+    if (!IsAdmin() && $event->management == '') {
         return Error::AccessDenied('enterresults');
+    }
 
-   }
+    if (!@$_REQUEST['round']) {
+        require_once 'ui/support/roundselection.php';
 
-   if (!@$_REQUEST['round']) {
-      require_once 'ui/support/roundselection.php';
+        return page_SelectRound($event, $smarty);
+    }
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if ($round->eventId != $event->id)
+        return Error::NotFound('round');
+    $smarty->assign('holes', $round->GetHoles());
+    $results = $round->GetFullResults('group');
 
-      return page_SelectRound($event, $smarty);
-   }
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if ($round->eventId != $event->id) return Error::NotFound('round');
-   $smarty->assign('holes', $round->GetHoles());
-   $results = $round->GetFullResults('group');
+    $groupResults = array();
 
-   $groupResults = array();
+    // Grouping results by the groups of the participants
+    $last = null;
+    $groupNum = - 1;
+    foreach ($results as $result) {
+        if ($result['GroupNumber'] != $groupNum) {
+            if ($groupNum != - 1) {
+                $groupResults[$groupNum] = $last;
+            }
+            $groupNum = $result['GroupNumber'];
+            $last = array($result);
+        }
+        else {
+            $last[] = $result;
+        }
+    }
 
-   // Grouping results by the groups of the participants
+    if ($last) {
+        $groupResults[$groupNum] = $last;
+    }
 
-   $last = null;
-   $groupNum = -1;
-   foreach ($results as $result) {
-      if ($result['GroupNumber'] != $groupNum) {
-         if ($groupNum != -1) {
-            $groupResults[$groupNum] = $last;
-         }
-         $groupNum = $result['GroupNumber'];
-         $last = array($result);
-      } else {
-         $last[] = $result;
-      }
-
-   }
-
-   if ($last) {
-      $groupResults[$groupNum] = $last;
-   }
-
-   $smarty->assign('results', $groupResults);
-   $smarty->assign('roundid', $round->id);
-
+    $smarty->assign('results', $groupResults);
+    $smarty->assign('roundid', $round->id);
 }
 
 /**

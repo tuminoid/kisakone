@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -40,7 +39,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     if ($event->resultsLocked) {
-        $smarty->assign('locked' , true);
+        $smarty->assign('locked', true);
     }
 
     if (!@$_REQUEST['round'] && @$_GET['round']) {
@@ -60,8 +59,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (@$_GET['regenerate']) {
         $round->RegenerateGroups();
         redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
-
-    } else {
+    }
+    else {
         if ($round->InitializeGroups()) {
             $smarty->assign('suggestRegeneration', true);
         }

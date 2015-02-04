@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,8 +31,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     if ($error) {
         $smarty->assign('initial_date', (int) $_POST['dob_Year'] . '-1-1');
         $smarty->assign('error', $error->data);
-
-    } else {
+    }
+    else {
         $smarty->assign('initial_date', '0-0-0');
     }
 }

@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -27,28 +28,31 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     require_once 'core/scorecalculation.php';
 
     if ($error) {
         $smarty->assign('error', $error->data);
         $smarty->assign('level', $_POST);
-    } else {
+    }
+    else {
         $levelobj = GetLevelDetails($_GET['id']);
         if (is_object($levelobj)) {
             $level = get_object_vars($levelobj);
             $smarty->assign('level', $level);
-        } elseif (@$_GET['id'] != 'new') {
+        }
+        elseif (@$_GET['id'] != 'new') {
             return Error::NotFound('level');
-
         }
     }
 
-    $scoremethods =  GetScoreCalculationMethods('level');
+    $scoremethods = GetScoreCalculationMethods('level');
     $scoreOptions = array();
 
-    foreach ($scoremethods as $method) $scoreoptions[$method->id] = $method->name;
+    foreach ($scoremethods as $method)
+        $scoreoptions[$method->id] = $method->name;
 
     $smarty->assign('scoreOptions', $scoreoptions);
 

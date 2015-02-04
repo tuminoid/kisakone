@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -33,21 +32,22 @@ function InitializeSmartyVariables(&$smarty, $error)
     $links[] = array('title' => translate('submenu_manage_submenutext'), 'id' => '', 'type' => 'submenu');
     $links[] = array('title' => translate('submenu_manage_index'), 'id' => '', 'type' => 'index');
     //$links[] = array('title' => translate('submenu_manage_fees'), 'id' => '', 'type' => 'fees');
-
     $smarty->assign('fixed', $links);
 
     $custom = GetAllTextContent(null);
     $dynamic = array();
 
     foreach ($custom as $item) {
-        if (substr($item->type, 0, 6) != 'custom') continue;
+        if (substr($item->type, 0, 6) != 'custom')
+            continue;
 
         $dynamic[] = array('title' => $item->title, 'id' => $item->id, 'type' => $item->type);
     }
 
     $smarty->assign('dynamic', $dynamic);
 
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 }
 
 /**

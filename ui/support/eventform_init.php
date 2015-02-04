@@ -26,7 +26,6 @@ require_once 'data/tournament.php';
 require_once 'data/level.php';
 require_once 'data/class.php';
 
-
 function page_InitializeEventFormData(&$smarty, $creatingNew)
 {
     $tournaments = GetTournaments(null, $creatingNew);
@@ -46,7 +45,7 @@ function page_InitializeEventFormData(&$smarty, $creatingNew)
 
     $classList = GetClasses($creatingNew);
     $classes = array();
-    foreach($classList as $class)
+    foreach ($classList as $class)
         if ($class->available)
             $classes[$class->id] = $class->name;
     $smarty->assign('class_options', $classes);

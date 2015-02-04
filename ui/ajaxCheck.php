@@ -24,7 +24,6 @@
 
 require_once 'data/user.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -38,27 +37,32 @@ function InitializeSmartyVariables(&$smarty, $error)
             // Ensure username is valid
             if (!preg_match('/^[\pL\d_-]+$/', $_GET['username'])) {
                 $data = translate('FormError_InvalidUsername', array('username' => htmlentities($_GET['username'])));
-            } elseif (GetUserId($_GET['username']) !== null) {
+            }
+            elseif (GetUserId($_GET['username']) !== null) {
                 $data = translate('FormError_DuplicateUsername', array('username' => htmlentities($_GET['username'])));
-            } else {
+            }
+            else {
                 $data = 'OK';
             }
 
             break;
+
         case 'validuser':
 
             $username = @$_GET['username'];
 
             $td = input_GetUser($username);
 
-            if (!$td) $data = translate('FormError_InvalidUsername', array('username' => $username));
-            else $data = 'OK';
+            if (!$td)
+                $data = translate('FormError_InvalidUsername', array('username' => $username));
+            else
+                $data = 'OK';
 
             break;
 
-            default:
-            $data = 'InvalidOperation';
 
+        default:
+            $data = 'InvalidOperation';
     }
 
     $smarty->assign('data', $data);

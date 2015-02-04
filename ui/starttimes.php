@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,35 +31,38 @@ require_once 'data/round.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
+    $event = GetEventDetails($_GET['id']);
 
-   if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
-    if ($event->resultsLocked) $smarty->assign('locked' , true);
+    if ($event->resultsLocked)
+        $smarty->assign('locked', true);
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
     }
 
-if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
-   if (!@$_REQUEST['round']) {
-      require_once 'ui/support/roundselection.php';
+    if (!@$_REQUEST['round'] && @$_GET['round'])
+        $_REQUEST['round'] = $_GET['round'];
+    if (!@$_REQUEST['round']) {
+        require_once 'ui/support/roundselection.php';
 
-      return page_SelectRound($event, $smarty);
-   }
+        return page_SelectRound($event, $smarty);
+    }
 
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if (!$round || $round->eventId != $event->id)
+        return Error::Notfound('round');
 
-   $sections =  GetSections($round->id);
+    $sections = GetSections($round->id);
 
-   $smarty->assign('startTime', date('H:i', $round->starttime));
-   $smarty->assign('eventid', $event->id);
+    $smarty->assign('startTime', date('H:i', $round->starttime));
+    $smarty->assign('eventid', $event->id);
 
-   $smarty->assign('interval' , (int) $round->interval);
+    $smarty->assign('interval', (int) $round->interval);
 
-   $smarty->assign('sections', $sections);
-
+    $smarty->assign('sections', $sections);
 }
 
 /**

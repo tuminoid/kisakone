@@ -24,7 +24,6 @@
 
 require_once 'data/event_quota.php';
 
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,255 +31,271 @@ require_once 'data/event_quota.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-   $event = GetEventDetails($_GET['id']);
-   $smarty->assign('event', $event);
-   global $user;
+    $event = GetEventDetails($_GET['id']);
+    $smarty->assign('event', $event);
+    global $user;
 
-   if (is_a($event, 'Error'))
-      return $event;
-   if (!$event)
-      return Error::NotFound('event');
+    if (is_a($event, 'Error'))
+        return $event;
+    if (!$event)
+        return Error::NotFound('event');
 
-   $smarty->assign('eventid', $event->id);
+    $smarty->assign('eventid', $event->id);
 
-   $textType = '';
-   $evp = null;
+    $textType = '';
+    $evp = null;
 
-   if (!isAdmin() && !$event->isTD() && !$event->isActive) {
-      $error = new Error();
-      $error->isMajor = true;
-      $error->title = 'error_event_not_active';
-      $error->description = translate('error_event_not_active_description');
-      $error->source = 'PDR:Event:InitializeSmartyVariables';
+    if (!isAdmin() && !$event->isTD() && !$event->isActive) {
+        $error = new Error();
+        $error->isMajor = true;
+        $error->title = 'error_event_not_active';
+        $error->description = translate('error_event_not_active_description');
+        $error->source = 'PDR:Event:InitializeSmartyVariables';
 
-      return $error;
-   }
+        return $error;
+    }
 
-   switch ((string) @$_GET['view']) {
-      case '':
-         $view = 'index';
+    switch ((string) @$_GET['view']) {
+        case '':
+            $view = 'index';
 
-         list($ci_html, $ci_js) = page_ObfuscateContactInfo($event->contactInfo);
-         $smarty->assign('news', $event->GetNews(0, 5));
-         $smarty->assign('contactInfoHTML', $ci_html);
-         $smarty->assign('contactInfoJS', $ci_js);
-         $smarty->assign('rounds', $event->GetRounds());
+            list($ci_html, $ci_js) = page_ObfuscateContactInfo($event->contactInfo);
+            $smarty->assign('news', $event->GetNews(0, 5));
+            $smarty->assign('contactInfoHTML', $ci_html);
+            $smarty->assign('contactInfoJS', $ci_js);
+            $smarty->assign('rounds', $event->GetRounds());
 
-         if ($user) {
-            $player = $user->GetPlayer();
-            if ($player) {
-               $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));
-            }
-         }
-
-         // The index page has an extra text content area for schedule,
-         // must be taken care of manually
-         $scheduleText = $event->GetTextContent('index_schedule');
-         $index_schedule_content = '';
-         if ($scheduleText) {
-            $index_schedule_content = $scheduleText->formattedText;
-         }
-         $smarty->assign('index_schedule_text', $index_schedule_content);
-         break;
-
-      case 'competitors':
-         $view = 'competitors';
-         language_include('users');
-         $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
-         $smarty->assign('participants', $participants);
-         break;
-
-      case 'queue':
-         $view = 'queue';
-         language_include('users');
-         $queue = $event->GetQueue(@$_GET['sort'], @$_GET['search']);
-         $smarty->assign('queue', $queue);
-         break;
-
-      case 'quotas':
-         $view = 'quotas';
-         $smarty->assign('playerlimit', $event->playerLimit);
-         $smarty->assign('quotas', GetEventQuotas($event->id));
-         $smarty->assign('counts', GetEventParticipantCounts($event->id));
-         $smarty->assign('queues', GetEventQueueCounts($event->id));
-         break;
-
-      case 'schedule':
-         $view = 'schedule';
-         $rounds = $event->GetRounds();
-         $roundId = @$_GET['round'];
-         if ($roundId) {
-            $smarty->assign('holes', $rounds[$roundId-1]->GetHoles());
-         }
-         $smarty->assign('rounds', $rounds);
-         $smarty->assign('allow_print', IsAdmin() || $event->management != '');
-         break;
-
-      case 'course':
-         $view = 'course';
-         $smarty->assign('courses', pdr_GetCourses($event));
-         break;
-
-      case 'cancelsignup':
-         $view = 'cancelsignup';
-         $smarty->assign('signupOpen', $event->SignupPossible());
-         $smarty->assign('paid', $event->eventFeePaid);
-         $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
-         break;
-
-      case 'signupinfo':
-         $view = 'signupinfo';
-         $smarty->assign('classes', $event->GetClasses());
-         $smarty->assign('signedup', $event->approved !== null);
-         $smarty->assign('paid', $event->eventFeePaid);
-         $smarty->assign('signupOpen', $event->SignupPossible());
-         $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
-         $requiredFees = $event->FeesRequired();
-         if ($requiredFees && $user) {
-            if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees)) {
-               $smarty->assign('feesMissing',  $requiredFees);
-            }
-         }
-         break;
-
-      case 'payment':
-         $view = 'payment';
-         $smarty->assign('classes', $event->GetClasses());
-         $smarty->assign('signedup', $event->approved !== null);
-         $smarty->assign('paid', $event->eventFeePaid);
-         $smarty->assign('signupOpen', $event->SignupPossible());
-         $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
-         break;
-
-      case 'newsarchive':
-         $view = 'newsarchive';
-         $smarty->assign('news', $event->GetNews(0, 9999));
-         break;
-
-      case 'results':
-      case 'liveresults':
-         $view = 'results';
-         $rounds = $event->GetRounds();
-         $smarty->assign('classes', $event->GetClasses());
-         $smarty->assign('rounds', $rounds);
-         $roundnum = @$_GET['round'];
-         if (!$roundnum)
-            $roundnum = 1;
-
-         $roundid = @$rounds[$roundnum - 1]->id;
-         $theround = @$rounds[$roundnum - 1];
-         if ($theround) {
-            $smarty->assign('the_round', $theround);
-
-            $r = $theround->GetFullResults('resultsByClass');
-            foreach ($r as $k => $v) {
-               $r[$k] = pdr_IncludeStanding($v);
+            if ($user) {
+                $player = $user->GetPlayer();
+                if ($player) {
+                    $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));
+                }
             }
 
-            $smarty->assign('resultsByClass', $r);
-            $holes = $theround->GetHoles();
-            $smarty->assign('holes', $holes);
-            $smarty->assign('out_hole_index', ceil(count($holes) / 2) );
-            $smarty->assign('live', $_GET['view'] == 'liveresults');
-            $smarty->assign('roundid', $roundid);
-         }
-         break;
+            // The index page has an extra text content area for schedule,
+            // must be taken care of manually
+            $scheduleText = $event->GetTextContent('index_schedule');
+            $index_schedule_content = '';
+            if ($scheduleText) {
+                $index_schedule_content = $scheduleText->formattedText;
+            }
+            $smarty->assign('index_schedule_text', $index_schedule_content);
+            break;
 
-      case 'leaderboard':
-         $view = 'leaderboard';
-         $results_tmp = GetEventResultsWithoutHoles($event->id);
-         $results = pdr_GroupByClasses($results_tmp);
 
-         $scoresAssigned = null;
-         foreach ($results as $class) {
-            foreach ($class as $item) {
-               $scoresAssigned = $item['TournamentPoints'] != 0;
-               break;
+        case 'competitors':
+            $view = 'competitors';
+            language_include('users');
+            $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
+            $smarty->assign('participants', $participants);
+            break;
+
+
+        case 'queue':
+            $view = 'queue';
+            language_include('users');
+            $queue = $event->GetQueue(@$_GET['sort'], @$_GET['search']);
+            $smarty->assign('queue', $queue);
+            break;
+
+
+        case 'quotas':
+            $view = 'quotas';
+            $smarty->assign('playerlimit', $event->playerLimit);
+            $smarty->assign('quotas', GetEventQuotas($event->id));
+            $smarty->assign('counts', GetEventParticipantCounts($event->id));
+            $smarty->assign('queues', GetEventQueueCounts($event->id));
+            break;
+
+
+        case 'schedule':
+            $view = 'schedule';
+            $rounds = $event->GetRounds();
+            $roundId = @$_GET['round'];
+            if ($roundId) {
+                $smarty->assign('holes', $rounds[$roundId - 1]->GetHoles());
+            }
+            $smarty->assign('rounds', $rounds);
+            $smarty->assign('allow_print', IsAdmin() || $event->management != '');
+            break;
+
+
+        case 'course':
+            $view = 'course';
+            $smarty->assign('courses', pdr_GetCourses($event));
+            break;
+
+
+        case 'cancelsignup':
+            $view = 'cancelsignup';
+            $smarty->assign('signupOpen', $event->SignupPossible());
+            $smarty->assign('paid', $event->eventFeePaid);
+            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            break;
+
+
+        case 'signupinfo':
+            $view = 'signupinfo';
+            $smarty->assign('classes', $event->GetClasses());
+            $smarty->assign('signedup', $event->approved !== null);
+            $smarty->assign('paid', $event->eventFeePaid);
+            $smarty->assign('signupOpen', $event->SignupPossible());
+            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            $requiredFees = $event->FeesRequired();
+            if ($requiredFees && $user) {
+                if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees)) {
+                    $smarty->assign('feesMissing', $requiredFees);
+                }
             }
             break;
-         }
 
-         $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
-         $smarty->assign('resultsByClass', $results);
-         $rounds = $event->GetRounds();
-         $smarty->assign('numRounds', count($rounds));
-         $smarty->assign('rounds', $rounds);
-         break;
 
-      case 'leaderboard_csv':
-         if (!isAdmin() && !$event->isTD())
-            return Error::AccessDenied('leaderboard_csv');
+        case 'payment':
+            $view = 'payment';
+            $smarty->assign('classes', $event->GetClasses());
+            $smarty->assign('signedup', $event->approved !== null);
+            $smarty->assign('paid', $event->eventFeePaid);
+            $smarty->assign('signupOpen', $event->SignupPossible());
+            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            break;
 
-         $view = 'leaderboard_csv';
-         $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
-         $scoresAssigned = null;
-         foreach ($results as $class) {
-            foreach ($class as $item) {
-               $scoresAssigned = $item['TournamentPoints'] != 0;
-               break;
+
+        case 'newsarchive':
+            $view = 'newsarchive';
+            $smarty->assign('news', $event->GetNews(0, 9999));
+            break;
+
+
+        case 'results':
+        case 'liveresults':
+            $view = 'results';
+            $rounds = $event->GetRounds();
+            $smarty->assign('classes', $event->GetClasses());
+            $smarty->assign('rounds', $rounds);
+            $roundnum = @$_GET['round'];
+            if (!$roundnum)
+                $roundnum = 1;
+
+            $roundid = @$rounds[$roundnum - 1]->id;
+            $theround = @$rounds[$roundnum - 1];
+            if ($theround) {
+                $smarty->assign('the_round', $theround);
+
+                $r = $theround->GetFullResults('resultsByClass');
+                foreach ($r as $k => $v) {
+                    $r[$k] = pdr_IncludeStanding($v);
+                }
+
+                $smarty->assign('resultsByClass', $r);
+                $holes = $theround->GetHoles();
+                $smarty->assign('holes', $holes);
+                $smarty->assign('out_hole_index', ceil(count($holes) / 2));
+                $smarty->assign('live', $_GET['view'] == 'liveresults');
+                $smarty->assign('roundid', $roundid);
             }
             break;
-         }
 
-         $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
-         $smarty->assign('resultsByClass', $results);
-         $rounds = $event->GetRounds();
-         $smarty->assign('numRounds', count($rounds));
-         $smarty->assign('rounds', $rounds);
-         break;
 
-      case 'participant_csv':
-         if (!isAdmin() && !$event->isTD())
-            return Error::AccessDenied('participant_csv');
+        case 'leaderboard':
+            $view = 'leaderboard';
+            $results_tmp = GetEventResultsWithoutHoles($event->id);
+            $results = pdr_GroupByClasses($results_tmp);
 
-         $view = 'participant_csv';
-         $results = pdr_GroupByClasses($event->GetParticipants());
-         $smarty->assign('resultsByClass', $results);
-         break;
+            $scoresAssigned = null;
+            foreach ($results as $class) {
+                foreach ($class as $item) {
+                    $scoresAssigned = $item['TournamentPoints'] != 0;
+                    break;
+                }
+                break;
+            }
 
-      default:
-         // If we have a numeric view we are to show a custo m content page
-         if (is_numeric(@$_GET['view'])) {
-            $evp = $event->GetTextContent(@$_GET['view']);
-            $view = 'custom';
-         } else {
-            $view = 'missing';
-         }
-         break;
-   }
+            $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
+            $smarty->assign('resultsByClass', $results);
+            $rounds = $event->GetRounds();
+            $smarty->assign('numRounds', count($rounds));
+            $smarty->assign('rounds', $rounds);
+            break;
 
-   // Views can override text contnet type, normally it matches the view
-   if (!$textType)
-      $textType = $view;
 
-   if (!$evp)
-      $evp = $event->GetTextContent($textType);
+        case 'leaderboard_csv':
+            if (!isAdmin() && !$event->isTD())
+                return Error::AccessDenied('leaderboard_csv');
+
+            $view = 'leaderboard_csv';
+            $results = pdr_GroupByClasses(GetEventResultsWithoutHoles($event->id));
+            $scoresAssigned = null;
+            foreach ($results as $class) {
+                foreach ($class as $item) {
+                    $scoresAssigned = $item['TournamentPoints'] != 0;
+                    break;
+                }
+                break;
+            }
+
+            $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
+            $smarty->assign('resultsByClass', $results);
+            $rounds = $event->GetRounds();
+            $smarty->assign('numRounds', count($rounds));
+            $smarty->assign('rounds', $rounds);
+            break;
+
+
+        case 'participant_csv':
+            if (!isAdmin() && !$event->isTD())
+                return Error::AccessDenied('participant_csv');
+
+            $view = 'participant_csv';
+            $results = pdr_GroupByClasses($event->GetParticipants());
+            $smarty->assign('resultsByClass', $results);
+            break;
+
+
+        default:
+            // If we have a numeric view we are to show a custo m content page
+            if (is_numeric(@$_GET['view'])) {
+                $evp = $event->GetTextContent(@$_GET['view']);
+                $view = 'custom';
+            }
+            else {
+                $view = 'missing';
+            }
+            break;
+    }
+
+    // Views can override text contnet type, normally it matches the view
+    if (!$textType)
+        $textType = $view;
+
+    if (!$evp)
+        $evp = $event->GetTextContent($textType);
 
     if (!$evp || is_a($evp, 'Error')) {
         $evp = new TextContent(array());
         $evp->type = $textType;
     }
 
-   if (!$evp->title) {
-      $evp->title = translate('pagetitle_' . $textType);
-   }
+    if (!$evp->title) {
+        $evp->title = translate('pagetitle_' . $textType);
+    }
 
-   if (!$evp->content) {
-      $evp->content = "<h2>" . htmlentities($evp->title) ."</h2>";
-      $evp->FormatText();
-   }
+    if (!$evp->content) {
+        $evp->content = "<h2>" . htmlentities($evp->title) . "</h2>";
+        $evp->FormatText();
+    }
 
-   // Event pages have their own ads
-   $ad = GetAd($event->id, $view);
-   if (!$ad) {
-      $ad = GetAd($event->id, 'eventdefault');
-   }
-   if ($ad) $smarty->assign('ad', $ad);
+    // Event pages have their own ads
+    $ad = GetAd($event->id, $view);
+    if (!$ad) {
+        $ad = GetAd($event->id, 'eventdefault');
+    }
+    if ($ad)
+        $smarty->assign('ad', $ad);
 
-   $smarty->assign('view', 'eventviews/' . $view . '.tpl');
-   $smarty->assign('page', $evp);
-   $smarty->assign('title', $evp);
-   $smarty->assign('textcontent', $evp);
+    $smarty->assign('view', 'eventviews/' . $view . '.tpl');
+    $smarty->assign('page', $evp);
+    $smarty->assign('title', $evp);
+    $smarty->assign('textcontent', $evp);
 }
 
 /**
@@ -298,10 +313,7 @@ function getMainMenuSelection()
  */
 function page_ObfuscateContactInfo($contactInfo)
 {
-   return array(
-      page_ObfuscateContactInfo_HTML($contactInfo),
-      page_ObfuscateContactInfo_JS($contactInfo));
-
+    return array(page_ObfuscateContactInfo_HTML($contactInfo), page_ObfuscateContactInfo_JS($contactInfo));
 }
 
 /**
@@ -311,19 +323,18 @@ function page_ObfuscateContactInfo($contactInfo)
  */
 function page_ObfuscateContactInfo_HTML($ci)
 {
-   preg_match_all('/(.)/us', $ci, $characters);
-   $reversed = array_reverse($characters[0]);
-   ob_start();
+    preg_match_all('/(.)/us', $ci, $characters);
+    $reversed = array_reverse($characters[0]);
+    ob_start();
 
 
-       $pos = count($reversed) * 0.65;
-   foreach ($reversed as $character) {
-      echo sprintf('<span style="position: relative; left: %Fem">%s</span>',
-                   $pos, $character);
-      $pos -= 1.25;
-   }
+    $pos = count($reversed) * 0.65;
+    foreach ($reversed as $character) {
+        echo sprintf('<span style="position: relative; left: %Fem">%s</span>', $pos, $character);
+        $pos -= 1.25;
+    }
 
-   return ob_get_clean();
+    return ob_get_clean();
 }
 
 /**
@@ -331,51 +342,57 @@ function page_ObfuscateContactInfo_HTML($ci)
  */
 function page_ObfuscateContactInfo_JS($ci)
 {
-   preg_match_all('/(.)/us', $ci, $characters);
-   $characters = $characters[0];
-   ob_start();
+    preg_match_all('/(.)/us', $ci, $characters);
+    $characters = $characters[0];
+    ob_start();
 
-   foreach ($characters as $character) {
-      if ($character == "'") $character = "\\'";
-      else if ($character == "\\") $character == "\\\\";
-      echo "ci.push('$character');\n";
-   }
+    foreach ($characters as $character) {
+        if ($character == "'")
+            $character = "\\'";
+        elseif ($character == "\\")
+            $character == "\\\\";
+        echo "ci.push('$character');\n";
+    }
 
-   return ob_get_clean();
+    return ob_get_clean();
 }
 
 function pdr_GetCourses($event)
 {
-   $rounds = $event->GetRounds();
-   $courses = array();
-   foreach ($rounds as $index => $round) {
-      $course = $round->GetCourse();
+    $rounds = $event->GetRounds();
+    $courses = array();
+    foreach ($rounds as $index => $round) {
+        $course = $round->GetCourse();
 
-      if (!$course) continue;
+        if (!$course)
+            continue;
 
-      if (is_a($course, 'Error')) return $course;
-      $cid = $course['id'];
-      if (isset($courses[$cid])) {
-         $courses[$cid]['Rounds'][] = $index + 1;
-         continue;
-      } else {
-         $course['Rounds'] = array($index + 1);
-      }
-      $course['Holes'] = $round->GetHoles();
-      $courses[$course['id']] = $course;
-   }
+        if (is_a($course, 'Error'))
+            return $course;
+        $cid = $course['id'];
+        if (isset($courses[$cid])) {
+            $courses[$cid]['Rounds'][] = $index + 1;
+            continue;
+        }
+        else {
+            $course['Rounds'] = array($index + 1);
+        }
+        $course['Holes'] = $round->GetHoles();
+        $courses[$course['id']] = $course;
+    }
 
 
-   foreach ($courses as $id => $course) {
-      $rounds = $course['Rounds'];
-      if (count($rounds) == 1) {
-         $courses[$id]['Rounds'] = translate('round_title', array('number' => $rounds[0]));
-      } else {
-         $courses[$id]['Rounds'] = translate('many_round_title', array('rounds' => pdr_nice_implode($rounds)));
-      }
-   }
-   //print_r($courses);
-   return $courses;
+    foreach ($courses as $id => $course) {
+        $rounds = $course['Rounds'];
+        if (count($rounds) == 1) {
+            $courses[$id]['Rounds'] = translate('round_title', array('number' => $rounds[0]));
+        }
+        else {
+            $courses[$id]['Rounds'] = translate('many_round_title', array('rounds' => pdr_nice_implode($rounds)));
+        }
+    }
+    //print_r($courses);
+    return $courses;
 }
 
 /**
@@ -383,19 +400,20 @@ function pdr_GetCourses($event)
  */
 function pdr_GroupByClasses($data)
 {
-   $out = array();
-   foreach ($data as $row) {
-      // A little hack as we added PDGA participant lists as well
-      $class = isset($row['ClassName']) ? $row['ClassName'] : $row['className'];
-      if (!isset($out[$class])) $out[$class] = array();
-      $out[$class][] = $row;
-   }
+    $out = array();
+    foreach ($data as $row) {
+        // A little hack as we added PDGA participant lists as well
+        $class = isset($row['ClassName']) ? $row['ClassName'] : $row['className'];
+        if (!isset($out[$class]))
+            $out[$class] = array();
+        $out[$class][] = $row;
+    }
 
-   // Shouldn't really call a function internal to core, but it does the exact thing
-   // we need here
-   uasort($out, 'core_sort_by_count');
+    // Shouldn't really call a function internal to core, but it does the exact thing
+    // we need here
+    uasort($out, 'core_sort_by_count');
 
-   return $out;
+    return $out;
 }
 
 /**
@@ -404,22 +422,21 @@ function pdr_GroupByClasses($data)
  */
 function pdr_nice_implode($text)
 {
-   $and = translate('and');
-   $list = array();
-   foreach ($text as $item) {
-      $list[] = $item;
-      $list[] = ", ";
-   }
+    $and = translate('and');
+    $list = array();
+    foreach ($text as $item) {
+        $list[] = $item;
+        $list[] = ", ";
+    }
 
-   if (count($list)) {
-      unset($list[count($list) - 1]);
-      if (count($list) > 1) {
-         $list[count($list) - 2] = " $and ";
-      }
-   }
+    if (count($list)) {
+        unset($list[count($list) - 1]);
+        if (count($list) > 1) {
+            $list[count($list) - 2] = " $and ";
+        }
+    }
 
-   return implode("", $list);
-
+    return implode("", $list);
 }
 
 /**
@@ -427,28 +444,30 @@ function pdr_nice_implode($text)
  */
 function pdr_IncludeStanding($d)
 {
-   $out = array();
-   $lastResult = -999;
-   $lastStanding = 0;
-   $step = 1;
+    $out = array();
+    $lastResult = - 999;
+    $lastStanding = 0;
+    $step = 1;
 
-   foreach ($d as $item) {
-      $result = $item['CumulativePlusminus'];
+    foreach ($d as $item) {
+        $result = $item['CumulativePlusminus'];
 
-      if ($item['DidNotFinish']) $result = 999;
+        if ($item['DidNotFinish'])
+            $result = 999;
 
-      if ($result == $lastResult) {
-         $item['Standing'] = $lastStanding;
-         ++$step;
-      } else {
-         $lastStanding += $step;
-         $step = 1;
-         $item['Standing'] = $lastStanding;
-         $lastResult = $result;
-      }
+        if ($result == $lastResult) {
+            $item['Standing'] = $lastStanding;
+            ++$step;
+        }
+        else {
+            $lastStanding += $step;
+            $step = 1;
+            $item['Standing'] = $lastStanding;
+            $lastResult = $result;
+        }
 
-      $out[] = $item;
-   }
-   //print_r($out);
-   return $out;
+        $out[] = $item;
+    }
+    //print_r($out);
+    return $out;
 }

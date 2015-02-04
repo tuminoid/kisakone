@@ -28,7 +28,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     require_once 'core/ads.php';
     $ads = GetAllAds(null);
@@ -42,7 +43,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     foreach ($adTypes as $adType => $userd) {
-        if ($userd === false) continue;
+        if ($userd === false)
+            continue;
 
         $ads[] = new Ad(null, $adType, null, AD_DEFAULT, null, null, null, null);
     }

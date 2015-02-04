@@ -29,7 +29,8 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     if ($error === true) {
         $smarty->assign('done', true);

@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,7 +31,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $event = GetEventDetails(@$_GET['id']);
 
-    if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
     $smarty->assign('event', $event);
     $items = array();
@@ -42,7 +42,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     if ($event->signupStart) {
         $items[] = page_SignupStartItem($event);
         if ($event->signupStart < time()) {
-            if ($event->signupEnd) $items[] = page_SignupEndItem($event);
+            if ($event->signupEnd)
+                $items[] = page_SignupEndItem($event);
         }
     }
 
@@ -51,14 +52,15 @@ function InitializeSmartyVariables(&$smarty, $error)
     if ($event->approved !== null) $items[] = page_SignedUp($event);
     if ($event->eventFeePaid !== null) $items[] = page_Paid($eventFeePaid);
    */
-    $rounds  = $event->GetRounds();
+    $rounds = $event->GetRounds();
     foreach ($rounds as $ind => $round) {
         if ($round->groupsFinished) {
             $items[] = page_GroupsFinished($ind + 1, $round);
         }
     }
 
-    if ($event->resultsLocked) $items[] = page_Locked($event);
+    if ($event->resultsLocked)
+        $items[] = page_Locked($event);
 
     $news = $event->GetNews(0, 99999999);
     foreach ($news as $newsitem) {
@@ -89,11 +91,14 @@ function page_EventStartRSS($event)
     $date = $event->startdate;
     if (page_isToday($date)) {
         return array('type' => 'event_start_today', 'date' => $date);
-    } elseif ($date < time()) {
+    }
+    elseif ($date < time()) {
         return array('type' => 'event_started', 'date' => $date, 'dataDate' => $date);
-    } elseif ($date < time() + 7 * 24 * 60 * 60) {
+    }
+    elseif ($date < time() + 7 * 24 * 60 * 60) {
         return array('type' => 'event_starting_1_week', 'date' => $date - 7 * 24 * 60 * 60, 'dataDate' => $date);
-    } else {
+    }
+    else {
         return array('type' => 'event_will_start', 'date' => $event->activationDate, 'dataDate' => $date);
     }
 }
@@ -104,9 +109,11 @@ function page_SignupStartItem($event)
 
     if ($date < time()) {
         return array('type' => 'signup_started', 'date' => $date, 'dataDate' => $date, 'template' => 'signup', 'link' => true);
-    } elseif ($date < time() + 7 * 24 * 60 * 60) {
+    }
+    elseif ($date < time() + 7 * 24 * 60 * 60) {
         return array('type' => 'signup_starting_1_week', 'date' => $date - 7 * 24 * 60 * 60, 'dataDate' => $date, 'template' => 'signup');
-    } else {
+    }
+    else {
         return array('type' => 'signup_will_start', 'date' => $event->activationDate, 'dataDate' => $date, 'template' => 'signup');
     }
 }
@@ -117,30 +124,33 @@ function page_SignupEndItem($event)
 
     if ($date < time()) {
         return array('type' => 'signup_over', 'date' => $date, 'dataDate' => $date, 'template' => 'signupend');
-    } elseif ($date < time() + 7 * 24 * 60 * 60) {
+    }
+    elseif ($date < time() + 7 * 24 * 60 * 60) {
         return array('type' => 'signup_end_1_week', 'date' => $date - 7 * 24 * 60 * 60, 'dataDate' => $date, 'template' => 'signupend', 'link' => true);
-    } elseif ($date < time() +  24 * 60 * 60) {
+    }
+    elseif ($date < time() + 24 * 60 * 60) {
         return array('type' => 'signup_end_1_day', 'date' => $date - 7 * 24 * 60 * 60, 'dataDate' => $date, 'template' => 'signupend', 'link' => true);
-    } else {
+    }
+    else {
         return array('type' => 'signup_will_end', 'date' => $event->activationDate, 'dataDate' => $date, 'template' => 'signupend', 'link' => true);
     }
 }
 
 function page_News($event, $item)
 {
-    return array('type' => 'news', 'title' => htmlspecialchars($item->title),
-                 'content' => htmlspecialchars($item->formattedText), 'date' => $item->date,
-                 'newsid' => $item->id);
-
+    return array('type' => 'news', 'title' => htmlspecialchars($item->title), 'content' => htmlspecialchars($item->formattedText), 'date' => $item->date, 'newsid' => $item->id);
 }
 
 function page_fix_rss_fields($item)
 {
-    if ($item === null) return $item;
+    if ($item === null)
+        return $item;
 
-    $item['rssDate'] =  date('D, d M Y H:i:s T', $item['date']);
-    if (isset($item['dataDate'])) $item['dataDate'] = date('d.m.Y', $item['dataDate']);
-    if (!isset($item['template'])) $item['template'] = $item['type'];
+    $item['rssDate'] = date('D, d M Y H:i:s T', $item['date']);
+    if (isset($item['dataDate']))
+        $item['dataDate'] = date('d.m.Y', $item['dataDate']);
+    if (!isset($item['template']))
+        $item['template'] = $item['type'];
     return $item;
 }
 
@@ -150,13 +160,14 @@ function page_isToday($date)
     $tomorrow = strtotime(date('Y-m-d', time() + 60 * 60 * 24));
 
     return $date >= $today && $date < $tomorrow;
-
 }
 
 function page_rss_date_sort($a, $b)
 {
-    if ($a['date'] < $b['date']) return -1;
-    if ($a['date'] > $b['date']) return 1;
+    if ($a['date'] < $b['date'])
+        return - 1;
+    if ($a['date'] > $b['date'])
+        return 1;
     return 0;
 }
 
