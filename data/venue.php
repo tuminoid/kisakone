@@ -33,6 +33,9 @@ function GetVenueNames($searchQuery = '')
     $query = format_query("SELECT DISTINCT Name FROM :Venue WHERE $search ORDER BY Name");
     $result = execute_query($query);
 
+    if (!$result)
+        return Error::Query($query);
+
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result))
