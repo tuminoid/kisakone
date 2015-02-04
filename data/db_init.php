@@ -169,14 +169,17 @@ function debug_query_and_die($query)
     $db_error_log = $settings['DB_ERROR_LOGGING'];
 
     if (isset($db_error_log) && $db_error_log) {
+        error_log($query);
+        error_log(mysql_error());
+        0 / 0; // cheap trick to get proper xdebug trace which formats nicely ;-)
+    }
+
+    $db_error_die = $settings['DB_ERROR_DIE'];
+    if (isset($db_error_die) && $db_error_die) {
         header("Content-Type: text/plain");
         xdebug_print_function_stack();
         xdebug_var_dump($query);
         xdebug_var_dump(mysql_error());
-
-        error_log($query);
-        error_log(mysql_error());
-        0 / 0; // cheap trick to get proper xdebug trace which formats nicely ;-)
 
         die();
     }
