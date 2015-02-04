@@ -27,87 +27,88 @@ require_once 'data/round.php';
 
 function ProcessForm()
 {
-    if (@$_POST['cancel']) {
+    if (@$_POST['cancel'])
         redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-    }
 
     $event = GetEventDetails($_GET['id']);
 
-   if (!$event) return Error::NotFound('event');
-   if ($event->resultsLocked) return Error::AccessDenied();
-
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!$event)
+        return Error::NotFound('event');
+    if ($event->resultsLocked)
         return Error::AccessDenied();
-    }
-   if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
-   $round = GetRoundDetails(@$_REQUEST['round']);
-   if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    if (!IsAdmin() && $event->management != 'td')
+        return Error::AccessDenied();
+    if (!@$_REQUEST['round'] && @$_GET['round'])
+        $_REQUEST['round'] = $_GET['round'];
 
-   ResetRound($round->id, 'groups');
+    $round = GetRoundDetails(@$_REQUEST['round']);
+    if (!$round || $round->eventId != $event->id)
+        return Error::Notfound('round');
 
-   $groupTemplate = null;
+    ResetRound($round->id, 'groups');
+    $groupTemplate = null;
 
-   foreach ($_POST['e'] as $action) {
+    foreach ($_POST['e'] as $action) {
         switch ($action[0]) {
             case 's':
                 $section = GetSectionDetails(substr($action, 3));
-                if ($section->round != $round->id) fail();
+                if ($section->round != $round->id)
+                    fail();
                 break;
+
             case 'h':
                 $startingHole = substr($action, 1);
                 break;
+
             case 'g':
                 $groupTemplate = InitNewGroup($round, $section, $groupTemplate, $startingHole);
                 break;
+
             case 'p':
                 $groupTemplate['Player'] = substr($action, 3);
                 InsertGroupmember($groupTemplate);
                 break;
+
             case 'e':
                 assert($action == "edit_groups");
                 break;
+
             default:
                 fail();
-
         }
-   }
+    }
 
-   SetRoundGroupsDone($round->id, (bool) @$_POST['done']);
+    SetRoundGroupsDone($round->id, (bool) @$_POST['done']);
 
-   redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
+    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
 }
 
 function InitNewGroup($round, $section, $template, $startingHole)
 {
-        if (!$template) {
-            $template = array(
-                'GroupNumber' => 0,
-                'StartingTime' => $round->starttime - $round->interval * 60,
-                'StartingHole' => null,
-                'Section' => null,
-            );
+    if (!$template) {
+        $template = array('GroupNumber' => 0, 'StartingTime' => $round->starttime - $round->interval * 60, 'StartingHole' => null, 'Section' => null,);
+    }
+
+    if ($section->id != $template['Section']) {
+        if ($section->startTime) {
+            $template['StartingTime'] = $section->startTime - $round->interval * 60;
         }
+        $template['Section'] = $section->id;
+    }
 
-        if ($section->id != $template['Section']) {
-            if ($section->startTime) {
-                $template['StartingTime'] = $section->startTime - $round->interval * 60;
-            }
-            $template['Section'] = $section->id;
-        }
+    switch ($round->starttype) {
+        case 'sequential':
+            $template['StartingTime'] += 60 * $round->interval;
+            break;
 
-        switch ($round->starttype) {
-            case 'sequential':
-                $template['StartingTime'] += 60 * $round->interval;
-                break;
-            case 'simultaneous':
-                $template['StartingHole'] = $startingHole;
-                break;
-            default:
-                fail();
+        case 'simultaneous':
+            $template['StartingHole'] = $startingHole;
+            break;
 
-        }
-        $template['GroupNumber']++;
+        default:
+            fail();
+    }
+    $template['GroupNumber']++;
 
-        return $template;
-
-   }
+    return $template;
+}
