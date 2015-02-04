@@ -3,9 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.02.04:
+===========
   * Humongous data_access.php is split into 15 data/* files.
+  * Various optimizations.
+  * Entering scores regression fixed :(
 
 2015.01.30:
 ===========
