@@ -174,6 +174,10 @@ function debug_query_and_die($query)
         xdebug_var_dump($query);
         xdebug_var_dump(mysql_error());
 
+        error_log($query);
+        error_log(mysql_error());
+        0 / 0; // cheap trick to get proper xdebug trace which formats nicely ;-)
+
         die();
     }
 }
