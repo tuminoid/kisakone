@@ -33,7 +33,7 @@ function GetRoundDetails($roundid)
     $id = (int) $roundid;
 
     $query = format_query("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
-                                `Interval, ValidResults, GroupsFinished
+                                `Interval`, ValidResults, GroupsFinished
                             FROM :Round
                             WHERE id = $id
                             ORDER BY StartTime");
@@ -46,7 +46,8 @@ function GetRoundDetails($roundid)
     if (mysql_num_rows($result) == 1) {
         $row = mysql_fetch_assoc($result);
         $retValue = new Round($row['id'], $row['Event'], $row['StartType'],
-            $row['StartTime'], $row['Interval'], $row['ValidResults'], 0, $row['Course'], $row['GroupsFinished']);
+            $row['StartTime'], $row['Interval'], $row['ValidResults'],
+            0, $row['Course'], $row['GroupsFinished']);
     }
     mysql_free_result($result);
 
@@ -313,45 +314,55 @@ function GetResultUpdatesSince($eventId, $roundId, $time)
 }
 
 
-function SaveResult($roundid, $playerid, $holeid, $special, $result)
+function SaveResult($roundid, $playerid, $holeid, $special, $holeresult)
 {
     $roundid = (int) $roundid;
     $playerid = (int) $playerid;
     $holeid = (int) $holeid;
+    $holeresult = (int) $holeresult;
 
     $rrid = GetRoundResult($roundid, $playerid);
     if (is_a($rrid, 'Error'))
         return $rrid;
 
-    if ($holeid === null)
-        return data_UpdateRoundResult($rrid, $special, $result);
+    if (!$holeid)
+        return data_UpdateRoundResult($rrid, $special, $holeresult);
 
-    return data_UpdateHoleResult($rrid, $playerid, $holeid, $result);
+    return data_UpdateHoleResult($rrid, $playerid, $holeid, $holeresult);
 }
 
 
-function data_UpdateHoleResult($rrid, $playerid, $holeid, $result)
+function data_UpdateHoleResult($rrid, $playerid, $holeid, $holeresult)
 {
-    $result = execute_query(format_query("LOCK TABLE :HoleResult WRITE"));
-    if (!$result)
-        error_log("Failed to 'LOCK TABLE :HoleResult WRITE', there is race condition!");
+    $rrid = (int) $rrid;
+    $playerid = (int) $playerid;
+    $holeid = (int) $holeid;
+    $holeresult = (int) $holeresult;
 
-    $query = format_query("SELECT id FROM :HoleResult WHERE RoundResult = $rrid AND Player = $playerid AND Hole = $holeid");
+    $query = format_query("LOCK TABLE :HoleResult WRITE");
+    $result = execute_query($query);
+    if (!$result)
+        error_log("Failed to '$query', there is potential race condition (rrid=$rrid, player=$playerid, hole=$holeid)!");
+
+    $query = format_query("SELECT id
+                            FROM :HoleResult
+                            WHERE RoundResult = $rrid AND Player = $playerid AND Hole = $holeid");
     $result = execute_query($query);
 
-    if (mysql_num_rows($result) > 0) {
+    if (!mysql_num_rows($result)) {
         $query = format_query("INSERT INTO :HoleResult (Hole, RoundResult, Player, Result, DidNotShow, LastUpdated)
                                 VALUES ($holeid, $rrid, $playerid, 0, 0, NOW())");
         execute_query($query);
     }
 
     $dns = 0;
-    if ($result == 99 || $result == 999) {
+    if ($holeresult == 99 || $holeresult == 999) {
         $dns = 1;
-        $result = 99;
+        $holeresult = 99;
     }
 
-    $query = format_query("UPDATE :HoleResult SET Result = $result, DidNotShow = $dns, LastUpdated = NOW()
+    $query = format_query("UPDATE :HoleResult
+                            SET Result = $holeresult, DidNotShow = $dns, LastUpdated = NOW()
                             WHERE RoundResult = $rrid AND Hole = $holeid AND Player = $playerid");
     $result = execute_query($query);
 
@@ -416,7 +427,7 @@ function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null)
 
     $dnf = $dnf ? 1 : 0;
     $query = format_query("UPDATE :RoundResult
-                            SET Result = $total, Penalty = $penalty, SuddenDeath = $sudendeath, Completed = $complete,
+                            SET Result = $total, Penalty = $penalty, SuddenDeath = $suddendeath, Completed = $complete,
                                 DidNotFinish = $dnf, PlusMinus = $plusminus, LastUpdated = NOW()
                             WHERE id = $rrid");
     $result = execute_query($query);
@@ -616,14 +627,16 @@ function ResetRound($roundid, $resetType = 'full')
         $sectIds[] = $section->id;
     $idList = implode(', ', $sectIds);
 
-    if ($resetType == 'groups' || $resetType == 'full')
-        execute_query(format_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)"));
+    if (count($sectIds) > 0) {
+        if ($resetType == 'groups' || $resetType == 'full')
+            execute_query(format_query("DELETE FROM :StartingOrder WHERE Section IN ($idList)"));
 
-    if ($resetType == 'full' || $resetType == 'players')
-        execute_query(format_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)"));
+        if ($resetType == 'full' || $resetType == 'players')
+            execute_query(format_query("DELETE FROM :SectionMembership WHERE Section IN ($idList)"));
 
-    if ($resetType == 'full')
-        execute_query(format_query("DELETE FROM :Section WHERE id IN ($idList)"));
+        if ($resetType == 'full')
+            execute_query(format_query("DELETE FROM :Section WHERE id IN ($idList)"));
+    }
 }
 
 
