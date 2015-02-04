@@ -7,6 +7,7 @@ next:
 =====
   * PDGA integration during sign up/add competitor.
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
+  * First version of a proper upgrade guide. GH #112.
 
 2015.02.04:
 ===========
