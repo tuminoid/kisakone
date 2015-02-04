@@ -117,7 +117,7 @@ function SaveTextContent($page)
     $title = esc_or_null($page->title);
     $content = esc_or_null($page->content);
     $time = time();
-    $type = osc_or_null($page->type);
+    $type = esc_or_null($page->type);
 
     if (!$page->id) {
         $event = esc_or_null($page->event, 'int');
