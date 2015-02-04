@@ -115,7 +115,6 @@ function esc_or_null($param, $type = 'string')
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
  * @param string $query actual SQL query to format
- * @param strings $args all other args that are passed to sprintf
  * @return formatted SQL that is prefixed correctly
  */
 function format_query($query)
@@ -125,9 +124,8 @@ function format_query($query)
 
     $args = func_get_args();
     if (count($args) > 1) {
-        error_log("format_query() has multiple args=".count($args));
-        error_log("backtrace=".print_r(debug_backtrace(), true));
-        die("format_query failure, exiting...");
+        error_log("format_query() has multiple args= " . count($args));
+        debug_query_and_die($query);
     }
 
     return str_replace(':', $prefix, $query);
@@ -143,29 +141,41 @@ function format_query($query)
  */
 function execute_query($query)
 {
+    if (empty($query))
+        return false;
+
     $dbError = InitializeDatabaseConnection();
     if ($dbError) {
         error_log("error: database connection init failed");
         return false;
     }
 
-    if (empty($query))
-        return false;
-
     $result = mysql_query($query);
-    if (!$result) {
-        global $settings;
-        $db_error_log = $settings['DB_ERROR_LOGGING'];
-
-        if (isset($db_error_log) && $db_error_log) {
-            error_log("error: execute_query failed");
-            error_log("query: " . str_replace("\n", " ", $query));
-            error_log("message: " . str_replace("\n", " ", mysql_error()));
-            error_log("backtrace: " . str_replace("\n", " ", print_r(debug_backtrace(), true)));
-        }
-    }
+    if (!$result)
+        debug_query_and_die($query);
 
     return $result;
+}
+
+
+/**
+ * Log information about a query for debug purposes
+ *
+ * You need to have 'php5-xdebug' module installed
+ */
+function debug_query_and_die($query)
+{
+    global $settings;
+    $db_error_log = $settings['DB_ERROR_LOGGING'];
+
+    if (isset($db_error_log) && $db_error_log) {
+        header("Content-Type: text/plain");
+        xdebug_print_function_stack();
+        xdebug_var_dump($query);
+        xdebug_var_dump(mysql_error());
+
+        die();
+    }
 }
 
 
