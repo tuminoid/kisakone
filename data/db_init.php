@@ -120,23 +120,17 @@ function esc_or_null($param, $type = 'string')
  */
 function format_query($query)
 {
-    static $prefix = false;
-    if ($prefix === false) {
-        global $settings;
-        $prefix = $settings['DB_PREFIX'];
-    }
+    global $settings;
+    $prefix = $settings['DB_PREFIX'];
 
     $args = func_get_args();
-
     if (count($args) > 1) {
-        error_log("format_query has multiple args=".count($args));
+        error_log("format_query() has multiple args=".count($args));
         error_log("backtrace=".print_r(debug_backtrace(), true));
+        die("format_query failure, exiting...");
     }
-    $args[0] = $query;
-    for ($i = 0; $i < count($args); $i++)
-        $args[$i] = str_replace(':', $prefix, $args[$i]);
 
-    return call_user_func_array('sprintf', $args);
+    return str_replace(':', $prefix, $query);
 }
 
 
@@ -165,8 +159,9 @@ function execute_query($query)
 
         if (isset($db_error_log) && $db_error_log) {
             error_log("error: execute_query failed");
-            error_log("query: $query");
-            error_log("message: " . mysql_error());
+            error_log("query: " . str_replace("\n", " ", $query));
+            error_log("message: " . str_replace("\n", " ", mysql_error()));
+            error_log("backtrace: " . str_replace("\n", " ", print_r(debug_backtrace(), true)));
         }
     }
 
