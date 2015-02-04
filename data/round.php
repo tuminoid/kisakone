@@ -33,7 +33,7 @@ function GetRoundDetails($roundid)
     $id = (int) $roundid;
 
     $query = format_query("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
-                                Interval, ValidResults, GroupsFinished
+                                `Interval, ValidResults, GroupsFinished
                             FROM :Round
                             WHERE id = $id
                             ORDER BY StartTime");
@@ -86,7 +86,7 @@ function SetRounds($eventid, $rounds, $deleteRounds = array())
         $r_validresults = 1;
 
         if (empty($roundid) || $roundid == '*') {
-            $query = format_query("INSERT INTO :Round (Event, Course, StartType, StartTime, Interval, ValidResults)
+            $query = format_query("INSERT INTO :Round (Event, Course, StartType, StartTime, `Interval`, ValidResults)
                 VALUES ($r_event, $r_course, $r_starttype, FROM_UNIXTIME($r_starttime), $r_interval, $r_validresults)");
             $result = execute_query($query);
 
@@ -521,7 +521,7 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
 
     $query = format_query("UPDATE :Round
                             SET StartTime = FROM_UNIXTIME($date), StartType = $startType,
-                                Interval = $interval, ValidResults = $valid, Course = $course
+                                `Interval = $interval, ValidResults = $valid, Course = $course
                             WHERE id = $roundid");
     $result = execute_query($query);
 
