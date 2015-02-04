@@ -57,7 +57,6 @@ function processForm()
         if ($tobj->level != $level) {
             $problems['tournament'] = translate('FormError_TournamentLevelMismatch');
         }
-
     }
 
     $licenseReq = @$_POST['requireFees_license'];
@@ -76,6 +75,13 @@ function processForm()
     $playerlimit = @$_POST['playerlimit'];
     if ((int) $playerlimit < 0)
         $problems['playerlimit'] = translate('FormError_NotPositiveInteger');
+
+    $pdgaid = @$_POST['pdgaeventid'];
+    /*
+    // Disabled for now, at new event we might not know the id
+    if ((int) $pdgaid < 0)
+        $problems['pdgaid'] = translate('FormError_NotPositiveInteger');
+    */
 
     $start = input_ParseDate($_POST['start']);
     if ($start === null)
@@ -131,7 +137,7 @@ function processForm()
 
     $td = input_GetUser($_POST['td']);
     if ($td === null) {
-         $problems['td'] = translate('FormError_InvalidUser');
+        $problems['td'] = translate('FormError_InvalidUser');
     }
 
     $officials = array();
@@ -173,8 +179,9 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level,
-        $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaId);
+    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact,
+        $tournament, $level, $start, $signup_start, $signup_end, $classes,
+        $td, $officialIds, $rounds, $requireFees, $pdgaid);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
