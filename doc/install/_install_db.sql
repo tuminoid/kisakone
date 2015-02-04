@@ -186,7 +186,7 @@ CREATE TABLE :Course
 SHOW WARNINGS;
 
 
-CREATE TABLE `:Round`
+CREATE TABLE :Round
 (
   id INT NOT NULL AUTO_INCREMENT,
   Event INT NOT NULL,
@@ -257,7 +257,7 @@ SHOW WARNINGS;
 CREATE TABLE :RoundResult
 (
   id INT NOT NULL AUTO_INCREMENT,
-  `Round` INT NOT NULL,
+  Round INT NOT NULL,
   Player SMALLINT NOT NULL,
   Result SMALLINT NOT NULL,
   Penalty TINYINT NOT NULL,
@@ -269,9 +269,9 @@ CREATE TABLE :RoundResult
   CumulativePlusminus INT DEFAULT '0',
   CumulativeTotal INT DEFAULT '0',
   PRIMARY KEY(id),
-  FOREIGN KEY(`Round`) REFERENCES `:Round`(id),
+  FOREIGN KEY(Round) REFERENCES :Round(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
-  INDEX(`Round`, LastUpdated)
+  INDEX(Round, LastUpdated)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
