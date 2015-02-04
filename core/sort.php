@@ -82,8 +82,8 @@ function data_sort_leaderboard($a, $b)
 
    $keys = array_reverse(array_keys($ar));
    foreach ($keys as $key) {
-      $ae = $ar[$key]['Total'];
-      $be = $br[$key]['Total'];
+      $ae = @$ar[$key]['Total'];
+      $be = @$br[$key]['Total'];
       if ($ae != $be) {
          if ($ae < $be)
             return -1;
