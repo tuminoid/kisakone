@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Terms and conditions page
  *
@@ -28,7 +28,7 @@
       {* We don't want the regular layout here, just plain minimum*}
       <title>{translate id=terms_and_conditions} - {translate id=site_name}</title>
       <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
-      <script type="text/javascript" src="{$url_base}js/jquery/jquery-1.11.0.min.js"></script>
+      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 </head>
 <body>
     <div id="content">
