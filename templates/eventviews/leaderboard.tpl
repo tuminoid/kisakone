@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Leaderboard
  *
@@ -72,6 +72,11 @@
     {$page->formattedText}
 </div>
 
+{if $pdgaUrl}
+<div id="pdga_link">
+    <a href="{$pdgaUrl}">{translate id=event_pdga_results_url}</a>
+</div>
+{/if}
 
 {assign var=extrahead value=$xtrahead}
 <p class="preliminary" style="display: none">

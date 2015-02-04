@@ -55,6 +55,12 @@
         <td id="contactInfo"><div style="font-family: monospace">{$contactInfoHTML}</div></td>
     </tr>
 
+    {if $pdgaUrl}
+    <tr>
+        <td>{translate id=event_pdga_url}</td>
+        <td><a href="{$pdgaUrl}">{$pdgaUrl}</a></td>
+    </tr>
+    {/if}
 
 
 

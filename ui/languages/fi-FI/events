@@ -34,6 +34,8 @@ event_official  Toimitsija
 event_add_official  Lisää toimitsija
 event_pdga      PDGA asetukset
 event_pdga_id   Kilpailunumero
+event_pdga_url  Kilpailu PDGA:n sivuilla
+event_pdga_results_url Kilpailun tulokset ja ratingit PDGA:n sivuilla
 
 
 round_start_time    Kierroksen ajankohta

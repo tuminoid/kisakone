@@ -64,6 +64,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('contactInfoHTML', $ci_html);
             $smarty->assign('contactInfoJS', $ci_js);
             $smarty->assign('rounds', $event->GetRounds());
+            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             if ($user) {
                 $player = $user->GetPlayer();
@@ -82,14 +83,13 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('index_schedule_text', $index_schedule_content);
             break;
 
-
         case 'competitors':
             $view = 'competitors';
             language_include('users');
             $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
             $smarty->assign('participants', $participants);
+            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
             break;
-
 
         case 'queue':
             $view = 'queue';
@@ -98,7 +98,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('queue', $queue);
             break;
 
-
         case 'quotas':
             $view = 'quotas';
             $smarty->assign('playerlimit', $event->playerLimit);
@@ -106,7 +105,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('counts', GetEventParticipantCounts($event->id));
             $smarty->assign('queues', GetEventQueueCounts($event->id));
             break;
-
 
         case 'schedule':
             $view = 'schedule';
@@ -119,12 +117,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('allow_print', IsAdmin() || $event->management != '');
             break;
 
-
         case 'course':
             $view = 'course';
             $smarty->assign('courses', pdr_GetCourses($event));
             break;
-
 
         case 'cancelsignup':
             $view = 'cancelsignup';
@@ -132,7 +128,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('paid', $event->eventFeePaid);
             $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
             break;
-
 
         case 'signupinfo':
             $view = 'signupinfo';
@@ -149,7 +144,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
             break;
 
-
         case 'payment':
             $view = 'payment';
             $smarty->assign('classes', $event->GetClasses());
@@ -159,12 +153,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
             break;
 
-
         case 'newsarchive':
             $view = 'newsarchive';
             $smarty->assign('news', $event->GetNews(0, 9999));
             break;
-
 
         case 'results':
         case 'liveresults':
@@ -172,6 +164,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $rounds = $event->GetRounds();
             $smarty->assign('classes', $event->GetClasses());
             $smarty->assign('rounds', $rounds);
+            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
+
             $roundnum = @$_GET['round'];
             if (!$roundnum)
                 $roundnum = 1;
@@ -200,6 +194,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $view = 'leaderboard';
             $results_tmp = GetEventResultsWithoutHoles($event->id);
             $results = pdr_GroupByClasses($results_tmp);
+            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             $scoresAssigned = null;
             foreach ($results as $class) {

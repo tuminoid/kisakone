@@ -355,6 +355,15 @@ class Event
         // of changing all the constructor calls.
         return EventRequiresFees($this->id);
     }
+
+    /**
+     * Returns URL to PDGA if EventId is set, null otherwise
+    */
+    function getPDGAUrl()
+    {
+        if ($this->pdgaEventId)
+            return "http://www.pdga.com/tour/event/" . $this->pdgaEventId;
+    }
 }
 
 /* *****************************************************************************
