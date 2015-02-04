@@ -33,7 +33,7 @@ function GetClasses($onlyAvailable = false)
 
     $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
                             FROM :Classification
-                            $where
+                            $available
                             ORDER BY Name");
     $result = execute_query($query);
 
