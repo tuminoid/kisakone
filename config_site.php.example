@@ -62,6 +62,8 @@ $settings["PDGA_PASSWORD"] = "";
  */
 // php 5.3 spits out deprecation warnings without this
 error_reporting(E_ERROR);
+ini_set('display_errors', 0);
 
 // mysql debugging
 $settings['DB_ERROR_LOGGING'] = false;
+$settings['DB_ERROR_DIE'] = false;
