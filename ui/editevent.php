@@ -141,15 +141,6 @@ function InitializeSmartyVariables(&$smarty, $error)
     page_InitializeEventFormData($smarty, false);
 }
 
-function page_Map_Id_To_Name($array)
-{
-    $out = array();
-    foreach ($array as $item)
-        $out[$item->id] = $item->name;
-
-    return $out;
-}
-
 /**
  * Determines which main menu option this page falls under.
  * @return String token of the main menu item text.
