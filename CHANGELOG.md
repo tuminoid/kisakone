@@ -8,12 +8,13 @@ next:
   * PDGA integration during sign up/add competitor.
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
   * First version of a proper upgrade guide. GH #112.
+  * Regression: `:` got translated into db_prefix.
 
 2015.02.04:
 ===========
   * Humongous data_access.php is split into 15 data/* files.
-  * Various optimizations.
-  * Entering scores regression fixed :(
+  * Various optimizations around database handling.
+  * Regression: Entering scores fixed.
 
 2015.01.30:
 ===========
