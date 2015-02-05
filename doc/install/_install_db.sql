@@ -1,3 +1,12 @@
+CREATE TABLE :Club
+(
+  id INT NOT NULL AUTO_INCREMENT,
+  Name VARCHAR(255) NOT NULL,
+  ShortName VARCHAR(20) NOT NULL,
+  INDEX(id)
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+
 
 CREATE TABLE :Player
 (
@@ -28,8 +37,11 @@ CREATE TABLE :User
   Player SMALLINT,
   LastLogin DATETIME,
   PasswordChanged DATETIME,
+  SflId INT,
+  Club INT,
   PRIMARY KEY(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
+  FOREIGN KEY(Club) REFERENCES :Club(id),
   UNIQUE(Username),
   INDEX(Username, Password)
 ) ENGINE=InnoDB;
@@ -247,10 +259,12 @@ CREATE TABLE :Participation
   DidNotFinish TINYINT NOT NULL,
   SignupTimestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   TournamentPoints INT NULL,
+  Club INT,
   PRIMARY KEY(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
   FOREIGN KEY(Event) REFERENCES :Event(id),
-  FOREIGN KEY(Classification) REFERENCES :Classification(id)
+  FOREIGN KEY(Classification) REFERENCES :Classification(id),
+  FOREIGN KEY(Club) REFERENCES :Club(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
