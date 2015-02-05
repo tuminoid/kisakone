@@ -509,48 +509,6 @@ function GetEventParticipants($eventId, $sortedBy, $search)
 }
 
 
-function GetParticipantsForRound($previousRoundId)
-{
-    $rrid = (int) $previousRoundId;
-
-    $query = "SELECT :User.id AS UserId, Username, :Player.firstname AS FirstName, :Player.lastname AS LastName,
-                    Role, :Player.email AS Email, Sex, YEAR(birthdate) AS YearOfBirth,
-                    :Player.player_id AS PlayerId, pdga AS PDGANumber, Classification,
-                    :Participation.id AS ParticipationID, :RoundResult.Result, :Participation.DidNotFinish
-                FROM :Round
-                INNER JOIN :RoundResult ON :RoundResult.Round = :Round.id
-                INNER JOIN :Participation ON (:Participation.Player = :RoundResult.Player AND :Participation.Event = :Round.Event)
-                INNER JOIN :Player ON :RoundResult.Player = :Player.player_id
-                INNER JOIN :User ON :Player.player_id = :User.Player
-                WHERE :RoundResult.Round = $rrid
-                ORDER BY :Participation.Standing";
-
-    $query = format_query($query);
-    $result = execute_query($query);
-
-    $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $pdata = array();
-            $user = new User($row['UserId'], $row['Username'], $row['Role'], $row['FirstName'], $row['LastName'], $row['Email'], $row['PlayerId']);
-            $player = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $row['FirstName'], $row['LastName'], $row['Email']);
-
-            $pdata['user'] = $user;
-            $pdata['player'] = $player;
-            $pdata['participationId'] = $row['ParticipationID'];
-            $pdata['classification'] = $row['Classification'];
-            $pdata['result'] = $row['Result'];
-            $pdata['didNotFinish'] = $row['DidNotFinish'];
-
-            $retValue[] = $pdata;
-        }
-    }
-    mysql_free_result($result);
-
-    return $retValue;
-}
-
-
 function GetEventHoles($eventId)
 {
     $eventId = (int) $eventId;
