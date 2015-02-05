@@ -26,35 +26,6 @@ require_once 'data/db_init.php';
 require_once 'core/textcontent.php';
 
 
-function CreateNewsItem($eventid, $title, $text)
-{
-    $eventid = (int) $eventid;
-    $title = esc_or_null($title);
-    $text = esc_or_null($text);
-
-    $query = format_query("INSERT INTO :TextContent(Event, Title, Date, Content, Type)
-                            VALUES($eventid, $title, NOW(), $text, 'news')");
-    $result = execute_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-}
-
-
-function EditNewsItem($itemid, $title, $text)
-{
-    $itemid = (int) $itemid;
-    $title = esc_or_null($title);
-    $text = esc_or_null($text);
-
-    $query = format_query("UPDATE :TextContent SET Title = $title, Content = $text WHERE id = $itemid");
-    $result = execute_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-}
-
-
 function GetEventNews($eventid, $from, $count)
 {
     $eventid = (int) $eventid;
