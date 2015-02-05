@@ -24,6 +24,7 @@
 
 require_once 'data/round.php';
 
+
 function ProcessForm()
 {
     if (@$_POST['cancel'])
@@ -36,6 +37,7 @@ function ProcessForm()
         return Error::NotFound('event');
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied();
+
     if (!@$_REQUEST['round'] && @$_GET['round'])
         $_REQUEST['round'] = $_GET['round'];
 
@@ -45,6 +47,7 @@ function ProcessForm()
 
     $priority = 1;
     $sections = GetSections($round->id);
+
     $validIds = array();
     foreach ($sections as $section)
         $validIds[] = $section->id;
@@ -58,17 +61,15 @@ function ProcessForm()
             $present = (bool) @$_POST['present_' . $id];
 
             $roundStart = $round->starttime;
-            if (!$value) {
+            if (!$value)
                 $sectionTime = null;
-            }
             else {
                 $time1 = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
 
                 if (!$time1)
                     fail2();
-                if ($time1 >= $roundStart) {
+                if ($time1 >= $roundStart)
                     $sectionTime = $time1;
-                }
                 else {
                     $roundStart += 24 * 60 * 60;
                     $sectionTime = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
