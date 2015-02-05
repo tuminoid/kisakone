@@ -111,6 +111,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $rounds = $event->GetRounds();
             $roundId = @$_GET['round'];
             if ($roundId) {
+                // FIXME: This is buggy at some cases
                 $smarty->assign('holes', $rounds[$roundId - 1]->GetHoles());
             }
             $smarty->assign('rounds', $rounds);
