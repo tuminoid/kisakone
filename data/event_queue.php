@@ -98,30 +98,6 @@ function GetEventQueue($eventId, $sortedBy, $search)
 }
 
 
-function GetQueueForClass($event, $class)
-{
-    $classId = (int) $class;
-    $eventId = (int) $event;
-
-    $retValue = array();
-    $query = format_query("SELECT :Player.id AS PlayerId, :User.FirstName, :User.LastName,
-                                :Player.PDGANumber, :EventQueue.id AS ParticipationId
-                            FROM :User
-                            INNER JOIN :Player ON User.id = :Player.User
-                            INNER JOIN :Participation ON :EventQueue.Player = :Player.id
-                            WHERE :EventQueue.Classification = $classId AND :EventQueue.Event = $eventId");
-    $result = execute_query($query);
-
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = $row;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
-}
-
-
 // Check if we can raise players from queue after someone left
 function CheckQueueForPromotions($eventId)
 {
