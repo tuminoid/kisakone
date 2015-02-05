@@ -109,6 +109,7 @@
                 <th>{translate id=result_pos}</th>
                 <th>{translate id=result_name}</th>
                 <th>PDGA</th>
+                <th>{translate id=clubname}</th>
                 {foreach from=$rounds key=index item=round}
                         {math assign=roundNumber equation="x+1" x=$index}
                         <th>{translate id=round_number_short number=$roundNumber}</th>
@@ -129,15 +130,15 @@
         <tr class="resultrow">
 
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
-            <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td><td> {$result.PDGANumber|escape} </td>
+            <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
+            <td>{$result.PDGANumber|escape}</td>
+            <td>{$result.ClubName|escape}</td>
+
             {foreach from=$rounds item=round key=index}
                 {assign var=roundid value=$round->id}
                 {assign var=rresult value=$result.Results.$roundid.Total}
                 {if !$rresult}{assign var=rresult value=0}{/if}
                 <td id="r{$result.PlayerId}_{$hr_id}">{$rresult}</td>
-
-
-
             {/foreach}
 
             <td  id="r{$result.PlayerId}_tc">
