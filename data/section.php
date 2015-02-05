@@ -151,23 +151,6 @@ function AssignPlayersToSection($roundid, $sectionid, $playerids)
 }
 
 
-function EditSection($roundid, $sectionid, $priority, $starttime)
-{
-    $roundid = (int) $roundid;
-    $classid = (int) $classid;
-    $priority = esc_or_null($priority, 'int');
-    $starttime = esc_or_null($starttime, 'int');
-
-    $query = format_query("UPDATE :ClassOnRound
-                            SET Priority = $priority, StartTime = FROM_UNIXTIME($starttime)
-                            WHERE Round = $roundid AND Classification = $classid");
-    $result = execute_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-}
-
-
 function AdjustSection($sectionid, $priority, $sectiontime, $present)
 {
     $sectionid = (int) $sectionid;
