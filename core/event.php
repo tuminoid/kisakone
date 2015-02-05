@@ -706,35 +706,6 @@ function core_SortResults($a, $b)
     return core_TieBreaker($a, $b);
 }
 
-/**
- * Not used: this function would be used to predict actual finishing position,
- * by using average plusminus for the completed holes
- */
-function core_AveragePlusMinus($entry)
-{
-    global $holes;
-    $totalResult = 0;
-    $totalPar = 0;
-
-    foreach ($entry['Rounds'] as $round) {
-        $rholes = $holes[$round['Round']];
-        $holeResults = GetHoleResults($round['id']);
-        foreach ($holeResults as $result) {
-            if ($result['Result']) {
-                $totalResult += $result['Result'];
-                $totalPar += $rholes[$result['Hole']]->par;
-            }
-        }
-        $totalResult += $round['Penalty'];
-    }
-
-    if ($totalPar == 0)
-        return 0;
-    $avg = $totalResult / $totalPar;
-
-    return $avg;
-}
-
 function core_TieBreaker($a, $b)
 {
     // What do dow when results appear identical?
