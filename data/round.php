@@ -100,45 +100,6 @@ function SetRounds($eventid, $rounds, $deleteRounds = array())
 }
 
 
-/**
- * Function for setting the round course
- *
- * Returns cource id for success or an Error
- */
-function GetOrSetRoundCourse($roundid)
-{
-    $roundid = (int) $roundid;
-
-    $query = format_query("SELECT Course FROM :Round WHERE id = $roundid");
-    $result = execute_query($query);
-
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $course = $row['Course'];
-        mysql_free_result($result);
-    }
-    else
-        return Error::internalError("Invalid round id argument");
-
-    // Create a new course for the round
-    $query = format_query("INSERT INTO :Course (Venue, Name, Description, Link, Map)
-                            VALUES (NULL, '', '', '', '')");
-    $result = execute_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $courseid = mysql_insert_id();
-    $query = format_query("UPDATE :Round SET Course = $courseid WHERE id = $roundid");
-    $result = execute_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return $courseid;
-}
-
-
 function GetRoundHoles($roundId)
 {
     $roundId = (int) $roundId;
