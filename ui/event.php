@@ -24,6 +24,7 @@
 
 require_once 'data/event_quota.php';
 
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -190,7 +191,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
             break;
 
-
         case 'leaderboard':
             $view = 'leaderboard';
             $results_tmp = GetEventResultsWithoutHoles($event->id);
@@ -212,7 +212,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('numRounds', count($rounds));
             $smarty->assign('rounds', $rounds);
             break;
-
 
         case 'leaderboard_csv':
             if (!isAdmin() && !$event->isTD())
@@ -236,7 +235,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('rounds', $rounds);
             break;
 
-
         case 'participant_csv':
             if (!isAdmin() && !$event->isTD())
                 return Error::AccessDenied('participant_csv');
@@ -246,16 +244,14 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('resultsByClass', $results);
             break;
 
-
         default:
             // If we have a numeric view we are to show a custo m content page
             if (is_numeric(@$_GET['view'])) {
                 $evp = $event->GetTextContent(@$_GET['view']);
                 $view = 'custom';
             }
-            else {
+            else
                 $view = 'missing';
-            }
             break;
     }
 
@@ -282,9 +278,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     // Event pages have their own ads
     $ad = GetAd($event->id, $view);
-    if (!$ad) {
+    if (!$ad)
         $ad = GetAd($event->id, 'eventdefault');
-    }
     if ($ad)
         $smarty->assign('ad', $ad);
 
@@ -322,7 +317,6 @@ function page_ObfuscateContactInfo_HTML($ci)
     preg_match_all('/(.)/us', $ci, $characters);
     $reversed = array_reverse($characters[0]);
     ob_start();
-
 
     $pos = count($reversed) * 0.65;
     foreach ($reversed as $character) {
