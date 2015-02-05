@@ -26,6 +26,7 @@ require_once 'data/db_init.php';
 require_once 'data/venue.php';
 require_once 'data/event_quota.php';
 require_once 'data/class.php';
+require_once 'data/club.php';
 
 require_once 'core/sort.php';
 require_once 'core/classification.php';
@@ -468,11 +469,12 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
                     :Classification.Name AS ClassName, :Participation.id AS ParticipationID,
                     UNIX_TIMESTAMP(EventFeePaid) AS EventFeePaid, UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp,
-                    :Classification.id AS ClassId
+                    :Classification.id AS ClassId, :Club.ShortName AS ClubName
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
                 INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                LEFT JOIN :Club ON :Participation.Club = :Club.id
                 WHERE $where
                 ORDER BY $sortOrder";
     $query = format_query($query);
@@ -499,6 +501,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
             $pdata['signupTimestamp'] = $row['SignupTimestamp'];
             $pdata['className'] = $row['ClassName'];
             $pdata['classId'] = $row['ClassId'];
+            $pdata['clubName'] = $row['ClubName'];
 
             $retValue[] = $pdata;
         }
@@ -542,7 +545,7 @@ function GetEventResults($eventId)
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
                     :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
-                    :Participation.Standing
+                    :Participation.Standing, :Club.ShortName AS ClubName
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id
@@ -554,6 +557,7 @@ function GetEventResults($eventId)
                 LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :User ON :Player.player_id = :User.Player
                 LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
+                LEFT JOIN :Club ON :Participation.Club = :Club.id
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber";
     $query = format_query($query);
@@ -607,7 +611,7 @@ function GetEventResultsWithoutHoles($eventId)
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
                     :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
-                    TournamentPoints, :Round.id AS RoundId, :Participation.Standing
+                    TournamentPoints, :Round.id AS RoundId, :Participation.Standing, :Club.ShortName AS ClubName
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id
@@ -617,6 +621,7 @@ function GetEventResultsWithoutHoles($eventId)
                 LEFT JOIN :Participation ON (:Participation.Event = $eventId AND :Participation.Player = :Player.player_id)
                 LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :User ON :Player.player_id = :User.Player
+                LEFT JOIN :Club ON :Participation.Club = :Club.id
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime";
 
