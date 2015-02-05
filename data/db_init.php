@@ -23,7 +23,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'core/error.php';
 require_once 'config.php';
 
 
@@ -38,15 +37,10 @@ function InitializeDatabaseConnection()
     global $settings;
     $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
 
-    $retValue = null;
-    if (!($con && @mysql_select_db($settings['DB_DB']))) {
-        $retValue = new Error();
-        $retValue->isMajor = true;
-        $retValue->title = 'error_db_connection';
-        $retValue->description = 'error_db_connection_description';
-    }
+    if (!($con && @mysql_select_db($settings['DB_DB'])))
+        return null;
 
-    return $retValue;
+    return $con;
 }
 
 
@@ -122,13 +116,24 @@ function format_query($query)
     global $settings;
     $prefix = $settings['DB_PREFIX'];
 
+    // this is just safeguarding
     $args = func_get_args();
     if (count($args) > 1) {
         error_log("format_query() has multiple args= " . count($args));
         debug_query_and_die($query);
     }
 
-    return str_replace(':', $prefix, $query);
+    // FIXME: Find a more reasonable way to sanitize prefix without touching content
+    // NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
+    $tables = array(':Club', ':Player', ':User', ':Venue', ':Level',
+        ':File', ':AdBanner', ':EventQueue', ':EventManagement', ':Event', ':TextContent',
+        ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
+        ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
+        ':TournamentStanding', ':Tournament', ':ClassInEvent',
+        ':LicensePayment', ':MembershipPayment');
+    $realtables = str_replace(":", $prefix, $tables);
+
+    return str_replace($tables, $realtables, $query);
 }
 
 
@@ -144,9 +149,9 @@ function execute_query($query)
     if (empty($query))
         return false;
 
-    $dbError = InitializeDatabaseConnection();
-    if ($dbError) {
-        error_log("error: database connection init failed");
+    $conn = InitializeDatabaseConnection();
+    if (!$conn) {
+        error_log("error: database connection init failed: " . mysql_error());
         return false;
     }
 
@@ -176,7 +181,7 @@ function debug_query_and_die($query)
 
     $db_error_die = $settings['DB_ERROR_DIE'];
     if (isset($db_error_die) && $db_error_die) {
-        header("Content-Type: text/plain");
+        header("Content-Type: text/plain; charset=utf-8");
         xdebug_print_function_stack();
         xdebug_var_dump($query);
         xdebug_var_dump(mysql_error());
