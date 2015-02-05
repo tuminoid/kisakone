@@ -23,6 +23,8 @@
  * */
 
 require_once 'data/round.php';
+require_once 'ui/support/roundselection.php';
+
 
 /**
  * Initializes the variables and other data necessary for showing the matching template
@@ -34,27 +36,20 @@ function InitializeSmartyVariables(&$smarty, $error)
     language_include('errors');
     $event = GetEventDetails($_GET['id']);
 
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventfees');
-    }
-
-    if ($event->resultsLocked) {
+    if ($event->resultsLocked)
         $smarty->assign('locked', true);
-    }
 
-    if (!@$_REQUEST['round'] && @$_GET['round']) {
+    if (!@$_REQUEST['round'] && @$_GET['round'])
         $_REQUEST['round'] = $_GET['round'];
-    }
 
-    if (!@$_REQUEST['round']) {
-        require_once 'ui/support/roundselection.php';
+    if (!@$_REQUEST['round'])
         return page_SelectRound($event, $smarty);
-    }
 
     $round = GetRoundDetails(@$_REQUEST['round']);
-    if (!$round || $round->eventId != $event->id) {
+    if (!$round || $round->eventId != $event->id)
         return Error::Notfound('round');
-    }
 
     if (@$_GET['regenerate']) {
         $round->RegenerateGroups();
@@ -76,6 +71,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 }
 
+
 /**
 * Determines which main menu option this page falls under.
 * @return String token of the main menu item text.
@@ -83,11 +79,4 @@ function InitializeSmartyVariables(&$smarty, $error)
 function getMainMenuSelection()
 {
     return 'events';
-}
-
-/** WTF? */
-function GetPlayersByGroup($class)
-{
-    die();
-    return array();
 }
