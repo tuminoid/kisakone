@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function input_EditNotification($round = null)
 {
     if ($round) {

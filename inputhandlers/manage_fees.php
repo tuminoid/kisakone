@@ -44,11 +44,14 @@ function processForm()
                 $value = (bool) $value;
 
                 if ($newfee != $value) {
-                    if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
-                    if (!array_key_exists('license', $payments[$userid])) $payments[$userid]['license'] = array();
+                    if (!array_key_exists($userid, $payments))
+                        $payments[$userid] = array();
+                    if (!array_key_exists('license', $payments[$userid]))
+                        $payments[$userid]['license'] = array();
                     $payments[$userid]['license'][$year] = $newfee;
                 }
-            } elseif (substr($key, 0, 8) == 'oldmfee_') {
+            }
+            elseif (substr($key, 0, 8) == 'oldmfee_') {
                 list($ignore, $userid, $year) = explode('_', $key);
                 $newfee = @$_POST['newmfee_' . $userid . '_' . $year];
 
@@ -56,23 +59,27 @@ function processForm()
                 $value = (bool) $value;
 
                 if ($newfee != $value) {
-                    if (!array_key_exists($userid, $payments)) $payments[$userid] = array();
-                    if (!array_key_exists('membership', $payments[$userid])) $payments[$userid]['membership'] = array();
+                    if (!array_key_exists($userid, $payments))
+                        $payments[$userid] = array();
+                    if (!array_key_exists('membership', $payments[$userid]))
+                        $payments[$userid]['membership'] = array();
                     $payments[$userid]['membership'][$year] = $newfee;
                 }
-            } elseif (substr($key, 0, 7) == 'remind_') {
+            }
+            elseif (substr($key, 0, 7) == 'remind_') {
                 $reminds[] = substr($key, 7);
             }
         }
 
-        if (count($payments)) StorePayments($payments);
+        if (count($payments))
+            StorePayments($payments);
     }
 
     if (count($reminds)) {
         redirect("Location: " . url_smarty(array('page' => 'eventfeereminder', 'users' => implode($reminds, ',')), $_GET));
-    } else {
+    }
+    else {
         redirect("Location: " . url_smarty(array('page' => 'manage_users'), $_GET));
     }
     die();
-
 }

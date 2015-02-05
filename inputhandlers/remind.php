@@ -18,8 +18,10 @@ function processForm()
     $problems = array();
 
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');
-    if (!IsAdmin() && $event->management !='td') return Error::AccessDenied();
+    if (!$event)
+        return Error::NotFound('event');
+    if (!IsAdmin() && $event->management != 'td')
+        return Error::AccessDenied();
 
     if (@$_POST['cancel']) {
         redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $custom));
@@ -43,8 +45,9 @@ function processForm()
     $evp->content = $content;
 
     if (!@$_POST['preview']) {
-       input_emails(@$_POST['ids'], $evp, $event);
-    } else {
+        input_emails(@$_POST['ids'], $evp, $event);
+    }
+    else {
         $evp->FormatText();
 
         return $evp;

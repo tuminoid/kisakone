@@ -25,7 +25,6 @@
 require_once 'data/course.php';
 require_once 'data/hole.php';
 
-
 function processForm()
 {
     require_once 'core/hole.php';
@@ -97,19 +96,11 @@ function processForm()
         return $id;
 
     foreach ($_POST as $key => $value) {
-        if (substr($key, -4) == '_par') {
+        if (substr($key, - 4) == '_par') {
             list($ignored, $number, $holeid, $alsoignored) = explode('_', $key);
 
             if (!$holeid) {
-                $hole = new Hole(
-                    array(
-                        'Course'     => $id,
-                        'HoleNumber' => $number,
-                        'id'         => null,
-                        'Par'        => $value,
-                        'Length'     => $_POST['h_'.$number.'_'.$holeid.'_len'],
-                        'HoleText'   => $_POST['h_'.$number.'_'.$holeid.'_text']
-                    ));
+                $hole = new Hole(array('Course' => $id, 'HoleNumber' => $number, 'id' => null, 'Par' => $value, 'Length' => $_POST['h_' . $number . '_' . $holeid . '_len'], 'HoleText' => $_POST['h_' . $number . '_' . $holeid . '_text']));
             }
             else {
                 $hole = GetHoleDetails($holeid);
@@ -119,13 +110,13 @@ function processForm()
                 if (!$hole)
                     return Error::NotFound('hole');
                 if ($hole->course != $id) {
-                    echo $hole->course,' -- ', $id;
+                    echo $hole->course, ' -- ', $id;
                     return Error::InternalError('Child-container mismatch');
                 }
 
-                $hole->par        = (int) $value;
-                $hole->length     = (int) @$_POST['h_'.$number.'_'.$holeid.'_len'];
-                $hole->holeText   = @$_POST['h_'.$number.'_'.$holeid.'_text'];
+                $hole->par = (int) $value;
+                $hole->length = (int) @$_POST['h_' . $number . '_' . $holeid . '_len'];
+                $hole->holeText = @$_POST['h_' . $number . '_' . $holeid . '_text'];
             }
 
             $outcome = SaveHole($hole);

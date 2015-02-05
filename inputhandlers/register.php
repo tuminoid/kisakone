@@ -21,6 +21,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -28,7 +29,6 @@
 
 require_once 'core/login.php';
 require_once 'data/user.php';
-
 
 function processForm()
 {
@@ -91,7 +91,7 @@ function processForm()
 
     $terms = @$_POST['termsandconditions'];
     if (!$terms)
-        $problems['termsandconditions'] =  translate('FormError_Terms');
+        $problems['termsandconditions'] = translate('FormError_Terms');
 
     if (count($problems)) {
         $error = new Error();

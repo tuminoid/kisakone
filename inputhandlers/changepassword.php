@@ -24,7 +24,6 @@
 
 require_once 'data/login.php';
 
-
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -42,7 +41,7 @@ function processForm()
         $token = GetUserSecurityToken(@$_GET['id']);
 
         if (!$user || $token != @$_GET['token']) {
-           return Error::AccessDenied();
+            return Error::AccessDenied();
         }
         $uid = $user->id;
     }

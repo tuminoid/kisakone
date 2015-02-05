@@ -55,7 +55,7 @@ function ProcessAction()
     elseif (is_numeric($bits[1]))
         $holeid = $bits[1];
     else
-        error_log("unknown bit: " . print_r($bits, true) . (0/0));
+        error_log("unknown bit: " . print_r($bits, true) . (0 / 0));
 
     $result = SaveResult($round->id, $playerid, $holeid, $specialid, $value);
     if (is_a($result, 'Error'))

@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function input_ParseDate($date)
 {
     return strtotime($date);
@@ -49,7 +48,8 @@ function input_CombinePostArray($prefix)
     $len = strlen($prefix);
 
     foreach ($_POST as $key => $value) {
-        if (substr($key, 0, $len) == $prefix) $output[] = $value;
+        if (substr($key, 0, $len) == $prefix)
+            $output[] = $value;
     }
 
     return $output;

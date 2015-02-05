@@ -77,6 +77,7 @@ function processForm()
         $problems['playerlimit'] = translate('FormError_NotPositiveInteger');
 
     $pdgaid = @$_POST['pdgaeventid'];
+
     /*
     // Disabled for now, at new event we might not know the id
     if ((int) $pdgaid < 0)
@@ -179,9 +180,7 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact,
-        $tournament, $level, $start, $signup_start, $signup_end, $classes,
-        $td, $officialIds, $rounds, $requireFees, $pdgaid);
+    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';

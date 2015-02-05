@@ -29,7 +29,8 @@
 function processForm()
 {
     require_once 'core/textcontent.php';
-    if (!IsAdmin()) return error::AccessDenied();
+    if (!IsAdmin())
+        return error::AccessDenied();
     $problems = array();
 
     $custom = @$_GET['mode'] == 'custom';
@@ -39,7 +40,8 @@ function processForm()
 
         if (!$email) {
             redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-        } else {
+        }
+        else {
             redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
         }
         die();
@@ -51,7 +53,8 @@ function processForm()
 
         if ($evp && $evp->id) {
             $outcome = $evp->Delete();
-            if (is_a($outcome, 'Error')) return $outcome;
+            if (is_a($outcome, 'Error'))
+                return $outcome;
         }
 
         redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
@@ -62,8 +65,10 @@ function processForm()
 
     if ($custom && !$title) {
         fail();
-    } elseif ($custom) {
-        if ($title =='index' || $title == 'submenu' || $title == 'fees' || $title == 'terms') return Error::AccessDenied();
+    }
+    elseif ($custom) {
+        if ($title == 'index' || $title == 'submenu' || $title == 'fees' || $title == 'terms')
+            return Error::AccessDenied();
     }
 
     if (count($problems)) {
@@ -82,7 +87,8 @@ function processForm()
 
         if (is_numeric(@$_GET['id']) || @$_GET['id'] == '*') {
             $evp->type = 'custom';
-        } else {
+        }
+        else {
             $evp->type = @$_GET['id'];
         }
     }
@@ -93,27 +99,30 @@ function processForm()
     if ($custom) {
         $type = @$_POST['type'];
 
-        if ($type =='custom' || $type == 'custom_man' || $type == 'custom_adm') {
+        if ($type == 'custom' || $type == 'custom_man' || $type == 'custom_adm') {
             $evp->type = $type;
-        } else {
+        }
+        else {
             return Error::AccessDenied();
         }
-
     }
 
     if (!@$_POST['preview']) {
         $result = $evp->save();
-    } else {
+    }
+    else {
         $evp->FormatText();
 
         return $evp;
     }
 
-    if (is_a($result, 'Error')) return $result;
+    if (is_a($result, 'Error'))
+        return $result;
 
     if (!$email) {
         redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-    } else {
+    }
+    else {
         redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
     }
     die();

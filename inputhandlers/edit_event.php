@@ -25,7 +25,6 @@
 require_once 'data/class.php';
 require_once 'data/round.php';
 
-
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -44,7 +43,8 @@ function processForm()
 
     if (@$_POST['cancel']) {
         redirect("Location: " . BaseURL());
-    } elseif (@$_POST['delete']) {
+    }
+    elseif (@$_POST['delete']) {
         redirect("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
     }
 
@@ -107,11 +107,13 @@ function processForm()
             list($operation, $class) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $classes[] = $class;
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 $index = array_search($class, $classes);
                 if ($index !== false)
                     unset($classes[$index]);
-            } else
+            }
+            else
                 fail();
         }
     }
@@ -132,7 +134,8 @@ function processForm()
                     $rdate = 0;
 
                 $rounds[$index] = array('date' => input_ParseDate(date("Y-m-d", $rdate) . " " . $time), 'time' => $time, 'datestring' => $date, 'roundid' => $roundid);
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 $deletedRounds[] = $rounds[$index]['roundid'];
                 unset($rounds[$index]);
             }
@@ -171,7 +174,8 @@ function processForm()
             list($operation, $official) = explode(':', $op, 2);
             if ($operation == 'add') {
                 $officials[] = $official;
-            } elseif ($operation == 'remove') {
+            }
+            elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
                     unset($officials[$index]);

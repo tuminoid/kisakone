@@ -46,5 +46,4 @@ function processForm()
     require_once 'core/tournament.php';
 
     UpdateTournamentPoints($tournament);
-
 }

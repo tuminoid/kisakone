@@ -20,10 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function processForm()
 {
-    if (!Isadmin()) return Error::AccessDenied();
+    if (!Isadmin())
+        return Error::AccessDenied();
 
     $tid = @$_GET['id'];
     foreach ($_POST as $key => $value) {
@@ -36,5 +36,4 @@ function processForm()
     require_once 'core/tournament.php';
 
     UpdateTournamentPoints((int) $tid);
-
 }

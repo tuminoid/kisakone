@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the form
  * @return Nothing or Error object on error
@@ -29,7 +28,8 @@ function processForm()
 {
     require_once 'core/scorecalculation.php';
 
-    if (!IsAdmin()) return error::AccessDenied();
+    if (!IsAdmin())
+        return error::AccessDenied();
     $problems = array();
 
     $nothing = null;
@@ -47,10 +47,12 @@ function processForm()
     }
 
     $name = $_POST['name'];
-    if ($name == '') $problems['name'] = translate('FormError_NotEmpty');
+    if ($name == '')
+        $problems['name'] = translate('FormError_NotEmpty');
 
     $method = $_POST['scoreCalculationMethod'];
-    if (is_a(GetScoreCalculationMethod('level', $method), 'Error')) $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
+    if (is_a(GetScoreCalculationMethod('level', $method), 'Error'))
+        $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
 
     $available = (bool) @$_POST['available'];
 
@@ -66,7 +68,8 @@ function processForm()
 
     if ($_GET['id'] != 'new') {
         $result = EditLevel($_GET['id'], $name, $method, $available);
-    } else {
+    }
+    else {
         $result = CreateLevel($name, $method, $available);
     }
 

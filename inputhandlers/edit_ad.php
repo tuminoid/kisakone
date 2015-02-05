@@ -24,7 +24,6 @@
 
 require_once 'core/ads.php';
 
-
 /**
  * Processes the edit tournament form
  * @return Nothing or Error object on error
@@ -73,27 +72,33 @@ function processForm()
             $ad->MakeDefault();
             break;
 
+
         case 'eventdefault':
             $ad->MakeEventDefault();
             break;
+
 
         case 'html':
             $ad->MakeHTML($_POST['html']);
             break;
 
+
         case 'disabled':
             $ad->MakeDisabled();
             break;
 
+
         case 'reference':
             $ad->MakeReference($_POST['ad_ref']);
             break;
+
 
         case 'imageandlink':
             switch (@$_POST['image_type']) {
                 case 'link':
                     $ad->MakeImageAndLink($_POST['url'], null, $_POST['image_url']);
                     break;
+
 
                 case 'upload':
                     require_once 'core/files.php';
@@ -103,19 +108,22 @@ function processForm()
                     $ad->MakeImageAndLink($_POST['url'], $fid, null);
                     break;
 
+
                 case 'internal':
                     $ad->MakeImageAndLink($_POST['url'], $_POST['image_ref'], null);
                     break;
+
 
                 default:
                     echo $_POST['image_type'];
                     die('Error1');
             }
-            break;
 
-        default:
-            echo $_POST['ad_type'];
-            die('Error');
+        break;
+
+
+        default : echo $_POST['ad_type'];
+        die('Error');
     }
 
     if (!@$_POST['preview']) {

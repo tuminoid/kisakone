@@ -21,14 +21,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the login form
  * @return Nothing or Error object on error
  */
 
 require_once 'data/login.php';
-
 
 function processForm()
 {
@@ -68,7 +66,8 @@ function processForm()
     $_SESSION['user'] = $user;
 
     if (@$_POST['rememberMe']) {
-        $expires = time() + 60 * 60 * 24 * 30 * 2; // about 2 months
+        $expires = time() + 60 * 60 * 24 * 30 * 2;
+        // about 2 months
         setcookie('kisakone_autologin_as', $user->username, $expires);
         setcookie('kisakone_autologin_key', GetAutoLoginToken($user->id), $expires);
     }
@@ -87,7 +86,7 @@ function processForm()
     $loginData = getLoginData($username);
     if (empty($loginData['PasswordChanged'])) {
         $retvalue->data = 'login_change_password';
-        $retvalue->url = baseUrl().'changepassword';
+        $retvalue->url = baseUrl() . 'changepassword';
     }
     else {
         $retvalue->data = 'login';

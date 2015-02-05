@@ -20,10 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 function processForm()
 {
-    if (!IsAdmin()) return error::AccessDenied();
+    if (!IsAdmin())
+        return error::AccessDenied();
     $problems = array();
 
     if (@$_POST['cancel']) {
@@ -40,16 +40,20 @@ function processForm()
     }
 
     $name = $_POST['Name'];
-    if ($name == '') $problems['Name'] = translate('FormError_NotEmpty');
+    if ($name == '')
+        $problems['Name'] = translate('FormError_NotEmpty');
 
     $minage = $_POST['MinimumAge'];
-    if ($minage != '' && !is_numeric($minage)) $problems['MinimumAge'] = translate('FormError_NotPositiveInteger');
+    if ($minage != '' && !is_numeric($minage))
+        $problems['MinimumAge'] = translate('FormError_NotPositiveInteger');
 
     $maxage = $_POST['MaximumAge'];
-    if ($maxage != '' && !is_numeric($maxage)) $problems['MaximumAge'] = translate('FormError_NotPositiveInteger');
+    if ($maxage != '' && !is_numeric($maxage))
+        $problems['MaximumAge'] = translate('FormError_NotPositiveInteger');
 
     $gender = $_POST['GenderRequirement'];
-    if (!in_array($gender, array('', 'M', 'F'))) $problems['GenderRequirement'] = translate('FormError_InternalError');
+    if (!in_array($gender, array('', 'M', 'F')))
+        $problems['GenderRequirement'] = translate('FormError_InternalError');
 
     $available = (bool) @$_POST['Available'];
 
@@ -63,12 +67,15 @@ function processForm()
         return $error;
     }
 
-    if (!$minage) $minage = null;
-    if (!$maxage) $maxage = null;
+    if (!$minage)
+        $minage = null;
+    if (!$maxage)
+        $maxage = null;
 
     if ($_GET['id'] != 'new') {
         $result = EditClass($_GET['id'], $name, $minage, $maxage, $gender, $available);
-    } else {
+    }
+    else {
         $result = CreateClass($name, $minage, $maxage, $gender, $available);
     }
 

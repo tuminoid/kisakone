@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the edit tournament form
  * @return Nothing or Error object on error
@@ -29,7 +28,8 @@ function processForm()
 {
     require_once 'core/scorecalculation.php';
 
-    if (!IsAdmin()) return error::AccessDenied();
+    if (!IsAdmin())
+        return error::AccessDenied();
     $problems = array();
 
     if (@$_POST['cancel']) {
@@ -44,16 +44,20 @@ function processForm()
     }
 
     $name = $_POST['name'];
-    if ($name == '') $problems['name'] = translate('FormError_NotEmpty');
+    if ($name == '')
+        $problems['name'] = translate('FormError_NotEmpty');
 
     $year = $_POST['year'];
-    if ((int) $year == '') $problems['year'] = translate('FormError_NotEmpty');
+    if ((int) $year == '')
+        $problems['year'] = translate('FormError_NotEmpty');
 
     $method = $_POST['scoreCalculationMethod'];
-    if (is_a(GetScoreCalculationMethod('tournament', $method), 'Error')) $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
+    if (is_a(GetScoreCalculationMethod('tournament', $method), 'Error'))
+        $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
 
     $level = (int) $_POST['level'];
-    if (GetLevelDetails($level) === null) $problems['level'] = translate('FormError_InternalError');
+    if (GetLevelDetails($level) === null)
+        $problems['level'] = translate('FormError_InternalError');
 
     $description = @$_POST['description'];
 
@@ -71,11 +75,13 @@ function processForm()
 
     if ($_GET['id'] != 'new') {
         $result = EditTournament($_GET['id'], $name, $method, $level, $available, (int) $year, $description);
-    } else {
+    }
+    else {
         $result = CreateTournament($name, $method, $level, $available, (int) $year, $description);
     }
 
-    if (is_a($result, 'Error')) return $result;
+    if (is_a($result, 'Error'))
+        return $result;
 
     $variableNeededAsItsReference = null;
     redirect("Location: " . url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));

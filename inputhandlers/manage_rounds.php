@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 function processForm()
 {
     if (@$_POST['cancel']) {
@@ -33,7 +32,8 @@ function processForm()
 
     $event = GetEventDetails(@$_GET['id']);
 
-    if ($event->resultsLocked) return Error::AccessDenied();
+    if ($event->resultsLocked)
+        return Error::AccessDenied();
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
@@ -43,7 +43,7 @@ function processForm()
 
     foreach ($_POST as $key => $value) {
 
-        if (substr($key, -5) == '_date') {
+        if (substr($key, - 5) == '_date') {
             // round
             $roundid = (int) $key;
             $round = GetRoundDetails($roundid);
@@ -61,20 +61,21 @@ function processForm()
             }
 
             $valid = false;
-            if (isset($_POST[$roundid . '_valid'])) $valid = $_POST[$roundid . '_valid'];
+            if (isset($_POST[$roundid . '_valid']))
+                $valid = $_POST[$roundid . '_valid'];
             $interval = (int) @$_POST[$roundid . "_interval"];
 
             $course = $_POST[$roundid . '_course'];
-            if (!$course) $course = null;
+            if (!$course)
+                $course = null;
 
             $outcome = SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course);
-            if (is_a($outcome, 'Error')) return $outcome;
-
+            if (is_a($outcome, 'Error'))
+                return $outcome;
         }
-
     }
 
-        require_once 'inputhandlers/support/event_edit_notification.php';
+    require_once 'inputhandlers/support/event_edit_notification.php';
 
-        return input_EditNotification();
+    return input_EditNotification();
 }

@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the edit tournament form
  * @return Nothing or Error object on error
@@ -29,7 +28,8 @@
 function processForm()
 {
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
     $custom = @$_GET['mode'] == 'custom';
     $news = @$_GET['mode'] == 'news';
@@ -38,9 +38,11 @@ function processForm()
 
         if ($custom) {
             redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-        } elseif ($news) {
+        }
+        elseif ($news) {
             redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
-        } else {
+        }
+        else {
             redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
         die();
@@ -51,26 +53,32 @@ function processForm()
     if (!IsAdmin() && $event->management != 'td') {
         $denied = true;
         if ($event->management == 'official') {
-            if (!$evp && $news) $denied = false;
-            else if ($evp->type =='news') $denied = false;
+            if (!$evp && $news)
+                $denied = false;
+            elseif ($evp->type == 'news')
+                $denied = false;
         }
 
-        if ($denied) return Error::AccessDenied('eventfees');
+        if ($denied)
+            return Error::AccessDenied('eventfees');
     }
 
     $problems = array();
 
     if (@$_POST['delete']) {
 
-         if ($evp && $evp->id) {
+        if ($evp && $evp->id) {
             $outcome = $evp->Delete();
-            if (is_a($outcome, 'Error')) return $outcome;
+            if (is_a($outcome, 'Error'))
+                return $outcome;
         }
         if ($custom) {
             redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-        } elseif ($news) {
+        }
+        elseif ($news) {
             redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
-        } else {
+        }
+        else {
             redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
         }
         die();
@@ -79,7 +87,8 @@ function processForm()
     $title = @$_POST['title'];
     $content = @$_POST['textcontent'];
 
-    if (($custom || $news) && $title == '') $problems['title'] = translate('FormError_NotEmpty');
+    if (($custom || $news) && $title == '')
+        $problems['title'] = translate('FormError_NotEmpty');
 
     if (count($problems)) {
         $error = new Error();
@@ -98,12 +107,15 @@ function processForm()
         if (is_numeric(@$_GET['content']) || @$_GET['content'] == '*') {
             if ($custom) {
                 $evp->type = 'custom';
-            } elseif ($news) {
+            }
+            elseif ($news) {
                 $evp->type = 'news';
-            } else {
+            }
+            else {
                 return Error::InternalError();
             }
-        } else {
+        }
+        else {
             $evp->type = @$_GET['content'];
         }
     }
@@ -113,19 +125,23 @@ function processForm()
 
     if (!@$_POST['preview']) {
         $result = $evp->save();
-    } else {
+    }
+    else {
         $evp->FormatText();
 
         return $evp;
     }
 
-    if (is_a($result, 'Error')) return $result;
+    if (is_a($result, 'Error'))
+        return $result;
 
     if ($custom) {
         redirect("Location: " . url_smarty(array('page' => 'editcustomeventpages', 'id' => @$_GET['id']), $custom));
-    } elseif ($news) {
+    }
+    elseif ($news) {
         redirect("Location: " . url_smarty(array('page' => 'editnews', 'id' => @$_GET['id']), $custom));
-    } else {
+    }
+    else {
         redirect("Location: " . url_smarty(array('page' => 'editeventpages', 'id' => @$_GET['id']), $custom));
     }
     die();

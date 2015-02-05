@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the add admin form
  * @return Nothing or Error object on error
@@ -34,32 +33,40 @@ function processForm()
         redirect("Location: " . BaseURL());
     }
 
-    if (!IsAdmin()) return Error::AccessDenied();
+    if (!IsAdmin())
+        return Error::AccessDenied();
 
     $lastname = $_POST['lastname'];
-    if ($lastname == '') $problems['lastname'] = translate('FormError_NotEmpty');
+    if ($lastname == '')
+        $problems['lastname'] = translate('FormError_NotEmpty');
 
     $firstname = $_POST['firstname'];
-    if ($firstname == '') $problems['firstname'] = translate('FormError_NotEmpty');
+    if ($firstname == '')
+        $problems['firstname'] = translate('FormError_NotEmpty');
 
     $email = $_POST['email'];
-    if (!preg_match('/^.+@.+\..+$/', $email)) $problems['email'] = translate('FormError_InvalidEmail');
+    if (!preg_match('/^.+@.+\..+$/', $email))
+        $problems['email'] = translate('FormError_InvalidEmail');
 
     $username = $_POST['username'];
-    if (!User::IsValidUsername($username))  $problems['username'] = translate('FormError_InvalidUsername');
-    if (GetUserId($username) !== null)  $problems['username'] = translate('FormError_DuplicateUsername', array('username' => $username));
+    if (!User::IsValidUsername($username))
+        $problems['username'] = translate('FormError_InvalidUsername');
+    if (GetUserId($username) !== null)
+        $problems['username'] = translate('FormError_DuplicateUsername', array('username' => $username));
 
     $password = $_POST['password'];
-    if ($password == '') $problems['password'] = translate('FormError_NotEmpty');
-    if (strlen($password) < 8 || strlen($password) > 40) $problems['password'] = translate('FormError_PasswordLength');
+    if ($password == '')
+        $problems['password'] = translate('FormError_NotEmpty');
+    if (strlen($password) < 8 || strlen($password) > 40)
+        $problems['password'] = translate('FormError_PasswordLength');
 
     $password2 = $_POST['password2'];
-    if ($password != $password2) $problems['password2'] = translate('FormError_PasswordsDontMatch');
+    if ($password != $password2)
+        $problems['password2'] = translate('FormError_PasswordsDontMatch');
 
     $role = @$_POST['access'];
     if ($role != USER_ROLE_ADMIN) {
         $problems['access'] = translate('FormError_NotEmpty');
-
     }
     if (count($problems)) {
         $error = new Error();
@@ -72,18 +79,17 @@ function processForm()
         return $error;
     }
 
-    $admin = new User( null, $username, $role,
-                      $firstname, $lastname, $email, null);
+    $admin = new User(null, $username, $role, $firstname, $lastname, $email, null);
     $err = $admin->ValidateUser();
 
-    if ( !isset( $err)) {
+    if (!isset($err)) {
         if ($admin->username !== null) {
-            $err = $admin->SetPassword( $password);
+            $err = $admin->SetPassword($password);
         }
 
-        if ( !isset( $err)) {
-            $admin = SetUserDetails( $admin);
-            if ( is_a( $admin, "Error")) {
+        if (!isset($err)) {
+            $admin = SetUserDetails($admin);
+            if (is_a($admin, "Error")) {
                 $err = $admin;
                 $admin = null;
             }
@@ -91,10 +97,11 @@ function processForm()
     }
 
     if ($err) {
-        $err->isMajor= true;
+        $err->isMajor = true;
 
         return $err;
-    } else
+    }
+    else
 
         return true;
 }

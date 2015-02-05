@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 function ProcessForm()
 {
     if (@$_POST['cancel']) {
@@ -34,29 +33,30 @@ function ProcessForm()
     $event = GetEventDetails($_GET['id']);
 
     if (!$event)
-      return Error::NotFound('event');
+        return Error::NotFound('event');
 
     if ($event->resultsLocked)
-      return Error::AccessDenied();
+        return Error::AccessDenied();
 
     if (!IsAdmin() && $event->management != 'td') {
         return Error::AccessDenied();
     }
 
-    if (!@$_REQUEST['round'] && @$_GET['round']) $_REQUEST['round'] = $_GET['round'];
+    if (!@$_REQUEST['round'] && @$_GET['round'])
+        $_REQUEST['round'] = $_GET['round'];
 
     $round = GetRoundDetails(@$_REQUEST['round']);
-    if (!$round || $round->eventId != $event->id) return Error::Notfound('round');
+    if (!$round || $round->eventId != $event->id)
+        return Error::Notfound('round');
 
     $newIds = array();
 
     foreach ($_POST as $key => $item) {
         if (substr($key, 0, 8) == "base_c_n") {
-            if ($item == "") $item = null;
+            if ($item == "")
+                $item = null;
             $newIds[substr($key, 7)] = CreateSection($round->id, $item, @$_POST["cname_" . substr($key, 7)]);
-
         }
-
     }
 
     $confirmedSections = array();
@@ -67,19 +67,19 @@ function ProcessForm()
 
             if (array_key_exists($id, $newIds)) {
                 $id = $newIds[$id];
-            } else {
-                if (!isset($confirmedSections[$id]) ) {
+            }
+            else {
+                if (!isset($confirmedSections[$id])) {
                     $section = GetSectionDetails($id);
-                    if ($section->round != $round->id) fail();
+                    if ($section->round != $round->id)
+                        fail();
                     $confirmedSections[$id] = true;
                 }
-
             }
 
             RenameSection($id, $item);
         }
-
-   }
+    }
 
     $assign = array();
     foreach ($_POST as $key => $item) {
@@ -87,12 +87,15 @@ function ProcessForm()
             $pid = substr($key, 1);
             $gid = substr($item, 2);
 
-            if (array_key_exists($gid, $newIds)) $gid = $newIds[$gid];
+            if (array_key_exists($gid, $newIds))
+                $gid = $newIds[$gid];
             else {
-                if (!$confirmedSections[$gid]) fail();
+                if (!$confirmedSections[$gid])
+                    fail();
             }
 
-            if (!isset($assign[$gid])) $assign[$gid] = array();
+            if (!isset($assign[$gid]))
+                $assign[$gid] = array();
             $assign[$gid][] = $pid;
         }
     }
@@ -100,7 +103,7 @@ function ProcessForm()
     ResetRound($round->id, 'players');
 
     foreach ($assign as $sectId => $players) {
-        AssignPlayersToSection($round->id, $sectId, $players );
+        AssignPlayersToSection($round->id, $sectId, $players);
     }
 
     RemoveEmptySections($round->id);

@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -47,7 +46,7 @@ function processForm()
             SetEventClassMinQuota($event->id, $qid, $value);
         }
         // Process maximum quota
-        else if (substr($key, 0, 9) == "maxquota_") {
+        elseif (substr($key, 0, 9) == "maxquota_") {
             $qid = substr($key, 9);
             SetEventClassMaxQuota($event->id, $qid, $value);
         }

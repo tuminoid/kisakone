@@ -21,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
 /**
  * Processes the form
  * @return Nothing or Error object on error
@@ -37,11 +36,12 @@ function processForm()
     global $user;
     if (!$user)
         return Error::AccessDenied();
-    if ($user->role =='admin')
+    if ($user->role == 'admin')
         return Error::AccessDenied();
 
     $event = GetEventDetails(@$_GET['id']);
-    if (!$event) return Error::NotFound('event');
+    if (!$event)
+        return Error::NotFound('event');
 
     if ($event->approved !== null) {
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
@@ -61,7 +61,7 @@ function processForm()
         $error->title = 'invalid_class_selection';
         $error->function = 'InputProcessing:sign_up:processForm';
         $error->description = translate('invalid_class_selection_description');
-        $error->isMajor= true;
+        $error->isMajor = true;
 
         return $error;
     }
@@ -71,7 +71,7 @@ function processForm()
         if (!$user->FeesPaidForYear(date('Y', $event->startdate), $fees)) {
             return Error::AccessDenied();
         }
-     }
+    }
 
     $result = SignupUser($event->id, $user->id, $class->id);
     if (is_a($result, 'Error')) {
@@ -83,10 +83,11 @@ function processForm()
     $variableNeededAsItsReference = null;
     if ($result) {
         // Show payment if signup true
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result?1:0), $nothing));
-    } else {
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result ? 1 : 0), $nothing));
+    }
+    else {
         // Show queue if signup false
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result?1:0), $nothing));
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result ? 1 : 0), $nothing));
     }
     die();
 }

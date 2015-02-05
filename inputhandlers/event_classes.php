@@ -24,7 +24,6 @@
 
 require_once 'data/class.php';
 
-
 /**
  * Processes the login form
  * @return Nothing or Error object on error

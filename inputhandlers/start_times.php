@@ -24,52 +24,52 @@
 
 require_once 'data/round.php';
 
-
 function ProcessForm()
 {
-    if (@$_POST['cancel']) {
+    if (@$_POST['cancel'])
         redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
-    }
 
     $event = GetEventDetails($_GET['id']);
     if ($event->resultsLocked)
-      return Error::AccessDenied();
+        return Error::AccessDenied();
     if (!$event)
-      return Error::NotFound('event');
+        return Error::NotFound('event');
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied();
     if (!@$_REQUEST['round'] && @$_GET['round'])
-      $_REQUEST['round'] = $_GET['round'];
+        $_REQUEST['round'] = $_GET['round'];
 
     $round = GetRoundDetails(@$_REQUEST['round']);
     if (!$round || $round->eventId != $event->id)
-      return Error::Notfound('round');
+        return Error::Notfound('round');
 
     $priority = 1;
     $sections = GetSections($round->id);
     $validIds = array();
     foreach ($sections as $section)
-      $validIds[] = $section->id;
+        $validIds[] = $section->id;
 
     foreach ($_POST as $key => $value) {
         if (preg_match('/time_/', $key)) {
             $present = false;
             $id = substr($key, 5);
             if (!in_array($id, $validIds))
-              fail();
+                fail();
             $present = (bool) @$_POST['present_' . $id];
 
             $roundStart = $round->starttime;
             if (!$value) {
                 $sectionTime = null;
-            } else {
+            }
+            else {
                 $time1 = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
 
                 if (!$time1)
-                  fail2();
+                    fail2();
                 if ($time1 >= $roundStart) {
                     $sectionTime = $time1;
-                } else {
+                }
+                else {
                     $roundStart += 24 * 60 * 60;
                     $sectionTime = strtotime(date('Y-m-d', $roundStart) . ' ' . $value);
                 }
@@ -77,7 +77,7 @@ function ProcessForm()
 
             AdjustSection($id, $priority++, $sectionTime, $present);
         }
-   }
+    }
 
-   redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
+    redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => $round->id), $_GET));
 }

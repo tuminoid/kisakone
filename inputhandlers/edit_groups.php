@@ -24,7 +24,6 @@
 
 require_once 'data/round.php';
 
-
 function ProcessForm()
 {
     if (@$_POST['cancel'])
@@ -56,22 +55,27 @@ function ProcessForm()
                     fail();
                 break;
 
+
             case 'h':
                 $startingHole = substr($action, 1);
                 break;
 
+
             case 'g':
                 $groupTemplate = InitNewGroup($round, $section, $groupTemplate, $startingHole);
                 break;
+
 
             case 'p':
                 $groupTemplate['Player'] = substr($action, 3);
                 InsertGroupmember($groupTemplate);
                 break;
 
+
             case 'e':
                 assert($action == "edit_groups");
                 break;
+
 
             default:
                 fail();
@@ -101,9 +105,11 @@ function InitNewGroup($round, $section, $template, $startingHole)
             $template['StartingTime'] += 60 * $round->interval;
             break;
 
+
         case 'simultaneous':
             $template['StartingHole'] = $startingHole;
             break;
+
 
         default:
             fail();

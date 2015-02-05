@@ -24,7 +24,6 @@
 
 require_once 'data/class.php';
 
-
 /**
  * Processes the form
  * @return Nothing or Error object on error
@@ -74,8 +73,8 @@ function processForm()
         if (is_a($retVal, 'Error'))
             return $retVal;
         redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
-
-    } else {
+    }
+    else {
         $lastname = $_POST['lastname'];
         if ($lastname == '')
             $problems['lastname'] = translate('FormError_NotEmpty');
