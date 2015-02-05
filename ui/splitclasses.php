@@ -23,6 +23,8 @@
  * */
 
 require_once 'data/round.php';
+require_once 'ui/support/roundselection.php';
+
 
 /**
  * Initializes the variables and other data necessary for showing the matching template
@@ -35,22 +37,16 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if (!$event)
         return Error::NotFound('event');
-
     if ($event->resultsLocked)
         $smarty->assign('locked', true);
-
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied();
-    }
 
     if (!@$_REQUEST['round'] && @$_GET['round'])
         $_REQUEST['round'] = $_GET['round'];
 
-    if (!@$_REQUEST['round']) {
-        require_once 'ui/support/roundselection.php';
-
+    if (!@$_REQUEST['round'])
         return page_SelectRound($event, $smarty);
-    }
 
     $round = GetRoundDetails(@$_REQUEST['round']);
     if (!$round || $round->eventId != $event->id)
@@ -61,17 +57,15 @@ function InitializeSmartyVariables(&$smarty, $error)
         redirect("Location: " . url_smarty(array('page' => 'splitclasses', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
     }
     else {
-        if ($round->InitializeSections()) {
+        if ($round->InitializeSections())
             $smarty->assign('suggestRegeneration', true);
-        }
     }
 
     $smarty->assign('eventid', $event->id);
-
     $smarty->assign('data', GetSections($round->id, 'name'));
-
     $smarty->assign('firstRound', $round->IsFirstRound());
 }
+
 
 /**
  * Determines which main menu option this page falls under.
