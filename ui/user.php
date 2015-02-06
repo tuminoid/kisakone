@@ -61,37 +61,38 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    if (IsAdmin() || $itsme) {
-        if ($settings['SFL_ENABLED'] == true) {
-            $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
+    if ($settings['SFL_ENABLED'] == true) {
+        $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
-            $year = date('Y');
-            $data = SFL_getPlayer($user->id, $year);
-            $smarty->assign('data', $data);
+        $year = date('Y');
+        $data = SFL_getPlayer($userid, $year);
+        $smarty->assign('data', $data);
 
-            $fees['membership'][$year] = $data['membership'];
-            $fees['aLicense'][$year] = $data['a_license'];
-            $fees['bLicense'][$year] = $data['b_license'];
-            $smarty->assign('fees', $fees);
-        }
+        $fees['membership'][$year] = $data['membership'];
+        $fees['aLicense'][$year] = $data['a_license'];
+        $fees['bLicense'][$year] = $data['b_license'];
+        $smarty->assign('fees', $fees);
 
-        if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
-            $smarty->assign('pdga', $player->pdga);
-            $pdga_data = pdga_getPlayer($player->pdga);
+        // Since we have club data at hand, update them into our db
+        SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']);
+    }
 
-            // Display an error if connection fails
-            if ($pdga_data == null)
-                $smarty->assign('pdga_error', 'pdga_server_error');
-            else {
-                $smarty->assign('pdga_rating', $pdga_data['rating']);
-                $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
-                $smarty->assign('pdga_birth_year', $pdga_data['birth_year']);
-                $smarty->assign('pdga_gender', $pdga_data['gender']);
-                $smarty->assign('pdga_membership_status', $pdga_data['membership_status']);
-                $smarty->assign('pdga_membership_expiration_date', $pdga_data['membership_expiration_date']);
-                $smarty->assign('pdga_official_status', $pdga_data['official_status']);
-                $smarty->assign('pdga_country', strtoupper($pdga_data['country']));
-            }
+    if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
+        $smarty->assign('pdga', $player->pdga);
+        $pdga_data = pdga_getPlayer($player->pdga);
+
+        // Display an error if connection fails
+        if ($pdga_data == null)
+            $smarty->assign('pdga_error', 'pdga_server_error');
+        else {
+            $smarty->assign('pdga_rating', $pdga_data['rating']);
+            $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
+            $smarty->assign('pdga_birth_year', $pdga_data['birth_year']);
+            $smarty->assign('pdga_gender', $pdga_data['gender']);
+            $smarty->assign('pdga_membership_status', $pdga_data['membership_status']);
+            $smarty->assign('pdga_membership_expiration_date', $pdga_data['membership_expiration_date']);
+            $smarty->assign('pdga_official_status', $pdga_data['official_status']);
+            $smarty->assign('pdga_country', strtoupper($pdga_data['country']));
         }
     }
 

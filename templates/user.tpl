@@ -42,7 +42,7 @@
       </tr>
       <tr>
          <td>{translate id=user_club}:</td>
-         <td>{$data.club_name|escape} ({$data.club_short})</td>
+         <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
       </tr>
       <tr>
          <td>{translate id=user_yearofbirth}: </td>
@@ -55,7 +55,7 @@
    {/if}
 </table>
 
-{if ($itsme || $isadmin) && $player }
+{if ($itsme || $isadmin) && $player}
    <h2>{translate id=user_licenses_title}</h2>
    <table style="width:500px">
    {if $fees}
