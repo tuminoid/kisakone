@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * License and membership fee management
  *
@@ -22,6 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'config.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -29,7 +32,9 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (USE_SFL_PAYMENTS)
+    global $settings;
+
+    if ($settings['SFL_ENABLED'] == true)
         return Error::AccessDenied();
 
     if (!IsAdmin()) {

@@ -58,7 +58,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('edit', true);
         }
         else {
-            $smarty->assign('userdata', GetUserDetails($user));
+            $userdata = GetUserDetails($user);
+            $smarty->assign('userdata', $userdata);
             $player = GetUserPlayer($user);
 
             foreach ($classOptions as $cid => $cname) {
@@ -69,29 +70,15 @@ function InitializeSmartyVariables(&$smarty, $error)
                 }
             }
 
-            // Get user's license status for TD to view
-            list($alicense, $membership, $blicense) = SFL_FeesPaidForYear($user, date("Y"));
-            $smarty->assign('sfl_license_a', $alicense);
-            $smarty->assign('sfl_license_b', $blicense);
-            $smarty->assign('sfl_membership', $membership);
+            $licenses = SFL_getLicenses($user, date('Y'));
+            $smarty->assign('sfl_license_a', $licenses['a']);
+            $smarty->assign('sfl_license_b', $licenses['b']);
+            $smarty->assign('sfl_membership', $licenses['membership']);
 
             $fees = $event->FeesRequired();
-            if ($alicense) {
-                $license_ok = true;
-            }
-            else {
-                if ($fees == LICENSE_A) {
-                    $license_ok = false;
-                }
-                elseif ($fees == LICENSE_B && $blicense) {
-                    $license_ok = true;
-                }
-                else {
-                    $license_ok = false;
-                }
-            }
+            $licenses_ok = $userdata->FeesPaidForYear(date('Y'), $fees);
             $smarty->assign('license_required', $fees);
-            $smarty->assign('licenses_ok', $license_ok);
+            $smarty->assign('licenses_ok', $licenses_ok);
 
             // Get user's pdga data
             global $settings;
@@ -99,14 +86,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
             // if PDGA API is enabled and player has PDGA number assigned, do the checks
             if (@$settings['PDGA_ENABLED'] && $player->pdga && $player->pdga > 0) {
-                error_log("Checking PDGA data for #" . $player->pdga);
                 $smarty->assign('pdga', true);
                 $pdga_data = pdga_getPlayer($player->pdga);
 
                 // Display an error if connection fails
-                if ($pdga_data == null) {
+                if ($pdga_data == null)
                     $smarty->assign('pdga_error', 1);
-                }
                 else {
                     $smarty->assign('pdga_rating', $pdga_data['rating']);
                     $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
@@ -119,14 +104,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
                     // Remove classes from drop-down based on PDGA data
                     foreach ($classOptions as $cid => $cname) {
-                        if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1)) {
-                            // error_log("Gender does not match (".$pdga_data['gender']."), removing class $cname");
+                        if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
                             unset($classOptions[$cid]);
-                        }
-                        if ($pdga_data['classification'] == "P" && substr($cname, 1, 1) == "A") {
-                            // error_log("Classification Pro cannot play Am, removing class $cname");
+                        if ($pdga_data['classification'] == "P" && substr($cname, 1, 1) == "A")
                             unset($classOptions[$cid]);
-                        }
                     }
                 }
             }

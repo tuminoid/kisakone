@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User details page
  *
@@ -21,6 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'config.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -45,6 +49,8 @@ if (!is_callable('InitializeSmartyVariables')) {
 
 function User_InitializeSmartyVariables(&$smarty, $error)
 {
+    global $settings;
+
     $getId = $_GET['id'];
     if (is_numeric($getId) && is_a(GetUserDetails($getId), 'User'))
         $userid = $getId;
@@ -76,16 +82,17 @@ function User_InitializeSmartyVariables(&$smarty, $error)
     }
 
     if (IsAdmin() || $itsme) {
-        if (USE_SFL_PAYMENTS) {
+        if ($settings['SFL_ENABLED'] == true) {
             $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
             $currentYear = date('Y');
             $years = array($currentYear);
             foreach ($years as $year) {
                 list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($user->id, $year);
-                $fees['aLicense'][$year] = $aLicense;
-                $fees['membership'][$year] = $membership;
-                $fees['bLicense'][$year] = $bLicense;
+                $licenses = SFL_getLicenses($user->id, $year);
+                $fees['aLicense'][$year] = $licenses['a'];
+                $fees['membership'][$year] = $licenses['membership'];
+                $fees['bLicense'][$year] = $licenses['b'];
             }
 
             $smarty->assign('fees', $fees);

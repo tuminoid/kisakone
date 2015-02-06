@@ -48,33 +48,27 @@ $user_access_level_admin = 'admin';
 /* *****************************************************************************
  * This class represents a single user in the system.
  */
-class user
+class User
 {
     var $id;
     var $username;
     var $role;
-    // $user_role_player or $user_role_admin
     var $firstname;
     var $lastname;
     var $fullname;
-    // derived attribute
     var $email;
     var $gender;
-    // Player class attribute, repeated here for convenience
     var $pdga;
-    // Player class attribute, repeated here for convenience
     var $birthyear;
-    // Player class attribute, repeated here for convenience
     var $password;
-    // password as hash
     var $hash;
-    // what type of hash password is
     var $salt;
-    // salt for the password
     var $lastlogin;
-    // time of last login
     var $passwordchanged;
-    // time of last password change
+    var $sflid;
+    var $club;
+
+
     /** ************************************************************************
      * Class constructor
      */
@@ -105,6 +99,8 @@ class user
         $this->salt = null;
         $this->lastlogin = null;
         $this->passwordchanged = null;
+        $this->sflid = null;
+        $this->club = null;
 
         return;
     }
@@ -383,7 +379,10 @@ class user
         if (!$required)
             return true;
 
-        list($aLicense, $membership, $bLicense) = SFL_FeesPaidForYear($this->id, $year);
+        $licenses = SFL_getLicenses($this->id, date('Y'));
+        $aLicense = $licenses['a'];
+        $bLicense = $licenses['b'];
+        $membership = $licenses['membership'];
 
         // If there is any requirements for competition, membership is a must
         if ($required && !$membership)
@@ -391,7 +390,7 @@ class user
         // If A-license is required, we require that strictly
         if ($required == LICENSE_A && !$aLicense)
             return false;
-        // If B-license is required, both A- and B-license quality, obviusly
+        // If B-license is required, both A- and B-license quality, obviously
         if ($required == LICENSE_B && !($aLicense || $bLicense))
             return false;
 

@@ -24,6 +24,7 @@
 * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
 * */
 
+require_once 'config.php';
 require_once 'data/event.php';
 require_once 'data/user.php';
 require_once 'data/textcontent.php';
@@ -36,6 +37,8 @@ require_once 'data/tournament.php';
  */
 function page_getSubMenu()
 {
+    global $settings;
+
     // Submenu format:
     // The submenu itself is an array which consists of items matching each of the main menu items
     // (irrelevant items can be left out, such as administration items when the user is viewing an event)
@@ -143,7 +146,7 @@ function page_getSubMenu()
             )),
             array('open' => 'auto', 'title' => translate('submenu_manage'), 'link' => array('page' => 'manage_users'), 'access' => 'admin', 'children' => array(
                 array('title' => translate('submenu_manage_fees_item'), 'link' => array('page' => 'managefees' ), 'access' => null, 'children' => array(),
-                      'condition' => !USE_SFL_PAYMENTS),
+                      'condition' => !$settings['SFL_ENABLED']),
                 array('title' => translate('submenu_ban_and_remove_users'), 'link' => array('page' => 'manageaccess' ), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin' ), 'access' => null, 'children' => array()),
 
