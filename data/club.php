@@ -42,3 +42,23 @@ function GetClub($clubid)
 
     return $retValue;
 }
+
+
+function SaveClub($clubid, $clubname, $clubshort)
+{
+    $clubid = (int) $clubid;
+    if (!$clubname || !$clubshort)
+        return null;
+
+    $clubname = esc_or_null($clubname);
+    $clubshort = esc_or_null($clubshort);
+
+    $query = format_query("INSERT INTO :Club VALUES($clubid, $clubname, $clubshort)
+                            ON DUPLICATE KEY UPDATE Name = $clubname, ShortName = $clubshort");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
+
+    return mysql_insert_id();
+}
