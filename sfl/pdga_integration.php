@@ -26,6 +26,7 @@ define('PDGA_API_SERVER', "https://api.pdga.com");
 require_once 'config.php';
 require_once 'data/db_init.php';
 
+
 /**
  * pdga_api_settings
  *
@@ -159,16 +160,16 @@ function pdga_api_getPlayer($pdga_number = 0)
  */
 function pdga_getLastUpdated($pdga_number = 0)
 {
-    require_once 'data/db_init.php';
-
     $query = "SELECT unix_timestamp(last_updated) AS last_update FROM pdga_players WHERE pdga_number = $pdga_number";
     $result = execute_query($query);
 
     if (!$result || mysql_num_rows($result) != 1)
-        return null;
+        return 0;
 
     $row = mysql_fetch_assoc($result);
-    return $row['last_update'];
+    mysql_free_result($result);
+
+    return (isset($row['last_update']) ? $row['last_update'] : 0);
 }
 
 /**
@@ -209,7 +210,7 @@ function pdga_updatePlayer($pdga_number)
  */
 function pdga_getPlayer($pdga_number = 0)
 {
-    if (!is_integer($pdga_number) || $pdga_number <= 0)
+    if (!(is_numeric($pdga_number) && $pdga_number > 0))
         return null;
 
     $last_update = pdga_getLastUpdated($pdga_number);
@@ -219,11 +220,18 @@ function pdga_getPlayer($pdga_number = 0)
     $query = "SELECT * FROM pdga_players WHERE pdga_number = $pdga_number";
     $result = execute_query($query);
 
-    if (!$result || mysql_num_rows($result) != 1)
+    if (!$result)
         return null;
 
-    return mysql_fetch_assoc($result);
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        mysql_free_result($result);
+        return $row;
+    }
+
+    return null;
 }
+
 
 /**
  * pdga_getPlayerData
