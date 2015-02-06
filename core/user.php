@@ -381,10 +381,10 @@ class User
         if (!$required)
             return true;
 
-        $licenses = SFL_getLicenses($this->id, date('Y'));
-        $aLicense = $licenses['a'];
-        $bLicense = $licenses['b'];
-        $membership = $licenses['membership'];
+        $data = SFL_getPlayer($this->id, date('Y'));
+        $aLicense = $data['a_license'];
+        $bLicense = $data['b_license'];
+        $membership = $data['membership'];
 
         // If there is any requirements for competition, membership is a must
         if ($required && !$membership)
