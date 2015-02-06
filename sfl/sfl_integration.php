@@ -56,6 +56,33 @@ function sfl_api_settings()
 }
 
 
+function sfl_api_curl_exec($url)
+{
+    global $curl;
+
+    $creds = sfl_api_settings();
+    if (!$creds)
+        return null;
+
+    list($username, $password) = $creds;
+    if (!$username || !$password)
+        return null;
+
+    if (!$curl) {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_USERPWD, $username . ":" . $password);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+    }
+    curl_setopt($curl, CURLOPT_URL, $url);
+
+    $response = curl_exec($curl);
+    $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $error = curl_error($curl);
+
+    return array($response, $http_code, $error);
+}
+
 /**
  * Send curl request to API
  *
@@ -67,22 +94,8 @@ function sfl_api_sendRequest($url)
     if (!$url)
         return null;
 
-    $creds = sfl_api_settings();
-    if (!$creds)
-        return null;
-
-    list($username, $password) = $creds;
-    if (!$username || !$password)
-        return null;
-
     $request_url = SFL_API_SERVER . $url;
-    $curl = curl_init($request_url);
-    curl_setopt($curl, CURLOPT_USERPWD, $username . ":" . $password);
-    curl_setopt($curl, CURLOPT_URL, $request_url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-    $response = curl_exec($curl);
-    $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    list($response, $http_code, $error) = sfl_api_curl_exec($request_url);
 
     $decoded = null;
     if ($http_code == 200) {
@@ -91,12 +104,9 @@ function sfl_api_sendRequest($url)
         if (!$decoded)
             error_log("Getting data for '$request_url' failed, response =\n" . print_r($response, true));
     }
-    else {
-        $error = curl_error($curl);
+    else
         error_log("Getting player data failed: code $http_code, " . $error);
-    }
 
-    curl_close($curl);
     return $decoded;
 }
 
@@ -113,7 +123,7 @@ function sfl_api_parseLicenses($data)
     if (IGNORE_PAYMENTS == true)
         return array('a_license' => true, 'b_license' => true, 'membership' => true);
 
-    if (!$data)
+    if (!$data || $data['status'] == false)
         return array('a_license' => false, 'b_license' => false, 'membership' => false);
 
     $data['membership'] = isset($data['membership']) ? $data['membership'] : false;
