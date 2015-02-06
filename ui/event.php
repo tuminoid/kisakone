@@ -137,7 +137,9 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('signedup', $event->approved !== null);
             $smarty->assign('paid', $event->eventFeePaid);
             $smarty->assign('signupOpen', $event->SignupPossible());
-            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            if ($user)
+                $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+
             $requiredFees = $event->FeesRequired();
             if ($requiredFees && $user) {
                 if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees)) {
