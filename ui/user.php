@@ -64,13 +64,13 @@ function InitializeSmartyVariables(&$smarty, $error)
     if ($settings['SFL_ENABLED'] == true) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
-        $year = date('Y');
-        $data = SFL_getPlayer($userid, $year);
+        $data = SFL_getPlayer($userid);
         $smarty->assign('data', $data);
 
-        $fees['membership'][$year] = $data['membership'];
-        $fees['aLicense'][$year] = $data['a_license'];
-        $fees['bLicense'][$year] = $data['b_license'];
+        $year = date('Y');
+        $fees['membership'][$year] = @$data['membership'][$year];
+        $fees['aLicense'][$year] = @$data['a_license'][$year];
+        $fees['bLicense'][$year] = @$data['b_license'][$year];
         $smarty->assign('fees', $fees);
 
         // Since we have club data at hand, update them into our db

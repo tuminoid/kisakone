@@ -36,10 +36,12 @@
          <td>{capture assign=gendertoken}gender_{$player->gender}{/capture}
          {translate id=$gendertoken}</td>
       </tr>
+      {if $player->pdga}
       <tr>
          <td>{translate id=user_pdga_number}:</td>
          <td>{$player->pdga|escape}</td>
       </tr>
+      {/if}
       <tr>
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>

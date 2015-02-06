@@ -105,7 +105,7 @@ function sfl_api_sendRequest($url)
             error_log("Getting data for '$request_url' failed, response =\n" . print_r($response, true));
     }
     else
-        error_log("Getting player data failed: code $http_code, " . $error);
+        error_log("Getting SFL data failed: code $http_code, " . $error);
 
     return $decoded;
 }
@@ -149,11 +149,10 @@ function sfl_api_parseLicenses($data)
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByName($firstname, $lastname, $birthdate, $year = null)
+function SFL_getLicensesByName($firstname, $lastname, $birthdate)
 {
     $birthdate = (int) $birthdate;
-    $year = $year ? $year : date('Y');
-    $url = "/sfl/license/$year/name/$firstname/$lastname/$birthdate";
+    $url = "/sfl/name/$firstname/$lastname/$birthdate";
 
     return sfl_api_parseLicenses(sfl_api_sendRequest($url));
 }
@@ -166,11 +165,10 @@ function SFL_getLicensesByName($firstname, $lastname, $birthdate, $year = null)
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesById($sflid, $year = null)
+function SFL_getLicensesById($sflid)
 {
     $sflid = (int) $sflid;
-    $year = $year ? $year : date('Y');
-    $url = "/sfl/license/$year/sfl/$sflid";
+    $url = "/sfl/id/$sflid";
 
     return sfl_api_parseLicenses(sfl_api_sendRequest($url));
 }
@@ -180,14 +178,12 @@ function SFL_getLicensesById($sflid, $year = null)
  * Get users licenses for a specific year, identified by PDGA number
  *
  * @param  int $pdga pdga number
- * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByPDGA($pdga, $year = null)
+function SFL_getLicensesByPDGA($pdga)
 {
     $pdga = (int) $pdga;
-    $year = $year ? $year : date('Y');
-    $url = "/sfl/license/$year/pdga/$pdga";
+    $url = "/sfl/pdga/$pdga";
 
     return sfl_api_parseLicenses(sfl_api_sendRequest($url));
 }
@@ -197,13 +193,11 @@ function SFL_getLicensesByPDGA($pdga, $year = null)
  * Get users licenses for a specific year
  *
  * @param  int $userid internal userid
- * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getPlayer($userid, $year = null)
+function SFL_getPlayer($userid)
 {
     $userid = (int) $userid;
-    $year = $year ? $year : date('Y');
 
     $query = format_query("SELECT UserFirstname, UserLastname, SflId, :Player.pdga AS PDGA,
                                 YEAR(:Player.birthdate) AS Birthdate
@@ -224,13 +218,15 @@ function SFL_getPlayer($userid, $year = null)
         $birthdate = $row['Birthdate'];
         mysql_free_result($result);
 
-        if ($sflid > 0)
-            return SFL_getLicensesById($sflid, $year);
+        if ($sflid > 0) {
+            return SFL_getLicensesById($sflid);
+        }
 
-        if ($pdga > 0)
-            return SFL_getLicensesByPDGA($pdga, $year);
+        if ($pdga > 0) {
+            return SFL_getLicensesByPDGA($pdga);
+        }
 
-        return SFL_getLicensesByName($firstname, $lastname, $birthdate, $year);
+        return SFL_getLicensesByName($firstname, $lastname, $birthdate);
     }
 
     return sfl_api_parseLicenses(null);

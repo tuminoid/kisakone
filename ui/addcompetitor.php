@@ -64,13 +64,14 @@ function InitializeSmartyVariables(&$smarty, $error)
                 unset($classOptions[$cid]);
         }
 
-        $data = SFL_getPlayer($user, date('Y'));
-        $smarty->assign('sfl_license_a', $data['a_license']);
-        $smarty->assign('sfl_license_b', $data['b_license']);
-        $smarty->assign('sfl_membership', $data['membership']);
+        $year = date('Y');
+        $data = SFL_getPlayer($user);
+        $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
+        $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
+        $smarty->assign('sfl_membership', @$data['membership'][$year]);
 
         $fees = $event->FeesRequired();
-        $licenses_ok = $userdata->FeesPaidForYear(date('Y'), $fees);
+        $licenses_ok = $userdata->FeesPaidForYear($year, $fees);
         $smarty->assign('license_required', $fees);
         $smarty->assign('licenses_ok', $licenses_ok);
 
