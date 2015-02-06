@@ -23,6 +23,8 @@
  * */
 
 require_once 'data/class.php';
+require_once 'core/event_management.php';
+require_once 'core/user_operations.php';
 
 /**
  * Processes the form
@@ -31,8 +33,6 @@ require_once 'data/class.php';
 function processForm()
 {
     $problems = array();
-    require_once 'core/event_management.php';
-    require_once 'core/user_operations.php';
 
     $godmode = false;
     $eventid = @$_GET['id'];
@@ -72,55 +72,9 @@ function processForm()
         $retVal = SignupUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
         if (is_a($retVal, 'Error'))
             return $retVal;
+
         redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
     }
-    else {
-        $lastname = $_POST['lastname'];
-        if ($lastname == '')
-            $problems['lastname'] = translate('FormError_NotEmpty');
-
-        $firstname = $_POST['firstname'];
-        if ($firstname == '')
-            $problems['firstname'] = translate('FormError_NotEmpty');
-
-        $email = $_POST['email'];
-        if (!preg_match('/^.+@.+\..+$/', $email))
-            $problems['email'] = translate('FormError_InvalidEmail');
-
-        $pdga = $_POST['pdga'];
-        if ($pdga == '') {
-            $pdga = null;
-        }
-        else {
-            $num = (int) $pdga;
-            if ($num <= 0)
-                $problems['pdga'] = translate('FormError_PDGA');
-        }
-
-        $gender = @$_POST['gender'];
-        if ($gender != 'male' && $gender != 'female')
-            $problems['gender'] = translate('FormError_NotEmpty');
-
-        $dobYear = $_POST['dob_Year'];
-        if ($dobYear != (int) $dobYear)
-            $problems['dob'] = translate('FormError_NotEmpty');
-
-        $class = (int) @$_POST['class'];
-
-        if (count($problems)) {
-            $error = new Error();
-            $error->title = 'Add_Competitor form error';
-            $error->function = 'InputProcessing:Add_Competitor:processForm';
-            $error->cause = array_keys($problems);
-            $error->data = $problems;
-
-            return $error;
-        }
-    }
-
-    $u = RegisterPlayer(null, null, $email, $firstname, $lastname, $gender, $pdga, $dobYear);
-    if (is_a($u, 'Error'))
-        return $u;
 
     redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => 1), $_GET));
 }

@@ -38,7 +38,7 @@
     </form>
 
     <p>
-        <a href="{url page=addcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
+        <a href="{url page=newcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
     </p>
 
     <script type="text/javascript">
@@ -50,15 +50,12 @@ $(document).ready(function(){
     options = { serviceUrl: baseUrl ,
                 params: {path: 'autocomplete', 'id': 'players' }};
     a = $('#player').autocomplete(options);
-
-
 });
 
 {/literal}
 
 //]]>
 </script>
-
 
 {elseif is_array($many)}
     {* Listing of users *}
@@ -77,7 +74,6 @@ $(document).ready(function(){
                     {else}
                         {translate id=add_competitor_no_username}
                     {/if}
-
                 </td>
             </tr>
 
@@ -87,7 +83,7 @@ $(document).ready(function(){
     </table>
 
     <p>
-        <a href="{url page=addcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
+        <a href="{url page=newcompetitor id=$smarty.get.id user=new}">{translate id=add_competitor_create_new}</a>
     </p>
 
 {else}
@@ -104,17 +100,17 @@ $(document).ready(function(){
     <h2>{translate id='reg_contact_info'}</h2>
     <div>
         <label for="firstname">{translate id='first_name'}</label>
-        <input type="text" id="firstname" name="firstname" {if !$edit}disabled="disabled"{/if}  value="{$userdata->firstname|escape}" />
+        <input type="text" id="firstname" name="firstname" disabled="disabled" value="{$userdata->firstname|escape}" />
         {formerror field='firstname'}
     </div>
     <div>
         <label for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" {if !$edit}disabled="disabled"{/if} type="text" name="lastname" value="{$userdata->lastname|escape}" />
+        <input type="text" id="lastname" name="lastname" disabled="disabled" value="{$userdata->lastname|escape}" />
         {formerror field='lastname'}
     </div>
     <div>
         <label for="email">{translate id='reg_email'}</label>
-        <input id="email" {if !$edit}disabled="disabled"{/if} type="text" name="email"  value="{$userdata->email|escape}" />
+        <input type="text" id="email" name="email" disabled="disabled" value="{$userdata->email|escape}" />
         {formerror field='email'}
     </div>
 
@@ -122,7 +118,7 @@ $(document).ready(function(){
     <h2>{translate id='reg_user_info'}</h2>
     <div>
         <label for="username">{translate id='username'}</label>
-        <input id="username" {if !$edit}disabled="disabled"{/if} type="text" name="username"  value="{$userdata->username|escape}" />
+        <input type="text" id="username" name="username" disabled="disabled" value="{$userdata->username|escape}" />
         {formerror field='username'}
     </div>
     {/if}
@@ -131,19 +127,21 @@ $(document).ready(function(){
     <h2>{translate id='reg_player_info'}</h2>
      <div>
         <label for="pdga">{translate id='pdga_number'}</label>
-        <input id="pdga" type="text" {if !$edit}disabled="disabled"{/if} name="pdga"  value="{$player->pdga|escape}" />
+        <input id="pdga" type="text" disabled="disabled" name="pdga" value="{$player->pdga|escape}" />
         {if $pdga && $pdga_membership_status != "current"}
-            <img src="/images/exclamation.png" height="16" alt="error!"  title="{translate id=pdga_membership_expired} ({$pdga_membership_status}: {$pdga_membership_expiration_date})" />
+            <img src="/images/exclamation.png" height="16" alt="error!"
+                title="{translate id=pdga_membership_expired} ({$pdga_membership_status}: {$pdga_membership_expiration_date})" />
         {/if}
         {formerror field='pdga'}
     </div>
 
      <div>
         <label for="gender">{translate id='gender'}</label>
-        <input id="gender" type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
-        <input type="radio" {if !$edit}disabled="disabled"{/if} {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
+        <input id="gender" type="radio" disabled="disabled" {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
+        <input type="radio" disabled="disabled" {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
         {if $pdga && $pdga_gender != $player->gender}
-            <img src="/images/exclamation.png" height="16" alt="error!" title="{translate id=pdga_data_mismatch} ({$player->gender} vs {$pdga_gender})" />
+            <img src="/images/exclamation.png" height="16" alt="error!"
+                title="{translate id=pdga_data_mismatch} ({$player->gender} vs {$pdga_gender})" />
         {/if}
     </div>
 
@@ -151,109 +149,75 @@ $(document).ready(function(){
      <div style="margin-top: 8px">
         <label>{translate id='dob'}</label>
         {translate id='year_default' assign='year_default'}
-        {if $edit}
-            {html_select_date time=0-0-0 field_order=DMY month_format=%m
-                prefix='dob_' start_year='1900' display_months=false display_days=false year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
-                all_extra='style="min-width: 0"' }
-            {else}
-            <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
-            {if $pdga && $pdga_birth_year != $player->birthyear}
-                <img src="/images/exclamation.png" height="16" alt="error!" title="{translate id=pdga_data_mismatch} ({$player->birthyear|escape} vs {$pdga_birth_year})" />
-            {/if}
+        <input type="text" value="{$player->birthyear|escape}" disabled="disabled" />
+        {if $pdga && $pdga_birth_year != $player->birthyear}
+            <img src="/images/exclamation.png" height="16" alt="error!"
+                title="{translate id=pdga_data_mismatch} ({$player->birthyear|escape} vs {$pdga_birth_year})" />
         {/if}
-
         {formerror field='dob'}
     </div>
 
-    {if $edit}
-        <h2>{translate id='reg_finalize_create'}</h2>
-        <div>
-            <input type="submit" value="{translate id='form_new_competitor'}" name="accept" />
+    <h2>{translate id='add_competitor_class'}</h2>
+    <div>
+        {if $pdga}
+        <div class="searcharea">
+            <label for="membership">{translate id='pdga_membership'}</label>
+                <span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span><br />
+            <label for="official">{translate id='pdga_official'}</label>
+                <span name="official">{translate id=pdga_official_$pdga_official_status}</span><br />
+            <label for="rating">{translate id='pdga_rating'}</label>
+                <span name="rating">{$pdga_rating}</span><br />
+            <label for="status">{translate id='pdga_status'}</label>
+                <span name="status">{$pdga_classification}</span><br />
+            <label for="status">{translate id='pdga_country'}</label>
+                <span name="status">{$pdga_country}</span><br />
         </div>
-    {else}
-        <h2>{translate id='add_competitor_class'}</h2>
-        <div>
-            {if $pdga}
+        {/if}
+
+        <label for="class">{translate id='class'}</label>
+        <select id="class" name="class">
+            {html_options options=$classOptions}
+        </select>
+
+        {formerror field='class'}
+    </div>
+
+    <h2>{translate id='license_status_header'}</h2>
+    <div>
+        {if $licenses_ok}
             <div class="searcharea">
-                <label for="membership">{translate id='pdga_membership'}</label>
-                    <span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span><br />
-                <label for="official">{translate id='pdga_official'}</label>
-                    <span name="official">{translate id=pdga_official_$pdga_official_status}</span><br />
-                <label for="rating">{translate id='pdga_rating'}</label>
-                    <span name="rating">{$pdga_rating}</span><br />
-                <label for="status">{translate id='pdga_status'}</label>
-                    <span name="status">{$pdga_classification}</span><br />
-                <label for="status">{translate id='pdga_country'}</label>
-                    <span name="status">{$pdga_country}</span><br />
-            </div>
-            {/if}
-
-            <label for="class">{translate id='class'}</label>
-            <select id="class" name="class">
-                {html_options options=$classOptions}
-            </select>
-
-            {formerror field='class'}
-        </div>
-
-        <h2>{translate id='license_status_header'}</h2>
-        <div>
-            {if $licenses_ok}
-                <div class="searcharea">
-                {if $sfl_license_a}
-                    {translate id='license_ok_a'}
-                {else}
-                    {translate id='license_ok_b'}
-                {/if}
-                </div>
+            {if $sfl_license_a}
+                {translate id='license_ok_a'}
             {else}
-                {if $pdga && $pdga_country != "FI"}
-                    {if $pdga_membership_status != "current"}
-                        <div class="error">{translate id='license_fail_foreign'}</div>
-                        {assign var="licenses_ok" value=false}
-                    {else}
-                        <div class="searcharea">{translate id='license_ok_foreign'}</div>
-                    {/if}
+                {translate id='license_ok_b'}
+            {/if}
+            </div>
+        {else}
+            {if $pdga && $pdga_country != "FI"}
+                {if $pdga_membership_status != "current"}
+                    <div class="error">{translate id='license_fail_foreign'}</div>
+                    {assign var="licenses_ok" value=false}
                 {else}
-                    {if $sfl_license_b && $licenses_ok == false}
-                        <div class="error">{translate id='licenses_fail_onlyb'}</div>
-                    {else}
-                        <div class="error">{translate id='licenses_fail'}</div>
-                    {/if}
+                    <div class="searcharea">{translate id='license_ok_foreign'}</div>
+                    {assign var="licenses_ok" value=true}
+                {/if}
+            {else}
+                {if $sfl_license_b && $licenses_ok == false}
+                    <div class="error">{translate id='licenses_fail_onlyb'}</div>
+                {else}
+                    <div class="error">{translate id='licenses_fail'}</div>
                 {/if}
             {/if}
-        </div>
+        {/if}
+    </div>
 
-        <h2>{translate id='reg_finalize'}</h2>
-        <div>
-            <input type="submit" value="{translate id='form_add_competitor'}" name="accept" {if !$licenses_ok}disabled="disabled"{/if} />
-            <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" {if !$licenses_ok}disabled="disabled"{/if} />
-            <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        </div>
-    {/if}
+    <h2>{translate id='reg_finalize'}</h2>
+    <div>
+        <input type="submit" value="{translate id='form_add_competitor'}" name="accept" {if !$licenses_ok}disabled="disabled"{/if} />
+        <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" {if !$licenses_ok}disabled="disabled"{/if} />
+        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
+    </div>
 </form>
-
-<script type="text/javascript">
-//<![CDATA[
-{literal}
-$(document).ready(function(){
-    CheckedFormField('regform', 'lastname', NonEmptyField, null);
-    CheckedFormField('regform', 'firstname', NonEmptyField, null);
-    CheckedFormField('regform', 'email', EmailField, null);
-
-    CheckedFormField('regform', 'gender', RadioFieldSet, null);
-    CheckedFormField('regform', 'dob_Year', NonEmptyField, null);
-
-
-    $("#cancelButton").click(CancelSubmit);
-
-});
-
-{/literal}
-
-
-//]]>
-</script>
 
 {/if}
 

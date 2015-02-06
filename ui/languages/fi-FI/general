@@ -11,7 +11,8 @@ form_save       Tallenna
 
 form_add_competitor Lisää suoraan kilpailuun
 form_add_competitor_queue Lisää jonoon
-form_new_competitor Tallenna
+form_new_competitor Luo kilpailija
+form_search_competitor Hae kilpailijan tiedot
 
 No_Search_Results   Ei hakutuloksia.
 Restore_AutoSearch  Pikahaku ei ole käytössä.
@@ -63,6 +64,7 @@ editcontentpage_title   Muokkaa sivua
 recoverpassword_title   Unohtunut salasana
 tournaments_title       Sarjat
 addcompetitor_title     Lisää kilpailija
+newcompetitor_title     Luo kilpailija
 admin_title             Ylläpito
 sitemanagement_title    Sivuston hallinta
 managelevels_title      Tasojen hallinta
@@ -89,6 +91,7 @@ yes!     Kyllä
 no      Ei
 not     Ei
 any     -
+or      tai
 delete  Poista
 noRestriction   Ei rajoitusta
 
@@ -136,6 +139,7 @@ name            Nimi
 edit            Muokkaa
 
 pdga_number     PDGA-numero
+sfl_number      SFL-numero
 gender          Sukupuoli
 male            Mies
 female          Nainen

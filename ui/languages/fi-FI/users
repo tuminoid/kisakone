@@ -70,7 +70,8 @@ pdga_data_match        Tieto on sama kuin PDGA:lla
 pdga_data_mismatch     Tieto on eri kuin PDGA:lla
 pdga_membership_current PDGA jäsenyys on voimassa
 pdga_membership_expired PDGA jäsenyys ei ole voimassa
-pdga_server_error      Yhteys PDGA:n tietokantaan epäonnistui. Yritä hetken päästä uudelleen.
+pdga_server_error      Yhteys PDGA:n tietokantaan epäonnistui tai pelaaja ei löydy tietokannasta. Yritä hetken päästä uudelleen.
+pdga_cannot_add_finnish Suomalaista pelaajaa ei voi lisätä PDGA-numeron perusteella. Käytä SFL-jäsennumeroa.
 pdga_membership        PDGA jäsenyys
 pdga_membership_current Voimassa
 pdga_membership_expired Päättynyt
