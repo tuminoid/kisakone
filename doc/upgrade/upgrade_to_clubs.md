@@ -1,7 +1,9 @@
 Upgrading to version xxxxx:
 ================================
 
-We need to create a new `:Club` table and also add `SflId` to `:User` table.  
+First, check changes in `config_site.php.example`. SFL integration section has changed.
+
+We need to create a new `:Club` table and also add `SflId` and `Club` to `:User` table.  
 Upgrade script will read your database settings from `config.php`, no changes required.
 
 1. Check `upgrade.sql` for intended SQL changes.
