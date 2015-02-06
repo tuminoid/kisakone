@@ -158,7 +158,7 @@ function pdga_api_getPlayer($pdga_number = 0)
  * @return time of last update on success
  * @return null on failure
  */
-function pdga_getLastUpdated($pdga_number = 0)
+function pdga_api_getLastUpdated($pdga_number = 0)
 {
     $query = "SELECT unix_timestamp(last_updated) AS last_update FROM pdga_players WHERE pdga_number = $pdga_number";
     $result = execute_query($query);
@@ -179,7 +179,7 @@ function pdga_getLastUpdated($pdga_number = 0)
  * @return true on success
  * @return false on failure
  */
-function pdga_updatePlayer($pdga_number)
+function pdga_api_updatePlayer($pdga_number)
 {
     $data = pdga_api_getPlayer($pdga_number);
 
@@ -197,25 +197,31 @@ function pdga_updatePlayer($pdga_number)
     return execute_query($query);
 }
 
+
+
 /* ************ ONlY FUNCTIONS CALLED OUTSIDE SHOULD BE ONES BELOW ************** */
+
+
+
 /**
  * pdga_getPlayer
  *
  * Gets all fields from player's data.
- * If data is more than one hour old, fetch that said data from API.
+ * If data is more than one day old, fetch that said data from API.
  *
  * @param int $pdga_number PDGA number
+ * @param bool $force force fetching new data from PDGA, instead of local db
  * @return data on success
  * @return null on failure
  */
-function pdga_getPlayer($pdga_number = 0)
+function pdga_getPlayer($pdga_number = 0, $force = false)
 {
     if (!(is_numeric($pdga_number) && $pdga_number > 0))
         return null;
 
-    $last_update = pdga_getLastUpdated($pdga_number);
-    if (($last_update + 60 * 60) < time())
-        pdga_updatePlayer($pdga_number);
+    $last_update = pdga_api_getLastUpdated($pdga_number);
+    if ($force || ($last_update + 24 * 60 * 60) < time())
+        pdga_api_updatePlayer($pdga_number);
 
     $query = "SELECT * FROM pdga_players WHERE pdga_number = $pdga_number";
     $result = execute_query($query);
@@ -240,12 +246,13 @@ function pdga_getPlayer($pdga_number = 0)
  *
  * @param int $pdga_number PDGA number
  * @param string $field Key to return
+ * @param bool $force force fetching new data from PDGA, instead of local db
  * @return data on success
  * @return null on failure or invalid field
  */
-function pdga_getPlayerData($pdga_number = 0, $field = "rating")
+function pdga_getPlayerData($pdga_number = 0, $field = "rating", $force = false)
 {
-    $data = pdga_getPlayer($pdga_number);
+    $data = pdga_getPlayer($pdga_number, $force);
     if (!$data)
         return null;
 
@@ -261,9 +268,10 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating")
  * Get player's rating.
  *
  * @param int $pdga_number PDGA number
+ * @param bool $force force fetching new data from PDGA, instead of local db
  * @return rating on success
  */
-function pdga_getPlayerRating($pdga_number = 0)
+function pdga_getPlayerRating($pdga_number = 0, $force = false)
 {
-    return pdga_getPlayerData($pdga_number, "rating");
+    return pdga_getPlayerData($pdga_number, "rating", $force);
 }
