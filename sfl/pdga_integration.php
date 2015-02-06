@@ -137,9 +137,6 @@ function pdga_api_getPlayer($pdga_number = 0)
             error_log("Getting data for PDGA#$pdga_number failed, status " . $decoded["status"]);
             return null;
         }
-        else {
-            $cache["$pdga_number"] = $decoded;
-        }
     }
     else {
         $error = curl_error($curl);
