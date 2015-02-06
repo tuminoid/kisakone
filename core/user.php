@@ -365,7 +365,7 @@ class User
         if ($settings['USE_MOD_REWRITE'])
             $url = $protocol . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
         else
-            $url = $protocol . $_SERVER['HTTP_HOST'] . baseurl() . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
+            $url = $protocol . $_SERVER['HTTP_HOST'] . baseUrl() . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
     }
@@ -376,6 +376,8 @@ class User
     */
     function FeesPaidForYear($year, $required)
     {
+        require_once 'sfl/sfl_integration.php';
+
         if (!$required)
             return true;
 
