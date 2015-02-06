@@ -79,7 +79,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('pdga', false);
 
         // if PDGA API is enabled and player has PDGA number assigned, do the checks
-        if (@$settings['PDGA_ENABLED'] && $player->pdga && $player->pdga > 0) {
+        if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
             $smarty->assign('pdga', true);
             $pdga_data = pdga_getPlayer($player->pdga);
 
