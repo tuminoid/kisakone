@@ -24,7 +24,9 @@ user_membershipfee Liiton jäsenmaksu
 user_ispaid maksettu
 user_notpaid maksamatta
 user_alicense_paid A-lisenssi sisältää B-lisenssin
-
+user_licenses_title Kilpailulisenssit
+user_pdga_title PDGA-tiedot
+user_club Seura
 
 #registration form
 reg_contact_info    Yhteystiedot
