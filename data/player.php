@@ -60,11 +60,12 @@ function GetPlayerUser($playerid = null)
  *
  * Returns true for success, false for successful queue signup or an Error
  */
-function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly = true)
+function SetPlayerParticipation($playerid, $eventid, $classid, $clubid, $signup_directly = true)
 {
     $playerid = (int) $playerid;
     $eventid = (int) $eventid;
     $classid = (int) $classid;
+    $clubid = esc_or_null($clubid, 'int');
 
     $retValue = $signup_directly;
     $table = ($signup_directly === true) ? ":Participation" : ":EventQueue";
@@ -73,7 +74,7 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     // and double checking that player will not be in competition table twice
     CancelSignup($eventid, $playerid, false);
 
-    $query = format_query("INSERT INTO $table (Player, Event, Classification) VALUES ($playerid, $eventid, $classid)");
+    $query = format_query("INSERT INTO $table (Player, Event, Classification, Club) VALUES ($playerid, $eventid, $classid, $clubid)");
     $result = execute_query($query);
 
     if (!$result)
