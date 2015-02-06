@@ -22,7 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// TODO: Is there need to check the password minimum length
+require_once 'data/user.php';
+
+
 /* *****************************************************************************
  * Configuration
  *
@@ -140,6 +142,18 @@ class User
         $this->fullname = trim("$firstname $lastname");
 
         return null;
+    }
+
+
+    function SetClub($club_id)
+    {
+        $this->club = $club_id;
+    }
+
+
+    function SetSflId($sflid)
+    {
+        $this->sflid = $sflid;
     }
 
     /** ************************************************************************
