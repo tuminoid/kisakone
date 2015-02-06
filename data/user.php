@@ -329,6 +329,26 @@ function SetUserDetails($user)
 }
 
 
+function SaveUserSflId($userid, $sflid)
+{
+    $userid = (int) $userid;
+    $sflid = esc_or_null($sflid, 'int');
+
+    $query = format_query("UPDATE :User SET SflId = $sflid WHERE id = $userid");
+    execute_query($query);
+}
+
+
+function SaveUserClub($userid, $clubid)
+{
+    $userid = (int) $userid;
+    $clubid = esc_or_null($clubid, 'int');
+
+    $query = format_query("UPDATE :User SET Club = $clubid WHERE id = $userid");
+    execute_query($query);
+}
+
+
 function GetUserEvents($ignored, $eventType = 'all')
 {
     $conditions = '';
