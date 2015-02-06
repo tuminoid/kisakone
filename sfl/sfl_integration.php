@@ -111,17 +111,22 @@ function sfl_api_parseLicenses($data)
 {
     // For development/club use purposes
     if (IGNORE_PAYMENTS == true)
-        return array('a' => true, 'b' => true, 'membership' => true);
+        return array('a_license' => true, 'b_license' => true, 'membership' => true);
 
     if (!$data)
-        return array('a' => false, 'b' => false, 'membership' => false);
+        return array('a_license' => false, 'b_license' => false, 'membership' => false);
 
-    $membership = (isset($data['membership']) && $data['membership'] == true) ? true : false;
-    $a = (isset($data['a_license']) && $data['a_license'] == true) ? true : false;
-    $b = (isset($data['b_license']) && $data['b_license'] == true) ? true : false;
+    $data['membership'] = isset($data['membership']) ? $data['membership'] : false;
+    $data['a_license'] = isset($data['a_license']) ? $data['a_license'] : false;
+    $data['b_license'] = isset($data['b_license']) ? $data['b_license'] : false;
 
-    return array('a' => $a, 'b' => $b, 'membership' => $membership);
+    return $data;
 }
+
+
+
+/** ************************** ONLY FUNCTIONS BELOW SHOULD BE CALLED ***************************** */
+
 
 
 /**
@@ -134,7 +139,7 @@ function sfl_api_parseLicenses($data)
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function sfl_api_getLicensesByName($firstname, $lastname, $birthdate, $year = null)
+function SFL_getLicensesByName($firstname, $lastname, $birthdate, $year = null)
 {
     $birthdate = (int) $birthdate;
     $year = $year ? $year : date('Y');
@@ -151,7 +156,7 @@ function sfl_api_getLicensesByName($firstname, $lastname, $birthdate, $year = nu
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function sfl_api_getLicensesById($sflid, $year = null)
+function SFL_getLicensesById($sflid, $year = null)
 {
     $sflid = (int) $sflid;
     $year = $year ? $year : date('Y');
@@ -168,7 +173,7 @@ function sfl_api_getLicensesById($sflid, $year = null)
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function sfl_api_getLicensesByPDGA($pdga, $year = null)
+function SFL_getLicensesByPDGA($pdga, $year = null)
 {
     $pdga = (int) $pdga;
     $year = $year ? $year : date('Y');
@@ -178,10 +183,6 @@ function sfl_api_getLicensesByPDGA($pdga, $year = null)
 }
 
 
-
-/** ************************** ONLY FUNCTIONS BELOW SHOULD BE CALLED ***************************** */
-
-
 /**
  * Get users licenses for a specific year
  *
@@ -189,7 +190,7 @@ function sfl_api_getLicensesByPDGA($pdga, $year = null)
  * @param  int $year year to be checked
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicenses($userid, $year = null)
+function SFL_getPlayer($userid, $year = null)
 {
     $userid = (int) $userid;
     $year = $year ? $year : date('Y');
@@ -214,12 +215,12 @@ function SFL_getLicenses($userid, $year = null)
         mysql_free_result($result);
 
         if ($sflid > 0)
-            return sfl_api_getLicensesById($sflid, $year);
+            return SFL_getLicensesById($sflid, $year);
 
         if ($pdga > 0)
-            return sfl_api_getLicensesByPDGA($pdga, $year);
+            return SFL_getLicensesByPDGA($pdga, $year);
 
-        return sfl_api_getLicensesByName($firstname, $lastname, $birthdate, $year);
+        return SFL_getLicensesByName($firstname, $lastname, $birthdate, $year);
     }
 
     return sfl_api_parseLicenses(null);
