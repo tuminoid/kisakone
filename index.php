@@ -45,9 +45,6 @@ require_once 'inputhandlers/support/init_input.php';
 require_once 'data/login.php';
 require_once 'data/ads.php';
 
-// Suomen Frisbeegolfliitto-specific functionality
-require_once 'sfl/sfl_integration.php';
-
 // PDGA API if enabled
 if ($settings['PDGA_ENABLED'])
     require_once 'sfl/pdga_integration.php';
