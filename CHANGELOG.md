@@ -9,6 +9,7 @@ next:
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
   * First version of a proper upgrade guide. GH #112.
   * Regression: `:` got translated into db_prefix.
+  * Adding players now prefills data from PDGA or SFL databases.
 
 2015.02.04:
 ===========
