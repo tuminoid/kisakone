@@ -23,6 +23,7 @@
  * */
 
 require_once 'config.php';
+require_once 'sfl/sfl_integration.php';
 
 
 /**
