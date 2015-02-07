@@ -103,7 +103,8 @@ function InitializeSmartyVariables(&$smarty, $error)
                     if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
                         unset($classOptions[$cid]);
                     */
-                    if ($pdga_data['classification'] == "P" && substr($cname, 1, 1) == "A")
+                    $ama_or_junior = (substr($cname, 1, 1) == "A" || substr($cname, 1, 1) == "J");
+                    if ($pdga_data['classification'] == "P" && $ama_or_junior)
                         unset($classOptions[$cid]);
                 }
             }
