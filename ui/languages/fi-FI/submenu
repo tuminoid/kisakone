@@ -73,6 +73,7 @@ submenu_past_events Vuosi {year}
 user_events Käyttäjän {username} kilpailut
 
 add_offline_competitor  Lisää kilpailija
+new_offline_competitor  Uusi kilpailija
 submenu_recover_password    Unohtunut salasana
 
 manage_rounds           Kierrosten määritys

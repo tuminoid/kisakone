@@ -222,7 +222,9 @@ function page_getSubMenu()
                     array('title' => translate('new_news_item'), 'link' => array('page' => 'editeventpage', 'mode' => 'news', 'id' => $id, 'content' => '*'), 'access' => null, 'children' => array()),
                     array('title' => translate('edit_news_item'), 'link' => array('page' => 'editeventpage', 'mode' => 'news', 'id' => $id, 'content' => @$_GET['content']), 'access' => null, 'children' => array(), 'condition' => @$_GET['content']),
                 )),
-                array('title' => translate('add_offline_competitor'), 'link' => array('page' => 'addcompetitor', 'id' => $id), 'access' => null, 'children' => array()),
+                array('title' => translate('add_offline_competitor'), 'link' => array('page' => 'addcompetitor', 'id' => $id), 'access' => null, 'children' => array(
+                    array('title' => translate('new_offline_competitor'), 'link' => array('page' => 'newcompetitor', 'id' => $id), 'access' => null, 'children' => array(), 'condition' => PageIs('newcompetitor'))
+                )),
                 array('title' => translate('edit_event_fees'), 'link' => array('page' => 'eventfees', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('remind'), 'link' => array('page' => 'remind'), 'access' => null, 'children' => array(), 'condition' => PageIs('remind'))
                 )),
