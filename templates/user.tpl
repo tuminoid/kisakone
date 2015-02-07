@@ -36,12 +36,6 @@
          <td>{capture assign=gendertoken}gender_{$player->gender}{/capture}
          {translate id=$gendertoken}</td>
       </tr>
-      {if $player->pdga}
-      <tr>
-         <td>{translate id=user_pdga_number}:</td>
-         <td>{$player->pdga|escape}</td>
-      </tr>
-      {/if}
       <tr>
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
@@ -111,6 +105,10 @@
 <h2>{translate id=user_pdga_title}</h2>
 
 <table style="width:500px">
+<tr>
+   <td>{translate id=user_pdga_number}:</td>
+   <td><span name="pdga_number">{$player->pdga|escape}</span></td>
+</tr>
 <tr>
    <td style="width: 200px"><label for="membership">{translate id='pdga_membership'}:</label></td>
    <td><span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span></td>
