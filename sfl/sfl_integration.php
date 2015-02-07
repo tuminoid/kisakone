@@ -27,6 +27,7 @@
 define('SFL_API_SERVER', "http://127.0.0.1:8082");
 
 require_once 'config.php';
+require_once 'data/user.php';
 
 
 /**
@@ -219,14 +220,20 @@ function SFL_getPlayer($userid)
         mysql_free_result($result);
 
         if ($sflid > 0) {
-            return SFL_getLicensesById($sflid);
+            $data = SFL_getLicensesById($sflid);
+        }
+        elseif ($pdga > 0) {
+            $data =  SFL_getLicensesByPDGA($pdga);
+        }
+        else {
+            $data = SFL_getLicensesByName($firstname, $lastname, $birthdate);
         }
 
-        if ($pdga > 0) {
-            return SFL_getLicensesByPDGA($pdga);
-        }
+        if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
+            SaveUserClub($userid, @$data['club_id']);
+        SaveUserSflId($userid, @$data['sfl_id']);
 
-        return SFL_getLicensesByName($firstname, $lastname, $birthdate);
+        return $data;
     }
 
     return sfl_api_parseLicenses(null);
