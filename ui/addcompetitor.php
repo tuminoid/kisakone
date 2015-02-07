@@ -99,8 +99,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
                 // Remove classes from drop-down based on PDGA data
                 foreach ($classOptions as $cid => $cname) {
+                    /* pdga data is sometimes wrong, we already filter by local gender data
                     if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
                         unset($classOptions[$cid]);
+                    */
                     if ($pdga_data['classification'] == "P" && substr($cname, 1, 1) == "A")
                         unset($classOptions[$cid]);
                 }
