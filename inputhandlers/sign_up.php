@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Signs user up for an event
  *
@@ -21,17 +21,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+
 /**
  * Processes the form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    require_once 'core/event_management.php';
-
-    if (@$_POST['cancel']) {
+    $nothing = null;
+    if (@$_POST['cancel'])
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
-    }
 
     global $user;
     if (!$user)
@@ -43,15 +43,11 @@ function processForm()
     if (!$event)
         return Error::NotFound('event');
 
-    if ($event->approved !== null) {
+    if ($event->approved !== null)
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
-    }
 
-    $nothing = null;
-
-    if (!$event->signupPossible()) {
+    if (!$event->signupPossible())
         return Error::AccessDenied();
-    }
 
     $player = $user->GetPlayer();
     $class = GetClassDetails(@$_POST['class']);
@@ -68,9 +64,8 @@ function processForm()
 
     $fees = $event->FeesRequired();
     if ($fees) {
-        if (!$user->FeesPaidForYear(date('Y', $event->startdate), $fees)) {
+        if (!$user->FeesPaidForYear(date('Y', $event->startdate), $fees))
             return Error::AccessDenied();
-        }
     }
 
     $result = SignupUser($event->id, $user->id, $class->id);
