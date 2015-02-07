@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Club didn't save for players when one other user already had that club.
+
 2015.02.07:
 ===========
   * PDGA integration during sign up/add competitor.
