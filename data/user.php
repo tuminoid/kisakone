@@ -258,9 +258,7 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
 
     if ($player) {
         $playerid = (int) $player->id;
-        error_log("gender before=$gender");
         $gender = esc_or_null(strtoupper($gender) == 'M' ? "male" : "female");
-        error_log("gender after=$gender");
         $pdga = esc_or_null($pdga, 'int');
         $dobyear = esc_or_null((int) $dobyear . '-1-1');
 
