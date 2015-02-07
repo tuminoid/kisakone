@@ -58,7 +58,7 @@ function SaveClub($clubid, $clubname, $clubshort)
     $result = execute_query($query);
 
     if (!$result)
-        return Error::Query($query);
+        return false;
 
-    return mysql_insert_id();
+    return true;
 }
