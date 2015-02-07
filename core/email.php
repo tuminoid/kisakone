@@ -150,7 +150,7 @@ class Email
         $from_header = "$mailer <$from>";
 
         if ($settings['EMAIL_ENABLED'] !== true) {
-            error_log("Email sending disabled, discarding message");
+            //error_log("Email sending disabled, discarding message");
             return;
         }
 
