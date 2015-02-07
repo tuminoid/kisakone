@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.02.07:
+===========
   * PDGA integration during sign up/add competitor.
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
   * First version of a proper upgrade guide. GH #112.
@@ -12,6 +12,9 @@ next:
   * Adding players now prefills data from PDGA or SFL databases.
   * Foreign players can now sign-up by themselves if they have valid PDGA license.
   * Clubs are now visible in the results and player's info pages etc. GH #27.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150207.md)
+for additional actions needed.
 
 2015.02.04:
 ===========
@@ -30,6 +33,9 @@ next:
   * Queue is sortable by the headers. GH #133.
   * Upgrade scripts at 2013.09.20 we're updated to update the foreign keys to level of
       clean install. It also automates conversion to InnoDB based tables.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150130.md)
+for additional actions needed.
 
 2014.10.20:
 ===========
