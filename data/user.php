@@ -258,7 +258,9 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
 
     if ($player) {
         $playerid = (int) $player->id;
-        $gender = esc_or_null(strtoupper($gender) == 'M' ? "'male'" : "'female'");
+        error_log("gender before=$gender");
+        $gender = esc_or_null(strtoupper($gender) == 'M' ? "male" : "female");
+        error_log("gender after=$gender");
         $pdga = esc_or_null($pdga, 'int');
         $dobyear = esc_or_null((int) $dobyear . '-1-1');
 
@@ -332,6 +334,10 @@ function SetUserDetails($user)
 function SaveUserSflId($userid, $sflid)
 {
     $userid = (int) $userid;
+
+    if (!$sflid)
+        return;
+
     $sflid = esc_or_null($sflid, 'int');
 
     $query = format_query("UPDATE :User SET SflId = $sflid WHERE id = $userid");
