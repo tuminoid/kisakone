@@ -110,9 +110,7 @@ function CheckQueueForPromotions($eventId)
         $classId = (int) $queuer['classId'];
 
         if (CheckSignupQuota($eventId, $playerId, $classId)) {
-            $retVal = PromotePlayerFromQueue($eventId, $playerId);
-            if (is_a($retVal, 'Error'))
-                error_log("Error promoting player $playerId to event $eventId at class $classId");
+            PromotePlayerFromQueue($eventId, $playerId);
         }
     }
 
@@ -154,12 +152,8 @@ function PromotePlayerFromQueue($eventId, $playerId)
             return Error::Query($query);
 
         $user = GetPlayerUser($playerId);
-        if ($user !== null) {
-            // error_log("Sending email to " . print_r($user, true));
+        if ($user !== null)
             SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
-        }
-        else
-            error_log("Cannot send promotion email: user !== null failed, playerId = " . $playerId);
     }
     mysql_free_result($result);
 
