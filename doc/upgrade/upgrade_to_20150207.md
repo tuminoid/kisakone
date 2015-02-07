@@ -1,4 +1,4 @@
-Upgrading to version xxxxx:
+Upgrading to version 2015.02.07:
 ================================
 
 First, check changes in `config_site.php.example`. SFL integration section has changed.
