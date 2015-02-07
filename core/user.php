@@ -391,27 +391,43 @@ class User
     function FeesPaidForYear($year, $required)
     {
         require_once 'sfl/sfl_integration.php';
+        require_once 'sfl/pdga_integration.php';
 
         if (!$required)
             return true;
 
+        $player = GetUserPlayer($this->id);
+        $pdga = $player && $player->pdga ? $player->pdga : null;
+
+        if ($pdga > 0) {
+            $pdga_data = pdga_getPlayer($pdga);
+            $country = strtoupper(@$pdga_data['country']);
+            $valid_pdga = @$pdga_data['membership_status'] == 'current';
+
+            if ($country != 'FI' && $valid_pdga)
+                return true;
+        }
+
         $year = date('Y');
         $data = SFL_getPlayer($this->id);
-        $aLicense = $data['a_license'][$year];
-        $bLicense = $data['b_license'][$year];
-        $membership = $data['membership'][$year];
+        if ($data) {
+            $aLicense = @$data['a_license'][$year];
+            $bLicense = @$data['b_license'][$year];
+            $membership = @$data['membership'][$year];
 
-        // If there is any requirements for competition, membership is a must
-        if ($required && !$membership)
-            return false;
-        // If A-license is required, we require that strictly
-        if ($required == LICENSE_A && !$aLicense)
-            return false;
-        // If B-license is required, both A- and B-license quality, obviously
-        if ($required == LICENSE_B && !($aLicense || $bLicense))
-            return false;
+            // If there is any requirements for competition, membership is a must
+            if ($required && !$membership)
+                return false;
+            // If A-license is required, we require that strictly
+            if ($required == LICENSE_A && !$aLicense)
+                return false;
+            // If B-license is required, both A- and B-license quality, obviously
+            if ($required == LICENSE_B && !($aLicense || $bLicense))
+                return false;
 
-        return true;
+            return true;
+        }
+
     }
 }
 
