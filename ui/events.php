@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event listing
  *
@@ -49,7 +49,9 @@ function InitializeSmartyVariables(&$smarty, $error)
 
 
         case 'manage':
-            $events = $user->GetMyEvents('manager');
+            // FIXME: User is sometimes empty and call fails, find out when
+            if ($user)
+                $events = $user->GetMyEvents('manager');
             $title = 'manage_events_title';
             break;
 
