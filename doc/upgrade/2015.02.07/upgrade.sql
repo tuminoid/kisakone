@@ -1,6 +1,8 @@
 
--- SQL migration from versions xxxxx and earlier
+-- SQL migration from versions 2015.01.30 and earlier
 -- Use the upgrade script upgrade.php!
+
+ALTER TABLE :Event ADD PdgaEventId INT AFTER AdBanner;
 
 CREATE TABLE :Club
 (
