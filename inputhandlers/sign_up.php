@@ -22,6 +22,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/event_management.php';
+
 
 /**
  * Processes the form
