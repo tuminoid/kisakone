@@ -27,19 +27,22 @@
 
 
 {if $admin}
-    <p class="error">{translate id=admin_cant_sign_up}</p>
+    <div class="error">{translate id=admin_cant_sign_up}</div>
     {assign var=nosignup value=true}
 {elseif !$user}
-    <p>{translate id=login_to_sign_up}</p>
+    <div class="error">{translate id=login_to_sign_up}</div>
     {assign var=nosignup value=true}
 {elseif $feesMissing}
-    {if $feesMissing == 1} {*this is membership free*}
-        <p>{translate id=fees_necessary_for_signup_1}</p>
-    {elseif $feesMissing == 2} {*this is A license *}
-        <p>{translate id=fees_necessary_for_signup_2}</p>
-    {elseif $feesMissing == 6} {*this is B license *}
+    <div class="error">
+    {if $feesMissing == 1}
+        {translate id=fees_necessary_for_signup_1}
+    {elseif $feesMissing == 2}
+        {translate id=fees_necessary_for_signup_2}
+    {elseif $feesMissing == 6}
         <p>{translate id=fees_necessary_for_signup_3}</p>
+        <p>{translate id=check_registry_data}</p>
     {/if}
+    </div>
     {assign var=nosignup value=true}
 {/if}
 
@@ -60,6 +63,10 @@
         {if $pdga}
         <div id="pdga_info" style="float: right; width: 200px" class="searcharea">
             <table>
+                <tr>
+                    <td><label for="pdga_number">{translate id=pdga_number}</label></td>
+                    <td><span id="pdga_number">{$pdga}</span></td>
+                </tr>
                 <tr>
                     <td><label for="pdga_membership_status">{translate id=pdga_membership}</label></td>
                     <td><span id="pdga_membership_status">{translate id=pdga_membership_$pdga_membership_status}</span></td>

@@ -326,8 +326,9 @@ remove_player_from_event        Poista kilpailusta
 player_removal_failed           Kilpailijan poisto epäonnistui. Kilpailija on luultavasti jo sijoitettu johonkin lohkoon.
 fees_necessary_for_signup      Tähän kilpailuun ilmoittautuminen vaatii jäsen- ja lisenssimaksujen maksun.
 fees_necessary_for_signup_1    Tähän kilpailuun ilmoittautuminen vaatii jäsenmaksun maksetuksi.
-fees_necessary_for_signup_2     Tähän kilpailuun ilmoittautuminen vaatii A-lisenssin.
-fees_necessary_for_signup_3      Tähän kilpailuun ilmoittautuminen vaatii B-lisenssin.
+fees_necessary_for_signup_2    Tähän kilpailuun ilmoittautuminen vaatii A-lisenssin.
+fees_necessary_for_signup_3    Tähän kilpailuun ilmoittautuminen vaatii vähintään B-lisenssin.
+check_registry_data            Tarkasta, että nimesi ja syntymävuotesi, sekä PDGA-numero ovat täsmäävät jäsenrekisterin tietojen kanssa.
 event_is_locked_cant_edit       Kilpailu on lukittu. Muutokset eivät ole mahdollisia ellei kilpailua avata uudelleen.
 cant_cancel_signup_now      Ilmoittautuminen on sulkeutunut, eikä perumista voi enää tehdä.
 relevant_events         Ajankohtaiset kilpailut
