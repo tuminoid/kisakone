@@ -188,26 +188,33 @@ $(document).ready(function(){
             <div class="searcharea">
             {if $sfl_license_a}
                 {translate id='license_ok_a'}
-            {else}
+            {elseif $sfl_license_b}
                 {translate id='license_ok_b'}
+            {else}
+                {if $pdga && $pdga_country != "FI" && $pdga_membership_status == "current"}
+                    {translate id='license_ok_foreign'}
+                {else}
+                    This shouldn't happen...
+                {/if}
             {/if}
             </div>
         {else}
+            <div class="error">
+            {assign var="licenses_ok" value=false}
             {if $pdga && $pdga_country != "FI"}
                 {if $pdga_membership_status != "current"}
-                    <div class="error">{translate id='license_fail_foreign'}</div>
-                    {assign var="licenses_ok" value=false}
+                    {translate id='license_fail_foreign'}
                 {else}
-                    <div class="searcharea">{translate id='license_ok_foreign'}</div>
-                    {assign var="licenses_ok" value=true}
+                    This shouldn't happen...
                 {/if}
             {else}
                 {if $sfl_license_b && $licenses_ok == false}
-                    <div class="error">{translate id='licenses_fail_onlyb'}</div>
+                    {translate id='licenses_fail_onlyb'}
                 {else}
-                    <div class="error">{translate id='licenses_fail'}</div>
+                    {translate id='licenses_fail'}
                 {/if}
             {/if}
+            </div>
         {/if}
     </div>
 
