@@ -72,9 +72,6 @@ function InitializeSmartyVariables(&$smarty, $error)
         $fees['aLicense'][$year] = @$data['a_license'][$year];
         $fees['bLicense'][$year] = @$data['b_license'][$year];
         $smarty->assign('fees', $fees);
-
-        SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']);
-        SaveUserSflId($userid, @$data['sfl_id']);
     }
 
     if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
