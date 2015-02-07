@@ -150,7 +150,7 @@ login_to_sign_up        Sinun on kirjauduttava sisään voidaksesi ilmoittautua 
 not_signed_up           Et ole vielä ilmoittautunut kilpailuun. Voit ilmoittautua johonkin alla mainituista luokista.
 not_signed_up_nothere           Et ole vielä ilmoittautunut kilpailuun.
 signup_closed           Ilmoittautuminen ei tällä hetkellä ole mahdollista.
-signup_closed_dates           Ilmoittautuminen ei tällä hetkellä ole mahdollista. Ilmoittautuminen on mahdollista välillä {from} - {to}.
+signup_closed_dates     Ilmoittautuminen on mahdollista välillä {from} - {to}.
 cancel_signup           Peruuta ilmoittautuminen
 signed_up_in_queue      Olet ilmoittautunut kilpailuun, mutta olet jonossa.
 signed_up_not_paid      Olet ilmoittautunut kilpailuun. Et ole vielä maksanut kilpailumaksua, tai maksua ei ole syötetty kisakoneeseen.

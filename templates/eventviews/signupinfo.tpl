@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Sign up page
  *
@@ -27,11 +27,11 @@
 
 
 {if $admin}
-<p class="error">{translate id=admin_cant_sign_up}</p>
-{assign var=nosignup value=true}
+    <p class="error">{translate id=admin_cant_sign_up}</p>
+    {assign var=nosignup value=true}
 {elseif !$user}
-<p>{translate id=login_to_sign_up}</p>
-{assign var=nosignup value=true}
+    <p>{translate id=login_to_sign_up}</p>
+    {assign var=nosignup value=true}
 {elseif $feesMissing}
     {if $feesMissing == 1} {*this is membership free*}
         <p>{translate id=fees_necessary_for_signup_1}</p>
@@ -40,26 +40,66 @@
     {elseif $feesMissing == 6} {*this is B license *}
         <p>{translate id=fees_necessary_for_signup_3}</p>
     {/if}
-{assign var=nosignup value=true}
+    {assign var=nosignup value=true}
 {/if}
 
+
 {if $queued}
+
     <p class="signup_status">{translate id=signed_up_in_queue}</p>
     <ul>
         <li><a href="{url page=event view=queue id=$smarty.get.id}">{translate id=event_queue}</a></li>
         <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
+
 {elseif $admin ||( !$signedup && $signupOpen)}
 
 <form method="post" class="">
     <input type="hidden" name="formid" value="sign_up" />
     {if $user}
+        {if $pdga}
+        <div id="pdga_info" style="float: right; width: 200px" class="searcharea">
+            <table>
+                <tr>
+                    <td><label for="pdga_membership_status">{translate id=pdga_membership}</label></td>
+                    <td><span id="pdga_membership_status">{translate id=pdga_membership_$pdga_membership_status}</span></td>
+                </tr>
+                <tr>
+                    <td><label for="pdga_official_status">{translate id=pdga_official}</label></td>
+                    <td><span id="pdga_official_status">{translate id=pdga_official_$pdga_official_status}</span></td>
+                </tr>
+                <tr>
+                    <td><label for="pdga_rating">{translate id=pdga_rating}</label></td>
+                    <td><span id="pdga_rating">{$pdga_rating}</span></td>
+                </tr>
+                <tr>
+                    <td><label for="pdga_status">{translate id=pdga_status}</label></td>
+                    <td><span id="pdga_status">{$pdga_classification}</span></td>
+                </tr>
+                <tr>
+                    <td><label for="pdga_birth_year">{translate id=user_yearofbirth}</label></td>
+                    <td><span id="pdga_birth_year">{$pdga_birth_year}</span></td>
+                </tr>
+                <tr>
+                    <td><label for="pdga_gender">{translate id=user_gender}</label></td>
+                    <td><span id="pdga_gender">{translate id=$pdga_gender}</span></td>
+                </tr>
+            </table>
+        </div>
+        {/if}
+
         <p class="signup_status">{translate id=not_signed_up}</p>
         {assign var=player value=$user->getPlayer()}
         {foreach from=$classes item=class}
             <div>
-                <input type="radio" name="class" id="class" value="{$class->id}" {if !$player || !$player->isSuitableClass($class) || $nosignup}disabled="disabled"{/if} />
-                <label>{$class->name|escape}</label>
+                <input type="radio" name="class" id="class" value="{$class->id}" />
+                <label for="class">{$class->name|escape}</label>
+            </div>
+        {/foreach}
+        {foreach from=$unsuited item=class}
+            <div>
+                <input type="radio" name="class" id="class" value="{$class->id}" disabled="disabled" />
+                <label for="class" style="color: #888;">{$class->name|escape}</label>
             </div>
         {/foreach}
 
@@ -68,25 +108,29 @@
         <input type="submit" id="cancel" name="cancel" value="{translate id="cancel"}" />
     {/if}
 </form>
+
 {elseif $paid}
+
     <p class="signup_status">{translate id=signed_up_and_paid}</p>
     <ul>
         <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
+
 {elseif $signedup && !$paid}
+
     <p class="signup_status">{translate id=signed_up_not_paid}</p>
     <ul>
         <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
         <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
+
 {else}
-    <p>
+
+    <p>{translate id=signup_closed}</p>
     {if $signupStart}
-        {translate id=signup_closed_dates from=$signupStart to=$signupEnd}
-    {else}
-        {translate id=signup_closed}
+        <p>{translate id=signup_closed_dates from=$signupStart to=$signupEnd}</p>
     {/if}
-    </p>
+
 {/if}
 
 {/if}

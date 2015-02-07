@@ -22,7 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'config.php';
 require_once 'data/event_quota.php';
+require_once 'sfl/pdga_integration.php';
 
 
 /**
@@ -32,6 +34,8 @@ require_once 'data/event_quota.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    global $settings;
+
     $event = GetEventDetails($_GET['id']);
     $smarty->assign('event', $event);
     global $user;
@@ -133,12 +137,40 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         case 'signupinfo':
             $view = 'signupinfo';
-            $smarty->assign('classes', $event->GetClasses());
+            if ($user)
+                $player = $user->GetPlayer();
+
+            $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+            SmartifyPDGA($smarty, $pdga_data);
+
+            // filter classes per user
+            $classes = $event->GetClasses();
+            $unsuited_classes = array();
+            foreach ($classes as $key => $class) {
+                if ($player && !$player->IsSuitableClass($class)) {
+                    $unsuited_classes[] = $class;
+                    unset($classes[$key]);
+                }
+
+                $ama_or_junior = (substr($class->name, 1, 1) == "A" || substr($class->name, 1, 1) == "J");
+                if (@$pdga_data['classification'] == "P" && $ama_or_junior) {
+                    $unsuited_classes[] = $class;
+                    unset($classes[$key]);
+                }
+            }
+
+            $smarty->assign('classes', $classes);
+            $smarty->assign('unsuited', $unsuited_classes);
             $smarty->assign('signedup', $event->approved !== null);
             $smarty->assign('paid', $event->eventFeePaid);
             $smarty->assign('signupOpen', $event->SignupPossible());
             if ($user)
                 $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+
+            if ($event->signupStart) {
+                $smarty->assign('signupStart', date('d.m.Y H:m', $event->signupStart));
+                $smarty->assign('signupEnd', date('d.m.Y H:m', $event->signupEnd));
+            }
 
             $requiredFees = $event->FeesRequired();
             if ($requiredFees && $user) {
@@ -299,6 +331,22 @@ function getMainMenuSelection()
 {
     return 'events';
 }
+
+function SmartifyPDGA(&$smarty, $pdga_data)
+{
+    if ($pdga_data) {
+        $smarty->assign('pdga', $pdga_data['pdga_number']);
+        $smarty->assign('pdga_rating', $pdga_data['rating']);
+        $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
+        $smarty->assign('pdga_birth_year', $pdga_data['birth_year']);
+        $smarty->assign('pdga_gender', $pdga_data['gender'] == "M" ? "male" : "female");
+        $smarty->assign('pdga_membership_status', $pdga_data['membership_status']);
+        $smarty->assign('pdga_membership_expiration_date', $pdga_data['membership_expiration_date']);
+        $smarty->assign('pdga_official_status', $pdga_data['official_status']);
+        $smarty->assign('pdga_country', strtoupper($pdga_data['country']));
+    }
+}
+
 
 /**
  * Provides obfuscated version of contact info, suitable for use on a web page
