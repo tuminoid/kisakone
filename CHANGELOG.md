@@ -10,6 +10,8 @@ next:
   * First version of a proper upgrade guide. GH #112.
   * Regression: `:` got translated into db_prefix.
   * Adding players now prefills data from PDGA or SFL databases.
+  * Foreign players can now sign-up by themselves if they have valid PDGA license.
+  * Clubs are now visible in the results and player's info pages etc. GH #27.
 
 2015.02.04:
 ===========
