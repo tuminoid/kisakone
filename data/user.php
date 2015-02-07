@@ -333,7 +333,7 @@ function SaveUserSflId($userid, $sflid)
 {
     $userid = (int) $userid;
 
-    if (!$sflid)
+    if (!$sflid || !$userid)
         return;
 
     $sflid = esc_or_null($sflid, 'int');
@@ -346,6 +346,10 @@ function SaveUserSflId($userid, $sflid)
 function SaveUserClub($userid, $clubid)
 {
     $userid = (int) $userid;
+
+    if (!$userid || !$clubid)
+        return;
+
     $clubid = esc_or_null($clubid, 'int');
 
     $query = format_query("UPDATE :User SET Club = $clubid WHERE id = $userid");
