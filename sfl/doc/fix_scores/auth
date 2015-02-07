@@ -1,7 +1,0 @@
-function _mysql() {
-  USER=$(php -r 'require_once "../../config.php"; echo $settings['DB_USERNAME'];')
-  PASS=$(php -r 'require_once "../../config.php"; echo $settings['DB_PASSWORD'];')
-  HOST=$(php -r 'require_once "../../config.php"; echo $settings['DB_ADDRESS'];')
-  DB=$(php -r 'require_once "../../config.php"; echo $settings['DB_DB'];')
-  mysql -v -u $USER --password=$PASS -h $HOST $DB $@
-}
