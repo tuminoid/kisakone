@@ -118,10 +118,8 @@ function format_query($query)
 
     // this is just safeguarding
     $args = func_get_args();
-    if (count($args) > 1) {
-        error_log("format_query() has multiple args= " . count($args));
+    if (count($args) > 1)
         debug_query_and_die($query);
-    }
 
     // FIXME: Find a more reasonable way to sanitize prefix without touching content
     // NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
