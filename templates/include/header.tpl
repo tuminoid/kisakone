@@ -28,11 +28,11 @@
       <title>{$title} - {translate id=site_name}</title>
       <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
       <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
-      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+      <script type="text/javascript" src="{$url_base}js/jquery-1.11.2.min.js"></script>
       <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
       {if $ui}
-      <script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
-      <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" type="text/css" />
+      <script type="text/javascript" src="{$url_base}js/jquery-ui-1.11.2.min.js"></script>
+      <link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css" type="text/css" />
       <meta http-equiv="Content-Type" content="{$contentType}" />
       {/if}
       {if $timepicker}
