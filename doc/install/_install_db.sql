@@ -260,6 +260,7 @@ CREATE TABLE :Participation
   SignupTimestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   TournamentPoints INT NULL,
   Club INT,
+  Rating INT,
   PRIMARY KEY(id),
   FOREIGN KEY(Player) REFERENCES :Player(player_id),
   FOREIGN KEY(Event) REFERENCES :Event(id),
