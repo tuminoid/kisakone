@@ -22,8 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'sfl/sfl_integration.php';
 require_once 'data/event.php';
+require_once 'sfl/sfl_integration.php';
+require_once 'sfl/pdga_integration.php';
 
 
 /**
