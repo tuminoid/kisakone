@@ -7,6 +7,8 @@ next:
 =====
   * Club didn't save for players when one other user already had that club.
   * Don't link to userinfo page of users that are TD added "virtual" users.
+  * Use local jQuery again.
+  * Display SFL license info at the signup page along with the PDGA info.
 
 2015.02.07:
 ===========
