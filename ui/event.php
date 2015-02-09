@@ -24,6 +24,7 @@
 
 require_once 'config.php';
 require_once 'data/event_quota.php';
+require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 
 
@@ -135,11 +136,16 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         case 'signupinfo':
             $view = 'signupinfo';
-            if ($user)
-                $player = $user->GetPlayer();
+            $player = $user ? $user->GetPlayer() : null;
 
             $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
             SmartifyPDGA($smarty, $pdga_data);
+
+            $year = date('Y');
+            $data = SFL_getPlayer(@$user->id);
+            $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
+            $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
+            $smarty->assign('sfl_membership', @$data['membership'][$year]);
 
             // filter classes per user
             $classes = $event->GetClasses();

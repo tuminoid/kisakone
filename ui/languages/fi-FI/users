@@ -46,10 +46,13 @@ year_default    vvvv
 email               Sähköposti
 birthyear           Syntymävuosi
 pdga                PDGA-numero
-membership_paid      Jäsenmaksu maksettu
-alicense_paid      A-lisenssimaksu maksettu
-blicense_paid      B-lisenssimaksu maksettu
-
+membership          Jäsenmaksu
+membership_paid     Jäsenmaksu maksettu
+alicense            A-lisenssi
+alicense_paid       A-lisenssimaksu maksettu
+blicense            B-lisenssi
+blicense_paid       B-lisenssimaksu maksettu
+none_paid           Ei SFL-jäsen
 
 
 reg_termsandconditions Käyttöehdot
