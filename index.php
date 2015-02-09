@@ -45,10 +45,6 @@ require_once 'inputhandlers/support/init_input.php';
 require_once 'data/login.php';
 require_once 'data/ads.php';
 
-// PDGA API if enabled
-if ($settings['PDGA_ENABLED'])
-    require_once 'sfl/pdga_integration.php';
-
 // Disabling caching; we have menus and such which can vary depending on user's
 // access level, so this is necessary.
 header("Cache-Control: no-cache, must-revalidate");
