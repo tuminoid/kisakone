@@ -41,7 +41,7 @@
       <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
       {/if}
       {if $autocomplete}
-      <script type="text/javascript" src="{$url_base}js/jquery.autocomplete-min.js"></script>
+      <script type="text/javascript" src="{$url_base}js/jquery/jquery.autocomplete-min.js"></script>
       {/if}
       {if $tooltip}
       {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
