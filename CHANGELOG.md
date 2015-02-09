@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Club didn't save for players when one other user already had that club.
+  * Don't link to userinfo page of users that are TD added "virtual" users.
 
 2015.02.07:
 ===========
