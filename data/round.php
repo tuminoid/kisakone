@@ -494,7 +494,7 @@ function SetRoundDetails($roundid, $date, $startType, $interval, $valid, $course
 
     $query = format_query("UPDATE :Round
                             SET StartTime = FROM_UNIXTIME($date), StartType = $startType,
-                                `Interval = $interval, ValidResults = $valid, Course = $course
+                                `Interval` = $interval, ValidResults = $valid, Course = $course
                             WHERE id = $roundid");
     $result = execute_query($query);
 
