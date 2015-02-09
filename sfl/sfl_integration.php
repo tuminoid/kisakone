@@ -120,12 +120,14 @@ function sfl_api_sendRequest($url)
  */
 function sfl_api_parseLicenses($data)
 {
+    $year = date('Y');
+
     // For development/club use purposes
     if (IGNORE_PAYMENTS == true)
-        return array('a_license' => true, 'b_license' => true, 'membership' => true);
+        return array('a_license' => array("$year" => true), 'b_license' => array("$year" => true), 'membership' => array("$year" => true));
 
     if (!$data || $data['status'] == false)
-        return array('a_license' => false, 'b_license' => false, 'membership' => false);
+        return null;
 
     $data['membership'] = isset($data['membership']) ? $data['membership'] : false;
     $data['a_license'] = isset($data['a_license']) ? $data['a_license'] : false;
@@ -200,6 +202,9 @@ function SFL_getPlayer($userid)
 {
     $userid = (int) $userid;
 
+    if (!$userid)
+        return null;
+
     $query = format_query("SELECT UserFirstname, UserLastname, SflId, :Player.pdga AS PDGA,
                                 YEAR(:Player.birthdate) AS Birthdate
                             FROM :User
@@ -221,17 +226,14 @@ function SFL_getPlayer($userid)
 
         // sanitize input a little, mostly because we have legacy doubles people
         if (strstr($firstname, '/') || strstr($lastname, '/') || $birthdate == 1900)
-            return sfl_api_parseLicenses(null);
+            return null;
 
-        if ($sflid > 0) {
+        if ($sflid > 0)
             $data = SFL_getLicensesById($sflid);
-        }
-        elseif ($pdga > 0) {
-            $data =  SFL_getLicensesByPDGA($pdga);
-        }
-        else {
+        elseif ($pdga > 0)
+            $data = SFL_getLicensesByPDGA($pdga);
+        else
             $data = SFL_getLicensesByName($firstname, $lastname, $birthdate);
-        }
 
         if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
             SaveUserClub($userid, @$data['club_id']);
@@ -240,5 +242,5 @@ function SFL_getPlayer($userid)
         return $data;
     }
 
-    return sfl_api_parseLicenses(null);
+    return null;
 }
