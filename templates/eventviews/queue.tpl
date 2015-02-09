@@ -46,8 +46,16 @@
    {foreach from=$queue item=participant name=osallistuja}
    <tr>
       <td>{$smarty.foreach.osallistuja.index+1}</td>
-      <td><a href="{url page=user id=$participant.user->username}">{$participant.user->lastname|escape}</a></td>
-      <td><a href="{url page=user id=$participant.user->username}">{$participant.user->firstname|escape}</a></td>
+      <td>
+        {if $participant.user->username}<a href="{url page=user id=$participant.user->username}">{/if}
+        {$participant.user->lastname|escape}
+        {if $participant.user->username}</a>{/if}
+      </td>
+      <td>
+        {if $participant.user->username}<a href="{url page=user id=$participant.user->username}">{/if}
+        {$participant.user->firstname|escape}
+        {if $participant.user->username}</a>{/if}
+      </td>
       <td>{$participant.clubName|escape}</td>
       <td>{$participant.className|escape|truncate:3:""}</td>
       <td>{$participant.player->pdga|escape}</td>
