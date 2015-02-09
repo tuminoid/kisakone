@@ -132,7 +132,6 @@ function page_getSubMenu()
 
 
         'users' => array('title' => translate('users'), 'link' => array('page' => 'users'), 'children' => array(
-            array('title' => translate('submenu_all_users'), 'link' => array('page' => 'users', 'id' => ''), 'access' => null, 'children' => array()),
             array('open' => 'auto', 'title' => $selectedusername, 'link' => array('page' => 'user', 'id' => @$_GET['id']), 'access' => '', 'condition' => @$_GET['id'] && @$_GET['id'] != $username , 'children' => array(
                 array('title' => translate('submenu_edit_user'), 'link' => array('page' => 'editmyinfo' , 'id' => @$_GET['id']),  'access' => 'admin', 'children' => array()),
                 array('title' => translate('submenu_password'), 'link' => array('page' => 'changepassword', 'id' => @$_GET['id']), 'access' => 'admin', 'children' => array()),
