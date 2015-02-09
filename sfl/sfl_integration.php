@@ -219,6 +219,10 @@ function SFL_getPlayer($userid)
         $birthdate = $row['Birthdate'];
         mysql_free_result($result);
 
+        // sanitize input a little, mostly because we have legacy doubles people
+        if (strstr($firstname, '/') || strstr($lastname, '/') || $birthdate == 1900)
+            return sfl_api_parseLicenses(null);
+
         if ($sflid > 0) {
             $data = SFL_getLicensesById($sflid);
         }
