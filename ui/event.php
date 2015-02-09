@@ -115,10 +115,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $view = 'schedule';
             $rounds = $event->GetRounds();
             $roundId = @$_GET['round'];
-            if ($roundId) {
-                // FIXME: This is buggy at some cases
+            if ($rounds && isset($rounds[$roundId - 1]))
                 $smarty->assign('holes', $rounds[$roundId - 1]->GetHoles());
-            }
             $smarty->assign('rounds', $rounds);
             $smarty->assign('allow_print', IsAdmin() || $event->management != '');
             break;
