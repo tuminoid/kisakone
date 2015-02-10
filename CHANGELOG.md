@@ -11,6 +11,7 @@ next:
   * Display SFL license info at the signup page along with the PDGA info.
   * Display Rating in results, competitor lists and queues.
   * Regression: Promotion from queue was broken.
+  * License requirement field is now a simple dropdown. GH# 71.
 
 2015.02.07:
 ===========
