@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Client-size HTML table sorting
  *
@@ -182,7 +183,8 @@ function integerSort(a, b) {
     var ai = parseInt($(a).text());
     var bi = parseInt($(b).text());
 
-	//alert((a).text());
+    ai = (isNaN(ai) ? 0 : ai);
+    bi = (isNaN(bi) ? 0 : bi);
 
     if (ai < bi) return -1;
     if (ai > bi) return 1;
