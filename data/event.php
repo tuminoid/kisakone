@@ -469,7 +469,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
                     :Classification.Name AS ClassName, :Participation.id AS ParticipationID,
                     UNIX_TIMESTAMP(EventFeePaid) AS EventFeePaid, UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp,
-                    :Classification.id AS ClassId, :Club.ShortName AS ClubName
+                    :Classification.id AS ClassId, :Club.ShortName AS ClubName, :Participation.Rating
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
                 INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
@@ -502,6 +502,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
             $pdata['className'] = $row['ClassName'];
             $pdata['classId'] = $row['ClassId'];
             $pdata['clubName'] = $row['ClubName'];
+            $pdata['rating'] = $row['Rating'];
 
             $retValue[] = $pdata;
         }
