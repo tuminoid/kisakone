@@ -77,14 +77,14 @@ function processForm()
         return $result;
     }
 
-    $variableNeededAsItsReference = null;
+    $signup = $result ? 1 : 0;
     if ($result) {
         // Show payment if signup true
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $result ? 1 : 0), $nothing));
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $signup), $nothing));
     }
     else {
         // Show queue if signup false
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $result ? 1 : 0), $nothing));
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $signup), $nothing));
     }
     die();
 }
