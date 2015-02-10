@@ -44,6 +44,30 @@ function GetClub($clubid)
 }
 
 
+function GetUsersClub($userid)
+{
+    $userid = (int) $userid;
+
+    if (!$userid)
+        return null;
+
+    $query = format_query("SELECT Club FROM :User WHERE id = $userid");
+    $result = execute_query($query);
+
+    if (!$result)
+        return Error::Query($query);
+
+    $retValue = null;
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $retValue = $row['Club'];
+    }
+    mysql_free_result($result);
+
+    return $retValue;
+}
+
+
 function SaveClub($clubid, $clubname, $clubshort)
 {
     $clubid = (int) $clubid;
