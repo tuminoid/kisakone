@@ -144,18 +144,6 @@ class User
         return null;
     }
 
-
-    function SetClub($club_id)
-    {
-        $this->club = $club_id;
-    }
-
-
-    function SetSflId($sflid)
-    {
-        $this->sflid = $sflid;
-    }
-
     /** ************************************************************************
      * Method for setting the id attribute
      *
