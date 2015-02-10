@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * TODO
+
 2015.02.10:
 ===========
   * Club didn't save for players when one other user already had that club.
