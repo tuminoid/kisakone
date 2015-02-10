@@ -9,6 +9,8 @@ next:
   * Don't link to userinfo page of users that are TD added "virtual" users.
   * Use local jQuery again.
   * Display SFL license info at the signup page along with the PDGA info.
+  * Display Rating in results, competitor lists and queues.
+  * Regression: Promotion from queue was broken.
 
 2015.02.07:
 ===========
