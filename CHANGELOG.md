@@ -11,7 +11,7 @@ next:
 ===========
   * Club didn't save for players when one other user already had that club.
   * Don't link to userinfo page of users that are TD added "virtual" users.
-  * Use local jQuery again.
+  * Use local jQuery again. Upgrade to jQuery UI 1.11.2.
   * Display SFL license info at the signup page along with the PDGA info.
   * Display Rating in results, competitor lists and queues.
   * Regression: Promotion from queue was broken.
