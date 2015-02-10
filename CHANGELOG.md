@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.02.10:
+===========
   * Club didn't save for players when one other user already had that club.
   * Don't link to userinfo page of users that are TD added "virtual" users.
   * Use local jQuery again.
@@ -13,6 +13,9 @@ next:
   * Regression: Promotion from queue was broken.
   * License requirement field is now a simple dropdown. GH# 71.
   * Kisakone version (if installed via git) visible in a meta tag. GH #157.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150210.md)
+for additional actions needed.
 
 2015.02.07:
 ===========

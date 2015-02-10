@@ -1,4 +1,4 @@
-Upgrading to version xxxx
+Upgrading to version 2015.02.10:
 ================================
 
 We need to include `Rating` field to `:Participation` table and fix the `:EventQueue` table
