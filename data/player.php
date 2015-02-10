@@ -23,6 +23,31 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'data/club.php';
+require_once 'sfl/pdga_integration.php';
+require_once 'core/player.php';
+
+
+function GetPlayerDetails($playerid)
+{
+    $playerid = (int) $playerid;
+
+    $query = format_query("SELECT *,YEAR(birthdate) AS birthyear FROM :Player WHERE player_id = $playerid");
+    $result = execute_query($query);
+
+    if (!$result)
+        null;
+
+    $retValue = null;
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $retValue = new Player($row['player_id'], $row['pdga'], $row['sex'],
+            $row['birthyear'], $row['firstname'], $row['lastname'], $row['email']);
+    }
+    mysql_free_result($result);
+
+    return $retValue;
+}
 
 
 // Gets a User object associated with Playerid
@@ -60,21 +85,30 @@ function GetPlayerUser($playerid = null)
  *
  * Returns true for success, false for successful queue signup or an Error
  */
-function SetPlayerParticipation($playerid, $eventid, $classid, $clubid, $signup_directly = true)
+function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly = true)
 {
     $playerid = (int) $playerid;
     $eventid = (int) $eventid;
     $classid = (int) $classid;
-    $clubid = esc_or_null($clubid, 'int');
 
     $retValue = $signup_directly;
     $table = ($signup_directly === true) ? ":Participation" : ":EventQueue";
+
+    $playerob = GetPlayerDetails($playerid);
+    $userob = GetPlayerUser($playerid);
+    $userid = $userob ? $userob->id : null;
 
     // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
     // and double checking that player will not be in competition table twice
     CancelSignup($eventid, $playerid, false);
 
-    $query = format_query("INSERT INTO $table (Player, Event, Classification, Club) VALUES ($playerid, $eventid, $classid, $clubid)");
+    $pdga = $playerob->pdga;
+    $rating = pdga_getPlayerRating($pdga);
+    $clubid = esc_or_null(GetUsersClub($userid), 'int');
+    $rating = esc_or_null($rating, 'int');
+
+    $query = format_query("INSERT INTO $table (Player, Event, Classification, Club, Rating)
+                            VALUES ($playerid, $eventid, $classid, $clubid, $rating)");
     $result = execute_query($query);
 
     if (!$result)
