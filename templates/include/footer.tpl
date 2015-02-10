@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmº
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Layout after content
  *
@@ -24,7 +25,7 @@
 {capture assign=fullhelpfile}help/{$helpfile}.tpl{/capture}
 {include file=$fullhelpfile}
 {/if}</td>
-{if !$noad && !$smarty.get.showhelp && $ad && $ad->type != 'disabled' }
+{if !$noad && !$smarty.get.showhelp && $ad && $ad->type != 'disabled'}
 <td id="adbannercontainer">
      {include file='include/adbanner.tpl'}
 </td>

@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event listing
  *
@@ -119,8 +119,6 @@ $(document).ready(function(){
 });
 
 {/literal}
-
-
 //]]>
 </script>
 {/if}
