@@ -394,6 +394,8 @@ CREATE TABLE :EventQueue
   Event INT NOT NULL,
   Player SMALLINT NOT NULL,
   Classification INT NOT NULL,
+  Club INT,
+  Rating INT,
   SignupTimestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(id),
   FOREIGN KEY(Event) REFERENCES :Event(id),
