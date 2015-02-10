@@ -25,51 +25,54 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-      <title>{$title} - {translate id=site_name}</title>
-      <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
-      <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
-      <script type="text/javascript" src="{$url_base}js/jquery-1.11.2.min.js"></script>
-      <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
-      {if $ui}
-      <script type="text/javascript" src="{$url_base}js/jquery-ui-1.11.2.min.js"></script>
-      <link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css" type="text/css" />
-      <meta http-equiv="Content-Type" content="{$contentType}" />
-      {/if}
-      {if $timepicker}
-      <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.js"></script>
-      <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-sliderAccess.js"></script>
-      <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
-      {/if}
-      {if $autocomplete}
-      <script type="text/javascript" src="{$url_base}js/jquery/jquery.autocomplete-min.js"></script>
-      {/if}
-      {if $tooltip}
-      {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
-      {/if}
-      {if $analytics}
-      <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
-      {/if}
-      {$extrahead}
-      <meta name="version" content="{$kisakone_version}" />
+    <title>{$title} - {translate id=site_name}</title>
+    <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
+    <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
+    <script type="text/javascript" src="{$url_base}js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
+    {if $ui}
+    <script type="text/javascript" src="{$url_base}js/jquery-ui-1.11.2.min.js"></script>
+    <link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="{$contentType}" />
+    {/if}
+    {if $timepicker}
+    <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.js"></script>
+    <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-sliderAccess.js"></script>
+    <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
+    {/if}
+    {if $autocomplete}
+    <script type="text/javascript" src="{$url_base}js/jquery/jquery.autocomplete-min.js"></script>
+    {/if}
+    {if $tooltip}
+    {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
+    {/if}
+    {if $analytics}
+    <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
+    {/if}
+    {$extrahead}
+    <meta name="version" content="{$kisakone_version}" />
 </head>
 <body>
+
 <table id="contentcontainer" cellpadding="0" cellspacing="0">
-      <tr id="headtr">
-            <td colspan="3">
+    <tr id="headtr">
+    <td colspan="3">
 
-      <div id="header">
-      {include file="include/loginbox.tpl"}
-      {if $smarty.get.languagebar }
-            {* Disabled from normal use as we only have a single language *}
-            {include file='include/languagebar.tpl'}
-      {/if}
-      <img id="sitelogo" src="{$url_base}images/sitelogo.png" alt="{translate id=site_name}" />
+    <div id="header">
+    {include file="include/loginbox.tpl"}
+    {if $smarty.get.languagebar }
+        {* Disabled from normal use as we only have a single language *}
+        {include file='include/languagebar.tpl'}
+    {/if}
+    <img id="sitelogo" src="{$url_base}images/sitelogo.png" alt="{translate id=site_name}" />
 
-      <h1 id="sitename">{translate id=site_name_long}</h1>
-      <div id="pagename">{$title}</div>
-      </div>
-      {include file="include/mainmenu.tpl"}
-            </td></tr>
+    <h1 id="sitename">{translate id=site_name_long}</h1>
+    <div id="pagename">{$title}</div>
+    </div>
+    {include file="include/mainmenu.tpl"}
+    </td>
+    </tr>
+
     <tr id="maintr2">
         <td id="submenucontainer">        <br />
             {$submenu_content}
