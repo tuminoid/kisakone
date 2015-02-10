@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Layout before content
  *
@@ -50,6 +50,7 @@
       <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
       {/if}
       {$extrahead}
+      <meta name="version" content="{$kisakone_version}" />
 </head>
 <body>
 <table id="contentcontainer" cellpadding="0" cellspacing="0">

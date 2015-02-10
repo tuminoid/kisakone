@@ -178,6 +178,14 @@ foreach ($smarty->get_template_vars() as $var => $value) {
 if (file_exists("js/analytics.js"))
     $smarty->assign('analytics', true);
 
+// display version number in the footer of index page
+if (file_exists(".git")) {
+    $retValue = $output = null;
+    $version = exec("git describe", $output, $retValue);
+    if ($retValue == 0)
+        $smarty->assign("kisakone_version", $version);
+}
+
 // The type of the data that is being passed to the browser has to be at some point.
 // The type depends on a number of factors:
 // - a single page can use a special content type (such as text/xml for RSS feeds)
