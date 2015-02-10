@@ -80,7 +80,6 @@ class Event
     var $levelId;
     var $level;
     var $levelName;
-    var $adbannerId;
     var $resultsLocked;
     var $tdId;
 
@@ -122,7 +121,6 @@ class Event
         $this->isActive = false;
         $this->tournamentId = null;
         $this->levelId = null;
-        $this->adbannerId = null;
         $this->resultslocked = false;
         $this->tdId = null;
         $this->playerLimit = 0;
