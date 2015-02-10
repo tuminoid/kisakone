@@ -116,7 +116,7 @@ function GetEventDetails($eventid)
         $pid = $player ? $player->id : - 1;
 
         $query = format_query("SELECT DISTINCT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
-                                    AdBanner, :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
+                                    :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
                                     UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId,
                                     :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid,
@@ -132,7 +132,7 @@ function GetEventDetails($eventid)
                                 WHERE :Event.id = $id");
     }
     else {
-        $query = format_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, AdBanner, :Event.Name,
+        $query = format_query("SELECT DISTINCT :Event.id id, :Venue.Name AS Venue, Tournament, :Event.Name,
                                     UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,

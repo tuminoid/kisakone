@@ -1,7 +1,10 @@
 Upgrading to version xxxx
 ================================
 
-We need to include `Rating` field to `:Participation` table.
+We need to include `Rating` field to `:Participation` table and fix the `:EventQueue` table
+to match the `:Participation` table.
+
+We also add missing `FOREIGN KEY` for `:AdBanner`.
 
 --
 
