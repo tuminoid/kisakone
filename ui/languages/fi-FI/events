@@ -261,10 +261,11 @@ holeNumber          #
 holeText            Kisa#
 day_index           Päivä {index}
 
-
-event_require_alicense_fee  Vaadi A-lisenssimaksu osallistujilta
-event_require_blicense_fee  Vaadi B-lisenssimaksu osallistujilta
-event_require_member_fee  Vaadi jäsenmaksu osallistujilta
+event_require_fees          Lisenssivaatimus
+event_require_no_fees       Ei lisenssivaatimuksia
+event_require_member_fee    SFL-jäsenmaksu
+event_require_alicense_fee  A-lisenssimaksu
+event_require_blicense_fee  B-lisenssimaksu
 event_add_all_classes   Lisää kaikki
 
 event_state     Kilpailun tila

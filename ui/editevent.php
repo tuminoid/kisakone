@@ -25,6 +25,7 @@
 require_once 'ui/support/eventform_init.php';
 require_once 'config_site.php';
 
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -32,12 +33,20 @@ require_once 'config_site.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    global $settings;
 
     language_include('formvalidation');
 
     $e = array();
-    if ($error) {
 
+    if (@$settings['SFL_ENABLED']) {
+        $smarty->assign('sfl_enabled', true);
+        $smarty->assign('sfl_license_a', LICENSE_A);
+        $smarty->assign('sfl_license_b', LICENSE_B);
+        $smarty->assign('sfl_license_m', LICENSE_MEMBERSHIP);
+    }
+
+    if ($error) {
         if (!is_array($error->data)) {
             print_r($error);
             return $error;
@@ -61,9 +70,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $e['id'] = $_POST['eventid'];
         $e['event_state'] = @$_POST['event_state'];
 
-        $e['requireFees_aLicense'] = @$_POST['requireFees_license'] == "requireFees_license_A";
-        $e['requireFees_bLicense'] = @$_POST['requireFees_license'] == "requireFees_license_B";
-        $e['requireFees_member'] = @$_POST['requireFees_member'];
+        $e['requireFees'] = @$_POST['requireFees'];
 
         $e['td'] = $_POST['td'];
         $e['oldtd'] = $_POST['oldtd'];
@@ -91,22 +98,17 @@ function InitializeSmartyVariables(&$smarty, $error)
         $e['signup_start'] = $event->signupStart == null ? '' : date('Y-m-d H:i', $event->signupStart);
         $e['signup_end'] = $event->signupEnd == null ? '' : date('Y-m-d H:i', $event->signupEnd);
 
-        if ($event->resultsLocked) {
+        if ($event->resultsLocked)
             $e['event_state'] = 'done';
-        }
-        elseif ($event->isActive) {
+        elseif ($event->isActive)
             $e['event_state'] = 'active';
-        }
 
         $fees = $event->FeesRequired();
-        $e['requireFees_member'] = ($fees >= LICENSE_MEMBERSHIP);
-        $e['requireFees_aLicense'] = ($fees == LICENSE_A);
-        $e['requireFees_bLicense'] = ($fees == LICENSE_B);
+        $e['requireFees'] = $fees;
 
         $e['classes'] = array();
-        foreach ($event->GetClasses() as $class) {
+        foreach ($event->GetClasses() as $class)
             $e['classes'][] = $class->id;
-        }
 
         $e['rounds'] = array();
         foreach ($event->GetRounds() as $round) {
@@ -122,9 +124,8 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $e['td'] = $record->user->username;
                 $e['oldtd'] = $record->user->id;
             }
-            else {
+            else
                 $e['officials'][] = $record->user->username;
-            }
         }
 
         $e['pdgaeventid'] = $event->pdgaEventId;

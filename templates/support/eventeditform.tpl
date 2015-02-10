@@ -119,15 +119,15 @@
     </div>
 
     <div>
-        <input id="requireFees_member" type="checkbox" name="requireFees_member" {if $event.requireFees_member} checked="checked" {/if}/>
-        <label class="checkboxlabel" for="requireFees_member">{translate id="event_require_member_fee"}</label>
-        <br />
-        <input id="requireFees_license_A" type="radio" name="requireFees_license" value="requireFees_license_A"  {if $event.requireFees_aLicense} checked="checked" {/if}/>
-        <label class="checkboxlabel" for="requireFees_license_A" >{translate id="event_require_alicense_fee"}</label>
-        <br />
-        <input id="requireFees_license_B" type="radio" name="requireFees_license" value="requireFees_license_B"  {if $event.requireFees_bLicense} checked="checked" {/if} />
-        <label class="checkboxlabel" for="requireFees_license_B">{translate id="event_require_blicense_fee"}</label>
-        <br />
+        <label for="requireFees">{translate id=event_require_fees}</label>
+        <select name="requireFees" id="requireFees">
+            <option value="0" {if $event.requireFees == 0}selected="selected"{/if}>{translate id=event_require_no_fees}</option>
+            {if $sfl_enabled}
+            <option value="{$sfl_license_m}" {if $event.requireFees == $sfl_license_m}selected="selected"{/if}>{translate id=event_require_member_fee}</option>
+            <option value="{$sfl_license_b}" {if $event.requireFees == $sfl_license_b}selected="selected"{/if}>{translate id=event_require_blicense_fee}</option>
+            <option value="{$sfl_license_a}" {if $event.requireFees == $sfl_license_a}selected="selected"{/if}>{translate id=event_require_alicense_fee}</option>
+            {/if}
+        </select>
     </div>
 
 

@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * "Create new event" page
  *
@@ -21,6 +22,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'ui/support/eventform_init.php';
+require_once 'config_site.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -28,11 +33,18 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    global $settings;
+
     language_include('formvalidation');
     if (!IsAdmin())
         return Error::AccessDenied('newEvent');
 
-    require_once 'ui/support/eventform_init.php';
+    if (@$settings['SFL_ENABLED']) {
+        $smarty->assign('sfl_enabled', true);
+        $smarty->assign('sfl_license_a', LICENSE_A);
+        $smarty->assign('sfl_license_b', LICENSE_B);
+        $smarty->assign('sfl_license_m', LICENSE_MEMBERSHIP);
+    }
 
     $e = array();
     if ($error) {

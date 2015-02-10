@@ -142,14 +142,7 @@ function processForm()
         }
     }
 
-    $licenseReq = @$_POST['requireFees_license'];
-    $requireFees = 0;
-    if (@$_POST['requireFees_member'])
-        $requireFees = LICENSE_MEMBERSHIP;
-    if ($licenseReq == "requireFees_license_A")
-        $requireFees = LICENSE_A;
-    if ($licenseReq == "requireFees_license_B")
-        $requireFees = LICENSE_B;
+    $requireFees = @$_POST['requireFees'];
 
     $td = input_GetUser($_POST['td']);
     if ($td === null) {
