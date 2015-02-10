@@ -22,6 +22,7 @@
  * */
 
 require_once 'data/db_init.php';
+require_once 'data/player.php';
 require_once 'core/player.php';
 require_once 'core/user.php';
 require_once 'core/email.php';
@@ -60,7 +61,7 @@ function GetEventQueue($eventId, $sortedBy, $search)
     $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
                     :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
                     pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth, :Classification.Name AS ClassName,
-                    :EventQueue.id AS QueueId, :Club.ShortName AS ClubName,
+                    :EventQueue.id AS QueueId, :Club.ShortName AS ClubName, :EventQueue.Rating AS Rating,
                     UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp, :Classification.id AS ClassId
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
@@ -90,6 +91,7 @@ function GetEventQueue($eventId, $sortedBy, $search)
             $pdata['className'] = $row['ClassName'];
             $pdata['classId'] = $row['ClassId'];
             $pdata['clubName'] = $row['ClubName'];
+            $pdata['rating'] = $row['Rating'];
 
             $retValue[] = $pdata;
         }
@@ -128,6 +130,9 @@ function PromotePlayerFromQueue($eventId, $playerId)
     $query = format_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
     $result = execute_query($query);
 
+    if (!$result)
+        return Error::Query($query);
+
     if (mysql_num_rows($result) > 0) {
         $row = mysql_fetch_assoc($result);
 
@@ -135,23 +140,13 @@ function PromotePlayerFromQueue($eventId, $playerId)
         $player = (int) $row['Player'];
         $event = (int) $row['Event'];
         $class = (int) $row['Classification'];
-        $time = time();
+        $user = GetPlayerUser($player);
+        $userid = $user ? $user->id : null;
 
-        $query = format_query("INSERT INTO :Participation (Player, Event, Classification, SignupTimestamp)
-                                VALUES ($player, $event, $class, FROM_UNIXTIME($time))");
-        $result = execute_query($query);
+        // cancel player from both queue/competition and set it again
+        CancelSignup($eventId, $playerId, false);
+        SetPlayerParticipation($player, $event, $class, true);
 
-        if (!$result)
-            return Error::Query($query);
-
-        // Remove data from queue
-        $query = format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-        $result = execute_query($query);
-
-        if (!$result)
-            return Error::Query($query);
-
-        $user = GetPlayerUser($playerId);
         if ($user !== null)
             SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
     }
