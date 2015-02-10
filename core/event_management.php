@@ -39,7 +39,6 @@ require_once 'data/club.php';
  */
 function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
 {
-    $playerId = $error = null;
     $player = GetUserPlayer($userId);
 
     if (isset($player)) {
@@ -52,8 +51,7 @@ function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
 
         // Record the club at the time of the registration, otherwise the club
         // will update to the current club, which distorts the old history records
-        $data = SFL_getPlayer($userId);
-        return SetPlayerParticipation($playerId, $eventId, $classId, @$data['club_id'], $can_signup_directly);
+        return SetPlayerParticipation($playerId, $eventId, $classId, $can_signup_directly);
     }
     else {
         $retValue = new Error();
