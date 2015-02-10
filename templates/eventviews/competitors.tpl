@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Competitor listing
  *
@@ -26,23 +26,24 @@
 </div>
 
 <form method="get" class="usersform" action="{url page=event view=competitors id=$smarty.get.id}">
-    {initializeGetFormFields  search=false }
+    {initializeGetFormFields  search=false}
     <div class="formelements">
-         <p>{translate id=users_searchhint} </p>
+         <p>{translate id=users_searchhint}</p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
     </div>
 </form>
 <hr style="clear: both;" />
 <div class="SearchStatus" />
-<table class="narrow" style="min-width: 400px">
+<table class="narrow" style="min-width: 500px">
    <tr>
       <th>{sortheading field=1 id=num sortType=integer}</th>
       <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
       <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
-      <th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>
+      {if $sfl_enabled}<th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>{/if}
       <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
-      <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
+      <th>{sortheading field=PDGA id=users_pdga sortType=integer}</th>
+      {if $pdga_enabled}<th>{sortheading field=Rating id=pdga_rating sortType=integer}</th>{/if}
    </tr>
    {foreach from=$participants item=participant name=osallistuja}
    <tr>
@@ -57,9 +58,10 @@
         {$participant.user->firstname|escape}
         {if $participant.user->username}</a>{/if}
       </td>
-      <td>{$participant.clubName|escape}</td>
+      {if $sfl_enabled}<td>{$participant.clubName|escape}</td>{/if}
       <td>{$participant.className|escape|truncate:3:""}</td>
       <td>{$participant.player->pdga|escape}</td>
+      {if $pdga_enabled}<td>{$participant.rating|escape}</td>{/if}
    </tr>
   {/foreach}
 </table>

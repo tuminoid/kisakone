@@ -39,9 +39,10 @@
       <th>{sortheading field=1 id=num sortType=integer}</th>
       <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
       <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
-      <th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>
+      {if $sfl_enabled}<th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>{/if}
       <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
       <th>{sortheading field=pdga id=users_pdga sortType=integer}</th>
+      {if $pdga_enabled}<th>{sortheading field=Rating id=pdga_rating sortType=integer}</th>{/if}
    </tr>
    {foreach from=$queue item=participant name=osallistuja}
    <tr>
@@ -56,9 +57,10 @@
         {$participant.user->firstname|escape}
         {if $participant.user->username}</a>{/if}
       </td>
-      <td>{$participant.clubName|escape}</td>
+      {if $sfl_enabled}<td>{$participant.clubName|escape}</td>{/if}
       <td>{$participant.className|escape|truncate:3:""}</td>
       <td>{$participant.player->pdga|escape}</td>
+      {if $pdga_enabled}<td>{$participant.rating|escape}</td>{/if}
    </tr>
   {/foreach}
 </table>
