@@ -12,6 +12,7 @@ next:
   * Display Rating in results, competitor lists and queues.
   * Regression: Promotion from queue was broken.
   * License requirement field is now a simple dropdown. GH# 71.
+  * Kisakone version (if installed via git) visible in a meta tag. GH #157.
 
 2015.02.07:
 ===========
