@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Player class.
  *
@@ -30,6 +30,7 @@ define('PLAYER_GENDER_FEMALE', 'F');
 define('PLAYER_BIRTHYEAR_MIN', 1900);
 define('PLAYER_BIRTHYEAR_MAX', intval(date("Y")));
 
+
 /* *****************************************************************************
  * This class represents a single player in the system.
  */
@@ -49,9 +50,8 @@ class Player
      */
     function Player($id = null, $pdga = 0, $gender = null, $birthyear = 0, $firstname = null, $lastname = null, $email = null)
     {
-        if ($pdga && $email == null) {
+        if ($pdga && $email == null)
             die('Invalid player construction call ' . print_r(debug_backtrace()));
-        }
 
         if ($gender == 'male')
             $gender = 'M';
@@ -60,10 +60,7 @@ class Player
 
         $this->id = $id;
         $this->user = null;
-        if ($pdga == null)
-            $this->pdga = null;
-        else
-            $this->pdga = (int) $pdga;
+        $this->pdga = $pdga ? (int) $pdga : null;
         $this->SetGender($gender);
         $this->birthyear = intval($birthyear);
         $this->lastname = $lastname;
@@ -80,13 +77,10 @@ class Player
      */
     function SetGender($gender)
     {
-
-        if (($gender == PLAYER_GENDER_MALE) or ($gender == PLAYER_GENDER_FEMALE)) {
+        if (($gender == PLAYER_GENDER_MALE) || ($gender == PLAYER_GENDER_FEMALE))
             $this->gender = $gender;
-        }
-        else {
+        else
             $this->gender = null;
-        }
 
         return null;
     }
@@ -101,9 +95,8 @@ class Player
     {
         $err = null;
 
-        if (!isset($this->id)) {
+        if (!isset($this->id))
             $this->id = intval($id);
-        }
         else {
             if ($this->id !== $id) {
                 // Attempt to change a valid id, report internal error
@@ -192,7 +185,3 @@ class Player
         return $problems == 0;
     }
 }
-
-/* ****************************************************************************
- * End of file
- * */
