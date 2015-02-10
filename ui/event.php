@@ -47,6 +47,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         return Error::NotFound('event');
 
     $smarty->assign('eventid', $event->id);
+    $smarty->assign('pdga_enabled', @$settings['PDGA_ENABLED']);
+    $smarty->assign('sfl_enabled', @$settings['SFL_ENABLED']);
 
     $textType = '';
     $evp = null;
@@ -168,8 +170,11 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('signedup', $event->approved !== null);
             $smarty->assign('paid', $event->eventFeePaid);
             $smarty->assign('signupOpen', $event->SignupPossible());
-            if ($user)
-                $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+
+            if ($user && $player) {
+                $status = $event->GetPlayerStatus($player->id);
+                $smarty->assign('queued', $status == 'queued');
+            }
 
             if ($event->signupStart) {
                 $smarty->assign('signupStart', date('d.m.Y H:m', $event->signupStart));
@@ -202,8 +207,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         case 'liveresults':
             $view = 'results';
             $rounds = $event->GetRounds();
-            $smarty->assign('classes', $event->GetClasses());
             $smarty->assign('rounds', $rounds);
+            $smarty->assign('classes', $event->GetClasses());
             $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             $roundnum = @$_GET['round'];
@@ -247,8 +252,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('includePoints', $scoresAssigned && $event->tournament);
             $smarty->assign('resultsByClass', $results);
             $rounds = $event->GetRounds();
-            $smarty->assign('numRounds', count($rounds));
             $smarty->assign('rounds', $rounds);
+            $smarty->assign('numRounds', count($rounds));
             break;
 
         case 'leaderboard_csv':
