@@ -79,7 +79,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('contactInfoHTML', $ci_html);
             $smarty->assign('contactInfoJS', $ci_js);
             $smarty->assign('rounds', $event->GetRounds());
-            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             if ($player)
                 $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));
@@ -253,7 +252,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $view = 'leaderboard';
             $results_tmp = GetEventResultsWithoutHoles($event->id);
             $results = pdr_GroupByClasses($results_tmp);
-            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             $scoresAssigned = null;
             foreach ($results as $class) {
