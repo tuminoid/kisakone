@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Regression: Players who have space in their name didn't get their license correctly.
+  * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
 
 2015.02.10:
 ===========
