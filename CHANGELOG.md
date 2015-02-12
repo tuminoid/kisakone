@@ -7,6 +7,7 @@ next - "One TD to Rule Them All"
 ================================
   * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
   * Regression: Players who have space in their name didn't get their license correctly.
+  * In Leaderboard_CSV, set 999 correctly for DNS/DNF entries. GH #4.
 
 2015.02.10 - "Rating, Rating, Rating"
 =====================================
