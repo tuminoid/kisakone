@@ -612,7 +612,8 @@ function GetEventResultsWithoutHoles($eventId)
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
                     :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
-                    TournamentPoints, :Round.id AS RoundId, :Participation.Standing, :Club.ShortName AS ClubName
+                    TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
+                    :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id
@@ -651,6 +652,9 @@ function GetEventResultsWithoutHoles($eventId)
             $lastrow['TotalCompleted'] += $row['Completed'];
             $lastrow['TotalPlusminus'] += $row['PlusMinus'];
             $lastrow['Results'][$row['RoundId']] = $row;
+
+            if ($row['PlayerId'] == 1920)
+                error_log(print_r($row, true));
         }
 
         if ($lastrow)

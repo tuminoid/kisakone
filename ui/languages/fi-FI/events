@@ -298,7 +298,6 @@ saved   Tallennettu {time}
 result_tournament   Sarjan pisteet
 preliminary_results     Viimeisimmän kierroksen tulosten syöttö on yhä kesken ja tulokset ovat vasta alustavia. Kilpailijoiden järjestys ja sarjapisteet pyritään ennustamaan, eivätkä ole lopullisia.
 leaderboard_cvs_help Tämä tekstikenttä käy sellaisenaan sekä PDGA:n Tournament Managerin alustaviin ratingeihin, sekä PDGA:n TD Raporttiin. Alustaviin ratingeihin: Valitse myös otsikkorivi. TD-raporttiin: Valitse vain tulokset. (Klikkaa hiirellä tekstilaatikkoa ja paina CTRL-A/Cmd-A ja sitten CTRL-C/Cmd-C ja liimaa raportteihin CTRL-V/Cmd-V).
-leaderboard_cvs_help2 HUOM: 999/888 (DNF/DQ) merkinnät puuttuvat ja ne täytyy asettaa käsin TD Raporttiin.
 sequential_start    Kierroksella käytetään porrastettua lähtöä; ensimmäiset ryhmät lähtevät kello {time}.
 simultaneous_start    Kierroksella käytetään yhteislähtöä. Kierros alkaa kello {time}.
 view_group_list     Katso kierroksen ryhmät
