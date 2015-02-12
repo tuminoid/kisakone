@@ -3,13 +3,13 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
-  * Regression: Players who have space in their name didn't get their license correctly.
+next - "One TD to Rule Them All"
+================================
   * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
+  * Regression: Players who have space in their name didn't get their license correctly.
 
-2015.02.10:
-===========
+2015.02.10 - "Rating, Rating, Rating"
+=====================================
   * Club didn't save for players when one other user already had that club.
   * Don't link to userinfo page of users that are TD added "virtual" users.
   * Use local jQuery again. Upgrade to jQuery UI 1.11.2.
@@ -22,8 +22,8 @@ next:
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150210.md)
 for additional actions needed.
 
-2015.02.07:
-===========
+2015.02.07 - "The Rise of the Clubs"
+====================================
   * PDGA integration during sign up/add competitor.
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
   * First version of a proper upgrade guide. GH #112.
@@ -35,14 +35,14 @@ for additional actions needed.
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150207.md)
 for additional actions needed.
 
-2015.02.04:
-===========
+2015.02.04 - "Data... It Is All About Data"
+===========================================
   * Humongous data_access.php is split into 15 data/* files.
   * Various optimizations around database handling.
   * Regression: Entering scores fixed.
 
-2015.01.30:
-===========
+2015.01.30 - "Security Over Obscurity"
+======================================
   * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
   * Reformat `data_access.php` entirely to make it readable and as a first step,
       introduce `login.php` in `core/data` to handle login related functions.
