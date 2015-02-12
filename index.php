@@ -50,6 +50,11 @@ require_once 'data/ads.php';
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
+// Send our version numer at the header
+$kisakone_version = getVersion();
+if ($kisakone_version)
+    header("X-Powered-By: Kisakone/$kisakone_version");
+
 // If we're supposed to be logged in, start the session
 if (@$_COOKIE['kisakone_login']) {
     session_start();
@@ -178,13 +183,7 @@ foreach ($smarty->get_template_vars() as $var => $value) {
 if (file_exists("js/analytics.js"))
     $smarty->assign('analytics', true);
 
-// display version number in the footer of index page
-if (file_exists(".git")) {
-    $retValue = $output = null;
-    $version = exec("git describe", $output, $retValue);
-    if ($retValue == 0)
-        $smarty->assign("kisakone_version", $version);
-}
+$smarty->assign("kisakone_version", $kisakone_version);
 
 // The type of the data that is being passed to the browser has to be at some point.
 // The type depends on a number of factors:
@@ -471,4 +470,21 @@ function redirect($url)
     else
         redirect("Location: " . $url);
     die();
+}
+
+function getVersion()
+{
+    static $version = null;
+    if ($version)
+        return $version;
+
+    // display version number in the footer of index page
+    if (file_exists(".git")) {
+        $retValue = $output = null;
+        $line = exec("git describe", $output, $retValue);
+        if ($retValue == 0)
+            $version = $line;
+    }
+
+    return $version;
 }
