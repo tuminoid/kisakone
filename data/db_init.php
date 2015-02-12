@@ -128,7 +128,7 @@ function format_query($query)
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
         ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
         ':TournamentStanding', ':Tournament', ':ClassInEvent',
-        ':LicensePayment', ':MembershipPayment');
+        ':LicensePayment', ':MembershipPayment', ':RegistrationRules');
     $realtables = str_replace(":", $prefix, $tables);
 
     return str_replace($tables, $realtables, $query);

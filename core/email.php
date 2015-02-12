@@ -149,14 +149,11 @@ class Email
         $mailer = $settings['EMAIL_MAILER'];
         $from_header = "$mailer <$from>";
 
-        if ($settings['EMAIL_ENABLED'] !== true) {
-            //error_log("Email sending disabled, discarding message");
+        if ($settings['EMAIL_ENABLED'] !== true)
             return;
-        }
 
-        $retval = mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text), "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer, "-f$from");
-
-        return $retval;
+        return  mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text),
+            "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer, "-f$from");
     }
 }
 

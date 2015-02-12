@@ -229,6 +229,7 @@ function page_getSubMenu()
                 )),
                 array('title' => translate('edit_event_classes'), 'link' => array('page' => 'eventclasses', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'editquotas', 'id' => $id), 'access' => null, 'children' => array()),
+                array('title' => translate('edit_event_rules'), 'link' => array('page' => 'editrules', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_pages'), 'link' => array('page' => 'editeventpages', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('event_info'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index'), 'access' => null, 'children' => array()),
                     array('title' => translate('event_info_schedule'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index_schedule'), 'access' => null, 'children' => array()),

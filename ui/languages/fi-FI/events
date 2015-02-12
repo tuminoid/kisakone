@@ -20,6 +20,7 @@ event_duration  Kilpailun kesto
 event_duration_days     päivä(ä)
 event_playerlimit  Pelaajamäärä
 event_playerlimit_max pelaajaa enintään
+event_registration_rules Ilmoittautumisrajat -ja ehdot
 event_signup_start  Ilmoittautuminen\nalkaa
 event_signup_end  Ilmoittautuminen\nloppuu
 event_activate  Aktivoi käyttäjille
@@ -48,10 +49,58 @@ remove_round_text   Poista kierros
 confirm_round_removal   Halutko varmasti poistaa valitun kierroksen?
 
 
+rule_header_text   Tällä sivulla voidaan määritellä ilmoittautumisrajat ja -ehdot. Ehdot ovat JA-muotoisia, eli pelaajan täytyy täyttää kaikki yleiset ja luokkaansa kohdistuvat ehdot ilmoittautuakseen.
+
+rule_all_classes   Kaikki luokat
+rule_no_classes    Luokkia ei ole vielä määritelty
+rule_no_rules      Ei rajoituksia
+rule_not_valid     Vanhentunut
+
+ruletype_header    Vaatimus
+ruletype_rating    Rating
+ruletype_player    Pelaajan PDGA
+ruletype_co        Sääntötesti suoritettu (1 tai 0)
+ruletype_status    Pro (P) tai Am (A)
+ruletype_country   Maa (FI, EE, ...)
+
+ruletype_short_rating  PDGA
+ruletype_short_player  Pelaaja
+ruletype_short_co      Sääntötesti
+ruletype_short_status  Pro tai Am
+ruletype_short_country Maa
+
+ruleop_header      Ehto
+ruleop_>=          Enemmän tai yhtä suuri kuin
+ruleop_>           Enemmän kuin
+ruleop_<=          Vähemmän tai yhtä suuri kuin
+ruleop_<           Vähemmän kuin
+ruleop_==          Täsmälleen
+ruleop_!=          Eri kuin
+
+rulevalue_header   Arvo
+rulevalue_co_1      Suoritettu
+rulevalue_co_0      Ei suoritettu
+rulevalue_status_P  Pro
+rulevalue_status_A  Am
+
+ruleuntil_header   Mihin asti
+
+ruleoption_header  Toiminto
+ruleaction_accept  Hyväksy
+ruleaction_reject  Hylkää
+ruleaction_queue   Jonoon
+
+rule_new           Lisää
+rule_delete        Poista
+rule_restore       Palauta
+
+rule_registration_failed_header   Rekisteröityminen epäonnistui
+rule_registration_failed          Et voi rekisteröityä kilpailuun tällä hetkellä, ilmoittautumisvaatimukset eivät täyty.
+
+
 
 news_title          Otsikko
 news_text           Sisältö
-
 new_news            Lisää uutinen
 
 

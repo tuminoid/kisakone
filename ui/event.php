@@ -24,6 +24,7 @@
 
 require_once 'config.php';
 require_once 'data/event_quota.php';
+require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 
@@ -38,17 +39,23 @@ function InitializeSmartyVariables(&$smarty, $error)
     global $settings;
 
     $event = GetEventDetails($_GET['id']);
-    $smarty->assign('event', $event);
-    global $user;
 
     if (is_a($event, 'Error'))
         return $event;
     if (!$event)
         return Error::NotFound('event');
 
+    $smarty->assign('event', $event);
     $smarty->assign('eventid', $event->id);
+
+    global $user;
+    $player = $user ? $user->GetPlayer() : null;
+    $smarty->assign('user', $user);
+    $smarty->assign('player', $player);
+
     $smarty->assign('pdga_enabled', @$settings['PDGA_ENABLED']);
     $smarty->assign('sfl_enabled', @$settings['SFL_ENABLED']);
+    $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
     $textType = '';
     $evp = null;
@@ -74,34 +81,38 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('rounds', $event->GetRounds());
             $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
-            if ($user) {
-                $player = $user->GetPlayer();
-                if ($player) {
-                    $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));
-                }
-            }
+            if ($player)
+                $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));
 
             // The index page has an extra text content area for schedule,
             // must be taken care of manually
             $scheduleText = $event->GetTextContent('index_schedule');
             $index_schedule_content = '';
-            if ($scheduleText) {
+
+            if ($scheduleText)
                 $index_schedule_content = $scheduleText->formattedText;
-            }
+
             $smarty->assign('index_schedule_text', $index_schedule_content);
             break;
 
         case 'competitors':
             $view = 'competitors';
             language_include('users');
+
+            // make sure we have lifted valid people
+            CheckQueueForPromotions($event->id);
+
             $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
             $smarty->assign('participants', $participants);
-            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
             break;
 
         case 'queue':
             $view = 'queue';
             language_include('users');
+
+            // make sure we have lifted valid people off the list
+            CheckQueueForPromotions($event->id);
+
             $queue = $event->GetQueue(@$_GET['sort'], @$_GET['search']);
             $smarty->assign('queue', $queue);
             break;
@@ -138,54 +149,60 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         case 'signupinfo':
             $view = 'signupinfo';
-            $player = $user ? $user->GetPlayer() : null;
-
-            $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
-            SmartifyPDGA($smarty, $pdga_data);
-
-            $year = date('Y');
-            $data = SFL_getPlayer(@$user->id);
-            $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
-            $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
-            $smarty->assign('sfl_membership', @$data['membership'][$year]);
-
-            // filter classes per user
-            $classes = $event->GetClasses();
-            $unsuited_classes = array();
-            foreach ($classes as $key => $class) {
-                if ($player && !$player->IsSuitableClass($class)) {
-                    $unsuited_classes[] = $class;
-                    unset($classes[$key]);
-                }
-
-                $ama_or_junior = (substr($class->name, 1, 1) == "A" || substr($class->name, 1, 1) == "J");
-                if (@$pdga_data['classification'] == "P" && $ama_or_junior) {
-                    $unsuited_classes[] = $class;
-                    unset($classes[$key]);
-                }
-            }
-
-            $smarty->assign('classes', $classes);
-            $smarty->assign('unsuited', $unsuited_classes);
-            $smarty->assign('signedup', $event->approved !== null);
-            $smarty->assign('paid', $event->eventFeePaid);
-            $smarty->assign('signupOpen', $event->SignupPossible());
+            $status = null;
 
             if ($user && $player) {
                 $status = $event->GetPlayerStatus($player->id);
                 $smarty->assign('queued', $status == 'queued');
             }
 
+            if ($status == 'notsigned') {
+                $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+                SmartifyPDGA($smarty, $pdga_data);
+
+                $year = date('Y');
+                $data = SFL_getPlayer(@$user->id);
+                $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
+                $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
+                $smarty->assign('sfl_membership', @$data['membership'][$year]);
+
+                $classes = $event->GetClasses();
+                $unsuited_classes = array();
+                foreach ($classes as $key => $class) {
+                    if ($player && !$player->IsSuitableClass($class)) {
+                        $unsuited_classes[] = $class;
+                        unset($classes[$key]);
+                    }
+
+                    $ama_or_junior = (substr($class->name, 1, 1) == "A" || substr($class->name, 1, 1) == "J");
+                    if (@$pdga_data['classification'] == "P" && $ama_or_junior) {
+                        $unsuited_classes[] = $class;
+                        unset($classes[$key]);
+                    }
+                }
+
+                $smarty->assign('classes', $classes);
+                $smarty->assign('unsuited', $unsuited_classes);
+
+                $requiredFees = $event->FeesRequired();
+                if ($requiredFees && $user) {
+                    if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees))
+                        $smarty->assign('feesMissing', $requiredFees);
+                }
+
+                $smarty->assign('rules', $event->getRules(-1));
+                $smarty->assign('ruletypes', GetRuleTypes());
+                $smarty->assign('ruleops', GetRuleOps());
+                $smarty->assign('ruleactions', GetRuleActions());
+            }
+
+            $smarty->assign('signedup', $event->approved !== null);
+            $smarty->assign('paid', $event->eventFeePaid);
+            $smarty->assign('signupOpen', $event->SignupPossible());
+
             if ($event->signupStart) {
                 $smarty->assign('signupStart', date('d.m.Y H:m', $event->signupStart));
                 $smarty->assign('signupEnd', date('d.m.Y H:m', $event->signupEnd));
-            }
-
-            $requiredFees = $event->FeesRequired();
-            if ($requiredFees && $user) {
-                if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees)) {
-                    $smarty->assign('feesMissing', $requiredFees);
-                }
             }
             break;
 
@@ -209,7 +226,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $rounds = $event->GetRounds();
             $smarty->assign('rounds', $rounds);
             $smarty->assign('classes', $event->GetClasses());
-            $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
             $roundnum = @$_GET['round'];
             if (!$roundnum)
@@ -221,9 +237,8 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $smarty->assign('the_round', $theround);
 
                 $r = $theround->GetFullResults('resultsByClass');
-                foreach ($r as $k => $v) {
+                foreach ($r as $k => $v)
                     $r[$k] = pdr_IncludeStanding($v);
-                }
 
                 $smarty->assign('resultsByClass', $r);
                 $holes = $theround->GetHoles();
@@ -310,9 +325,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         $evp->type = $textType;
     }
 
-    if (!$evp->title) {
+    if (!$evp->title)
         $evp->title = translate('pagetitle_' . $textType);
-    }
 
     if (!$evp->content) {
         $evp->content = "<h2>" . htmlentities($evp->title) . "</h2>";
@@ -321,10 +335,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     // Event pages have their own ads
     $ad = GetAd($event->id, $view);
-    if (!$ad)
-        $ad = GetAd($event->id, 'eventdefault');
     if ($ad)
         $smarty->assign('ad', $ad);
+    else
+        $ad = GetAd($event->id, 'eventdefault');
 
     $smarty->assign('view', 'eventviews/' . $view . '.tpl');
     $smarty->assign('page', $evp);

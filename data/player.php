@@ -98,8 +98,6 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     $userob = GetPlayerUser($playerid);
     $userid = $userob ? $userob->id : null;
 
-    // Inputmapping is already checking player's re-entry, so this is merely a cleanup from queue
-    // and double checking that player will not be in competition table twice
     CancelSignup($eventid, $playerid, false);
 
     $pdga = $playerob->pdga;

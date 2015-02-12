@@ -106,7 +106,7 @@ function sfl_api_sendRequest($url)
             error_log("Getting data for '$request_url' failed, response =\n" . print_r($response, true));
     }
     else
-        error_log("Getting SFL data failed: code $http_code, " . $error);
+        error_log("Getting SFL data failed: code: $http_code error: " . $error);
 
     return $decoded;
 }

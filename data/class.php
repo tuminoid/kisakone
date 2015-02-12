@@ -40,8 +40,7 @@ function GetClasses($onlyAvailable = false)
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-                $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
+            $retValue[] = new Classification($row);
     }
     mysql_free_result($result);
 

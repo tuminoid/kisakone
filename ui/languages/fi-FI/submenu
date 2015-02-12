@@ -55,6 +55,7 @@ new_news_item       Uusi uutinen
 edit_news_item      Muokkaa uutista
 edit_event_classes  Luokat
 edit_event_quotas   Kiintiöt
+edit_event_rules    Rajat ja ehdot
 edit_ads            Mainokset
 editclass           Muokkaa luokkaa
 edittournament      Muokkaa sarjaa

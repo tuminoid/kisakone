@@ -26,6 +26,7 @@ require_once 'data/player.php';
 require_once 'core/player.php';
 require_once 'core/user.php';
 require_once 'core/email.php';
+require_once 'core/rules.php';
 
 
 /* Return event's queue counts by class */
@@ -111,9 +112,11 @@ function CheckQueueForPromotions($eventId)
         $playerId = (int) $queuer['player']->id;
         $classId = (int) $queuer['classId'];
 
-        if (CheckSignupQuota($eventId, $playerId, $classId)) {
+        $quota_ok = CheckSignupQuota($eventId, $playerId, $classId);
+        $rules_ok = (CheckEventRules($eventId, $classId, $playerId) === true ? true : false);
+
+        if ($quota_ok && $rules_ok)
             PromotePlayerFromQueue($eventId, $playerId);
-        }
     }
 
     return null;

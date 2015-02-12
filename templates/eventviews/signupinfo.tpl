@@ -20,11 +20,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
+
 {if $mode == 'body'}
  <div id="event_content">
     {$page->formattedText}
 </div>
-
 
 {if $admin}
     <div class="error">{translate id=admin_cant_sign_up}</div>
@@ -55,65 +55,17 @@
         <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
     </ul>
 
-{elseif $admin ||( !$signedup && $signupOpen)}
+{elseif $admin || (!$signedup && $signupOpen)}
 
 <form method="post" class="">
     <input type="hidden" name="formid" value="sign_up" />
     {if $user}
-        <div id="pdga_info" style="float: right; width: 200px" class="searcharea">
-        <table>
-            <tr>
-                <td><label for="sfl_license">{translate id=license_status_header}</label></td>
-                <td><span id="sfl_license">
-                    {if $sfl_license_a}
-                        {translate id=alicense}
-                    {elseif $sfl_license_b}
-                        {translate id=blicense}
-                    {elseif $sfl_membership}
-                        {translate id=membership}
-                    {else}
-                        {translate id=none_paid}
-                    {/if}
-                </span></td>
-            </tr>
-            {if $pdga}
-            <tr>
-                <td><label for="pdga_number">{translate id=pdga_number}</label></td>
-                <td><span id="pdga_number">{$pdga}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_membership_status">{translate id=pdga_membership}</label></td>
-                <td><span id="pdga_membership_status">{translate id=pdga_membership_$pdga_membership_status}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_official_status">{translate id=pdga_official}</label></td>
-                <td><span id="pdga_official_status">{translate id=pdga_official_$pdga_official_status}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_rating">{translate id=pdga_rating}</label></td>
-                <td><span id="pdga_rating">{$pdga_rating}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_status">{translate id=pdga_status}</label></td>
-                <td><span id="pdga_status">{$pdga_classification}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_birth_year">{translate id=user_yearofbirth}</label></td>
-                <td><span id="pdga_birth_year">{$pdga_birth_year}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_gender">{translate id=user_gender}</label></td>
-                <td><span id="pdga_gender">{translate id=$pdga_gender}</span></td>
-            </tr>
-            <tr>
-                <td><label for="pdga_country">{translate id=pdga_country}</label></td>
-                <td><span id="pdga_country">{$pdga_country}</span></td>
-            </tr>
-            {/if}
-        </table>
+        <div id="playerinfo" style="float: right; width: 200px" class="searcharea">
+        {include file='include/playerinfo.tpl'}
         </div>
 
         <p class="signup_status">{translate id=not_signed_up}</p>
+
         {assign var=player value=$user->getPlayer()}
         {foreach from=$classes item=class}
             <div>
@@ -128,11 +80,41 @@
             </div>
         {/foreach}
 
-        <hr style="clear: both" />
+        <div style="padding: 1em;">
         <input type="submit" {if $nosignup}disabled="disabled"{/if} value="{translate id="signup"}" />
         <input type="submit" id="cancel" name="cancel" value="{translate id="cancel"}" />
+        </div>
     {/if}
 </form>
+
+{if $rules}
+<h2 id="regrules" style="clear:both">{translate id=event_registration_rules}</h2>
+
+<div>
+    <table>
+    <tr><th>Luokka</th><th colspan="3">Ehto</th><th>Asti</th></tr>
+    {foreach from=$rules item=rule}
+        {assign var=op value=$rule.Op}
+        {assign var=type value=$rule.Type}
+        {assign var=value value=$rule.Value}
+        <tr>
+            <td>{if $rule.Classification}{$rule.ClassName}{else}{translate id=rule_all_classes}{/if}</td>
+            <td>{translate id=ruletype_short_$type}</td>
+            <td>{$op}</td>
+            <td>
+                {if $type == 'co' or $type == 'status'}
+                    {capture name=valuetype assign=rulevalue}{$type}_{$value}{/capture}
+                    {translate id=rulevalue_$rulevalue}
+                {else}
+                    {$value}
+                {/if}
+            </td>
+            <td>{if $rule.Valid}{$rule.ValidUntil}{else}{translate id=rule_not_valid}{/if}</td>
+        </tr>
+    {/foreach}
+    </table>
+</div>
+{/if}
 
 {elseif $paid}
 

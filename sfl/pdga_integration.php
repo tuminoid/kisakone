@@ -134,8 +134,8 @@ function pdga_api_getPlayer($pdga_number = 0)
         $decoded = json_decode($response, true);
 
         if (!$decoded || isset($decoded["status"])) {
-            error_log("Getting data for PDGA#$pdga_number failed, status= " . @$decoded['status'] .
-                "message='" . @$decoded['message']);
+            error_log("Getting data for PDGA#$pdga_number failed, status= '" . @$decoded['status'] .
+                "', message='" . @$decoded['message'] . "'");
             return null;
         }
     }

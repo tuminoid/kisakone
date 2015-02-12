@@ -28,6 +28,7 @@ require_once 'data/event_queue.php';
 require_once 'data/payments.php';
 require_once 'data/level.php';
 require_once 'data/round.php';
+require_once 'data/rules.php';
 
 
 // Valid Event->signupState attribute values
@@ -361,6 +362,11 @@ class Event
     {
         if ($this->pdgaEventId)
             return "http://www.pdga.com/tour/event/" . $this->pdgaEventId;
+    }
+
+    function getRules($class = -1)
+    {
+        return GetEventRules($this->id, $class);
     }
 }
 

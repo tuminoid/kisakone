@@ -31,10 +31,10 @@ function GenerateSalt()
     try {
         $rawsalt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
     }
-    catch(Exception $e) {
-        error_log("error: php5-crypt missing, cannot create salt");
-        return null;
+    catch (Exception $e) {
+        die("fatal error: php5-mcrypt missing, cannot create salt for password");
     }
+
     $salt = base64_encode($rawsalt);
     $salt = str_replace('+', '.', $salt);
     return $salt;
