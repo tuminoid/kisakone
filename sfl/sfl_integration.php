@@ -231,10 +231,10 @@ function SFL_getPlayer($userid)
         // there may be valid cases for spaces, convert them into +
         list($firstname, $lastname) = str_replace(' ', '+', array($firstname, $lastname));
 
-        if ($sflid > 0)
-            $data = SFL_getLicensesById($sflid);
-        elseif ($pdga > 0)
+        if ($pdga > 0)
             $data = SFL_getLicensesByPDGA($pdga);
+        elseif ($sflid > 0)
+            $data = SFL_getLicensesById($sflid);
         else
             $data = SFL_getLicensesByName($firstname, $lastname, $birthdate);
 
