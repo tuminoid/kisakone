@@ -546,7 +546,7 @@ function GetEventResults($eventId)
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
                     :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
-                    :Participation.Standing, :Club.ShortName AS ClubName
+                    :Participation.Standing, :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id
