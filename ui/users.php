@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User listing
  *
@@ -27,13 +28,10 @@
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (IsAdmin()) {
-        $users = GetUsers(@$_GET['search'], @$_GET['sort']);
-    }
-    else {
-        $users = GetPlayerUsers(@$_GET['search'], @$_GET['sort']);
-    }
+    if (!IsAdmin())
+        return Error::accessDenied();
 
+    $users = GetUsers(@$_GET['search'], @$_GET['sort']);
     $smarty->assign('users', $users);
 }
 
