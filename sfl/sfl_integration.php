@@ -228,6 +228,9 @@ function SFL_getPlayer($userid)
         if (strstr($firstname, '/') || strstr($lastname, '/') || $birthdate == 1900)
             return null;
 
+        // there may be valid cases for spaces, convert them into +
+        list($firstname, $lastname) = str_replace(' ', '+', array($firstname, $lastname));
+
         if ($sflid > 0)
             $data = SFL_getLicensesById($sflid);
         elseif ($pdga > 0)
