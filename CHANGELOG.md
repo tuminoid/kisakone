@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * TODO
+  * Regression: Players who have space in their name didn't get their license correctly.
 
 2015.02.10:
 ===========
