@@ -73,6 +73,8 @@ license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pel
 
 pdga_rating            Rating
 pdga_status            Luokitus
+pdga_status_P          Pro
+pdga_status_A          Am
 pdga_data_match        Tieto on sama kuin PDGA:lla
 pdga_data_mismatch     Tieto on eri kuin PDGA:lla
 pdga_membership_current PDGA jäsenyys on voimassa
@@ -86,6 +88,8 @@ pdga_official          Sääntötesti
 pdga_official_yes      Suoritettu
 pdga_official_no       Ei
 pdga_country           Maa
+pdga_gender_M          Mies
+pdga_gender_F          Nainen
 
 user_ban    Estä käyttö
 ban         Estä

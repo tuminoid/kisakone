@@ -40,7 +40,7 @@
 </tr>
 <tr>
     <td><label for="pdga_status">{translate id=pdga_status}</label></td>
-    <td><span id="pdga_status">{$pdga_classification}</span></td>
+    <td><span id="pdga_status">{translate id=pdga_status_$pdga_classification}</span></td>
 </tr>
 <tr>
     <td><label for="pdga_birth_year">{translate id=user_yearofbirth}</label></td>
@@ -48,10 +48,10 @@
 </tr>
 <tr>
     <td><label for="pdga_gender">{translate id=user_gender}</label></td>
-    <td><span id="pdga_gender">{translate id=$pdga_gender}</span></td>
+    <td><span id="pdga_gender">{translate id=pdga_gender_$pdga_gender}</span></td>
 </tr>
 <tr>
-    <td><label for="pdga_country">{translate id='pdga_country'}:</label></td>
+    <td><label for="pdga_country">{translate id='pdga_country'}</label></td>
     <td><span name="pdga_country">{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</span></td>
 </tr>
 {/if}

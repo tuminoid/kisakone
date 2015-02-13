@@ -138,8 +138,7 @@ $(document).ready(function(){
         <input id="gender" type="radio" disabled="disabled" {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" disabled="disabled" {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
         {if $pdga}
-            {assign var=tmpgender value=$pdga_gender|truncate:1:""|upper}
-            {if $tmpgender != $player->gender}
+            {if $pdga_gender != $player->gender}
             <img src="/images/exclamation.png" height="16" alt="error!"
                 title="{translate id=pdga_data_mismatch} ({$player->gender} vs {$pdga_gender})" />
             {/if}
