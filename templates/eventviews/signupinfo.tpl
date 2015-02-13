@@ -34,7 +34,9 @@
     {assign var=nosignup value=true}
 {elseif $feesMissing}
     <div class="error">
-    {if $feesMissing == 1}
+    {if $pdga && $pdga_country != 'FI'}
+        {translate id=fees_necessary_for_signup_pdga}
+    {elseif $feesMissing == 1}
         {translate id=fees_necessary_for_signup_1}
     {elseif $feesMissing == 2}
         {translate id=fees_necessary_for_signup_2}
