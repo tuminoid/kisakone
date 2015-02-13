@@ -161,7 +161,7 @@ CREATE TABLE :TextContent
     Content TEXT NOT NULL,
     Date DATETIME NOT NULL,
     Type VARCHAR(14) NOT NULL,
-    Order SMALLINT,
+    `Order` SMALLINT,
     PRIMARY KEY(id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
     INDEX(Event, Title),
