@@ -101,7 +101,7 @@ function GetGlobalTextContent($contentId, $searchByTitle = false)
     if (is_numeric($contentId)) {
         $content = GetTextContent($contentId);
         if (!$content || $content->event !== null) {
-            return Error::accessDenied();
+            return Error::AccessDenied();
         }
     }
     else {

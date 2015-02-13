@@ -41,7 +41,7 @@ function processForm()
 
                 if ($newban != $value) {
                     $user = GetUserDetails($userid);
-                    return Error::notImplemented();
+                    return Error::NotImplemented();
                     //Ban($user->id, $newban);
                 }
             }
@@ -51,7 +51,7 @@ function processForm()
                 list($ignore, $userid) = explode('_', $key);
                 $user = GetUserDetails($userid);
                 //$user->Remove();
-                return Error::notImplemented();
+                return Error::NotImplemented();
             }
         }
     }

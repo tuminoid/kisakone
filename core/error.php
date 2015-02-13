@@ -103,7 +103,7 @@ class Error
     // The functions below create Error objects for specific error types with
     // minimal effort  from the caller. Their use is highly recommended when
     // appropriate.
-    function internalError($string = "")
+    function InternalError($string = "")
     {
         $e = new Error();
         $e->isMajor = true;
@@ -115,7 +115,7 @@ class Error
         return $e;
     }
 
-    function notImplemented()
+    function NotImplemented()
     {
         $e = new Error();
         $e->isMajor = true;
@@ -127,7 +127,7 @@ class Error
         return $e;
     }
 
-    function notFound($resourceType)
+    function NotFound($resourceType)
     {
         $e = new Error();
         $e->isMajor = true;
@@ -139,7 +139,7 @@ class Error
         return $e;
     }
 
-    function accessDenied()
+    function AccessDenied()
     {
         $e = new Error();
         $e->isMajor = true;

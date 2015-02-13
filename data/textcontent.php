@@ -112,7 +112,7 @@ function GetTextContentByTitle($eventid, $title)
 function SaveTextContent($page)
 {
     if (!is_a($page, 'TextContent'))
-        return Error::notFound('textcontent');
+        return Error::NotFound('textcontent');
 
     $title = esc_or_null($page->title);
     $content = esc_or_null($page->content);

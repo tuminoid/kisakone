@@ -284,7 +284,7 @@ function SetUserDetails($user)
     $retValue = null;
 
     if (!is_a($user, "User"))
-        return Error::internalError("Wrong class as argument");
+        return Error::InternalError("Wrong class as argument");
 
     $u_username_quoted = esc_or_null($user->username);
     $u_email = esc_or_null($user->email);

@@ -279,7 +279,7 @@ class Event
         if (is_numeric($contentId)) {
             $content = GetTextContent($contentId);
             if (!$content || $content->event != $this->id) {
-                return Error::accessDenied();
+                return Error::AccessDenied();
             }
         }
         else {

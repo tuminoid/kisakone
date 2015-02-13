@@ -45,7 +45,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (is_a($event, 'Error'))
         return $event;
     if (!IsAdmin() && $event->management != 'td')
-        return Error::accessDenied('addcompetitor');
+        return Error::AccessDenied('addcompetitor');
 
     if ($user) {
         // User has been selected; show edit/confirmation form

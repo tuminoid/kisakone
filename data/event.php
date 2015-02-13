@@ -339,7 +339,7 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
 function SetTD($eventid, $td)
 {
     if (!isset($eventid) or !isset($td))
-        return Error::internalError("Event id or td argument is not set.");
+        return Error::InternalError("Event id or td argument is not set.");
 
     $eventid = (int) $eventid;
     $id = (int) $td;
@@ -367,7 +367,7 @@ function SetOfficials($eventid, $officials)
     $role = esc_or_null('official');
 
     if (!isset($eventid))
-        return Error::internalError("Event id argument is not set.");
+        return Error::InternalError("Event id argument is not set.");
 
     execute_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
 
@@ -816,7 +816,7 @@ function data_CreateSortOrder($desiredOrder, $fields)
                 $field = $bit;
             else {
                 echo $bit;
-                return Error::notImplemented();
+                return Error::NotImplemented();
             }
         }
 

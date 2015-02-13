@@ -29,7 +29,7 @@
 function InitializeSmartyVariables(&$smarty, $error)
 {
     if (!IsAdmin())
-        return Error::accessDenied();
+        return Error::AccessDenied();
 
     $users = GetUsers(@$_GET['search'], @$_GET['sort']);
     $smarty->assign('users', $users);

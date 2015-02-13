@@ -57,7 +57,7 @@ function StoreUploadedImage($type)
     $validExtensions = array(".png", ".jpg", ".jpeg", ".gif");
 
     if (!in_array(strtolower($extension), $validExtensions)) {
-        return Error::accessDenied();
+        return Error::AccessDenied();
     }
 
     $displayName = core_GetUniqueFileDisplayName($original_name, $type);

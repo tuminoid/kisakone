@@ -462,7 +462,7 @@ function GetRoundResult($roundid, $playerid)
         // Cleanest thing we can do is to throw away all the invalid scores and return error.
         // This way TD knows to reload the scoring page and can alleviate the error by re-entering.
         execute_query(format_query("DELETE FROM :RoundResult WHERE Round = $roundid AND Player = $playerid"));
-        $id = Error::internalError("Double score detected, please reload...");
+        $id = Error::InternalError("Double score detected, please reload...");
     }
     elseif (!mysql_num_rows($result)) {
         $query = format_query("INSERT INTO :RoundResult (Round, Player, Result, Penalty, SuddenDeath, Completed, LastUpdated)

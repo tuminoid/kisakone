@@ -124,7 +124,7 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
 function SetPlayerDetails($player)
 {
     if (!is_a($player, "Player"))
-        return Error::internalError("Wrong class as argument");
+        return Error::InternalError("Wrong class as argument");
 
     $pdga = esc_or_null($player->pdga, 'int');
     $gender = esc_or_null($player->gender == 'M' ? 'male' : 'female');

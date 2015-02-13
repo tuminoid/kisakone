@@ -79,7 +79,7 @@ function SetClasses($eventid, $classes)
     $eventid = (int) $eventid;
 
     if (!isset($eventid))
-        return Error::internalError("Event id argument is not set.");
+        return Error::InternalError("Event id argument is not set.");
 
     $quotas = GetEventQuotas($eventid);
     execute_query(format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid"));
