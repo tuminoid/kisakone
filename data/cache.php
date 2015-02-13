@@ -27,7 +27,7 @@ require_once 'config.php';
 /**
  * Connect to memcached
  *
- * @return  memcached object
+ * @return  memcached object or null on failure or disabled
  */
 function cache_connect()
 {
@@ -69,9 +69,9 @@ function cache_set($key, $value, $expires = 0)
 {
     $cache = cache_connect();
     if (!$cache)
-        return null;
+        return false;
 
-    return $cache->set(md5($key), $value, $expires);
+    return $cache->set(md5($key), $value, time() + $expires);
 }
 
 
@@ -85,7 +85,7 @@ function cache_get($key)
 {
     $cache = cache_connect();
     if (!$cache)
-        return null;
+        return false;
 
     return $cache->get(md5($key));
 }

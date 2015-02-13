@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Language subsystem
  *
@@ -21,6 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'data/cache.php';
+
+
 /**
  * This class contains the details of a loaded language.
  */
@@ -79,6 +83,12 @@ class Language
         $langdirname = $this->dir;
         $id = $this->id;
 
+        $data = cache_get('translate_loadallfiles');
+        if ($data) {
+            $this->data = $data;
+            return;
+        }
+
         $dir = opendir($langdirname);
         if ($dir === false)
             error('Could not load language.');
@@ -96,9 +106,7 @@ class Language
                 $line = trim(fgets($langfile));
 
                 // Ignoring empty lines and comments
-                if ($line == "" || $line {
-                    0
-                } == '#')
+                if ($line == "" || $line[0] == '#')
                     continue;
 
                 $parts = explode(" ", $line, 2);
@@ -107,13 +115,14 @@ class Language
                 $this->data[$parts[0]] = trim($parts[1]);
 
                 // 2-way mapping
-                if ($parts[0][0] == ':') {
+                if ($parts[0][0] == ':')
                     $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
-                }
             }
             fclose($langfile);
         }
         closedir($dir);
+
+        cache_set('translate_loadallfiles', $this->data, 15*60);
     }
 
     function LoadSingleFile($file)
@@ -124,26 +133,30 @@ class Language
         $langfilename = 'ui/languages/' . $id . '/' . $file;
         if (!file_exists($langfilename))
             return false;
-        $langfile = fopen($langfilename, 'r');
 
-        while (!feof($langfile)) {
-            $line = trim(fgets($langfile));
+        $data = cache_get($langfilename);
+        if (!$data) {
+            $langfile = fopen($langfilename, 'r');
 
-            // Ignoring empty lines and comments
-            if ($line == "" || $line {
-                0
-            } == '#')
-                continue;
+            while (!feof($langfile)) {
+                $line = trim(fgets($langfile));
 
-            $parts = explode(" ", $line, 2);
-            $this->data[$parts[0]] = trim($parts[1]);
-            // 2-way mapping
-            if ($parts[0][0] == ':') {
-                $this->data[trim($parts[1])] = trim(substr($parts[0], 1));
+                // Ignoring empty lines and comments
+                if ($line == "" || $line[0] == '#')
+                    continue;
+
+                $parts = explode(" ", $line, 2);
+                $data[$parts[0]] = trim($parts[1]);
+                // 2-way mapping
+                if ($parts[0][0] == ':')
+                    $data[trim($parts[1])] = trim(substr($parts[0], 1));
             }
-        }
 
-        fclose($langfile);
+            fclose($langfile);
+
+            cache_set($langfilename, $data, 15*30);
+        }
+        $this->data = array_merge($this->data, $data);
 
         return true;
     }
@@ -171,17 +184,14 @@ class Language
             $id = $data[0];
             $arguments = $data[1];
         }
-        elseif (isset($arguments['arguments'])) {
+        elseif (isset($arguments['arguments']))
             $arguments = $arguments['arguments'];
-        }
 
         if (!array_key_exists($id, $this->data)) {
-            if ($this->allLoaded) {
+            if ($this->allLoaded)
                 return "[Missing $id]";
-            }
             else {
                 $this->LoadAllFiles();
-
                 return $this->translate($id, $arguments);
             }
         }
@@ -193,12 +203,10 @@ class Language
         $text = preg_replace_callback('/\{([^}]+)\}/', array($this, 'ReplaceToken'), $str);
 
         // Convert any HTML entities found -- if necessary
-        if (substr($text, 0, 6) == "<HTML>") {
+        if (substr($text, 0, 6) == "<HTML>")
             $text = substr($text, 6);
-        }
-        else {
+        else
             $text = htmlspecialchars($text);
-        }
 
         // Lastly add forced line changes as necessary
         $text = str_replace("\\n", "<br />", $text);
