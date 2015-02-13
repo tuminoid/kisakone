@@ -28,6 +28,7 @@ define('SFL_API_SERVER', "http://127.0.0.1:8082");
 
 require_once 'config.php';
 require_once 'data/user.php';
+require_once 'data/cache.php';
 
 
 /**
@@ -95,6 +96,10 @@ function sfl_api_sendRequest($url)
     if (!$url)
         return null;
 
+    $data = cache_get($url);
+    if ($data)
+        return $data;
+
     $request_url = SFL_API_SERVER . $url;
     list($response, $http_code, $error) = sfl_api_curl_exec($request_url);
 
@@ -107,6 +112,8 @@ function sfl_api_sendRequest($url)
     }
     else
         error_log("Getting SFL data failed: code: $http_code error: " . $error);
+
+    cache_set($url, $decoded, 15*60);
 
     return $decoded;
 }

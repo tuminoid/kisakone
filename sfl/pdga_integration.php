@@ -25,6 +25,7 @@ define('PDGA_API_SERVER', "https://api.pdga.com");
 
 require_once 'config.php';
 require_once 'data/db_init.php';
+require_once 'data/cache.php';
 
 
 /**
@@ -63,12 +64,7 @@ function pdga_api_settings()
  */
 function pdga_api_getSession()
 {
-    static $session;
-    static $timeout;
-
-    if ($timeout && $timeout > time())
-        $session = null;
-
+    $session = cache_get('pdga_session');
     if ($session)
         return $session;
 
@@ -100,7 +96,8 @@ function pdga_api_getSession()
     $session = $logged_user->session_name . '=' . $logged_user->sessid;
     curl_close($curl);
 
-    $timeout = time() + 10 * 60;
+    cache_set('pdga_session', $session, 10*60);
+
     return $session;
 }
 

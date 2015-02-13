@@ -62,6 +62,17 @@ $settings["PDGA_PASSWORD"] = "";
 
 
 /*
+ * MEMCACHED
+ *
+ * If you have memcached at your disposal, you can enable it for speed-ups
+ */
+$settings["MEMCACHED_ENABLED"] = false;
+$settings["MEMCACHED_NAME"] = "kisakone";
+$settings["MEMCACHED_HOST"] = "127.0.0.1";
+$settings["MEMCACHED_PORT"] = "11211";
+
+
+/*
  * DEVELOPMENT/ERROR HANDLING/TECHNICAL
  */
 // php 5.3 spits out deprecation warnings without this
