@@ -45,7 +45,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (is_a($event, 'Error'))
         return $event;
     if (!IsAdmin() && $event->management != 'td')
-        return Error::AccessDenied('addcompetitor');
+        return Error::accessDenied('addcompetitor');
 
     if ($user) {
         // User has been selected; show edit/confirmation form
@@ -84,30 +84,15 @@ function InitializeSmartyVariables(&$smarty, $error)
         if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
             $smarty->assign('pdga', true);
             $pdga_data = pdga_getPlayer($player->pdga);
+            SmartifyPDGA($smarty, $pdga_data);
 
-            // Display an error if connection fails
-            if ($pdga_data == null)
-                $smarty->assign('pdga_error', 1);
-            else {
-                $smarty->assign('pdga_rating', $pdga_data['rating']);
-                $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
-                $smarty->assign('pdga_birth_year', $pdga_data['birth_year']);
-                $smarty->assign('pdga_gender', $pdga_data['gender']);
-                $smarty->assign('pdga_membership_status', $pdga_data['membership_status']);
-                $smarty->assign('pdga_membership_expiration_date', $pdga_data['membership_expiration_date']);
-                $smarty->assign('pdga_official_status', $pdga_data['official_status']);
-                $smarty->assign('pdga_country', strtoupper($pdga_data['country']));
-
-                // Remove classes from drop-down based on PDGA data
-                foreach ($classOptions as $cid => $cname) {
-                    /* pdga data is sometimes wrong, we already filter by local gender data
-                    if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
-                        unset($classOptions[$cid]);
-                    */
-                    $ama_or_junior = (substr($cname, 1, 1) == "A" || substr($cname, 1, 1) == "J");
-                    if ($pdga_data['classification'] == "P" && $ama_or_junior)
-                        unset($classOptions[$cid]);
-                }
+            // Remove classes from drop-down based on PDGA data
+            foreach ($classOptions as $cid => $cname) {
+                if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
+                    unset($classOptions[$cid]);
+                $ama_or_junior = (substr($cname, 1, 1) == "A" || substr($cname, 1, 1) == "J");
+                if ($pdga_data['classification'] == "P" && $ama_or_junior)
+                    unset($classOptions[$cid]);
             }
         }
         $smarty->assign('classOptions', $classOptions);
@@ -128,17 +113,14 @@ function InitializeSmartyVariables(&$smarty, $error)
             // Single player, skip the listing
             redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => @$_GET['id'], 'user' => $players[0]->id), $_GET));
         }
-        else {
+        else
             $smarty->assign('many', $players);
-        }
     }
 
-    if (is_object($error)) {
+    if (is_object($error))
         $smarty->assign('error', $error->data);
-    }
-    elseif (is_string($error)) {
+    elseif (is_string($error))
         $smarty->assign('errorString', $error);
-    }
 }
 
 /**

@@ -56,23 +56,20 @@ function SignUpUser($eventId, $userId, $classId, $tdOverride = false)
             $quota_ok = CheckSignUpQuota($eventId, $playerId, $classId);
             $rulecheck = CheckEventRules($eventId, $classId, $playerId);
 
-            switch ($rulecheck) {
-                case 'reject':
-                    // FIXME: Something nicer
+            if (is_string($rulecheck)) {
+                if ($rulecheck == "reject") {
                     $retValue = new Error();
                     $retValue->title = "rule_registration_failed_header";
                     $retValue->description = translate("rule_registration_failed");
                     $retValue->IsMajor = true;
                     return $retValue;
+                }
 
-                case 'queue':
-                    $rules_ok = false;
-                    break;
-
-                default:
-                    $rules_ok = $rulecheck;
-                    break;
+                // it is 'queue'
+                $rules_ok = false;
             }
+            else
+                $rules_ok = $rulecheck;
 
             $can_signup_directly = $quota_ok && $rules_ok;
         }

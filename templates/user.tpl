@@ -37,8 +37,13 @@
          {translate id=$gendertoken}</td>
       </tr>
       <tr>
+      {if $pdga_country and $pdga_country != 'FI'}
+         <td>{translate id=user_country}:</td>
+         <td>{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</td>
+      {else}
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
+      {/if}
       </tr>
       <tr>
          <td>{translate id=user_yearofbirth}: </td>
@@ -105,33 +110,8 @@
 <h2>{translate id=user_pdga_title}</h2>
 
 <table style="width:500px">
-<tr>
-   <td>{translate id=user_pdga_number}:</td>
-   <td><span name="pdga_number">{$player->pdga|escape}</span></td>
-</tr>
-<tr>
-   <td style="width: 200px"><label for="membership">{translate id='pdga_membership'}:</label></td>
-   <td><span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span></td>
-</tr>
-<tr>
-   <td><label for="official">{translate id='pdga_official'}:</label></td>
-   <td><span name="official">{translate id=pdga_official_$pdga_official_status}</span></td>
-</tr>
-<tr>
-   <td><label for="rating">{translate id='pdga_rating'}:</label></td>
-   <td><span name="rating">{$pdga_rating}</span></td>
-</tr>
-<tr>
-   <td><label for="status">{translate id='pdga_status'}:</label></td>
-   <td><span name="status">{$pdga_classification}</span></td>
-</tr>
-<tr>
-   <td><label for="status">{translate id='pdga_country'}:</label></td>
-   <td><span name="status">{$pdga_country}</span></td>
-</tr>
+{include file='include/pdgainfotable.tpl'}
 </table>
-
-<p><a href="http://www.pdga.com/player/{$player->pdga}">{translate id=user_pdga_link}</a></p>
 {/if}
 
 {include file='include/footer.tpl'}

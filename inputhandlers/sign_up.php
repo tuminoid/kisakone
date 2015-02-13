@@ -70,7 +70,7 @@ function processForm()
             return Error::AccessDenied();
     }
 
-    $result = SignupUser($event->id, $user->id, $class->id);
+    $result = SignUpUser($event->id, $user->id, $class->id);
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
 

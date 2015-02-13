@@ -75,22 +75,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
-        $smarty->assign('pdga', $player->pdga);
         $pdga_data = pdga_getPlayer($player->pdga);
-
-        // Display an error if connection fails
-        if ($pdga_data == null)
-            $smarty->assign('pdga_error', 'pdga_server_error');
-        else {
-            $smarty->assign('pdga_rating', $pdga_data['rating']);
-            $smarty->assign('pdga_classification', $pdga_data['classification'] == "P" ? "Pro" : "Am");
-            $smarty->assign('pdga_birth_year', $pdga_data['birth_year']);
-            $smarty->assign('pdga_gender', $pdga_data['gender']);
-            $smarty->assign('pdga_membership_status', $pdga_data['membership_status']);
-            $smarty->assign('pdga_membership_expiration_date', $pdga_data['membership_expiration_date']);
-            $smarty->assign('pdga_official_status', $pdga_data['official_status']);
-            $smarty->assign('pdga_country', strtoupper($pdga_data['country']));
-        }
+        SmartifyPDGA($smarty, $pdga_data);
     }
 
     $smarty->assign('isadmin', @$_SESSION['user']->role == "admin");

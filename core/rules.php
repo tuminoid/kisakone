@@ -60,7 +60,13 @@ function CheckEventRules($eventid, $classid, $playerid)
     $pdga = @$player->pdga;
     $pdgadata = pdga_getPlayer($pdga);
 
-    foreach (array_merge($commonrules, $classrules) as $index => $rule) {
+    $rules = array_merge($commonrules, $classrules);
+    if (!count($rules)) {
+        error_log("no rules, true");
+        return true;
+    }
+
+    foreach ($rules as $index => $rule) {
         $id = $rule['id'];
         $type = $rule['Type'];
         $op = $rule['Op'];

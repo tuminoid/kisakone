@@ -25,7 +25,9 @@
 
 {include file=support/eventlockhelper.tpl}
 
-{if $errorString}<p class="error">{$errorString}</p>{/if}
+{if $errorString}
+<p class="error">{$errorString}</p>
+{/if}
 
 {if !$userdata && !is_array($many)}
     {* We have neither an user, nor a listing *}
@@ -93,10 +95,6 @@ $(document).ready(function(){
     <input type="hidden" name="userid" value="{$user->id}" />
     <input type="hidden" name="formid" value="add_competitor" />
 
-    {if $pdga_error}
-        <div class="error">{translate id=pdga_server_error}</div>
-    {/if}
-
     <h2>{translate id='reg_contact_info'}</h2>
     <div>
         <label for="firstname">{translate id='first_name'}</label>
@@ -139,9 +137,12 @@ $(document).ready(function(){
         <label for="gender">{translate id='gender'}</label>
         <input id="gender" type="radio" disabled="disabled" {if $player->gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" disabled="disabled" {if $player->gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
-        {if $pdga && $pdga_gender != $player->gender}
+        {if $pdga}
+            {assign var=tmpgender value=$pdga_gender|truncate:1:""|upper}
+            {if $tmpgender != $player->gender}
             <img src="/images/exclamation.png" height="16" alt="error!"
                 title="{translate id=pdga_data_mismatch} ({$player->gender} vs {$pdga_gender})" />
+            {/if}
         {/if}
     </div>
 
@@ -160,18 +161,9 @@ $(document).ready(function(){
     <h2>{translate id='add_competitor_class'}</h2>
     <div>
         {if $pdga}
-        <div class="searcharea">
-            <label for="membership">{translate id='pdga_membership'}</label>
-                <span name="membership">{translate id=pdga_membership_$pdga_membership_status} {if $pdga_membership_status != "current"}{$pdga_membership_expiration_date}{/if}</span><br />
-            <label for="official">{translate id='pdga_official'}</label>
-                <span name="official">{translate id=pdga_official_$pdga_official_status}</span><br />
-            <label for="rating">{translate id='pdga_rating'}</label>
-                <span name="rating">{$pdga_rating}</span><br />
-            <label for="status">{translate id='pdga_status'}</label>
-                <span name="status">{$pdga_classification}</span><br />
-            <label for="status">{translate id='pdga_country'}</label>
-                <span name="status">{$pdga_country}</span><br />
-        </div>
+        <table style="width: 300px" class="searcharea">
+        {include file='include/pdgainfotable.tpl'}
+        </table>
         {/if}
 
         <label for="class">{translate id='class'}</label>

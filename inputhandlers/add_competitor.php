@@ -69,9 +69,14 @@ function processForm()
         if (!$player->IsSuitableClass($class))
             return translate("error_invalid_class");
 
-        $retVal = SignupUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
-        if (is_a($retVal, 'Error'))
+        $retVal = SignUpUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);
+        if (is_a($retVal, 'Error')) {
+            // FIXME: Not nice to check it this way...
+            if ($retVal->title == "rule_registration_failed_header")
+                return translate("rule_registration_failed");
+
             return $retVal;
+        }
 
         redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => $retVal), $_GET));
     }

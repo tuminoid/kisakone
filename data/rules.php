@@ -66,7 +66,7 @@ function GetEventRules($eventid, $classid = -1)
     if (!$result)
         return Error::Query($query);
 
-    $retValue = null;
+    $retValue = array();
     while (($row = mysql_fetch_assoc($result)) !== false)
         $retValue[] = $row;
     mysql_free_result($result);

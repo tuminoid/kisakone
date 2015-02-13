@@ -273,3 +273,29 @@ function pdga_getPlayerRating($pdga_number = 0, $force = false)
 {
     return pdga_getPlayerData($pdga_number, "rating", $force);
 }
+
+
+/**
+ * SmartifyPDGA
+ *
+ * Put all pdga_data into a smarty variables for template use
+ *
+ * @param smarty $smarty smarty object
+ * @param mixed $pdga_data data from pdga_getPlayer call
+ */
+function SmartifyPDGA(&$smarty, $pdga_data)
+{
+    if ($pdga_data) {
+        $smarty->assign('pdga', @$pdga_data['pdga_number']);
+        $smarty->assign('pdga_rating', @$pdga_data['rating']);
+        $smarty->assign('pdga_classification', @$pdga_data['classification'] == "P" ? "Pro" : "Am");
+        $smarty->assign('pdga_birth_year', @$pdga_data['birth_year']);
+        $smarty->assign('pdga_gender', @$pdga_data['gender'] == "M" ? "male" : "female");
+        $smarty->assign('pdga_membership_status', @$pdga_data['membership_status']);
+        $smarty->assign('pdga_membership_expiration_date', @$pdga_data['membership_expiration_date']);
+        $smarty->assign('pdga_official_status', @$pdga_data['official_status']);
+        $smarty->assign('pdga_city', @$pdga_data['city']);
+        $smarty->assign('pdga_state', @$pdga_data['state']);
+        $smarty->assign('pdga_country', strtoupper(@$pdga_data['country']));
+    }
+}

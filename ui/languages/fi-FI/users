@@ -27,7 +27,8 @@ user_alicense_paid A-lisenssi sisältää B-lisenssin
 user_licenses_title Kilpailulisenssit
 user_pdga_title PDGA-tiedot
 user_club Seura
-user_no_club Ei seuraa tai PDGA-numero ei täsmää
+user_country Maa
+user_no_club Käyttäjän tiedot ei täsmää Jäsenrekisteriin.
 
 #registration form
 reg_contact_info    Yhteystiedot
