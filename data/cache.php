@@ -65,10 +65,10 @@ function cache_connect()
  * @param int $expires seconds until expired
  * @return  true/false
  */
-function sfl_api_cache_set($key, $value, $expires = 0)
+function cache_set($key, $value, $expires = 0)
 {
     $cache = cache_connect();
-    if (!cache)
+    if (!$cache)
         return null;
 
     return $cache->set(md5($key), $value, $expires);
@@ -81,10 +81,10 @@ function sfl_api_cache_set($key, $value, $expires = 0)
  * @param string $key key identifier
  * @return  true/false
  */
-function sfl_api_cache_get($key)
+function cache_get($key)
 {
     $cache = cache_connect();
-    if (!cache)
+    if (!$cache)
         return null;
 
     return $cache->get(md5($key));

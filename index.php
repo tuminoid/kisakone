@@ -24,8 +24,6 @@
 * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
 * */
 
-define('KISAKONE_VERSION', '2015-02.10-dev');
-
 setlocale(LC_ALL, array('fi_FI.UTF-8', 'fi_FI@euro', 'fi_FI', 'finnish'));
 
 // Our configs
@@ -44,6 +42,7 @@ require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
+require_once 'data/cache.php';
 require_once 'data/login.php';
 require_once 'data/ads.php';
 
@@ -53,7 +52,7 @@ header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 // Send our version numer at the header
-header("X-Powered-By: Kisakone/" . KISAKONE_VERSION);
+header("X-Powered-By: Kisakone/" . getKisakoneVersion());
 
 // If we're supposed to be logged in, start the session
 if (@$_COOKIE['kisakone_login']) {
@@ -183,7 +182,7 @@ foreach ($smarty->get_template_vars() as $var => $value) {
 if (file_exists("js/analytics.js"))
     $smarty->assign('analytics', true);
 
-$smarty->assign("kisakone_version", KISAKONE_VERSION);
+$smarty->assign("kisakone_version", getKisakoneVersion());
 
 // The type of the data that is being passed to the browser has to be at some point.
 // The type depends on a number of factors:
@@ -470,4 +469,21 @@ function redirect($url)
     else
         redirect("Location: " . $url);
     die();
+}
+
+function getKisakoneVersion()
+{
+    $version = cache_get('kisakone_version');
+
+    if (!$version) {
+        if (file_exists('.git')) {
+            $version = exec('git describe');
+            if (empty($version))
+                $version = 'unknown';
+
+            cache_set('kisakone_version', $version, 24*60*60);
+        }
+    }
+
+    return $version;
 }
