@@ -130,7 +130,7 @@ class Event
         if ($duration > 1) {
             $enddate = $startdate + ($duration - 1) * 60 * 60 * 24;
             if (date('m', $startdate) == date('m', $enddate)) {
-                $this->fulldate = date('d', $startdate) . ' - ' . date('d.m.Y', $enddate);
+                $this->fulldate = date('d', $startdate) . '. - ' . date('d.m.Y', $enddate);
             }
             else {
                 $this->fulldate = date('d.m.Y', $startdate) . ' - ' . date('d.m.Y', $enddate);
