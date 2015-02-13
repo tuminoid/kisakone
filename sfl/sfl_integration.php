@@ -89,16 +89,21 @@ function sfl_api_curl_exec($url)
  * Send curl request to API
  *
  * @param  string $url url (without server)
+ * @param  bool $force get fresh copy from api
  * @return  returns decoded json data
  */
-function sfl_api_sendRequest($url)
+function sfl_api_sendRequest($url, $force = false)
 {
     if (!$url)
         return null;
 
-    $data = cache_get($url);
-    if ($data)
-        return $data;
+    if ($force)
+        cache_del($url);
+    else {
+        $data = cache_get($url);
+        if ($data)
+            return $data;
+    }
 
     $request_url = SFL_API_SERVER . $url;
     list($response, $http_code, $error) = sfl_api_curl_exec($request_url);
@@ -113,7 +118,7 @@ function sfl_api_sendRequest($url)
     else
         error_log("Getting SFL data failed: code: $http_code error: " . $error);
 
-    cache_set($url, $decoded, 15*60);
+    cache_set($url, $decoded, 60*60);
 
     return $decoded;
 }
@@ -156,10 +161,10 @@ function sfl_api_parseLicenses($data)
  * @param  string $firstname first name
  * @param  string $lastname last name
  * @param  int $birthdate year of birth
- * @param  int $year year to be checked
+ * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByName($firstname, $lastname, $birthdate)
+function SFL_getLicensesByName($firstname, $lastname, $birthdate, $force = false)
 {
     $birthdate = (int) $birthdate;
     $url = "/sfl/name/$firstname/$lastname/$birthdate";
@@ -172,10 +177,10 @@ function SFL_getLicensesByName($firstname, $lastname, $birthdate)
  * Get users licenses for a specific year, identified by SFL ID number
  *
  * @param  int $sflId sfl id number
- * @param  int $year year to be checked
+ * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesById($sflid)
+function SFL_getLicensesById($sflid, $force = false)
 {
     $sflid = (int) $sflid;
     $url = "/sfl/id/$sflid";
@@ -188,9 +193,10 @@ function SFL_getLicensesById($sflid)
  * Get users licenses for a specific year, identified by PDGA number
  *
  * @param  int $pdga pdga number
+ * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByPDGA($pdga)
+function SFL_getLicensesByPDGA($pdga, $force = false)
 {
     $pdga = (int) $pdga;
     $url = "/sfl/pdga/$pdga";
@@ -203,9 +209,10 @@ function SFL_getLicensesByPDGA($pdga)
  * Get users licenses for a specific year
  *
  * @param  int $userid internal userid
+ * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getPlayer($userid)
+function SFL_getPlayer($userid, $force = false)
 {
     $userid = (int) $userid;
 

@@ -89,3 +89,19 @@ function cache_get($key)
 
     return $cache->get(md5($key));
 }
+
+
+/**
+ * Delete a value in memcached
+ *
+ * @param string $key key identifier
+ * @return  true/false
+ */
+function cache_del($key)
+{
+    $cache = cache_connect();
+    if (!$cache)
+        return false;
+
+    return $cache->delete(md5($key));
+}
