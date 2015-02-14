@@ -54,6 +54,7 @@ function pdga_api_settings()
     return array($username, $password);
 }
 
+
 /**
  * pdga_api_getSession
  *
@@ -101,6 +102,7 @@ function pdga_api_getSession()
     return $session;
 }
 
+
 /**
  * pdga_api_getPlayer
  *
@@ -146,6 +148,7 @@ function pdga_api_getPlayer($pdga_number = 0)
     return $decoded;
 }
 
+
 /**
  * Access database to get last_updated field for player's status
  *
@@ -155,7 +158,9 @@ function pdga_api_getPlayer($pdga_number = 0)
  */
 function pdga_api_getLastUpdated($pdga_number = 0)
 {
-    $query = "SELECT unix_timestamp(last_updated) AS last_update FROM pdga_players WHERE pdga_number = $pdga_number";
+    $query = format_query("SELECT UNIX_TIMESTAMP(last_updated) AS last_update
+                            FROM :PDGAPlayers
+                            WHERE pdga_number = $pdga_number");
     $result = execute_query($query);
 
     if (!$result || mysql_num_rows($result) != 1)
@@ -167,29 +172,35 @@ function pdga_api_getLastUpdated($pdga_number = 0)
     return (isset($row['last_update']) ? $row['last_update'] : 0);
 }
 
+
 /**
- * Get player data from PDGA API and update it into our pdga_players table.
+ * Get player data from PDGA API and update it into our :PDGAPlayers table.
  *
  * @param int $pdga_number PDGA number to get
+ * @param bool $force force fetching new data from PDGA, instead of local db
  * @return true on success
  * @return false on failure
  */
-function pdga_api_updatePlayer($pdga_number)
+function pdga_api_updatePlayer($pdga_number, $force = false)
 {
-    $data = pdga_api_getPlayer($pdga_number);
+    $last_update = pdga_api_getLastUpdated($pdga_number);
 
-    if (!is_array($data))
-        return false;
+    if ($force || ($last_update + 48 * 60 * 60) < time()) {
+        $data = pdga_api_getPlayer($pdga_number);
 
-    unset($data['sessid']);
-    foreach ($data as $key => $value)
-        $data[$key] = escape_string($value);
+        if (!is_array($data))
+            return false;
 
-    $keys = implode(", ", array_keys($data));
-    $vals = "'" . implode("', '", array_values($data)) . "'";
+        unset($data['sessid']);
+        foreach ($data as $key => $value)
+            $data[$key] = escape_string($value);
 
-    $query = "REPLACE INTO pdga_players ($keys, last_updated) VALUES($vals, NOW())";
-    return execute_query($query);
+        $keys = implode(", ", array_keys($data));
+        $vals = "'" . implode("', '", array_values($data)) . "'";
+
+        $query = format_query("REPLACE INTO :PDGAPlayers ($keys, last_updated) VALUES($vals, NOW())");
+        return execute_query($query);
+    }
 }
 
 
@@ -202,7 +213,7 @@ function pdga_api_updatePlayer($pdga_number)
  * pdga_getPlayer
  *
  * Gets all fields from player's data.
- * If data is more than one day old, fetch that said data from API.
+ * If data is more than two days old, fetch that said data from API.
  *
  * @param int $pdga_number PDGA number
  * @param bool $force force fetching new data from PDGA, instead of local db
@@ -214,23 +225,27 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
     if (!(is_numeric($pdga_number) && $pdga_number > 0))
         return null;
 
-    $last_update = pdga_api_getLastUpdated($pdga_number);
-    if ($force || ($last_update + 24 * 60 * 60) < time())
-        pdga_api_updatePlayer($pdga_number);
+    pdga_api_updatePlayer($pdga_number, $force);
 
-    $query = "SELECT * FROM pdga_players WHERE pdga_number = $pdga_number";
+    $cache_key = "data_" . $pdga_number;
+    $data = cache_get($cache_key);
+    if ($data)
+        return $data;
+
+    $query = format_query("SELECT * FROM :PDGAPlayers WHERE pdga_number = $pdga_number");
     $result = execute_query($query);
 
     if (!$result)
         return null;
 
-    if (mysql_num_rows($result) == 1) {
+    $retValue = null;
+    if (mysql_num_rows($result) == 1)
         $row = mysql_fetch_assoc($result);
-        mysql_free_result($result);
-        return $row;
-    }
+    mysql_free_result($result);
 
-    return null;
+    cache_set($cache_key, $row, 24*60*60);
+
+    return $retValue;
 }
 
 
@@ -282,17 +297,18 @@ function pdga_getPlayerRating($pdga_number = 0, $force = false)
  */
 function SmartifyPDGA(&$smarty, $pdga_data)
 {
-    if ($pdga_data) {
-        $smarty->assign('pdga', @$pdga_data['pdga_number']);
-        $smarty->assign('pdga_rating', @$pdga_data['rating']);
-        $smarty->assign('pdga_classification', @$pdga_data['classification']);
-        $smarty->assign('pdga_birth_year', @$pdga_data['birth_year']);
-        $smarty->assign('pdga_gender', @$pdga_data['gender']);
-        $smarty->assign('pdga_membership_status', @$pdga_data['membership_status']);
-        $smarty->assign('pdga_membership_expiration_date', @$pdga_data['membership_expiration_date']);
-        $smarty->assign('pdga_official_status', @$pdga_data['official_status']);
-        $smarty->assign('pdga_city', @$pdga_data['city']);
-        $smarty->assign('pdga_state', @$pdga_data['state']);
-        $smarty->assign('pdga_country', strtoupper(@$pdga_data['country']));
-    }
+    if (!$smarty || !$pdga_data)
+        return null;
+
+    $smarty->assign('pdga', @$pdga_data['pdga_number']);
+    $smarty->assign('pdga_rating', @$pdga_data['rating']);
+    $smarty->assign('pdga_classification', @$pdga_data['classification']);
+    $smarty->assign('pdga_birth_year', @$pdga_data['birth_year']);
+    $smarty->assign('pdga_gender', @$pdga_data['gender']);
+    $smarty->assign('pdga_membership_status', @$pdga_data['membership_status']);
+    $smarty->assign('pdga_membership_expiration_date', @$pdga_data['membership_expiration_date']);
+    $smarty->assign('pdga_official_status', @$pdga_data['official_status']);
+    $smarty->assign('pdga_city', @$pdga_data['city']);
+    $smarty->assign('pdga_state', @$pdga_data['state']);
+    $smarty->assign('pdga_country', strtoupper(@$pdga_data['country']));
 }

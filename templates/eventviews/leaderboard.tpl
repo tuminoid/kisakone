@@ -27,7 +27,6 @@
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         text-align: center;
-
         margin: 0;
     }
 
@@ -39,7 +38,6 @@
 
     .round_selection_table .selected {
         background-color: #DDD;
-
     }
 
     .results {
@@ -49,21 +47,19 @@
     .rightside {
         text-align: right !important;
     }
+
     .leftside {
         text-align: left !important;
     }
 
-    .thr {
-
+    .sdtd {
+        background-color: white !important;
     }
-    .sdtd { background-color: white !important}
 
     .sd {
         background-color: #EEE !important;
         font-weight: bold;
         min-width: 16px;
-
-
     }
 
 {/literal}</style>
@@ -83,26 +79,22 @@
     {translate id=preliminary_results}
 </p>
 
-
 <table class="results ">
-
-    {foreach from=$resultsByClass key=class item=results}
+{foreach from=$resultsByClass key=class item=results}
     <tr style="border: none">
         {math assign=colspan equation="5+x" x=$numRounds}
         <td colspan="{$colspan}" style="background-color: white" class="leftside">
             <a name="c{$class}"></a>
             <h3>{$class|escape}</h3>
         </td>
-
     </tr>
     {counter assign=rowind start=-1}
     {foreach from=$results item=result}
-
         {counter assign=rowind}
 
         {if $rowind == 0}
-        <tr>
-               <td style="height: 8px; background-color: white;"></td>
+            <tr>
+                <td style="height: 8px; background-color: white;"></td>
             </tr>
 
             <tr class="thr">
@@ -116,9 +108,8 @@
                 <th>{translate id=clubname}</th>
                 {/if}
                 {foreach from=$rounds key=index item=round}
-                        {math assign=roundNumber equation="x+1" x=$index}
-                        <th>{translate id=round_number_short number=$roundNumber}</th>
-
+                    {math assign=roundNumber equation="x+1" x=$index}
+                    <th>{translate id=round_number_short number=$roundNumber}</th>
                 {/foreach}
                 <th>{translate id=leaderboard_hole}</th>
                 <th>+/-</th>
@@ -128,20 +119,19 @@
                 {/if}
             </tr>
             <tr>
-               <td style="height: 8px; background-color: white;"></td>
+                <td style="height: 8px; background-color: white;"></td>
             </tr>
         {/if}
 
         <tr class="resultrow">
-
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
             <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
             <td>{$result.PDGANumber|escape}</td>
-            {if $sfl_enabled}
+            {if $pdga_enabled}
             <td>{$result.Rating|escape}</td>
             {/if}
             {if $sfl_enabled}
-            <td>{$result.ClubName|escape}</td>
+            <td>{$result.clubName|escape}</td>
             {/if}
 
             {foreach from=$rounds item=round key=index}
@@ -151,31 +141,22 @@
                 <td id="r{$result.PlayerId}_{$hr_id}">{$rresult}</td>
             {/foreach}
 
-            <td  id="r{$result.PlayerId}_tc">
-                {$result.TotalCompleted}</td>
+            <td id="r{$result.PlayerId}_tc">{$result.TotalCompleted}</td>
 
-            <td  id="r{$result.PlayerId}_pm">{if $result.DidNotFinish}DNF{else}
-                {$result.TotalPlusminus}{/if}</td>
-            <td id="r{$result.PlayerId}_t">{if $result.DidNotFinish}DNF{else}
-                {$result.OverallResult}{/if}</td>
+            <td id="r{$result.PlayerId}_pm">{if $result.DidNotFinish}DNF{else}{$result.TotalPlusminus}{/if}</td>
+            <td id="r{$result.PlayerId}_t">{if $result.DidNotFinish}DNF{else}{$result.OverallResult}{/if}</td>
             {if $includePoints}
             <td id="r{$result.PlayerId}_tp">
-
                 {assign var=tournamentPoints value=$result.TournamentPoints}
                 {if !$tournamentPoints}{assign var=tournamentPoints value=0}{/if}
                 {math equation="x/10" x=$tournamentPoints}
             </td>
             {/if}
             {if $result.Results.$roundid.SuddenDeath}
-            <td id="r{$result.PlayerId}_p" class="sdtd sd">
-                {translate id=result_sd_panel}
-
-            </td>
+            <td id="r{$result.PlayerId}_p" class="sdtd sd">{translate id=result_sd_panel}</td>
             {/if}
-
         </tr>
-
     {/foreach}
-    {/foreach}
+{/foreach}
 </table>
 {/if}

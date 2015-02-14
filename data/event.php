@@ -608,7 +608,7 @@ function GetEventResultsWithoutHoles($eventId)
     $eventId = (int) $eventId;
 
     $query = "SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName,
-                    :Player.lastname AS LastName, :Player.pdga PDGANumber,
+                    :Player.lastname AS LastName, :Player.pdga AS PDGANumber,
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
                     :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
@@ -652,9 +652,6 @@ function GetEventResultsWithoutHoles($eventId)
             $lastrow['TotalCompleted'] += $row['Completed'];
             $lastrow['TotalPlusminus'] += $row['PlusMinus'];
             $lastrow['Results'][$row['RoundId']] = $row;
-
-            if ($row['PlayerId'] == 1920)
-                error_log(print_r($row, true));
         }
 
         if ($lastrow)
