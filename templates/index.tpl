@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Index page
  * Note: This page uses "events" as the backend, instead of index
@@ -101,8 +101,8 @@
 
             <td class="event_links">
             {if $event->resultsLocked}
-                <img src="{$url_base}images/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>
-                <a href="{url page='event' view=leaderboard id=$event->id}">{translate id=event_results}</a>
+                <span style="white-space: nowrap;"><img src="{$url_base}images/trophyIcon.png" alt="{translate id=results_available}" title="{translate id=results_available}"/>
+                <a href="{url page='event' view=leaderboard id=$event->id}">{translate id=event_results}</a></span>
 
                 {if $event->standing != null}
                     {translate id=your_standing standing=$event->standing}
@@ -110,37 +110,36 @@
             {elseif $event->approved !== null}
                 {* There is a participation record  *}
                 {if $event->eventFeePaid}
-                    <img src="{$url_base}images/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
-                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a>
+                    <span style="white-space: nowrap;"><img src="{$url_base}images/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
+                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a></span>
                 {else}
-                    <img src="{$url_base}images/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
-                    <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a>
+                    <span style="white-space: nowrap;"><img src="{$url_base}images/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
+                    <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a></span>
                 {/if}
 
             {/if}
 
-
-                {if $loggedon}
-                    {if $event->SignupPossible()}
-                        {if $event->approved !== null}
-                            {* <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a> *}
-                        {elseif $user->role != 'admin' && $user->role != 'manager' && $event->management != 'td'}
-                            <img src="{$url_base}images/goIcon.png" alt="{translate id=sign_up_here}" />
-                            <a href="{url page='event' view=signupinfo id=$event->id}">{translate id=event_signup}</a>
-                        {/if}
-                    {/if}
-
-
-                    {if $event->management == 'td' || $user->role == 'admin'}
-                        <a href="{url page='manageevent' id=$event->id}">{translate id=event_manage}</a>
-                    {/if}
-                    {if ($event->management != '' || $user->role == 'admin') && $event->EventOngoing()}
-                        <a href="{url page='enterresults' id=$event->id}">{translate id=event_enter_results}</a>
-                    {/if}
-                    {if $event->management == 'official'}
-                        <a href="{url page='editnews' id=$event->id}">{translate id=event_add_news}</a>
+            {if $loggedon}
+                {if $event->SignupPossible()}
+                    {if $event->approved !== null}
+                        {* <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=event_cancel_signup}</a> *}
+                    {elseif $user->role != 'admin' && $user->role != 'manager' && $event->management != 'td'}
+                        <span style="white-space: nowrap;"><img src="{$url_base}images/goIcon.png" alt="{translate id=sign_up_here}" />
+                        <a href="{url page='event' view=signupinfo id=$event->id}">{translate id=event_signup}</a></span>
                     {/if}
                 {/if}
+
+
+                {if $event->management == 'td' || $user->role == 'admin'}
+                    <a href="{url page='manageevent' id=$event->id}">{translate id=event_manage}</a>
+                {/if}
+                {if ($event->management != '' || $user->role == 'admin') && $event->EventOngoing()}
+                    <a href="{url page='enterresults' id=$event->id}">{translate id=event_enter_results}</a>
+                {/if}
+                {if $event->management == 'official'}
+                    <a href="{url page='editnews' id=$event->id}">{translate id=event_add_news}</a>
+                {/if}
+            {/if}
             </td>
         </tr>
         {foreachelse}
