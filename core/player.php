@@ -184,4 +184,15 @@ class Player
 
         return $problems == 0;
     }
+
+    /**
+     * Get PDGA data for this player
+     */
+    function GetPDGAData($field = null, $force = false)
+    {
+        if ($field)
+            return pdga_getPlayerData($this->pdga, $field, $force);
+
+        return pdga_getPlayer($this->pdga, $force);
+    }
 }

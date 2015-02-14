@@ -28,7 +28,7 @@
 <form method="get" class="usersform" action="{url page=event view=competitors id=$smarty.get.id}">
     {initializeGetFormFields  search=false}
     <div class="formelements">
-         <p>{translate id=users_searchhint}</p>
+        <p>{translate id=users_searchhint}</p>
         <input id="searchField" type="text" size="30" name="search" value="{$smarty.get.search|escape}" />
         <input type="submit" value="{translate id=users_search}" />
     </div>
@@ -36,34 +36,44 @@
 <hr style="clear: both;" />
 <div class="SearchStatus" />
 <table class="narrow" style="min-width: 500px">
-   <tr>
-      <th>{sortheading field=1 id=num sortType=integer}</th>
-      <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
-      <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
-      {if $sfl_enabled}<th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>{/if}
-      <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
-      <th>{sortheading field=PDGA id=users_pdga sortType=integer}</th>
-      {if $pdga_enabled}<th>{sortheading field=Rating id=pdga_rating sortType=integer}</th>{/if}
+    <tr>
+        <th>{sortheading field=1 id=num sortType=integer}</th>
+        <th>{sortheading field=LastName id=lastname sortType=alphabetical}</th>
+        <th>{sortheading field=FirstName id=firstname sortType=alphabetical}</th>
+        {if $sfl_enabled}<th>{sortheading field=ClubName id=clubname sortType=alphabetical}</th>{/if}
+        <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
+        <th>{sortheading field=PDGA id=users_pdga sortType=integer}</th>
+        {if $pdga_enabled}<th>{sortheading field=Rating id=pdga_rating sortType=integer}</th>{/if}
    </tr>
    {foreach from=$participants item=participant name=osallistuja}
    <tr>
-      <td>{$smarty.foreach.osallistuja.index+1}</td>
-      <td>
+        <td>{$smarty.foreach.osallistuja.index+1}</td>
+        <td>
         {if $participant.user->username}<a href="{url page=user id=$participant.user->username}">{/if}
         {$participant.user->lastname|escape}
         {if $participant.user->username}</a>{/if}
-      </td>
-      <td>
+        </td>
+        <td>
         {if $participant.user->username}<a href="{url page=user id=$participant.user->username}">{/if}
         {$participant.user->firstname|escape}
         {if $participant.user->username}</a>{/if}
-      </td>
-      {if $sfl_enabled}<td>{$participant.clubName|escape}</td>{/if}
-      <td>{$participant.className|escape|truncate:3:""}</td>
-      <td>{$participant.player->pdga|escape}</td>
-      {if $pdga_enabled}<td>{$participant.rating|escape}</td>{/if}
-   </tr>
-  {/foreach}
+        </td>
+        {if $sfl_enabled}
+        <td>
+            {if $pdga_enabled and $participant.player->pdga > 0}
+                {assign var=pdgadata value=$participant.player->getPDGAData()}
+                {if $pdgadata.country != 'FI'}
+                    {if $pdgadata.state}{$pdgadata.state}, {/if}{$pdgadata.country}
+                {/if}
+            {/if}
+            {$participant.clubName|escape}
+        </td>
+        {/if}
+        <td>{$participant.className|escape|truncate:3:""}</td>
+        <td>{$participant.player->pdga|escape}</td>
+        {if $pdga_enabled}<td>{$participant.rating|escape}</td>{/if}
+    </tr>
+    {/foreach}
 </table>
 
 <div class="SearchStatus" />
@@ -76,7 +86,6 @@ $(document).ready(function(){
                 {/literal}"{translate id=No_Search_Results}"{literal}
                 );
     $($(".SortHeading").get(0)).click();
-
 });
 
 {/literal}
