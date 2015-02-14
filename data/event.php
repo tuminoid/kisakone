@@ -613,7 +613,8 @@ function GetEventResultsWithoutHoles($eventId)
                     :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
                     :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
                     TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
-                    :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF
+                    :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF,
+                    :PDGAPlayers.country AS PDGACountry, :PDGAPlayers.state AS PDGAState
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id
@@ -624,6 +625,7 @@ function GetEventResultsWithoutHoles($eventId)
                 LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :User ON :Player.player_id = :User.Player
                 LEFT JOIN :Club ON :Participation.Club = :Club.id
+                LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime";
 

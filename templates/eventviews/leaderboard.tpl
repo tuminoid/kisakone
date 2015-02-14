@@ -131,7 +131,17 @@
             <td>{$result.Rating|escape}</td>
             {/if}
             {if $sfl_enabled}
-            <td>{$result.clubName|escape}</td>
+            <td>
+                {if $pdga_enabled}
+                    {if $result.PDGACountry == 'FI'}
+                        {$result.ClubName|escape}
+                    {else}
+                        {if $result.PDGAState}{$result.PDGAState}, {/if}{$result.PDGACountry}
+                    {/if}
+                {else}
+                    {$result.ClubName|escape}
+                {/if}
+            </td>
             {/if}
 
             {foreach from=$rounds item=round key=index}
