@@ -61,7 +61,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    if ($settings['SFL_ENABLED'] == true) {
+    if ($settings['SFL_ENABLED'] == true && ($itsme || $user->IsAdmin())) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
         $data = SFL_getPlayer($userid, true);
