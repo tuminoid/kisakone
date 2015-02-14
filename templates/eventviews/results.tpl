@@ -197,7 +197,7 @@
 <tr class="resultrow">
 
 <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
-<td colspan="2" class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
+<td colspan="2" class="leftside">{$result.FirstName|escape|replace:' ':'&nbsp;'}&nbsp;{$result.LastName|escape|replace:' ':'&nbsp;'}</td>
 
 {assign var=inout value=0}
 {assign var=dnfd value=false}
