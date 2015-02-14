@@ -1,9 +1,9 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Sign up page
+ * PDGA information table for inclusion to any page that
+ * has SmartifyPDGA called on it.
  *
  * --
  *
@@ -22,6 +22,8 @@
  * *}
 
 {if $pdga}
+{assign var=country value=$pdga_country}
+{if !$country}{assign var=country value='FI'}{/if}
 <tr>
     <td><label for="pdga_number">{translate id=pdga_number}</label></td>
     <td><span id="pdga_number">{$pdga}</span></td>
@@ -52,6 +54,6 @@
 </tr>
 <tr>
     <td><label for="pdga_country">{translate id='pdga_country'}</label></td>
-    <td><span name="pdga_country">{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</span></td>
+    <td><span name="pdga_country"><span class="flag-icon flag-icon-{$country|lower}"></span>{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</span></td>
 </tr>
 {/if}

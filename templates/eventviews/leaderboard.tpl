@@ -123,18 +123,13 @@
             </tr>
         {/if}
 
+        {assign var=country value=$result.PDGACountry}
+        {if !$country}{assign var=country value='FI'}{/if}
         <tr class="resultrow">
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
-            <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
+            <td class="leftside"><span class="flag-icon flag-icon-{$country|lower}"></span>{$result.FirstName|escape|replace:' ':'&nbsp;'}&nbsp;{$result.LastName|escape|replace:' ':'&nbsp;'}</td>
             {if $sfl_enabled}
-            <td>
-                {if $pdga_enabled}
-                    {if $result.PDGACountry != 'FI'}
-                        {if $result.PDGAState}{$result.PDGAState}, {/if}{$result.PDGACountry}
-                    {/if}
-                {/if}
-                {$result.ClubName|escape}
-            </td>
+            <td>{$result.ClubName|escape}</td>
             {/if}
             <td>{$result.PDGANumber|escape}</td>
             {if $pdga_enabled}

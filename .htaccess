@@ -5,5 +5,6 @@ RewriteCond %{REQUEST_FILENAME} !favicon.ico$
 RewriteCond %{REQUEST_FILENAME} !.js$
 RewriteCond %{REQUEST_FILENAME} !images/
 RewriteCond %{REQUEST_FILENAME} !.css$
+RewriteCond %{REQUEST_FILENAME} !.svg$
 RewriteRule (.*) index.php?path=$1&%{QUERY_STRING}
 

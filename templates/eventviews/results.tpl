@@ -196,8 +196,11 @@
 
 <tr class="resultrow">
 
+{assign var=country value=$result.PDGACountry}
+{if !$country}{assign var=country value='FI'}{/if}
+
 <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
-<td colspan="2" class="leftside">{$result.FirstName|escape|replace:' ':'&nbsp;'}&nbsp;{$result.LastName|escape|replace:' ':'&nbsp;'}</td>
+<td colspan="2" class="leftside"><span class="flag-icon flag-icon-{$country|lower}"></span>{$result.FirstName|escape|replace:' ':'&nbsp;'}&nbsp;{$result.LastName|escape|replace:' ':'&nbsp;'}</td>
 
 {assign var=inout value=0}
 {assign var=dnfd value=false}

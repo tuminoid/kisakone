@@ -46,6 +46,7 @@
     {if $tooltip}
     {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
     {/if}
+    <link rel="stylesheet" href="{$url_base}css/flag-icon/css/flag-icon.min.css" type="text/css" />
     {if $analytics}
     <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
     {/if}

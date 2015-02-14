@@ -470,7 +470,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Classification.Name AS ClassName, :Participation.id AS ParticipationID,
                     UNIX_TIMESTAMP(EventFeePaid) AS EventFeePaid, UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp,
                     :Classification.id AS ClassId, :Club.ShortName AS ClubName, :Participation.Rating,
-                    :PDGAPlayers.country AS PDGACountry, :PDGAPlayers.state AS PDGAState
+                    :PDGAPlayers.country AS PDGACountry
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
                 INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
@@ -506,7 +506,6 @@ function GetEventParticipants($eventId, $sortedBy, $search)
             $pdata['clubName'] = $row['ClubName'];
             $pdata['rating'] = $row['Rating'];
             $pdata['PDGACountry'] = $row['PDGACountry'];
-            $pdata['PDGAState'] = $row['PDGAState'];
 
             $retValue[] = $pdata;
         }
@@ -618,7 +617,7 @@ function GetEventResultsWithoutHoles($eventId)
                     :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
                     TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
                     :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF,
-                    :PDGAPlayers.country AS PDGACountry, :PDGAPlayers.state AS PDGAState
+                    :PDGAPlayers.country AS PDGACountry
                 FROM :Round
                 INNER JOIN :Event ON :Round.Event = :Event.id
                 INNER JOIN :Section ON :Section.Round = :Round.id

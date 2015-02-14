@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
- {if $mode == 'body'}
+{if $mode == 'body'}
 <div id="event_content">
     {$page->formattedText}
 </div>
@@ -44,11 +44,14 @@
         <th>{sortheading field=ClassName id=class sortType=alphabetical}</th>
         <th>{sortheading field=PDGA id=users_pdga sortType=integer}</th>
         {if $pdga_enabled}<th>{sortheading field=Rating id=pdga_rating sortType=integer}</th>{/if}
-   </tr>
-   {foreach from=$participants item=participant name=osallistuja}
-   <tr>
+    </tr>
+    {foreach from=$participants item=participant name=osallistuja}
+    <tr>
+        {assign var=country value=$participant.PDGACountry}
+        {if !$country}{assign var=country value='FI'}{/if}
         <td>{$smarty.foreach.osallistuja.index+1}</td>
         <td>
+        <span class="flag-icon flag-icon-{$country|lower}"></span>
         {if $participant.user->username}<a href="{url page=user id=$participant.user->username}">{/if}
         {$participant.user->lastname|escape}
         {if $participant.user->username}</a>{/if}
@@ -59,14 +62,7 @@
         {if $participant.user->username}</a>{/if}
         </td>
         {if $sfl_enabled}
-        <td>
-            {if $pdga_enabled and $participant.player->pdga > 0}
-                {if $participant.PDGACountry != 'FI'}
-                    {if $participant.PDGAState}{$participant.PDGAState}, {/if}{$participant.PDGACountry}
-                {/if}
-            {/if}
-            {$participant.clubName|escape}
-        </td>
+        <td>{$participant.clubName|escape}</td>
         {/if}
         <td>{$participant.className|escape|truncate:3:""}</td>
         <td>{$participant.player->pdga|escape}</td>

@@ -136,7 +136,8 @@ function GetRoundResults($roundId, $sortedBy)
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus, Completed,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber, :RoundResult.PlusMinus AS RoundPlusMinus,
                     :Classification.Name AS ClassName, CumulativePlusminus, CumulativeTotal, :RoundResult.DidNotFinish,
-                    :Classification.id AS Classification, :Club.ShortName AS ClubName
+                    :Classification.id AS Classification, :Club.ShortName AS ClubName,
+                    :PDGAPlayers.country AS PDGACountry
                 FROM :Round
                 LEFT JOIN :Section ON :Round.id = :Section.Round
                 LEFT JOIN :StartingOrder ON (:StartingOrder.Section = :Section.id)
@@ -148,6 +149,7 @@ function GetRoundResults($roundId, $sortedBy)
                 LEFT JOIN :Classification ON :Classification.id = :Participation.Classification
                 LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
                 LEFT JOIN :Club ON :Participation.Club = :Club.id
+                LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
                 WHERE :Round.id = $roundId AND :Section.Present";
 
     switch ($sortedBy) {
