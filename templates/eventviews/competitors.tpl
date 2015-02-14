@@ -61,9 +61,8 @@
         {if $sfl_enabled}
         <td>
             {if $pdga_enabled and $participant.player->pdga > 0}
-                {assign var=pdgadata value=$participant.player->getPDGAData()}
-                {if $pdgadata.country != 'FI'}
-                    {if $pdgadata.state}{$pdgadata.state}, {/if}{$pdgadata.country}
+                {if $participant.PDGACountry != 'FI'}
+                    {if $participant.PDGAState}{$participant.PDGAState}, {/if}{$participant.PDGACountry}
                 {/if}
             {/if}
             {$participant.clubName|escape}

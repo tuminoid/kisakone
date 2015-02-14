@@ -133,14 +133,11 @@
             {if $sfl_enabled}
             <td>
                 {if $pdga_enabled}
-                    {if $result.PDGACountry == 'FI'}
-                        {$result.ClubName|escape}
-                    {else}
+                    {if $result.PDGACountry != 'FI'}
                         {if $result.PDGAState}{$result.PDGAState}, {/if}{$result.PDGACountry}
                     {/if}
-                {else}
-                    {$result.ClubName|escape}
                 {/if}
+                {$result.ClubName|escape}
             </td>
             {/if}
 

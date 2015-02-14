@@ -469,12 +469,14 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
                     :Classification.Name AS ClassName, :Participation.id AS ParticipationID,
                     UNIX_TIMESTAMP(EventFeePaid) AS EventFeePaid, UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp,
-                    :Classification.id AS ClassId, :Club.ShortName AS ClubName, :Participation.Rating
+                    :Classification.id AS ClassId, :Club.ShortName AS ClubName, :Participation.Rating,
+                    :PDGAPlayers.country AS PDGACountry, :PDGAPlayers.state AS PDGAState
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
                 INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :Club ON :Participation.Club = :Club.id
+                LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
                 WHERE $where
                 ORDER BY $sortOrder";
     $query = format_query($query);
@@ -503,6 +505,8 @@ function GetEventParticipants($eventId, $sortedBy, $search)
             $pdata['classId'] = $row['ClassId'];
             $pdata['clubName'] = $row['ClubName'];
             $pdata['rating'] = $row['Rating'];
+            $pdata['PDGACountry'] = $row['PDGACountry'];
+            $pdata['PDGAState'] = $row['PDGAState'];
 
             $retValue[] = $pdata;
         }
