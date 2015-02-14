@@ -9,6 +9,7 @@ next - "One TD to Rule Them All"
   * Regression: Players who have space in their name didn't get their license correctly.
   * In Leaderboard_CSV, set 999 correctly for DNS/DNF entries. GH #4.
   * Implement initial memcached support. GH #192.
+  * All players have country flags next to their names. GH #193.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_xxxx.md)
 for additional actions needed.
