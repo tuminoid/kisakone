@@ -1,9 +1,10 @@
 Upgrading to version 2015.xxxx:
 ================================
 
-We will add `:RegistrationRules` table.
+We will add `:RegistrationRules`, `:PDGAPlayers` and `:PDGAStats` tables.
 
 Please also see the `config_site.php.example` for changes related to Memcached.
+We also support Track.js error tracking.
 
 --
 

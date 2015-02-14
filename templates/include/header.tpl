@@ -54,6 +54,9 @@
     {if $analytics}
     <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
     {/if}
+    {if $trackjs}
+    <script type="text/javascript" src="http://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="{$trackjs}"></script>
+    {/if}
     {$extrahead}
     <meta name="version" content="{$kisakone_version}" />
 </head>

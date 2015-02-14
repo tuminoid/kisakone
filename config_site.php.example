@@ -82,3 +82,6 @@ ini_set('display_errors', 0);
 // mysql debugging
 $settings['DB_ERROR_LOGGING'] = false;
 $settings['DB_ERROR_DIE'] = false;
+
+// track.js token
+$settings['TRACK_JS_TOKEN'] = "";
