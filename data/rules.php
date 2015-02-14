@@ -26,7 +26,7 @@ require_once 'data/db_init.php';
 
 function GetRuleTypes()
 {
-    return array('rating', 'country', 'player', 'status', 'co');
+    return array('rating', 'country', /*'player',*/ 'status', 'co');
 }
 
 
@@ -60,7 +60,7 @@ function GetEventRules($eventid, $classid = -1)
                             LEFT JOIN :Classification ON :RegistrationRules.Classification = :Classification.id
                             WHERE Event = $eventid
                             $where_class
-                            ORDER BY Classification ASC, ValidUntil");
+                            ORDER BY Classification ASC, ValidUntil, id");
     $result = execute_query($query);
 
     if (!$result)
