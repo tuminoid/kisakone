@@ -29,7 +29,11 @@
     <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
     <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
     <script type="text/javascript" src="{$url_base}js/jquery-1.11.2.min.js"></script>
+    {if $mod_rewrite}
+    <script type="text/javascript" src="{$url_base}javascript/base"></script>
+    {else}
     <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
+    {/if}
     {if $ui}
     <script type="text/javascript" src="{$url_base}js/jquery-ui-1.11.2.min.js"></script>
     <link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css" type="text/css" />

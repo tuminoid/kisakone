@@ -30,13 +30,12 @@ setlocale(LC_ALL, array('fi_FI.UTF-8', 'fi_FI@euro', 'fi_FI', 'finnish'));
 require_once 'config.php';
 require_once 'config_site.php';
 
-// Some version of PHP 5 complain about lack of time zone data, so if we can
-// we'll set it now
+// Some version of PHP 5 complain about lack of time zone data,
+// so if we can we'll set it now
 // It is also utterly important to PHP timezone to match MySQL timezone,
 // otherwise database is filled with non-sensical datestamps
-if (is_callable('date_default_timezone_set')) {
+if (is_callable('date_default_timezone_set'))
     date_default_timezone_set("Europe/Helsinki");
-}
 
 require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
@@ -46,13 +45,22 @@ require_once 'data/cache.php';
 require_once 'data/login.php';
 require_once 'data/ads.php';
 
-// Disabling caching; we have menus and such which can vary depending on user's
-// access level, so this is necessary.
-header("Cache-Control: no-cache, must-revalidate");
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-
-// Send our version numer at the header
 header("X-Powered-By: Kisakone/" . getKisakoneVersion());
+
+// We get unnecessary page loads for javascript/base, which is equally expensive
+// to process than actual content, thanks to all smarty template loading etc
+// FIXME: Javascript should come as real javascript and not templates, but
+// for now, it has 2 hours expire header, preventing most of the reloading
+// pressure.
+// All other pages are served with cache_limiter('nocache') as it was earlier
+if (@$_GET['page'] == 'javascript/base' || @$_GET['path'] == 'javascript/base') {
+    session_cache_limiter('');
+    header("Cache-control: public");
+    header("Expires: " . gmdate('D, d M Y H:i:s', time() + 2*60*60) . ' GMT');
+}
+else {
+    session_cache_limiter('nocache');
+}
 
 // If we're supposed to be logged in, start the session
 if (@$_COOKIE['kisakone_login']) {
@@ -68,6 +76,7 @@ else {
         // we don't want to display error message for outdated cookies
         $uid = GetUserId($_COOKIE['kisakone_autologin_as']);
         $key = GetAutoLoginToken($uid);
+
         if ($key == @$_COOKIE['kisakone_autologin_key']) {
             session_start();
             setcookie('kisakone_login', 1);
@@ -169,6 +178,7 @@ if (GetMainMenuSelection() == 'administration')
     language_include('admin');
 
 $smarty = InitializeSmarty();
+$smarty->assign('mod_rewrite', @$settings['USE_MOD_REWRITE']);
 
 // Provided by the ui/$pagename.php
 $pageData = InitializeSmartyVariables($smarty, $pageData);
