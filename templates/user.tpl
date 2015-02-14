@@ -109,7 +109,7 @@
 {if $player && $player->pdga}
 <h2>{translate id=user_pdga_title}</h2>
 
-<table style="width:500px">
+<table style="width:335px">
 {include file='include/pdgainfotable.tpl'}
 </table>
 {/if}
