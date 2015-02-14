@@ -959,7 +959,7 @@ function GetPastEvents($onlySome, $onlyYear = null)
 }
 
 
-function DeleteEventPermanently($event)
+function DeleteEvent($event)
 {
     $id = (int) $event->id;
 
@@ -995,7 +995,7 @@ function DeleteEventPermanently($event)
 
         $queries[] = format_query("DELETE FROM :RoundResult WHERE Round = $rid");
     }
-
+    $queries[] = format_query("UPDATE :Course SET Event = NULL WHERE Event = $id");
     $queries[] = format_query("DELETE FROM :Round WHERE Event = $id");
     $queries[] = format_query("DELETE FROM :TextContent WHERE Event = $id");
     $queries[] = format_query("DELETE FROM :Participation WHERE Event = $id");

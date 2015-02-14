@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Deletes an event permanently
  *
@@ -21,19 +22,20 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/tournament.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    if (!IsAdmin()) {
+    if (!IsAdmin())
         return Error::AccessDenied();
-    }
 
-    if (@$_POST['cancel']) {
+    if (@$_POST['cancel'])
         redirect("Location: " . url_smarty(array('page' => 'editevent', 'id' => @$_POST['id']), $_GET));
-    }
 
     $event = GetEventDetails(@$_POST['id']);
     if (!$event)
@@ -41,9 +43,6 @@ function processForm()
 
     $tournament = $event->tournament;
 
-    DeleteEventPermanently($event);
-
-    require_once 'core/tournament.php';
-
+    DeleteEvent($event);
     UpdateTournamentPoints($tournament);
 }
