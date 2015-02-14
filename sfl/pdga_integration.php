@@ -240,10 +240,10 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
 
     $retValue = null;
     if (mysql_num_rows($result) == 1)
-        $row = mysql_fetch_assoc($result);
+        $retValue = mysql_fetch_assoc($result);
     mysql_free_result($result);
 
-    cache_set($cache_key, $row, 24*60*60);
+    cache_set($cache_key, $retValue, 24 * 60 * 60);
 
     return $retValue;
 }
