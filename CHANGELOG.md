@@ -10,6 +10,7 @@ next - "One TD to Rule Them All"
   * In Leaderboard_CSV, set 999 correctly for DNS/DNF entries. GH #4.
   * Implement initial memcached support. GH #192.
   * All players have country flags next to their names. GH #193.
+  * javascript/base is now served with public cache control for preventing extra load.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_xxxx.md)
 for additional actions needed.
