@@ -246,11 +246,11 @@ function SFL_getPlayer($userid, $force = false)
         list($firstname, $lastname) = str_replace(' ', '+', array($firstname, $lastname));
 
         if ($pdga > 0)
-            $data = SFL_getLicensesByPDGA($pdga);
+            $data = SFL_getLicensesByPDGA($pdga, $force);
         elseif ($sflid > 0)
-            $data = SFL_getLicensesById($sflid);
+            $data = SFL_getLicensesById($sflid, $force);
         else
-            $data = SFL_getLicensesByName($firstname, $lastname, $birthdate);
+            $data = SFL_getLicensesByName($firstname, $lastname, $birthdate, $force);
 
         if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
             SaveUserClub($userid, @$data['club_id']);
