@@ -100,12 +100,12 @@
             <tr class="thr">
                 <th>{translate id=result_pos}</th>
                 <th>{translate id=result_name}</th>
+                {if $sfl_enabled}
+                <th>{translate id=clubname}</th>
+                {/if}
                 <th>PDGA</th>
                 {if $pdga_enabled}
                 <th>{translate id=pdga_rating}</th>
-                {/if}
-                {if $sfl_enabled}
-                <th>{translate id=clubname}</th>
                 {/if}
                 {foreach from=$rounds key=index item=round}
                     {math assign=roundNumber equation="x+1" x=$index}
@@ -126,10 +126,6 @@
         <tr class="resultrow">
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
             <td class="leftside">{$result.FirstName|escape} {$result.LastName|escape}</td>
-            <td>{$result.PDGANumber|escape}</td>
-            {if $pdga_enabled}
-            <td>{$result.Rating|escape}</td>
-            {/if}
             {if $sfl_enabled}
             <td>
                 {if $pdga_enabled}
@@ -139,6 +135,10 @@
                 {/if}
                 {$result.ClubName|escape}
             </td>
+            {/if}
+            <td>{$result.PDGANumber|escape}</td>
+            {if $pdga_enabled}
+            <td>{$result.Rating|escape}</td>
             {/if}
 
             {foreach from=$rounds item=round key=index}
