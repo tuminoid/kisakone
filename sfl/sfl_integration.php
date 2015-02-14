@@ -169,7 +169,7 @@ function SFL_getLicensesByName($firstname, $lastname, $birthdate, $force = false
     $birthdate = (int) $birthdate;
     $url = "/sfl/name/$firstname/$lastname/$birthdate";
 
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url));
+    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
 }
 
 
@@ -185,7 +185,7 @@ function SFL_getLicensesById($sflid, $force = false)
     $sflid = (int) $sflid;
     $url = "/sfl/id/$sflid";
 
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url));
+    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
 }
 
 
@@ -201,7 +201,7 @@ function SFL_getLicensesByPDGA($pdga, $force = false)
     $pdga = (int) $pdga;
     $url = "/sfl/pdga/$pdga";
 
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url));
+    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
 }
 
 
