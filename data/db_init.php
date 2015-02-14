@@ -35,10 +35,14 @@ require_once 'config.php';
 function InitializeDatabaseConnection()
 {
     global $settings;
-    $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+    static $con;
 
-    if (!($con && @mysql_select_db($settings['DB_DB'])))
-        return null;
+    if (!$con) {
+        $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+
+        if (!($con && @mysql_select_db($settings['DB_DB'])))
+            $con = null;
+    }
 
     return $con;
 }
