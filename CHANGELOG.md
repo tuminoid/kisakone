@@ -12,6 +12,7 @@ next - "One TD to Rule Them All"
   * Regression: Players who have space in their name didn't get their license correctly.
   * javascript/base is now served with public cache control for preventing extra load.
   * All kinds of small performance tunings were made to improve performance.
+  * Track.js support. GH #195.
  
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_xxxx.md)
 for additional actions needed.
