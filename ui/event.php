@@ -27,6 +27,7 @@ require_once 'data/event_quota.php';
 require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
+require_once 'data/calendar.php';
 
 
 /**
@@ -79,6 +80,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('contactInfoHTML', $ci_html);
             $smarty->assign('contactInfoJS', $ci_js);
             $smarty->assign('rounds', $event->GetRounds());
+            SmartifyCalendar($smarty, $event->id);
 
             if ($player)
                 $smarty->assign('groups', GetUserGroupSummary($event->id, $player->id));

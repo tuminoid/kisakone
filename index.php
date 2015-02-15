@@ -466,25 +466,6 @@ function gate_AttemptLanguageDetection($pagename)
     }
 }
 
-// figure out correct baseurl
-function baseURL()
-{
-    $dir = dirname($_SERVER['SCRIPT_NAME']);
-    if ($dir == "/")
-        return $dir;
-    return $dir . '/';
-}
-
-// redirects user using Location header
-function redirect($url)
-{
-    if (substr($url, 0, 9) == "Location:")
-        header($url);
-    else
-        redirect("Location: " . $url);
-    die();
-}
-
 function getKisakoneVersion()
 {
     $version = cache_get('kisakone_version');

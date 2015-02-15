@@ -59,6 +59,7 @@
     {/if}
     {if $calendar}
     <script type="text/javascript" src="{$url_base}js/addthisevent/ate.min.js"></script>
+    <link rel="stylesheet" href="{$url_base}js/addthisevent/ate.css" type="text/css" />
     {/if}
     {$extrahead}
     <meta name="version" content="{$kisakone_version}" />

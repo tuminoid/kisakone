@@ -26,9 +26,21 @@ DayNameMinArray    'Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'
 
 MonthNameArray 'Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu', 'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu'
 MonthNameShortArray 'Tammi', 'Helmi', 'Maalis', 'Huhti', 'Touko', 'Kesä', 'Heinä', 'Elo', 'Syys', 'Loka', 'Marras', 'Joulu'
-MonthNameMinArray 'Tam', 'Hel', 'Maas', 'Huh', 'Tou', 'Kesä', 'Hei', 'Elo', 'Syys', 'Loka', 'Mar', 'Jou'
 
-
+calendar_month_01 Tammi
+calendar_month_02 Helmi
+calendar_month_03 Maali
+calendar_month_04 Huhti
+calendar_month_05 Touko
+calendar_month_06 Kesä
+calendar_month_07 Heinä
+calendar_month_08 Elo
+calendar_month_09 Syys
+calendar_month_10 Loka
+calendar_month_11 Mar
+calendar_month_12 Joulu
+calendar_where    Missä
+calendar_when     Milloin
 
 
 index_title     Ajankohtaiset kilpailut

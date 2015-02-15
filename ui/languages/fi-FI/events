@@ -36,6 +36,7 @@ event_add_official  Lisää toimitsija
 event_pdga      PDGA asetukset
 event_pdga_id   Kilpailunumero
 event_pdga_url  Kilpailu PDGA:n sivuilla
+event_add_calendar Lisää kalenteriisi
 event_pdga_results_url Kilpailun tulokset ja ratingit PDGA:n sivuilla
 
 

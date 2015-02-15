@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains initialization code for the core module
  *
@@ -26,3 +27,4 @@ require_once 'user.php';
 require_once 'event.php';
 require_once 'general.php';
 require_once 'error.php';
+require_once 'url.php';

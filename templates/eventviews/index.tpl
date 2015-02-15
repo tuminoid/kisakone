@@ -25,6 +25,12 @@
     {$page->formattedText}
 </div>
 
+{if $calendar}
+<div style="float: right; width: 400px;">
+    {include file='include/calendar.tpl'}
+</div>
+{/if}
+
 <table class="narrow">
     <tr>
         <td>{translate id=event_name}</td>
@@ -61,9 +67,6 @@
         <td><a href="{$pdgaUrl}">{$pdgaUrl}</a></td>
     </tr>
     {/if}
-
-
-
 </table>
 
 <h2>{translate id=schedule}</h2>

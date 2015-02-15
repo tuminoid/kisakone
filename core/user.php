@@ -361,13 +361,9 @@ class User
         require_once 'data/login.php';
 
         $token = GetUserSecurityToken($this->id);
-        $prototol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
+        $rooturl = serverURL();
 
-        global $settings;
-        if ($settings['USE_MOD_REWRITE'])
-            $url = $protocol . $_SERVER['HTTP_HOST'] . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
-        else
-            $url = $protocol . $_SERVER['HTTP_HOST'] . baseUrl() . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
+        $url = $rooturl . url_smarty(array('page' => 'changepassword', 'id' => $this->id, 'token' => $token, 'mode' => 'recover'), $_GET);
 
         SendEmail(EMAIL_PASSWORD, $this->id, null, $url, $token);
     }

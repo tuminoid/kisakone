@@ -1,9 +1,9 @@
-{**
+<?php
+/**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Event main page -- this contains all the other user-visible pages
+ * URL manipulation functions
  *
  * --
  *
@@ -19,13 +19,38 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
- * *}
-{capture assign=extrahead}{include file=$view mode=head}{/capture}
-{capture assign=view_content}{include file=$view mode=body}{/capture}
-{capture assign=title}{$page->title} - {$event->name}{/capture}
+ * */
 
-{include file='include/header.tpl' ui=1 calendar=1}
+require_once 'config.php';
 
-{$view_content}
 
-{include file='include/footer.tpl'}
+function serverURL()
+{
+    global $settings;
+
+    $protocol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
+    $host = $_SERVER['HTTP_HOST'];
+    $url = "$protocol$host" . (@$settings['USE_MOD_REWRITE'] ? "" : baseUrl());
+
+    return $url;
+}
+
+// figure out correct baseurl
+function baseURL()
+{
+    $dir = dirname($_SERVER['SCRIPT_NAME']);
+    if ($dir == "/")
+        return $dir;
+    return $dir . '/';
+}
+
+// redirects user using Location header
+function redirect($url)
+{
+    if (substr($url, 0, 9) == "Location:")
+        header($url);
+    else
+        redirect("Location: " . $url);
+    die();
+}
+
