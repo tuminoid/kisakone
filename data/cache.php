@@ -45,7 +45,12 @@ function cache_connect()
     $host = $settings['MEMCACHED_HOST'];
     $port = $settings['MEMCACHED_PORT'];
     $memcached = new Memcached($name);
-    $memcached->addServer($host, $port);
+    if (!$memcached)
+        return null;
+
+    $servers = $memcached->getServerList();
+    if (!is_array($servers) || count($servers) < 1)
+        $memcached->addServer($host, $port);
 
     // check the pool is ok
     $stats = $memcached->getStats();
