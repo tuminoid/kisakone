@@ -57,6 +57,9 @@
     {if $trackjs}
     <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="{$trackjs}"></script>
     {/if}
+    {if $calendar}
+    <script type="text/javascript" src="{$url_base}js/addthisevent/ate.min.js"></script>
+    {/if}
     {$extrahead}
     <meta name="version" content="{$kisakone_version}" />
 </head>
