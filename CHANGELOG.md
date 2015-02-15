@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next - "One TD to Rule Them All"
-================================
+2015.02.15 - "One TD to Rule Them All"
+======================================
   * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
   * In Leaderboard_CSV, set 999 correctly for DNS/DNF entries. GH #4.
   * Implement initial memcached support. GH #192.
@@ -16,7 +16,7 @@ next - "One TD to Rule Them All"
   * Delete event works for events that have Course defined. GH #196.
   * Support AddThisEvent Calendar Widget. GH #197.
  
-Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_xxxx.md)
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150215.md)
 for additional actions needed.
 
 2015.02.10 - "Rating, Rating, Rating"

@@ -1,4 +1,4 @@
-Upgrading to version 2015.xxxx:
+Upgrading to version 2015.02.15:
 ================================
 
 We will add `:RegistrationRules`, `:PDGAPlayers` and `:PDGAStats` tables.
