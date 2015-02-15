@@ -61,10 +61,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    if ($settings['SFL_ENABLED'] == true && ($itsme || @$_SESSION['user']->role == "admin")) {
+    if ($settings['SFL_ENABLED'] == true) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
-        $data = SFL_getPlayer($userid, true);
+        $data = SFL_getPlayer($userid, ($itsme || @$_SESSION['user']->role == "admin"));
         $smarty->assign('data', $data);
 
         $year = date('Y');
