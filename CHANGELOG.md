@@ -14,6 +14,7 @@ next - "One TD to Rule Them All"
   * All kinds of small performance tunings were made to improve performance.
   * Track.js support. GH #195.
   * Delete event works for events that have Course defined. GH #196.
+  * Support AddThisEvent Calendar Widget. GH #197.
  
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_xxxx.md)
 for additional actions needed.
