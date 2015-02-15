@@ -58,7 +58,7 @@
                 <td>
                     <select name="ruleop_{$rule.id}" id="ruleop_{$rule.id}">
                     {foreach from=$ruleops item=ruleop}
-                        <option value="{$ruleop|escape}" {if $rule.Op == $ruleop}selected="selected"{/if}>{translate id=ruleop_$ruleop}</option>
+                        <option value="{$ruleop|escape:'html'}" {if $rule.Op == $ruleop}selected="selected"{/if}>{translate id=ruleop_$ruleop}</option>
                     {/foreach}
                     </select>
                 </td>
