@@ -62,7 +62,7 @@ function CheckEventRules($eventid, $classid, $playerid)
 
     $rules = array_merge($commonrules, $classrules);
     if (!count($rules)) {
-        error_log("no rules, true");
+        //error_log("no rules, true");
         return true;
     }
 

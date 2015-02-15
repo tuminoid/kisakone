@@ -54,6 +54,4 @@ function SmartifyCalendar($smarty, $eventid)
 
     $retValue['url'] = serverURL() . url_smarty(array('page' => 'event', 'id' => $eventid), $eventid);
     $smarty->assign('calendar', $retValue);
-
-    error_log(print_r($retValue, true));
 }
