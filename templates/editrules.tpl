@@ -51,7 +51,7 @@
                 <td>
                     <select name="ruletype_{$rule.id}" id="ruletype_{$rule.id}">
                     {foreach from=$ruletypes item=ruletype}
-                        <option value="{$ruletype|escape}" {if $rule.Type == $ruletype}selected="selected"{/if}>{translate id=ruletype_$ruletype}</option>
+                        <option value="{$ruletype|escape:'html'}" {if $rule.Type == $ruletype}selected="selected"{/if}>{translate id=ruletype_$ruletype}</option>
                     {/foreach}
                     </select>
                 </td>
@@ -71,7 +71,7 @@
                 <td>
                     <select name="ruleaction_{$rule.id}" id="ruleaction_{$rule.id}">
                     {foreach from=$ruleactions item=ruleaction}
-                        <option value="{$ruleaction|escape}" {if $rule.Action == $ruleaction}selected="selected"{/if}>{translate id=ruleaction_$ruleaction}</option>
+                        <option value="{$ruleaction|escape:'html'}" {if $rule.Action == $ruleaction}selected="selected"{/if}>{translate id=ruleaction_$ruleaction}</option>
                     {/foreach}
                     </select>
                 </td>
@@ -192,14 +192,14 @@ function enablerule(element)
     <td>
         <select id="ruletype_new">
         {foreach from=$ruletypes item=ruletype}
-            <option value="{$ruletype}">{translate id=ruletype_$ruletype}</option>
+            <option value="{$ruletype|escape:'html'}">{translate id=ruletype_$ruletype}</option>
         {/foreach}
         </select>
     </td>
     <td>
         <select id="ruleop_new">
         {foreach from=$ruleops item=ruleop}
-            <option value="{$ruleop}">{translate id=ruleop_$ruleop}</option>
+            <option value="{$ruleop|escape:'html'}">{translate id=ruleop_$ruleop}</option>
         {/foreach}
         </select>
     </td>
@@ -212,7 +212,7 @@ function enablerule(element)
     <td>
         <select id="ruleaction_new">
         {foreach from=$ruleactions item=ruleaction}
-            <option value="{$ruleaction}">{translate id=ruleaction_$ruleaction}</option>
+            <option value="{$ruleaction|escape:'html'}">{translate id=ruleaction_$ruleaction}</option>
         {/foreach}
         </select>
     </td>
