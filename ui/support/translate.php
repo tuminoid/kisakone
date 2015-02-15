@@ -122,7 +122,7 @@ class Language
         }
         closedir($dir);
 
-        cache_set('translate_loadallfiles', $this->data, 15*60);
+        cache_set('translate_loadallfiles', $this->data, 7 * 24 * 60 * 60);
     }
 
     function LoadSingleFile($file)
@@ -154,7 +154,7 @@ class Language
 
             fclose($langfile);
 
-            cache_set($langfilename, $data, 15*30);
+            cache_set($langfilename, $data, 7 * 24 * 60 * 30);
         }
         $this->data = array_merge($this->data, $data);
 
