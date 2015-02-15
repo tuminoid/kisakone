@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2015.02.16 - "Just a Single Memcached"
+======================================
+  * Critical: Do just a single memcached connection.
+
 2015.02.15 - "One TD to Rule Them All"
 ======================================
   * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
