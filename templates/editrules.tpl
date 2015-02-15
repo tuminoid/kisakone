@@ -51,14 +51,14 @@
                 <td>
                     <select name="ruletype_{$rule.id}" id="ruletype_{$rule.id}">
                     {foreach from=$ruletypes item=ruletype}
-                        <option value="{$ruletype}" {if $rule.Type == $ruletype}selected="selected"{/if}>{translate id=ruletype_$ruletype}</option>
+                        <option value="{$ruletype|escape}" {if $rule.Type == $ruletype}selected="selected"{/if}>{translate id=ruletype_$ruletype}</option>
                     {/foreach}
                     </select>
                 </td>
                 <td>
                     <select name="ruleop_{$rule.id}" id="ruleop_{$rule.id}">
                     {foreach from=$ruleops item=ruleop}
-                        <option value="{$ruleop}" {if $rule.Op == $ruleop}selected="selected"{/if}>{translate id=ruleop_$ruleop}</option>
+                        <option value="{$ruleop|escape}" {if $rule.Op == $ruleop}selected="selected"{/if}>{translate id=ruleop_$ruleop}</option>
                     {/foreach}
                     </select>
                 </td>
@@ -71,7 +71,7 @@
                 <td>
                     <select name="ruleaction_{$rule.id}" id="ruleaction_{$rule.id}">
                     {foreach from=$ruleactions item=ruleaction}
-                        <option value="{$ruleaction}" {if $rule.Action == $ruleaction}selected="selected"{/if}>{translate id=ruleaction_$ruleaction}</option>
+                        <option value="{$ruleaction|escape}" {if $rule.Action == $ruleaction}selected="selected"{/if}>{translate id=ruleaction_$ruleaction}</option>
                     {/foreach}
                     </select>
                 </td>
