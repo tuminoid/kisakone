@@ -14,3 +14,7 @@ Then, FOR EACH RELEASE IN BETWEEN YOUR CURRENT VERSION AND THE ONE YOU WANT:
  - Typically, you need to fix your site config at `config_site.php`
  - Run upgrade script at `doc/upgrade/<release number>`, ie. `php upgrade.php`. No output GOOD.
  - Repeat until you've caught up!
+
+If you use `memcached`:
+ - Restart your memcached server to clean some caches: `service memcached restart`
+
