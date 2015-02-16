@@ -38,16 +38,18 @@ require_once 'core/hole.php';
 
 
 // Gets an array of Event objects where the conditions match
-function data_GetEvents($conditions, $sort_mode = null)
+function data_GetEvents($conditions, $sort_mode = null, $limit = null)
 {
     global $event_sort_mode;
 
     if ($sort_mode !== null)
-        $sort = "`$sort_mode`";
+        $sort = "$sort_mode";
     elseif (!$event_sort_mode)
         $sort = "`Date`";
     else
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
+
+    $limit_limit = ($limit ? "LIMIT " . (int) $limit : "");
 
     global $user;
     if ($user && $user->id) {
@@ -70,7 +72,8 @@ function data_GetEvents($conditions, $sort_mode = null)
                                 LEFT JOIN :Level ON :Event.Level = :Level.id
                                 INNER Join :Venue ON :Venue.id = :Event.Venue
                                 WHERE $conditions
-                                ORDER BY $sort");
+                                ORDER BY $sort
+                                $limit_limit");
     }
     else {
         $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
@@ -81,7 +84,8 @@ function data_GetEvents($conditions, $sort_mode = null)
                                 INNER Join :Venue ON :Venue.id = :Event.Venue
                                 LEFT JOIN :Level ON :Event.Level = :Level.id
                                 WHERE $conditions
-                                ORDER BY $sort");
+                                ORDER BY $sort
+                                $limit_limit");
     }
     $result = execute_query($query);
 
@@ -935,27 +939,17 @@ function GetRegisteringSoonEvents()
 
 function GetUpcomingEvents($onlySome)
 {
-    $data = data_GetEvents("Date > FROM_UNIXTIME(" . time() . ')');
-    if ($onlySome)
-        $data = array_slice($data, 0, 10);
-
-    return $data;
+    $limit = $onlySome ? 10 : null;
+    return data_GetEvents("Date > FROM_UNIXTIME(" . time() . ")", null, $limit);
 }
 
 
 function GetPastEvents($onlySome, $onlyYear = null)
 {
-    $thisYear = "";
-    if ($onlyYear != null)
-        $thisYear = "AND YEAR(Date) = $onlyYear";
+    $thisYear = $onlyYear ? "AND YEAR(Date) = $onlyYear" : "";
+    $limit = $onlySome ? 5 : null;
 
-    $data = data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL");
-    $data = array_reverse($data);
-
-    if ($onlySome)
-        $data = array_slice($data, 0, 5);
-
-    return $data;
+    return data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL", '`Date` DESC', $limit);
 }
 
 
