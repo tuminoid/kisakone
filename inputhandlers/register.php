@@ -22,6 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/user_operations.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -34,9 +37,8 @@ function processForm()
 {
     $problems = array();
 
-    if (@$_POST['cancel']) {
+    if (@$_POST['cancel'])
         redirect("Location: " . BaseURL());
-    }
 
     $lastname = $_POST['lastname'];
     if ($lastname == '')
@@ -104,8 +106,6 @@ function processForm()
         return $error;
     }
 
-    require_once 'core/user_operations.php';
-
     $r = RegisterPlayer($username, $password, $email, $firstname, $lastname, $gender, $pdga, $dobYear);
     if (is_a($r, 'Error')) {
         $r->errorPage = 'error';
@@ -116,9 +116,8 @@ function processForm()
         $nuid = GetUserId($username);
         $newuser = GetUserDetails($nuid);
 
-        if (!@$_COOKIE['kisakone_login']) {
+        if (!@$_COOKIE['kisakone_login'])
             session_start();
-        }
 
         $_SESSION['user'] = $newuser;
         redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));

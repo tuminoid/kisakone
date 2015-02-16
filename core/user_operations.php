@@ -67,11 +67,11 @@ function RegisterPlayer($username, $password, $email, $firstname, $lastname, $ge
                 return $err;
         }
 
-        if (!isset($err)) {
-            $err = SetUserDetails($user);
-            if (is_a($err, "Error"))
-                $user = null;
-        }
+        $err = SetUserDetails($user);
+        if (is_a($err, "Error"))
+            $user = null;
+        else
+            ChangeUserPassword($user->id, $password);
     }
     else
         return $err;
