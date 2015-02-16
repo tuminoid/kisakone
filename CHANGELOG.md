@@ -3,9 +3,13 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-2015.02.16 - "Just a Single Memcached"
-======================================
-  * Critical: Do just a single memcached connection.
+next:
+=====
+  * User password is marked changed upon new user creation.
+
+2015.02.16:
+===========
+  * Critical: Create only a single memcached connection.
 
 2015.02.15 - "One TD to Rule Them All"
 ======================================
