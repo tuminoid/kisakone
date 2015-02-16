@@ -202,8 +202,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('signupOpen', $event->SignupPossible());
 
             if ($event->signupStart) {
-                $smarty->assign('signupStart', date('d.m.Y H:m', $event->signupStart));
-                $smarty->assign('signupEnd', date('d.m.Y H:m', $event->signupEnd));
+                $smarty->assign('signupStart', date('d.m.Y H:i', $event->signupStart));
+                $smarty->assign('signupEnd', date('d.m.Y H:i', $event->signupEnd));
             }
             break;
 
