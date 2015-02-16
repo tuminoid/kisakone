@@ -112,6 +112,9 @@ function esc_or_null($param, $type = 'string')
 /**
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
+ * FIXME: Find a more reasonable way to sanitize prefix without touching content
+ * NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
+ *
  * @param string $query actual SQL query to format
  * @return formatted SQL that is prefixed correctly
  */
@@ -120,13 +123,6 @@ function format_query($query)
     global $settings;
     $prefix = $settings['DB_PREFIX'];
 
-    // this is just safeguarding
-    $args = func_get_args();
-    if (count($args) > 1)
-        debug_query_and_die($query);
-
-    // FIXME: Find a more reasonable way to sanitize prefix without touching content
-    // NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
     $tables = array(':Club', ':Player', ':User', ':Venue', ':Level',
         ':File', ':AdBanner', ':EventQueue', ':EventManagement', ':Event', ':TextContent',
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
