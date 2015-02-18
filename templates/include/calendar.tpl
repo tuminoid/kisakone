@@ -41,6 +41,7 @@
     <span class="_start">{$calendar.start_data}</span>
     <span class="_end">{$calendar.end_data}</span>
     <span class="_zonecode">50</span>
+    <span class="_summary">{$calendar.title}</span>
     <span class="_location">{$calendar.location}</span>
     <span class="_organizer">{$calendar.organizer}</span>
     <span class="_all_day_event">true</span>
