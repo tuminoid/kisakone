@@ -5,7 +5,8 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * User password is marked changed upon new user creation.
+  * User password is marked changed upon new user creation, so it isn't prompted again right away.
+  * Calender title is now set to event name. GH #199.
 
 2015.02.16:
 ===========
