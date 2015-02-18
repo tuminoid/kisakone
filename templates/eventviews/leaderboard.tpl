@@ -129,7 +129,7 @@
             <td id="r{$result.PlayerId}_pos">{$result.Standing}</td>
             <td class="leftside"><span class="flag-icon flag-icon-{$country|lower}"></span>{$result.FirstName|escape|replace:' ':'&nbsp;'}&nbsp;{$result.LastName|escape|replace:' ':'&nbsp;'}</td>
             {if $sfl_enabled}
-            <td><span title="{$result.ClubLongName|escape}">{$result.ClubName|escape}</span></td>
+            <td><abbr title="{$result.ClubLongName|escape}">{$result.ClubName|escape}</abbr></td>
             {/if}
             <td>{$result.PDGANumber|escape}</td>
             {if $pdga_enabled}

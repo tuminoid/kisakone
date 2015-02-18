@@ -58,7 +58,7 @@
         {if $participant.user->username}</a>{/if}
       </td>
       {if $sfl_enabled}
-      <td><span title="{$participant.clubLongName|escape}">{$participant.clubName|escape}</span></td>
+      <td><abbr title="{$participant.clubLongName|escape}">{$participant.clubName|escape}</abbr></td>
       {/if}
       <td>{$participant.className|escape|truncate:3:""}</td>
       <td>{$participant.player->pdga|escape}</td>
