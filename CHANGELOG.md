@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.02.18:
+===========
   * User password is marked changed upon new user creation, so it isn't prompted again right away.
   * Calender title is now set to event name. GH #199.
   * Club long name displayed as tooltip for all club short names. GH #200.
