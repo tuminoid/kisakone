@@ -3,6 +3,14 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2015.02.19:
+===========
+  * PDGA API has one column name changed, so we'll change our db as well to avoid
+      translation logic in code.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150219.md)
+for additional actions needed.
+
 2015.02.18:
 ===========
   * User password is marked changed upon new user creation, so it isn't prompted again right away.
