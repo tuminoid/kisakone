@@ -7,6 +7,8 @@ Kisakone versions are simply release date tags:
 ===========
   * PDGA API has one column name changed, so we'll change our db as well to avoid
       translation logic in code.
+  * Give a big red warning in user's profile page if data from registry cannot be fetched
+      due invalid information in Kisakone.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150219.md)
 for additional actions needed.
