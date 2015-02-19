@@ -335,10 +335,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     // Event pages have their own ads
     $ad = GetAd($event->id, $view);
-    if ($ad)
-        $smarty->assign('ad', $ad);
-    else
-        $ad = GetAd($event->id, 'eventdefault');
+    $smarty->assign('ad', $ad ? $ad : GetAd($event->id, 'eventdefault'));
 
     $smarty->assign('view', 'eventviews/' . $view . '.tpl');
     $smarty->assign('page', $evp);
