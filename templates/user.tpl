@@ -58,6 +58,13 @@
 
 {if ($itsme || $isadmin) && $player}
    <h2>{translate id=user_licenses_title}</h2>
+
+   {if $sfl_enabled and !$data}
+      {if !$pdga_enabled or $pdga_country == 'FI'}
+      <p class="error">{translate id=check_registry_data}</p>
+      {/if}
+   {/if}
+
    <table style="width:500px">
    {if $fees}
       <tr>

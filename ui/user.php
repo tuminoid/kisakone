@@ -61,7 +61,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    if ($settings['SFL_ENABLED'] == true) {
+    $smarty->assign('sfl_enabled', @$settings['SFL_ENABLED']);
+    $smarty->assign('pdga_enabled', @$settings['PDGA_ENABLED']);
+
+    if (@$settings['SFL_ENABLED'] == true) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
         $data = SFL_getPlayer($userid, ($itsme || @$_SESSION['user']->role == "admin"));
