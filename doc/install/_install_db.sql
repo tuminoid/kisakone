@@ -438,7 +438,7 @@ CREATE TABLE :PDGAPlayers
   membership_expiration_date DATE,
   classification ENUM('P', 'A') NOT NULL,
   city VARCHAR(255) NOT NULL,
-  state VARCHAR(255) NOT NULL,
+  state_prov VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   rating INT NOT NULL DEFAULT 0,
   rating_effective_date DATE,
