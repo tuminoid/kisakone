@@ -64,7 +64,7 @@ ruletype_co        Sääntötesti suoritettu (1 tai 0)
 ruletype_status    Pro (P) tai Am (A)
 ruletype_country   Maa (FI, EE, ...)
 
-ruletype_short_rating  PDGA
+ruletype_short_rating  Rating
 ruletype_short_player  Pelaaja
 ruletype_short_co      Sääntötesti
 ruletype_short_status  Pro tai Am
