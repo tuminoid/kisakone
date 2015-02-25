@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix `combine.sh` in case where user is in `EventManagement` table.
+
 2015.02.19:
 ===========
   * PDGA API has one column name changed, so we'll change our db as well to avoid
