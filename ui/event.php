@@ -190,12 +190,12 @@ function InitializeSmartyVariables(&$smarty, $error)
                     if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees))
                         $smarty->assign('feesMissing', $requiredFees);
                 }
-
-                $smarty->assign('rules', $event->getRules(-1));
-                $smarty->assign('ruletypes', GetRuleTypes());
-                $smarty->assign('ruleops', GetRuleOps());
-                $smarty->assign('ruleactions', GetRuleActions());
             }
+
+            $smarty->assign('rules', $event->getRules(-1));
+            $smarty->assign('ruletypes', GetRuleTypes());
+            $smarty->assign('ruleops', GetRuleOps());
+            $smarty->assign('ruleactions', GetRuleActions());
 
             $smarty->assign('signedup', $event->approved !== null);
             $smarty->assign('paid', $event->eventFeePaid);
