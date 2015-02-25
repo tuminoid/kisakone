@@ -3,9 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.02.25:
+===========
   * Fix `combine.sh` in case where user is in `EventManagement` table.
+  * Fix few translations.
+  * Display RegistrationRules in the sign up page regardless of signup phase.
 
 2015.02.19:
 ===========
