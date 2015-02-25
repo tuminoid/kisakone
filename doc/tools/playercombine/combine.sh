@@ -47,7 +47,7 @@ for TABLE in $UPDATE_TABLES; do
 done
 
 echo "Fixing user-level connections ..."
-echo "UPDATE ${PREFIX}EventManagement SET User = (SELECT id FROM ${PREFIX}User WHERE Player = $NEW) WHERE User = (SELECT id FROM ${PREFIX}User WHERE Player IN ($OLD));" | $MYSQL_CMD
+echo "UPDATE ${PREFIX}EventManagement SET User = (SELECT id FROM ${PREFIX}User WHERE Player = $NEW) WHERE User IN ((SELECT id FROM ${PREFIX}User WHERE Player IN ($OLD)));" | $MYSQL_CMD
 
 echo "Deleting old entries ..."
 echo "DELETE FROM ${PREFIX}User WHERE Player IN ($OLD);" | $MYSQL_CMD
