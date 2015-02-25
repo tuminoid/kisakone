@@ -35,7 +35,7 @@ PASS=$(php -r "require_once './config.php'; global \$settings; print_r( \$settin
 PREFIX=$(php -r "require_once './config.php'; global \$settings; print_r( \$settings[\$argv[1]]);" -- DB_PREFIX)
 DBHOST=$(php -r "require_once './config.php'; global \$settings; print_r( \$settings[\$argv[1]]);" -- DB_ADDRESS)
 
-MYSQL_CMD="mysql -u$USER -p$PASS -h $DBHOST $DB"
+MYSQL_CMD="mysql -u$USER -p$PASS -h$DBHOST $DB"
 UPDATE_TABLES="EventQueue TournamentStanding StartingOrder HoleResult RoundResult Participation"
 
 echo "Testing connection ..."
@@ -45,6 +45,9 @@ for TABLE in $UPDATE_TABLES; do
   echo "Fixing table $TABLE ..."
   echo "UPDATE ${PREFIX}$TABLE SET Player = $NEW WHERE Player IN ($OLD);" | $MYSQL_CMD
 done
+
+echo "Fixing user-level connections ..."
+echo "UPDATE ${PREFIX}EventManagement SET User = (SELECT id FROM ${PREFIX}User WHERE Player = $NEW) WHERE User = (SELECT id FROM ${PREFIX}User WHERE Player IN ($OLD));" | $MYSQL_CMD
 
 echo "Deleting old entries ..."
 echo "DELETE FROM ${PREFIX}User WHERE Player IN ($OLD);" | $MYSQL_CMD
