@@ -86,7 +86,7 @@ rulevalue_status_A  Am
 
 ruleuntil_header   Mihin asti
 
-ruleoption_header  Toiminto
+ruleoption_header  Toiminto muille
 ruleaction_accept  Hyväksy
 ruleaction_reject  Hylkää
 ruleaction_queue   Jonoon
