@@ -54,7 +54,7 @@ function GetEventRules($eventid, $classid = -1)
         $where_class = "AND Classification = " . esc_or_null($classid);
 
     $query = format_query("SELECT :RegistrationRules.id AS id, Event, Classification, Type, Op, Value, Action,
-                                DATE_FORMAT(ValidUntil, '%Y-%m-%d %H:%m') AS ValidUntil, NOW() < ValidUntil AS Valid,
+                                DATE_FORMAT(ValidUntil, '%Y-%m-%d %H:%i') AS ValidUntil, NOW() < ValidUntil AS Valid,
                                 :Classification.Name AS ClassName
                             FROM :RegistrationRules
                             LEFT JOIN :Classification ON :RegistrationRules.Classification = :Classification.id
