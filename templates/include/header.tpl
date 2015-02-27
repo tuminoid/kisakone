@@ -20,67 +20,67 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
-<!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>{$title} - {translate id=site_name}</title>
-    <link rel="stylesheet" href="{$url_base}css/style.css" type="text/css" />
-    <link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png" />
-    <script type="text/javascript" src="{$url_base}js/jquery-1.11.2.min.js"></script>
-    {if $mod_rewrite}
-    <script type="text/javascript" src="{$url_base}javascript/base"></script>
-    {else}
-    <script type="text/javascript" src="{$url_base}index.php?page=javascript/base"></script>
-    {/if}
-    {if $ui}
-    <script type="text/javascript" src="{$url_base}js/jquery-ui-1.11.2.min.js"></script>
-    <link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css" type="text/css" />
-    <meta http-equiv="Content-Type" content="{$contentType}" />
-    {/if}
-    {if $timepicker}
-    <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.js"></script>
-    <script type="text/javascript" src="{$url_base}js/jquery/jquery-ui-sliderAccess.js"></script>
-    <link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css" type="text/css" />
-    {/if}
-    {if $autocomplete}
-    <script type="text/javascript" src="{$url_base}js/jquery/jquery.autocomplete-min.js"></script>
-    {/if}
-    {if $tooltip}
-    {literal}<script type="text/javascript"> $(function() { $( document ).tooltip(); });{/literal} </script>
-    {/if}
-    <link rel="stylesheet" href="{$url_base}css/flag-icon/css/flag-icon.min.css" type="text/css" />
-    {if $analytics}
-    <script type="text/javascript" src="{$url_base}js/analytics.js"></script>
-    {/if}
-    {if $trackjs}
-    <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="{$trackjs}"></script>
-    {/if}
-    {if $calendar}
-    <script type="text/javascript" src="{$url_base}js/addthisevent/ate.min.js"></script>
-    <link rel="stylesheet" href="{$url_base}js/addthisevent/ate.css" type="text/css" />
-    {/if}
-    {$extrahead}
-    <meta name="version" content="{$kisakone_version}" />
-</head>
+<!doctype html>
+<html lang="fi-FI">
+<meta charset="utf-8">
+
+<title>{$title} - {translate id=site_name}</title>
+
+<link rel="stylesheet" href="{$url_base}css/style.css">
+<link rel="apple-touch-icon" href="{$url_base}images/apple-touch-icon.png">
+<script src="{$url_base}js/jquery-1.11.2.min.js"></script>
+<script src={if $mod_rewrite}"{$url_base}javascript/base"{else}"{$url_base}index.php?page=javascript/base"{/if} defer></script>
+
+<link rel="stylesheet" href="{$url_base}css/flag-icon/css/flag-icon.min.css">
+
+{if $ui}
+<script src="{$url_base}js/jquery-ui-1.11.2.min.js" defer></script>
+<link rel="stylesheet" href="{$url_base}js/jquery-ui-lightness/jquery-ui.min.css">
+{/if}
+{if $timepicker}
+<script src="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.js" defer></script>
+<script src="{$url_base}js/jquery/jquery-ui-sliderAccess.js" defer></script>
+<link rel="stylesheet" href="{$url_base}js/jquery/jquery-ui-timepicker-addon.min.css">
+{/if}
+{if $autocomplete}
+<script src="{$url_base}js/jquery/jquery.autocomplete-min.js" defer></script>
+{/if}
+{if $tooltip}
+{literal}<script>$(function() { $( document ).tooltip(); });{/literal} </script>
+{/if}
+{if $analytics}
+<script src="{$url_base}js/analytics.js" defer></script>
+{/if}
+{if $trackjs}
+<script src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="{$trackjs}" defer></script>
+{/if}
+{if $calendar}
+<script src="{$url_base}js/addthisevent/ate.min.js" defer></script>
+<link rel="stylesheet" href="{$url_base}js/addthisevent/ate.css" />
+{/if}
+{$extrahead}
+<meta name="x-kisakone-version" content="{$kisakone_version}">
+
+<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
 <body>
 
 <table id="contentcontainer" cellpadding="0" cellspacing="0">
     <tr id="headtr">
     <td colspan="3">
+        <header id="header">
+            {include file="include/loginbox.tpl"}
+            {if $smarty.get.languagebar }
+                {* Disabled from normal use as we only have a single language *}
+                {include file='include/languagebar.tpl'}
+            {/if}
+            <img id="sitelogo" src="{$url_base}images/sitelogo.png" alt="{translate id=site_name}" />
 
-    <div id="header">
-    {include file="include/loginbox.tpl"}
-    {if $smarty.get.languagebar }
-        {* Disabled from normal use as we only have a single language *}
-        {include file='include/languagebar.tpl'}
-    {/if}
-    <img id="sitelogo" src="{$url_base}images/sitelogo.png" alt="{translate id=site_name}" />
-
-    <h1 id="sitename">{translate id=site_name_long}</h1>
-    <div id="pagename">{$title}</div>
-    </div>
+            <h1 id="sitename">{translate id=site_name_long}</h1>
+            <div id="pagename">{$title}</div>
+        </header>
     {include file="include/mainmenu.tpl"}
     </td>
     </tr>

@@ -205,20 +205,13 @@ $smarty->assign("kisakone_version", getKisakoneVersion());
 // - but IE doesn't understand that so text/html is served for IE
 // - pages with user-made HTML content set the global disable_xhtml, which
 //   enables HTML mode (as opposed to XHTML)
-$isXhtml = false;
 if (@$GLOBALS['contentTypeSet']) {
     // already done, do nothing now
     $smarty->assign('contentType', $GLOBALS['contentTypeSet']);
 }
-elseif (@$GLOBALS['disable_xhtml'] || strpos(@$_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+else {
     header("Content-Type: text/html; charset=utf-8");
     $smarty->assign('contentType', "text/html; charset=utf-8");
-}
-else {
-    header("Content-Type: application/xhtml+xml; charset=utf-8");
-    $smarty->assign('contentType', "application/xhtml+xml; charset=utf-8");
-
-    $isXhtml = true;
 }
 
 // Choose the ad for the page
@@ -238,8 +231,6 @@ if (is_a($pageData, 'Error')) {
 }
 
 // And finally render the page
-if ($isXhtml)
-    echo '<?xml version="1.0" encoding="UTF-8" ?>';
 $smarty->display($fullTemplateName);
 
 /**
