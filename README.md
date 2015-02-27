@@ -54,3 +54,5 @@ Current list of requirements and frameworks in use:
  - [AddThisEvent](http://www.addthisevent.com/) widgets
  - [Google Analytics](http://www.google.com/analytics/) support
  - [TrackJS](http://www.trackjs.com/) support
+
+Long-term plan is to modernize codebase, move to HTML5 and support mobile clients as first-class citizens.
