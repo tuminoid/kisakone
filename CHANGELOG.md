@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Critical regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
+
 2015.02.25:
 ===========
   * Fix `combine.sh` in case where user is in `EventManagement` table.
