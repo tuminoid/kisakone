@@ -92,12 +92,12 @@ function EditTournament($id, $name, $method, $level, $available, $year, $descrip
     $name = esc_or_null($name);
     $method = esc_or_null($method);
     $level = (int) $level;
-    $avilable = $available ? 1 : 0;
+    $available = $available ? 1 : 0;
     $year = (int) $year;
     $description = esc_or_null($description);
 
     $query = format_query("UPDATE :Tournament
-                            SET Name = $name, ScoreCalculationMethod = $name, Level = $level,
+                            SET Name = $name, ScoreCalculationMethod = $method, Level = $level,
                                 Available = $available, Year = $year, Description = $description
                             WHERE id = $id");
     $result = execute_query($query);
@@ -112,7 +112,7 @@ function CreateTournament($name, $method, $level, $available, $year, $descriptio
     $name = esc_or_null($name);
     $method = esc_or_null($method);
     $level = (int) $level;
-    $avilable = $available ? 1 : 0;
+    $available = $available ? 1 : 0;
     $year = (int) $year;
     $description = esc_or_null($description);
 
