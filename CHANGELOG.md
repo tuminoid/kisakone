@@ -3,9 +3,13 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
-  * Critical regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
+2015.03.01:
+===========
+  * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
+  * PDGA Stats API changed and `:PDGAStats` table followed suit.
+ 
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150301.md)
+for additional actions needed.
 
 2015.02.25:
 ===========
