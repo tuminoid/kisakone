@@ -43,7 +43,8 @@ CREATE TABLE :User
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
     FOREIGN KEY(Club) REFERENCES :Club(id),
     UNIQUE(Username),
-    INDEX(Username, Password)
+    INDEX(Username, Password),
+    INDEX(Username)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -289,7 +290,8 @@ CREATE TABLE :RoundResult
     PRIMARY KEY(id),
     FOREIGN KEY(Round) REFERENCES :Round(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
-    INDEX(Round, LastUpdated)
+    INDEX(Round, LastUpdated),
+    INDEX(Player, Round)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -307,7 +309,8 @@ CREATE TABLE :HoleResult
     FOREIGN KEY(Hole) REFERENCES :Hole(id),
     FOREIGN KEY(RoundResult) REFERENCES :RoundResult(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
-    INDEX(RoundResult, LastUpdated)
+    INDEX(RoundResult, LastUpdated),
+    INDEX(Player,RoundResult)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -402,8 +405,7 @@ CREATE TABLE :EventQueue
     PRIMARY KEY(id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
-    FOREIGN KEY(Classification) REFERENCES :Classification(id),
-    INDEX(Event)
+    FOREIGN KEY(Classification) REFERENCES :Classification(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -420,7 +422,8 @@ CREATE TABLE :RegistrationRules
     ValidUntil DATETIME NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
-    FOREIGN KEY(Classification) REFERENCES :Classification(id)
+    FOREIGN KEY(Classification) REFERENCES :Classification(id),
+    INDEX(Event, Classification)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -444,7 +447,8 @@ CREATE TABLE :PDGAPlayers
     rating_effective_date DATE,
     official_status ENUM('yes', 'no') NOT NULL,
     official_expiration_date DATE,
-    PRIMARY KEY(pdga_number)
+    PRIMARY KEY(pdga_number),
+    INDEX(first_name, last_name, city)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -466,6 +470,8 @@ CREATE TABLE :PDGAStats
     points INT NOT NULL DEFAULT 0,
     prize FLOAT(12,2) DEFAULT 0.00,
     last_updated DATETIME,
-    UNIQUE KEY(pdganum, year, class)
+    UNIQUE KEY(pdga_number, year, class),
+    INDEX(pdga_number, year),
+    INDEX(country, year)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
