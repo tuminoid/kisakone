@@ -11,6 +11,7 @@ next:
 ===========
   * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
   * PDGA Stats API changed and `:PDGAStats` table followed suit.
+  * In case HoleText is missing, just display the group's startinghole.
  
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150301.md)
 for additional actions needed.
