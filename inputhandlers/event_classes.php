@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Changing classes of signups for an event
  *
@@ -23,6 +23,8 @@
  * */
 
 require_once 'data/class.php';
+require_once 'inputhandlers/support/event_edit_notification.php';
+
 
 /**
  * Processes the login form
@@ -35,14 +37,13 @@ function processForm()
     if ($event->resultsLocked)
         return Error::AccessDenied();
 
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventclasses');
-    }
-    if (@$_POST['cancel']) {
-        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $_GET['id']), $_GET));
-    }
-    $failures = false;
 
+    if (@$_POST['cancel'])
+        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $_GET['id']), $_GET));
+
+    $failures = false;
     foreach ($_POST as $key => $value) {
         // Process player class changes
         if (substr($key, 0, 6) == 'class_') {
@@ -50,21 +51,18 @@ function processForm()
             $init = $_POST["init_$pid"];
 
             if ($value == "removeplayer") {
-                if (CancelSignup($event->id, $pid)) {
+                if (CancelSignup($event->id, $pid))
                     $failures = true;
-                }
             }
-
-            if ($init != $value) {
-                SetParticipantClass($event->id, $pid, $value);
+            else {
+                if ($init != $value)
+                    SetParticipantClass($event->id, $pid, $value);
             }
         }
     }
 
     if ($failures)
         return true;
-
-    require_once 'inputhandlers/support/event_edit_notification.php';
 
     return input_EditNotification();
 }
