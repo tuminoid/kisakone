@@ -393,14 +393,21 @@ function CancelSignup($eventId, $playerId, $check_promotion = true)
     $eventId = (int) $eventId;
     $playerId = (int) $playerId;
 
-    // Delete from event and queue
-    execute_query(format_query("DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId"));
-    execute_query(format_query("DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId"));
+    $queries = array();
+    $queries[] = "DELETE FROM :SectionMembership WHERE Participation = (SELECT id FROM :Participation WHERE Player = $playerId AND Event = $eventId)";
+    $queries[] = "DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId";
+    $queries[] = "DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId";
 
-    if ($check_promotion === false)
-        return null;
+    foreach ($queries as $query) {
+        $result = execute_query(format_query($query));
+        if (!$result)
+            return Error::Query($query);
+    }
 
     // Check if we can lift someone into competition
+    if ($check_promotion !== true)
+        return null;
+
     return CheckQueueForPromotions($eventId);
 }
 
