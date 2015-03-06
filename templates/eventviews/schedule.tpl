@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event schedule
  *
@@ -102,7 +102,11 @@
                 <td>
                     {if $round->starttype == 'simultaneous'}
                         {math assign="holeIndex" equation="x-y" x=$group.StartingHole y=1}
-                        {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+                        {if $holes[$holeIndex]->holeText}
+                            {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+                        {else}
+                            {translate id=your_group_starting_hole hole=$group.StartingHole}
+                        {/if}
                     {else}
                         {$group.StartingTime|date_format:"%H:%M"}
                     {/if}
