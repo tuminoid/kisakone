@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix case where deleting player already assigned to pools fails.
+
 2015.03.01:
 ===========
   * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
