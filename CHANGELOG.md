@@ -8,6 +8,7 @@ next:
   * Fix case where deleting player already assigned to pools fails. GH #218.
   * In case HoleText is missing, just display the group's startinghole. GH #219.
   * Only display licenses that are appropriate per installation (sfl/non-sfl).
+  * Link player's pdga number into pdga.com profile. GH #216.
 
 2015.03.01:
 ===========
