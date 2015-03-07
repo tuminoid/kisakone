@@ -6,12 +6,13 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Fix case where deleting player already assigned to pools fails.
+  * In case HoleText is missing, just display the group's startinghole.
+  * Only display licenses that are appropriate per installation (sfl/non-sfl).
 
 2015.03.01:
 ===========
   * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
   * PDGA Stats API changed and `:PDGAStats` table followed suit.
-  * In case HoleText is missing, just display the group's startinghole.
  
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150301.md)
 for additional actions needed.
