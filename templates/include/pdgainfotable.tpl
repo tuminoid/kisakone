@@ -26,7 +26,7 @@
 {if !$country}{assign var=country value='FI'}{/if}
 <tr>
     <td><label for="pdga_number">{translate id=pdga_number}</label></td>
-    <td><span id="pdga_number">{$pdga}</span></td>
+    <td><span id="pdga_number"><a href="http://www.pdga.com/player/{$player->pdga}">{$pdga}</a></span></td>
 </tr>
 <tr>
     <td><label for="pdga_membership_status">{translate id=pdga_membership}</label></td>
