@@ -121,9 +121,12 @@
     <div>
         <label for="requireFees">{translate id=event_require_fees}</label>
         <select name="requireFees" id="requireFees">
+            {if !$sfl_enabled}
             <option value="0" {if $event.requireFees == 0}selected="selected"{/if}>{translate id=event_require_no_fees}</option>
-            {if $sfl_enabled}
+            {else}
+            {* membership not allowed in sfl and useless in non-sfl
             <option value="{$sfl_license_m}" {if $event.requireFees == $sfl_license_m}selected="selected"{/if}>{translate id=event_require_member_fee}</option>
+            *}
             <option value="{$sfl_license_b}" {if $event.requireFees == $sfl_license_b}selected="selected"{/if}>{translate id=event_require_blicense_fee}</option>
             <option value="{$sfl_license_a}" {if $event.requireFees == $sfl_license_a}selected="selected"{/if}>{translate id=event_require_alicense_fee}</option>
             {/if}
