@@ -75,6 +75,8 @@ function sfl_api_curl_exec($url)
         curl_setopt($curl, CURLOPT_USERPWD, $username . ":" . $password);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 2);
     }
     curl_setopt($curl, CURLOPT_URL, $url);
 
@@ -113,10 +115,10 @@ function sfl_api_sendRequest($url, $force = false)
         $decoded = json_decode($response, true);
 
         if (!$decoded)
-            error_log("Getting data for '$request_url' failed, response =\n" . print_r($response, true));
+            error_log("Decoding data for '$request_url' failed, response =\n'" . print_r($response, true) . "'");
     }
     else
-        error_log("Getting SFL data failed: code: $http_code error: " . $error);
+        error_log("Getting SFL data for '$request_url' failed, code: $http_code, error: " . $error);
 
     cache_set($url, $decoded, 60*60);
 
