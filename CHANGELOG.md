@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Serve TinyMCE buttons as static files by adding exceptions to htaccess.
+
 2015.03.11:
 ===========
   * Fix case where deleting player already assigned to pools fails. GH #218.
