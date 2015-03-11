@@ -130,7 +130,7 @@ function sfl_api_get_by_name($firstname, $lastname, $birthdate)
     $birthdate = esc_or_null($birthdate, 'int');
     $where = "WHERE sfl_player.firstname = CAST(CAST($firstname AS binary) AS char character set utf8)
                 AND sfl_player.lastname = CAST(CAST($lastname AS binary) AS char character set utf8)
-                AND YEAR(sfl_player.birthdate) = $birthyear";
+                AND YEAR(sfl_player.birthdate) = $birthdate";
     return sfl_api_parseLicenses(sfl_api_run_query($where));
 }
 
