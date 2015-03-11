@@ -23,104 +23,69 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// We have a local API instance
-define('SFL_API_SERVER', "http://127.0.0.1:8082");
-
-require_once 'config.php';
+require_once 'data/db_init.php';
 require_once 'data/user.php';
-require_once 'data/cache.php';
 
 
 /**
- * Parse settings from config.php
+ * Run direct database query on player data based on where condition
  *
- * Check sanity of SFL settings we import from global $settings
- *
- * @return array for usable settings
- * @return false for bad settings
+ * @param  string $where where clause
+ * @return array if player data
  */
-function sfl_api_settings()
+function sfl_api_run_query($where)
 {
-    global $settings;
+    $query = "SELECT year, license,
+                sfl_player.pdga, sfl_player.sfl_id, sfl_clubs.club_id,
+                CAST(CAST(sfl_clubs.club_name AS char character set utf8) AS binary) AS club_name,
+                CAST(CAST(sfl_clubs.club_short AS char character set utf8) AS binary) AS club_short,
+                CAST(CAST(sfl_player.firstname AS char character set utf8) AS binary) AS firstname,
+                CAST(CAST(sfl_player.lastname AS char character set utf8) AS binary) AS lastname,
+                YEAR(sfl_player.birthdate) AS birthyear, sfl_player.email,
+                UPPER(SUBSTR(sfl_player.sex, 1, 1)) AS gender
+            FROM sfl_membership
+            INNER JOIN sfl_player ON (sfl_player.player_id = sfl_membership.player_id)
+            INNER JOIN sfl_clubs ON (sfl_player.club_id = sfl_clubs.club_id)
+            $where";
+    $result = execute_query($query);
 
-    if ($settings['SFL_ENABLED'] != true)
-        return false;
-
-    $username = @$settings['SFL_USERNAME'];
-    if (empty($username) || strlen($username) <= 0)
-        return false;
-
-    $password = @$settings['SFL_PASSWORD'];
-    if (empty($password) || strlen($password) <= 0)
-        return false;
-
-    return array($username, $password);
-}
-
-
-function sfl_api_curl_exec($url)
-{
-    global $curl;
-
-    $creds = sfl_api_settings();
-    if (!$creds)
+    if (!$result)
         return null;
 
-    list($username, $password) = $creds;
-    if (!$username || !$password)
-        return null;
+    $rows = null;
+    while (($row = mysql_fetch_assoc($result)) !== false)
+        $rows[] = $row;
+    mysql_free_result($result);
 
-    if (!$curl) {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_USERPWD, $username . ":" . $password);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-    }
-    curl_setopt($curl, CURLOPT_URL, $url);
+    $result = array();
+    $result['status'] = false;
+    $year = null;
+    foreach ($rows as $line => $row) {
+        foreach (array_keys($row) as $key) {
+            switch ($key) {
+                case 'year':
+                    $year = $row['year'];
+                    break;
 
-    $response = curl_exec($curl);
-    $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    $error = curl_error($curl);
+                case 'license':
+                    if ($row['license'] == LICENSE_MEMBERSHIP)
+                        $result['membership'][$year] = true;
+                    elseif ($row['license'] == LICENSE_A)
+                        $result['a_license'][$year] = true;
+                    elseif ($row['license'] == LICENSE_B)
+                        $result['b_license'][$year] = true;
+                    break;
 
-    return array($response, $http_code, $error);
-}
+                default:
+                    $result[$key] = $row[$key];
+                    break;
+            }
+        }
 
-/**
- * Send curl request to API
- *
- * @param  string $url url (without server)
- * @param  bool $force get fresh copy from api
- * @return  returns decoded json data
- */
-function sfl_api_sendRequest($url, $force = false)
-{
-    if (!$url)
-        return null;
-
-    if ($force)
-        cache_del($url);
-    else {
-        $data = cache_get($url);
-        if ($data)
-            return $data;
+        $result['status'] = true;
     }
 
-    $request_url = SFL_API_SERVER . $url;
-    list($response, $http_code, $error) = sfl_api_curl_exec($request_url);
-
-    $decoded = null;
-    if ($http_code == 200) {
-        $decoded = json_decode($response, true);
-
-        if (!$decoded)
-            error_log("Getting data for '$request_url' failed, response =\n" . print_r($response, true));
-    }
-    else
-        error_log("Getting SFL data failed: code: $http_code error: " . $error);
-
-    cache_set($url, $decoded, 60*60);
-
-    return $decoded;
+    return $result;
 }
 
 
@@ -149,11 +114,6 @@ function sfl_api_parseLicenses($data)
 }
 
 
-
-/** ************************** ONLY FUNCTIONS BELOW SHOULD BE CALLED ***************************** */
-
-
-
 /**
  * Get users licenses for a specific year, identified by traditional
  * firstname+lastname+birthyear combo.
@@ -161,15 +121,17 @@ function sfl_api_parseLicenses($data)
  * @param  string $firstname first name
  * @param  string $lastname last name
  * @param  int $birthdate year of birth
- * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByName($firstname, $lastname, $birthdate, $force = false)
+function sfl_api_get_by_name($firstname, $lastname, $birthdate)
 {
-    $birthdate = (int) $birthdate;
-    $url = "/sfl/name/$firstname/$lastname/$birthdate";
-
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
+    $firstname = esc_or_null($firstname);
+    $lastname = esc_or_null($lastname);
+    $birthdate = esc_or_null($birthdate, 'int');
+    $where = "WHERE sfl_player.firstname = CAST(CAST($firstname AS binary) AS char character set utf8)
+                AND sfl_player.lastname = CAST(CAST($lastname AS binary) AS char character set utf8)
+                AND YEAR(sfl_player.birthdate) = $birthyear";
+    return sfl_api_parseLicenses(sfl_api_run_query($where));
 }
 
 
@@ -177,15 +139,13 @@ function SFL_getLicensesByName($firstname, $lastname, $birthdate, $force = false
  * Get users licenses for a specific year, identified by SFL ID number
  *
  * @param  int $sflId sfl id number
- * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesById($sflid, $force = false)
+function sfl_api_get_by_id($sflid)
 {
-    $sflid = (int) $sflid;
-    $url = "/sfl/id/$sflid";
-
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
+    $sflid = esc_or_null($sflid, 'int');
+    $where = "WHERE sfl_player.sfl_id = $sflid AND sfl_player.pdga IN ('', 0, NULL)";
+    return sfl_api_parseLicenses(sfl_api_run_query($where));
 }
 
 
@@ -193,26 +153,28 @@ function SFL_getLicensesById($sflid, $force = false)
  * Get users licenses for a specific year, identified by PDGA number
  *
  * @param  int $pdga pdga number
- * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getLicensesByPDGA($pdga, $force = false)
+function sfl_api_get_by_pdga($pdga)
 {
-    $pdga = (int) $pdga;
-    $url = "/sfl/pdga/$pdga";
-
-    return sfl_api_parseLicenses(sfl_api_sendRequest($url, $force));
+    $pdga = esc_or_null($pdga, 'int');
+    $where = "WHERE sfl_player.pdga = $pdga";
+    return sfl_api_parseLicenses(sfl_api_run_query($where));
 }
+
+
+
+/** ************************** ONLY FUNCTIONS BELOW SHOULD BE CALLED ***************************** */
+
 
 
 /**
  * Get users licenses for a specific year
  *
  * @param  int $userid internal userid
- * @param  bool $force get fresh copy from api
  * @return  returns assoc array of licenses [a, b, membership]
  */
-function SFL_getPlayer($userid, $force = false)
+function SFL_getPlayer($userid)
 {
     $userid = (int) $userid;
 
@@ -246,15 +208,17 @@ function SFL_getPlayer($userid, $force = false)
         list($firstname, $lastname) = str_replace(' ', '+', array($firstname, $lastname));
 
         if ($pdga > 0)
-            $data = SFL_getLicensesByPDGA($pdga, $force);
+            $data = sfl_api_get_by_pdga($pdga);
         elseif ($sflid > 0)
-            $data = SFL_getLicensesById($sflid, $force);
+            $data = sfl_api_get_by_id($sflid);
         else
-            $data = SFL_getLicensesByName($firstname, $lastname, $birthdate, $force);
+            $data = sfl_api_get_by_name($firstname, $lastname, $birthdate);
 
-        if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
-            SaveUserClub($userid, @$data['club_id']);
-        SaveUserSflId($userid, @$data['sfl_id']);
+        if ($data) {
+            if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
+                SaveUserClub($userid, @$data['club_id']);
+            SaveUserSflId($userid, @$data['sfl_id']);
+        }
 
         return $data;
     }

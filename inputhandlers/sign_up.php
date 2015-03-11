@@ -52,8 +52,11 @@ function processForm()
         return Error::AccessDenied();
 
     $player = $user->GetPlayer();
-    $class = GetClassDetails(@$_POST['class']);
+    $status = $event->GetPlayerStatus($player->id);
+    if ($status != 'notsigned')
+        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 
+    $class = GetClassDetails(@$_POST['class']);
     if (!$player->IsSuitableClass($class)) {
         $error = new Error();
         $error->title = 'invalid_class_selection';

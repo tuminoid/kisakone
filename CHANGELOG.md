@@ -3,6 +3,15 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix case where deleting player already assigned to pools fails. GH #218.
+  * In case HoleText is missing, just display the group's startinghole. GH #219.
+  * Only display licenses that are appropriate per installation (sfl/non-sfl). GH #201.
+  * Link player's pdga number into pdga.com profile. GH #216.
+  * If you sign-up multiple times from multiple browser windows, place in competition resetted.
+  * SFL: use direct database access for data, not API.
+
 2015.03.01:
 ===========
   * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
