@@ -9,6 +9,7 @@ next:
   * In case HoleText is missing, just display the group's startinghole. GH #219.
   * Only display licenses that are appropriate per installation (sfl/non-sfl). GH #201.
   * Link player's pdga number into pdga.com profile. GH #216.
+  * If you sign-up multiple times from multiple browser windows, place in competition resetted.
 
 2015.03.01:
 ===========
