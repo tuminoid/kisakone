@@ -24,6 +24,8 @@
 
 require_once 'data/class.php';
 require_once 'data/round.php';
+require_once 'core/tournament.php';
+
 
 /**
  * Processes the login form
@@ -31,22 +33,20 @@ require_once 'data/round.php';
  */
 function processForm()
 {
+    $problems = array();
+
     language_include('formvalidation');
 
     if (!IsAdmin()) {
         $event = GetEventDetails(@$_GET['id']);
-        if ($event->management != 'td') {
+        if ($event->management != 'td')
             return Error::AccessDenied();
-        }
     }
-    $problems = array();
 
-    if (@$_POST['cancel']) {
+    if (@$_POST['cancel'])
         redirect("Location: " . BaseURL());
-    }
-    elseif (@$_POST['delete']) {
+    elseif (@$_POST['delete'])
         redirect("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
-    }
 
     $name = $_POST['name'];
     if ($name == '')
@@ -56,19 +56,12 @@ function processForm()
     if ($venue == '')
         $problems['venue'] = translate('FormError_NotEmpty');
 
-    $tournament = $_POST['tournament'];
-    if (!$tournament)
-        $tournament = null;
-
     $level = $_POST['level'];
-    if (!$level)
-        $problems['level'] = translate('FormError_NotEmpty');
-
-    if ($tournament && $level) {
+    $tournament = $_POST['tournament'];
+    if ($tournament) {
         $tobj = GetTournamentDetails($tournament);
-        if ($tobj->level != $level) {
+        if ($tobj->level != $level)
             $problems['tournament'] = translate('FormError_TournamentLevelMismatch');
-        }
     }
 
     $duration = @$_POST['duration'];
@@ -105,9 +98,8 @@ function processForm()
     if (count($classOperations)) {
         foreach ($classOperations as $op) {
             list($operation, $class) = explode(':', $op, 2);
-            if ($operation == 'add') {
+            if ($operation == 'add')
                 $classes[] = $class;
-            }
             elseif ($operation == 'remove') {
                 $index = array_search($class, $classes);
                 if ($index !== false)
@@ -145,19 +137,16 @@ function processForm()
     $requireFees = @$_POST['requireFees'];
 
     $td = input_GetUser($_POST['td']);
-    if ($td === null) {
+    if ($td === null)
         $problems['td'] = translate('FormError_InvalidUser');
-    }
 
     $pdgaId = @$_POST['pdgaeventid'];
     if (!empty($pdgaId)) {
-        if (!is_numeric($pdgaId)) {
+        if (!is_numeric($pdgaId))
             $problems['pdgaeventid'] = translate('FormError_NotPositiveInteger');
-        }
         $pdgaId = (int) $pdgaId;
-        if (!(is_int($pdgaId) && $pdgaId >= 0)) {
+        if (!(is_int($pdgaId) && $pdgaId >= 0))
             $problems['pdgaeventid'] = translate('FormError_NotPositiveInteger');
-        }
     }
 
     $officials = array();
@@ -165,9 +154,8 @@ function processForm()
     if (count($officialOperations)) {
         foreach ($officialOperations as $op) {
             list($operation, $official) = explode(':', $op, 2);
-            if ($operation == 'add') {
+            if ($operation == 'add')
                 $officials[] = $official;
-            }
             elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
@@ -188,9 +176,8 @@ function processForm()
 
     $eventid = (int) $_GET['id'];
     $event = GetEventDetails($eventid);
-    if ($event === null || is_a($event, 'Error')) {
+    if ($event === null || is_a($event, 'Error'))
         return Error::NotFound('event');
-    }
 
     $oldTournament = $event->tournament;
 
@@ -237,7 +224,6 @@ function processForm()
 
     UpdateEventResults($eventid);
 
-    require_once 'core/tournament.php';
     UpdateTournamentPoints($tournament);
     if ($tournament != $oldTournament)
         UpdateTournamentPoints($oldTournament);

@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm‰
+ * Copyright 2009-2010 Kisakone projektiryhm√§
  * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event creation and editing form
@@ -234,7 +234,6 @@ var day_index = "{translate id=day_index}";
 $(document).ready(function(){
     CheckedFormField('eventform', 'name', NonEmptyField, null);
     CheckedFormField('eventform', 'venue', NonEmptyField, null);
-    CheckedFormField('eventform', 'level', NonEmptyField, null);
     CheckedFormField('eventform', 'start', NonEmptyField, null, {delayed: true});
     CheckedFormField('eventform', 'duration', PositiveIntegerField, null);
     CheckedFormField('eventform', 'playerlimit', OneOrMoreIntegerField, null);
@@ -243,34 +242,20 @@ $(document).ready(function(){
     CheckedFormField('eventform', 'official', AlwaysEmptyField, null);
     CheckedFormField('eventform', 'classList', AlwaysEmptyField, null);
 
-
     $("#duration").change(durationChanged);
     $("#duration").change();
-
     $("#addAllClasses").click(addAllClasses);
-
     $("#cancelButton").click(CancelSubmit);
 
-
     var options, a;
-    jQuery(function(){
-    options = { serviceUrl: baseUrl,
-        params: { path : 'autocomplete', id: 'venue' }};
-    a = $('#venueField').autocomplete(options);
+    jQuery(function() {
+        options = { serviceUrl: baseUrl, params: { path : 'autocomplete', id: 'venue' }};
+        a = $('#venueField').autocomplete(options);
 
+        $('#td').autocomplete({ serviceUrl: baseUrl, params: { path : 'autocomplete', id: 'users'}});
+        $('#official').autocomplete({ serviceUrl: baseUrl, params: { path : 'autocomplete', id: 'users'}});
 
-    $('#td').autocomplete(
-      { serviceUrl: baseUrl,
-        params: { path : 'autocomplete', id: 'users'}
-      }
-    );
-    $('#official').autocomplete(
-      { serviceUrl: baseUrl,
-        params: { path : 'autocomplete', id: 'users'
-      }}
-    );
-
-    $(".useDatePicker").datepicker({
+        $(".useDatePicker").datepicker({
                             dateFormat: 'yy-mm-dd',
                             changeMonth: true,
                             {/literal}
@@ -283,7 +268,7 @@ $(document).ready(function(){
                             firstDay: 1
                             });
 
-    $("#signup_start").datetimepicker({
+        $("#signup_start").datetimepicker({
                             dateFormat: 'yy-mm-dd',
                             changeMonth: true,
                             {/literal}
@@ -296,7 +281,7 @@ $(document).ready(function(){
                             firstDay: 1
                             });
 
-    $("#signup_end").datetimepicker({
+        $("#signup_end").datetimepicker({
                             dateFormat: 'yy-mm-dd',
                             changeMonth: true,
                             {/literal}
@@ -309,18 +294,18 @@ $(document).ready(function(){
                             firstDay: 1
                             });
 
-    $('#addClass').click(addClass);
-    $('#addRound').click(addRound);
-    $('#addOfficial').click(addOfficial);
-
-
+        $('#addClass').click(addClass);
+        $('#addRound').click(addRound);
+        $('#addOfficial').click(addOfficial);
+    });
 });
 
-});
 
 function durationChanged() {
     var days = parseInt(this.value);
-    if (days < 1) days = 1;
+    if (days < 1)
+        days = 1;
+
     $("#roundStart").empty();
     var select = $("#roundStart").get(0);
 
@@ -329,31 +314,27 @@ function durationChanged() {
         option.value = ind;
         option.appendChild(document.createTextNode(day_index + ind));
         select.appendChild(option);
-
     }
 }
 
-function AlwaysEmptyField(field, arguments, initialize) {
-    if (initialize) {
-	field.blur(TestField);
-    }
+
+function AlwaysEmptyField(field, arguments, initialize)
+{
+    if (initialize)
+       field.blur(TestField);
     else {
-
-
-        if (!fullTest) return true;
-
-	if (getvalue(field) == "") return true;
-
-
-	{/literal}
-	return "{translate id=FormError_ShouldBeEmpty escape=false}";
-	{literal}
+        if (!fullTest)
+            return true;
+        if (getvalue(field) == "")
+            return true;
+        {/literal}
+        return "{translate id=FormError_ShouldBeEmpty escape=false}";
+        {literal}
     }
-
 }
+
 
 var classes = new Array();
-
 {/literal}
 var class_already_in_use = "{translate id=class_already_in_use}";
 var confirm_class_removal = "{translate id=confirm_class_removal}";
@@ -366,31 +347,36 @@ var holesText = "{translate id=holes}";
 
 var confirm_official_removal = "{translate id=confirm_official_removal}";
 var remove_official_text = "{translate id=remove_official_text}";
-
 {literal}
 
-function addAllClasses(e) {
-    if (e) e.preventDefault();
+function addAllClasses(e)
+{
+    if (e)
+        e.preventDefault();
+
     var options = $('#classList option');
     options.each(function() {
-       var val = this.value;
-       if (val == "") return;
-       if (!classes[val]) {
-
+        var val = this.value;
+        if (val == "")
+            return;
+        if (!classes[val])
             addClass(null, val);
-
-       }
     });
+
     return false;
 }
 
-function addClass(event, id) {
-    if (event) event.preventDefault();
+
+function addClass(event, id)
+{
+    if (event)
+        event.preventDefault();
 
     var select = document.getElementById('classList');
-    if (!id) id = select.value;
-
-    if (id == "") return false;
+    if (!id)
+        id = select.value;
+    if (id == "")
+        return false;
 
     if (classes[id]) {
         alert(class_already_in_use);
@@ -405,35 +391,31 @@ function addClass(event, id) {
     hidden.value = 'add:' + id;
 
     select.parentNode.appendChild(hidden);
-
-
     var label = document.createElement('label');
     var text = document.createTextNode(GetSelectOptionText(select, id));
     label.appendChild(text);
 
     var link = document.createElement('button');
-
-
     text = document.createTextNode(remove_class_text);
     link.appendChild(text);
 
     var li = document.createElement('li');
-
     li.id = "class" + id;
-
     li.appendChild(label);
     li.appendChild(link);
 
     document.getElementById('classListList').appendChild(li);
-
-     $(link).click(function(e){ removeClass(id); e.preventDefault(); });
+    $(link).click(function(e) { removeClass(id); e.preventDefault(); });
 
     select.value = '';
 
 }
 
-function removeClass(id) {
-    if (!confirm(confirm_class_removal)) return;
+
+function removeClass(id)
+{
+    if (!confirm(confirm_class_removal))
+        return;
     var select = document.getElementById('classList');
 
     classes[id] = false;
@@ -448,23 +430,23 @@ function removeClass(id) {
     li.parentNode.removeChild(li);
 }
 
-var roundIndex = 0;
 
-function addRound(event, startDate, startTime, roundId) {
-    if (!roundId) roundId = "*";
-    if (event) event.preventDefault();
+var roundIndex = 0;
+function addRound(event, startDate, startTime, roundId)
+{
+    if (!roundId)
+        roundId = "*";
+    if (event)
+        event.preventDefault();
 
     var dateElement = document.getElementById('roundStart');
     var hourElement = $('select[name="round_startHour"]').get(0);
     var minuteElement = $('select[name="round_startMinute"]').get(0);
 
-
-
-    if (!startDate) startDate = GetSelectText(dateElement);
-    if (!startTime) {
+    if (!startDate)
+        startDate = GetSelectText(dateElement);
+    if (!startTime)
         startTime = hourElement.value + ":" + minuteElement.value;
-    }
-
 
     var hidden = document.createElement('input');
     hidden.type = 'hidden';
@@ -473,35 +455,32 @@ function addRound(event, startDate, startTime, roundId) {
 
     dateElement.parentNode.appendChild(hidden);
 
-
     var label = document.createElement('label');
     var text = document.createTextNode(startDate + ", " + startTime);
     label.appendChild(text);
 
     var link = document.createElement('button');
-
     link.href = '#';
     text = document.createTextNode(remove_round_text);
     link.appendChild(text);
 
     var li = document.createElement('li');
-
     li.id = "round" + roundIndex;
-
     li.appendChild(label);
     li.appendChild(link);
 
     document.getElementById('roundList').appendChild(li);
     var ri = roundIndex;
-     $(link).click(function(e){ removeRound(ri); e.preventDefault(); });
+    $(link).click(function(e) { removeRound(ri); e.preventDefault(); });
 
     roundIndex++;
-
-
 }
 
-function removeRound(id) {
-    if (!confirm(confirm_round_removal)) return;
+
+function removeRound(id)
+{
+    if (!confirm(confirm_round_removal))
+        return;
     var select = document.getElementById('roundStart');
 
     classes[id] = false;
@@ -516,15 +495,17 @@ function removeRound(id) {
     li.parentNode.removeChild(li);
 }
 
-function addOfficial(event, text) {
-    if (event) event.preventDefault();
+
+function addOfficial(event, text)
+{
+    if (event)
+        event.preventDefault();
 
     var select = document.getElementById('official');
-    if (!text) text = select.value;
-    if (text == "") {
+    if (!text)
+        text = select.value;
+    if (text == "")
         return;
-    }
-
 
     var hidden = document.createElement('input');
     hidden.type = 'hidden';
@@ -538,42 +519,40 @@ function addOfficial(event, text) {
     label.appendChild(text);
 
     var link = document.createElement('button');
-
     link.href = '#';
     text = document.createTextNode(remove_official_text);
     link.appendChild(text);
 
     var li = document.createElement('li');
-
-
     li.appendChild(label);
     li.appendChild(link);
-
     document.getElementById('officialList').appendChild(li);
 
-     $(link).click(function(e){ removeOfficial(label); e.preventDefault(); });
+    $(link).click(function(e) { removeOfficial(label); e.preventDefault(); });
 
     select.value = '';
-
 }
 
-function removeOfficial(label) {
-    if (!confirm(confirm_official_removal)) return;
-    var select = document.getElementById('official');
 
+function removeOfficial(label)
+{
+    if (!confirm(confirm_official_removal))
+        return;
+
+    var select = document.getElementById('official');
     var hidden = document.createElement('input');
     hidden.type = 'hidden';
     hidden.name = 'officialOperations_' + getUniqueFieldId();
     hidden.value = 'remove:' + $(label).text();
 
     select.parentNode.appendChild(hidden);
-
     label.parentNode.parentNode.removeChild(label.parentNode);
 }
 
 
 var lastUniqueFieldId = 0;
-function getUniqueFieldId() {
+function getUniqueFieldId()
+{
     lastUniqueFieldId++;
     return lastUniqueFieldId;
 }
@@ -581,9 +560,7 @@ function getUniqueFieldId() {
 {/literal}
 
 
-$(document).ready(function(){ldelim}
-
-
+$(document).ready(function() {ldelim}
     {foreach from=$event.classes item=class}
         addClass(null, {$class});
     {/foreach}

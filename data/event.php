@@ -171,8 +171,8 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
     $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid)
 {
     $venue = esc_or_null($venue, 'int');
-    $tournament = esc_or_null($tournament, 'int');
-    $level = esc_or_null($level, 'int');
+    $tournament = esc_or_null($tournament ? $tournament : null, 'int');
+    $level = esc_or_null($level ? $level : null, 'int');
     $name = esc_or_null($name);
     $start = (int) $start;
     $duration = (int) $duration;
@@ -307,8 +307,8 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
     $venueid = GetVenueId($venuename);
     $activation = ($state == 'active' || $state == 'done') ? time() : 'NULL';
     $locking = ($state == 'done') ? time() : 'NULL';
-    $tournament = esc_or_null($tournament, 'int');
-    $level = esc_or_null($level, 'int');
+    $tournament = esc_or_null($tournament ? $tournament : null, 'int');
+    $level = esc_or_null($level ? $level : null, 'int');
     $name = esc_or_null($name);
     $start = (int) $start;
     $duration = (int) $duration;

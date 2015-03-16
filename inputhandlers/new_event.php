@@ -22,19 +22,21 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/email.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    if (!IsAdmin())
-        return Error::AccessDenied();
     $problems = array();
 
-    if (@$_POST['cancel']) {
+    if (!IsAdmin())
+        return Error::AccessDenied();
+    if (@$_POST['cancel'])
         redirect("Location: " . BaseURL());
-    }
 
     $name = $_POST['name'];
     if ($name == '')
@@ -44,19 +46,12 @@ function processForm()
     if ($venue == '')
         $problems['venue'] = translate('FormError_NotEmpty');
 
-    $tournament = $_POST['tournament'];
-    if (!$tournament)
-        $tournament = null;
     $level = $_POST['level'];
-
-    if (!$level)
-        $problems['level'] = translate('FormError_NotEmpty');
-
-    if ($tournament && $level) {
+    $tournament = $_POST['tournament'];
+    if ($tournament) {
         $tobj = GetTournamentDetails($tournament);
-        if ($tobj->level != $level) {
+        if ($tobj->level != $level)
             $problems['tournament'] = translate('FormError_TournamentLevelMismatch');
-        }
     }
 
     $requireFees = @$_POST['requireFees'];
@@ -130,18 +125,16 @@ function processForm()
     }
 
     $td = input_GetUser($_POST['td']);
-    if ($td === null) {
+    if ($td === null)
         $problems['td'] = translate('FormError_InvalidUser');
-    }
 
     $officials = array();
     $officialOperations = input_CombinePostArray('officialOperations');
     if (count($officialOperations)) {
         foreach ($officialOperations as $op) {
             list($operation, $official) = explode(':', $op, 2);
-            if ($operation == 'add') {
+            if ($operation == 'add')
                 $officials[] = $official;
-            }
             elseif ($operation == 'remove') {
                 $index = array_search($official, $officials);
                 if ($index !== false)
@@ -180,7 +173,6 @@ function processForm()
         return $result;
     }
 
-    require_once 'core/email.php';
     SendEmail(EMAIL_YOU_ARE_TD, $td, GetEventDetails($result));
 
     redirect("Location: " . BaseURL() . "events");
