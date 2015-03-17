@@ -132,7 +132,7 @@ function GetRoundResults($roundId, $sortedBy)
         $groupByClass = true;
 
     $query = "SELECT :Player.player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
-                    :Player.pdga AS PDGANumber, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
+                    :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus, Completed,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber, :RoundResult.PlusMinus AS RoundPlusMinus,
                     :Classification.Name AS ClassName, CumulativePlusminus, CumulativeTotal, :RoundResult.DidNotFinish,

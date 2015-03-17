@@ -557,7 +557,7 @@ function GetEventResults($eventId)
     $eventId = (int) $eventId;
 
     $query = "SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
-                    :Player.pdga AS PDGANumber, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
+                    :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
                     :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
                     :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
@@ -574,6 +574,7 @@ function GetEventResults($eventId)
                 LEFT JOIN :User ON :Player.player_id = :User.Player
                 LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
                 LEFT JOIN :Club ON :Participation.Club = :Club.id
+                LEFT JOIN :PDGAPlayers ON :PDGAPlayers.pdga_number = :Player.pdga
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber";
     $query = format_query($query);
