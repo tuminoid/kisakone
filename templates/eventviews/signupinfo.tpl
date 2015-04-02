@@ -105,6 +105,30 @@
     {/if}
 </form>
 
+{elseif $paid}
+
+    <p class="signup_status">{translate id=signed_up_and_paid}</p>
+    <ul>
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
+    </ul>
+
+{elseif $signedup && !$paid}
+
+    <p class="signup_status">{translate id=signed_up_not_paid}</p>
+    <ul>
+        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
+    </ul>
+
+{else}
+
+    <p>{translate id=signup_closed}</p>
+    {if $signupStart}
+        <p>{translate id=signup_closed_dates from=$signupStart to=$signupEnd}</p>
+    {/if}
+
+{/if}
+
 {if $rules}
 <h2 id="regrules" style="clear:both">{translate id=event_registration_rules}</h2>
 
@@ -132,30 +156,6 @@
     {/foreach}
     </table>
 </div>
-{/if}
-
-{elseif $paid}
-
-    <p class="signup_status">{translate id=signed_up_and_paid}</p>
-    <ul>
-        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
-    </ul>
-
-{elseif $signedup && !$paid}
-
-    <p class="signup_status">{translate id=signed_up_not_paid}</p>
-    <ul>
-        <li><a href="{url page=event view=payment id=$smarty.get.id}">{translate id=event_payment}</a></li>
-        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
-    </ul>
-
-{else}
-
-    <p>{translate id=signup_closed}</p>
-    {if $signupStart}
-        <p>{translate id=signup_closed_dates from=$signupStart to=$signupEnd}</p>
-    {/if}
-
 {/if}
 
 {/if}
