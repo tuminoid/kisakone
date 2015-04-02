@@ -71,6 +71,8 @@ licenses_fail          Lisenssit eivät ole kunnossa. Pelaajaa ei voi lisätä k
 licenses_fail_onlyb    Kilpailuun vaaditaan A-lisenssi ja pelaajalla on vain B-lisenssi.
 license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pelaajaa ei voi ilmoittaa kilpailuun tällä hetkellä.
 
+sfl_server_error       Pelaajaa ei löydy tietokannasta.
+
 pdga_rating            Rating
 pdga_status            Luokitus
 pdga_status_P          Pro
