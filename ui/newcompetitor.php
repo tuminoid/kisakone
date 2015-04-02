@@ -83,7 +83,7 @@ function pdga_competitor(&$smarty, $pdga)
 function sfl_competitor(&$smarty, $sflid)
 {
     $smarty->assign('sflid', $sflid);
-    $sfl_data = SFL_getLicensesById($sflid);
+    $sfl_data = sfl_api_get_by_id($sflid);
 
     if ($sfl_data == null) {
         $smarty->assign('sfl_error', 'sfl_server_error');
