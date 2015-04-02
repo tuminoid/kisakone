@@ -6,6 +6,8 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Serve TinyMCE buttons as static files by adding exceptions to htaccess.
+  * Display registration rules all the time in the registration screen.
+  * Fix SFL API call in newcompetitor.php. GH #229.
 
 2015.03.11:
 ===========
