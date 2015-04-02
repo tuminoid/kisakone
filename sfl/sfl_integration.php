@@ -163,11 +163,6 @@ function sfl_api_get_by_pdga($pdga)
 }
 
 
-
-/** ************************** ONLY FUNCTIONS BELOW SHOULD BE CALLED ***************************** */
-
-
-
 /**
  * Get users licenses for a specific year
  *
