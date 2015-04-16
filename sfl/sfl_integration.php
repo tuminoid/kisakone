@@ -204,11 +204,10 @@ function SFL_getPlayer($userid)
         if (strstr($firstname, '/') || strstr($lastname, '/') || $birthdate == 1900)
             return null;
 
-        // there may be valid cases for spaces, convert them into +
-        list($firstname, $lastname) = str_replace(' ', '+', array($firstname, $lastname));
-
         if ($pdga > 0)
             $data = sfl_api_get_by_pdga($pdga);
+        // TODO: Saving sflid is not necessary, or could be even potentially misleading
+        // Once set, user cannot see it or reset it
         elseif ($sflid > 0)
             $data = sfl_api_get_by_id($sflid);
         else
