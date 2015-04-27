@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Group editor
  *
@@ -154,7 +154,14 @@
                 <div class="tag_group">
                     {translate id=group_number number=$group.GroupNumber},
                     {if $round->starttype == 'simultaneous'}
-                        <span class="dispname">{$holes[$group.DisplayName]->holeText}</span>
+                        <span class="dispname">
+                            {math assign=holeindex equation="x-y" x=$group.DisplayName y=1}
+                            {if $holes[$holeindex]}
+                                {$holes[$holeindex]->holeText}
+                            {else}
+                                {$group.DisplayName}
+                            {/if}
+                        </span>
                         <button style="float: right" class="change_hole">{translate id=change_hole}</button>
                     {else}
                         <span class="dispname">{$group.DisplayName|escape}</span>
