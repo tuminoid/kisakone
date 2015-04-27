@@ -339,11 +339,12 @@ function changeHole(e) {
     var base = this.parentNode.parentNode;
     var hidden = $(base).find(".holenum").get(0);
     var dn = $(base).find(".dispname").get(0);
+    var tc = dn.textContent.trim();
 
     if (e)
         e.preventDefault();
 
-    var newhole = prompt(change_hole_text, dn.textContent || dn.innerText);
+    var newhole = prompt(change_hole_text, tc || dn.innerText.trim());
     var hind = parseInt(newhole);
     if (hind) {
         hidden.value = "h" + hind;
