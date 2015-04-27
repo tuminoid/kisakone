@@ -9,6 +9,7 @@ next:
   * Display registration rules all the time in the registration screen.
   * Fix SFL API call in newcompetitor.php. GH #229.
   * Fix license checks for people with space in their name.
+  * Fix holeText usage while editing groups.
 
 2015.03.11:
 ===========
