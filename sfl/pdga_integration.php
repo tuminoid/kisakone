@@ -229,7 +229,7 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
 
     $cache_key = "data_" . $pdga_number;
     $data = cache_get($cache_key);
-    if ($data)
+    if ($data && !$force)
         return $data;
 
     $query = format_query("SELECT * FROM :PDGAPlayers WHERE pdga_number = $pdga_number");
