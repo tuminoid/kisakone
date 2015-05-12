@@ -156,7 +156,7 @@ function pdga_api_getPlayer($pdga_number = 0)
  * @return time of last update on success
  * @return null on failure
  */
-function pdga_api_getLastUpdated($pdga_number = 0)
+function pdga_db_getLastUpdated($pdga_number = 0)
 {
     $query = format_query("SELECT UNIX_TIMESTAMP(last_updated) AS last_update
                             FROM :PDGAPlayers
@@ -177,15 +177,16 @@ function pdga_api_getLastUpdated($pdga_number = 0)
  * Get player data from PDGA API and update it into our :PDGAPlayers table.
  *
  * @param int $pdga_number PDGA number to get
- * @param bool $force force fetching new data from PDGA, instead of local db
+ * @param bool $force force fetching new data from PDGA
  * @return true on success
  * @return false on failure
  */
-function pdga_api_updatePlayer($pdga_number, $force = false)
+function pdga_db_updatePlayer($pdga_number, $force = false)
 {
-    $last_update = pdga_api_getLastUpdated($pdga_number);
+    $last_update = pdga_db_getLastUpdated($pdga_number);
+    $update_threshold = 24 * 60 * 60;
 
-    if ($force || ($last_update + 48 * 60 * 60) < time()) {
+    if ($force || ($last_update + $update_threshold) < time()) {
         $data = pdga_api_getPlayer($pdga_number);
 
         if (!is_array($data))
@@ -199,8 +200,34 @@ function pdga_api_updatePlayer($pdga_number, $force = false)
         $vals = "'" . implode("', '", array_values($data)) . "'";
 
         $query = format_query("REPLACE INTO :PDGAPlayers ($keys, last_updated) VALUES($vals, NOW())");
-        return execute_query($query);
+        execute_query($query);
+
+        $cache_key = "data_" . $pdga_number;
+        cache_set($cache_key, pdga_db_getPlayer($pdga_number), $update_threshold);
     }
+}
+
+
+/**
+ * Get player data from local PDGA DB.
+ *
+ * @param int $pdga_number PDGA number to get
+ * @return null on failure, array on success
+ */
+function pdga_db_getPlayer($pdga_number)
+{
+    $query = format_query("SELECT * FROM :PDGAPlayers WHERE pdga_number = $pdga_number");
+    $result = execute_query($query);
+
+    if (!$result)
+        return null;
+
+    $retValue = null;
+    if (mysql_num_rows($result) == 1)
+        $retValue = mysql_fetch_assoc($result);
+    mysql_free_result($result);
+
+    return $retValue;
 }
 
 
@@ -213,7 +240,8 @@ function pdga_api_updatePlayer($pdga_number, $force = false)
  * pdga_getPlayer
  *
  * Gets all fields from player's data.
- * If data is more than two days old, fetch that said data from API.
+ * If player data was fetched from API, it is in cache.
+ * Otherwise it is in DB and is fetched from there.
  *
  * @param int $pdga_number PDGA number
  * @param bool $force force fetching new data from PDGA, instead of local db
@@ -225,27 +253,14 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
     if (!(is_numeric($pdga_number) && $pdga_number > 0))
         return null;
 
-    pdga_api_updatePlayer($pdga_number, $force);
-
     $cache_key = "data_" . $pdga_number;
     $data = cache_get($cache_key);
-    if ($data && !$force)
+    if ($data)
         return $data;
 
-    $query = format_query("SELECT * FROM :PDGAPlayers WHERE pdga_number = $pdga_number");
-    $result = execute_query($query);
+    pdga_db_updatePlayer($pdga_number, $force);
 
-    if (!$result)
-        return null;
-
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = mysql_fetch_assoc($result);
-    mysql_free_result($result);
-
-    cache_set($cache_key, $retValue, 1 * 60 * 60);
-
-    return $retValue;
+    return pdga_db_getPlayer($pdga_number);
 }
 
 
@@ -271,6 +286,7 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating", $force = false)
 
     return null;
 }
+
 
 /**
  * pdga_getPlayerRating
