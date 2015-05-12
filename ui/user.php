@@ -77,13 +77,17 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('fees', $fees);
     }
 
-    if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
-        $pdga_data = pdga_getPlayer($player->pdga);
-        SmartifyPDGA($smarty, $pdga_data);
+    if (@$settings['PDGA_ENABLED'] == true) {
+        // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
+        $force = false; // no forced reasons to go get it from pdga api
+        $pdga_data = pdga_getPlayer($player->pdga, $force);
+        if ($pdga_data)
+            SmartifyPDGA($smarty, $pdga_data);
     }
 
     $smarty->assign('isadmin', @$_SESSION['user']->role == "admin");
 }
+
 
 /**
  * Determines which main menu option this page falls under.
