@@ -144,6 +144,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('title', $title);
     $smarty->assign('events', $events);
+    $smarty->assign('events_count', count($events));
     $smarty->assign('loggedon', isset($_SESSION['user']));
 }
 

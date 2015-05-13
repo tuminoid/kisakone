@@ -22,7 +22,7 @@
  * *}
  {include file='include/header.tpl'}
 
-<h2>{$title}</h2>
+<h2>{$title}{if $events_count > 0} - {$events_count}{/if}</h2>
 
 {if $error}
     <p class="error">{$error}</p>
