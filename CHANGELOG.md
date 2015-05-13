@@ -10,6 +10,7 @@ next:
   * Fix SFL API call in newcompetitor.php. GH #229.
   * Fix license checks for people with space in their name.
   * Fix holeText usage while editing groups.
+  * Display number of events next to group title.
 
 2015.03.11:
 ===========
