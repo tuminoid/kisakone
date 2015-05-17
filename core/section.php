@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Section class.
  *
@@ -34,6 +34,7 @@ class Section
 
     var $userStartTime;
 
+
     /** ************************************************************************
      * Class constructor
      */
@@ -48,6 +49,7 @@ class Section
         $this->present = $row['Present'];
     }
 
+
     /**
      * Returns the name of the class for which this section was created
     */
@@ -57,10 +59,10 @@ class Section
             $class = GetClassDetails($this->classification);
             return $class->name;
         }
-        else {
+        else
             return translate('combined_group_name');
-        }
     }
+
 
     /**
      * Returns all members of this sectoin
@@ -68,13 +70,14 @@ class Section
     function getPlayers()
     {
         static $data = array();
-        if (isset($data[$this->id])) {
+        if (isset($data[$this->id]))
             return $data[$this->id];
-        }
+
         $data[$this->id] = GetSectionMembers($this->id);
 
         return $data[$this->id];
     }
+
 
     // Returns the number of groups this section can form
     function EstimateNumberOfGroups()
@@ -82,14 +85,13 @@ class Section
         $all = $this->getPlayers(@$_GET['id']);
 
         $num = count($all);
-        if ($num == 5) {
+        if ($num == 5)
             return 1;
-        }
-        if ($num == 9) {
+        if ($num == 9)
             return 2;
-        }
         return ceil($num / 4);
     }
+
 
     /**
      * Returns all the groups in this section
@@ -99,30 +101,27 @@ class Section
         return GetGroups($this->id);
     }
 
+
     /**
      * Initializes this section's groups
     */
     function InitializeGroups($round, &$start, &$changes)
     {
         $players = $this->GetPlayers();
-        if ($this->startTime && $round->starttype == 'sequential') {
+        if ($this->startTime && $round->starttype == 'sequential')
             $start = $this->startTime;
-        }
 
         $playersById = array();
-        foreach ($players as $player) {
+        foreach ($players as $player)
             $playersById[$player['PlayerId']] = $player;
-        }
 
         $groups = GetGroups($this->id);
         foreach ($groups as $group) {
-            foreach ($group['People'] as $player) {
+            foreach ($group['People'] as $player)
                 unset($playersById[$player['PlayerId']]);
-            }
 
-            if ($this->AdjustStart($group, $start, $round)) {
+            if ($this->AdjustStart($group, $start, $round))
                 $changes = true;
-            }
         }
 
         core_UpdateGroups($groups);
@@ -130,6 +129,7 @@ class Section
 
         return $changes || count($playersById);
     }
+
 
     /**
      * Creates group for given list of players, start can be either starting time or
@@ -142,9 +142,9 @@ class Section
 
         $GLOBALS['RemovePlayersDefinedforAnySectionRound'] = array($round->id, $this->id);
         $players = array_filter($players, 'RemovePlayersDefinedforAnySection');
-        if ($round->IsFirstRound()) {
+
+        if ($round->IsFirstRound())
             shuffle($players);
-        }
 
         $groupsizes = core_GetGroupSizes(count($players));
         foreach ($groupsizes as $size => $groups) {
@@ -152,9 +152,8 @@ class Section
                 $group = array('StartingTime' => 0, 'GroupNumber' => 0, 'Section' => $this->id, 'StartingHole' => null, 'People' => array());
 
                 $leftForThis = $size;
-                while ($leftForThis--) {
+                while ($leftForThis--)
                     $group['People'][] = array_shift($players);
-                }
 
                 $this->AdjustStart($group, $start, $round);
                 $group['People'] = array_reverse($group['People']);
@@ -193,7 +192,6 @@ class Section
                 }
                 break;
 
-
             case 'sequential':
                 if ($group['StartingTime'] != $start) {
                     $group['StartingTime'] = $start;
@@ -207,18 +205,17 @@ class Section
                 $start = $start + $round->interval * 60;
                 break;
 
-
             default:
                 fail();
         }
 
-        if ($changes) {
+        if ($changes)
             $group['changed'] = true;
-        }
 
         return $changes;
     }
 }
+
 
 /**
  * Returns the number and size of groups which will be done for the given number of players
@@ -232,28 +229,23 @@ function core_GetGroupSizes($people)
             $groupsof[3] = 2;
             break;
 
-
         case 9:
             $groupsof[4] = 1;
             $groupsof[5] = 1;
             break;
 
-
         default:
-            if ($people <= 5) {
+            if ($people <= 5)
                 $groupsof[$people] = 1;
-            }
             else {
                 $four = floor($people / 4);
                 $three = $people % 4 ? 1 : 0;
 
                 while ($four * 4 + $three * 3 != $people) {
-                    if ($four * 4 + $three * 3 > $people) {
+                    if ($four * 4 + $three * 3 > $people)
                         $four--;
-                    }
-                    else {
+                    else
                         $three++;
-                    }
                 }
                 $groupsof[4] = $four;
                 $groupsof[3] = $three;
@@ -266,8 +258,7 @@ function core_GetGroupSizes($people)
     function core_UpdateGroups($groups)
     {
         foreach ($groups as $group) {
-            if (isset($group['changed'])) {
+            if (isset($group['changed']))
                 UpdateGroup($group);
-            }
     }
 }
