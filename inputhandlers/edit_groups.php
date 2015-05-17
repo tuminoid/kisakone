@@ -37,6 +37,7 @@ function ProcessForm()
         return Error::AccessDenied();
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied();
+
     if (!@$_REQUEST['round'] && @$_GET['round'])
         $_REQUEST['round'] = $_GET['round'];
 
@@ -55,27 +56,22 @@ function ProcessForm()
                     fail();
                 break;
 
-
             case 'h':
                 $startingHole = substr($action, 1);
                 break;
 
-
             case 'g':
                 $groupTemplate = InitNewGroup($round, $section, $groupTemplate, $startingHole);
                 break;
-
 
             case 'p':
                 $groupTemplate['Player'] = substr($action, 3);
                 InsertGroupmember($groupTemplate);
                 break;
 
-
             case 'e':
                 assert($action == "edit_groups");
                 break;
-
 
             default:
                 fail();
@@ -94,9 +90,8 @@ function InitNewGroup($round, $section, $template, $startingHole)
     }
 
     if ($section->id != $template['Section']) {
-        if ($section->startTime) {
+        if ($section->startTime)
             $template['StartingTime'] = $section->startTime - $round->interval * 60;
-        }
         $template['Section'] = $section->id;
     }
 
@@ -105,11 +100,9 @@ function InitNewGroup($round, $section, $template, $startingHole)
             $template['StartingTime'] += 60 * $round->interval;
             break;
 
-
         case 'simultaneous':
             $template['StartingHole'] = $startingHole;
             break;
-
 
         default:
             fail();
