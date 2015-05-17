@@ -112,9 +112,8 @@ class Round
         $rounds = $event->GetRounds();
         $last = null;
         foreach ($rounds as $round) {
-            if ($round->id == $this->id) {
+            if ($round->id == $this->id)
                 return $last;
-            }
             $last = $round;
         }
 
@@ -151,14 +150,12 @@ class Round
     function GetUserGroup()
     {
         global $user;
-        if (!$user) {
+        if (!$user)
             return null;
-        }
 
         $player = $user->GetPlayer();
-        if (!$player) {
+        if (!$player)
             return null;
-        }
 
         return GetSingleGroup($this->id, $player->id);
     }
@@ -194,19 +191,16 @@ class Round
                 $start = $this->starttime;
                 break;
 
-
             case 'simultaneous':
                 $start = 1;
                 break;
-
 
             default:
                 fail();
         }
 
-        foreach ($sections as $section) {
+        foreach ($sections as $section)
             $section->InitializeGroups($this, $start, $changes);
-        }
 
         return $changes;
     }
@@ -216,82 +210,74 @@ class Round
     */
     function InitializeSections()
     {
-        if ($this->IsFirstRound()) {
+        if ($this->IsFirstRound())
             return $this->InitializeFirstRound();
+
+        $lastRound = $this->GetPreviousRound();
+        $event = GetEventDetails($this->eventId);
+        $classes = $event->GetClasses();
+
+        $changes = false;
+        $sections = array();
+        $sections_unmapped = GetSections($this->id);
+
+        foreach ($sections_unmapped as $section)
+            $sections[$section->classification] = $section;
+
+        foreach ($classes as $class) {
+            if (isset($sections[$class->id]))
+                continue;
+
+            $id = CreateSection($this->id, $class->id, $class->name);
+            if (is_a($id, 'Error'))
+                die(print_r($id, true));
+            $sections[$class->id] = GetSectionDetails($id);
         }
-        else {
-            $lastRound = $this->GetPreviousRound();
-            $event = GetEventDetails($this->eventId);
-            $classes = $event->GetClasses();
 
-            $changes = false;
-            $sections = array();
-            $sections_unmapped = GetSections($this->id);
-            foreach ($sections_unmapped as $section) {
-                $sections[$section->classification] = $section;
-            }
+        $assign = array();
+        $remove = array();
 
-            foreach ($classes as $class) {
-                if (isset($sections[$class->id])) {
-                    continue;
-                }
+        $data = GetRoundResults($lastRound->id, 'resultsByClass');
+        foreach ($data as $classname => $participants) {
+            foreach (array_reverse($participants) as $participant) {
+                $result = $participant['CumulativeTotal'];
 
-                $id = CreateSection($this->id, $class->id, $class->name);
-                if (is_a($id, 'Error')) {
-                    die(print_r($id, true));
-                }
-                $sections[$class->id] = GetSectionDetails($id);
-            }
-
-            $assign = array();
-            $remove = array();
-
-            $data = GetRoundResults($lastRound->id, 'resultsByClass');
-            foreach ($data as $classname => $participants) {
-                foreach (array_reverse($participants) as $participant) {
-                    $result = $participant['CumulativeTotal'];
-
-                    // If player has score and did not DNF/DNS
-                    if ($result != 0 && !$participant['DidNotFinish']) {
-                        if (!$this->Participating($participant['PlayerId'])) {
-                            $class = $participant['Classification'];
-                            $s = $sections[$class];
-                            if (!isset($assign[$s->id])) {
-                                $assing[$s->id] = array();
-                            }
-
-                            $assign[$s->id][] = $participant['PlayerId'];
-                            $changes = true;
-                        }
-
-                        // Player has DNS/DNF, remove him
-                    }
-                    else {
+                // If player has score and did not DNF/DNS
+                if ($result != 0 && !$participant['DidNotFinish']) {
+                    if (!$this->Participating($participant['PlayerId'])) {
                         $class = $participant['Classification'];
                         $s = $sections[$class];
-                        if (!isset($remove[$s->id])) {
-                            $remove[$s->id] = array();
-                        }
+                        if (!isset($assign[$s->id]))
+                            $assing[$s->id] = array();
 
-                        $remove[$s->id][] = $participant['PlayerId'];
+                        $assign[$s->id][] = $participant['PlayerId'];
                         $changes = true;
                     }
-                }
-            }
 
-            if (count($assign)) {
-                foreach ($assign as $section => $players) {
-                    AssignPlayersToSection($this->id, $section, $players);
+                    // Player has DNS/DNF, remove him
                 }
-            }
+                else {
+                    $class = $participant['Classification'];
+                    $s = $sections[$class];
+                    if (!isset($remove[$s->id]))
+                        $remove[$s->id] = array();
 
-            if (count($remove)) {
-                foreach ($remove as $section => $players) {
-                    RemovePlayersFromRound($this->id, $players);
+                    $remove[$s->id][] = $participant['PlayerId'];
+                    $changes = true;
                 }
             }
-            return $changes;
         }
+
+        if (count($assign)) {
+            foreach ($assign as $section => $players)
+                AssignPlayersToSection($this->id, $section, $players);
+        }
+
+        if (count($remove)) {
+            foreach ($remove as $section => $players)
+                RemovePlayersFromRound($this->id, $players);
+        }
+        return $changes;
     }
 
     /**
@@ -313,14 +299,12 @@ class Round
 
         if (!count($sections)) {
             $id = CreateSection($this->id, null, translate('combined_group_name'));
-            if (is_a($id, 'Error')) {
+            if (is_a($id, 'Error'))
                 die(print_r($id));
-            }
             $classToUse = GetSectionDetails($id);
         }
-        else {
+        else
             $classToUse = $sections[count($sections) - 1];
-        }
 
         $assign = array();
         $remove = array();
@@ -339,13 +323,11 @@ class Round
             }
         }
 
-        if (count($assign)) {
+        if (count($assign))
             AssignPlayersToSection($this->id, $classToUse->id, $assign);
-        }
 
-        if (count($remove)) {
+        if (count($remove))
             RemovePlayersFromRound($this->id, $remove);
-        }
 
         return $changes;
     }
