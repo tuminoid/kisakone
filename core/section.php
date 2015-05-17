@@ -250,15 +250,14 @@ function core_GetGroupSizes($people)
                 $groupsof[4] = $four;
                 $groupsof[3] = $three;
             }
-        }
-
-        return $groupsof;
     }
 
-    function core_UpdateGroups($groups)
-    {
-        foreach ($groups as $group) {
-            if (isset($group['changed']))
-                UpdateGroup($group);
-    }
+    return $groupsof;
+}
+
+function core_UpdateGroups($groups)
+{
+    foreach ($groups as $group)
+        if (isset($group['changed']))
+            UpdateGroup($group);
 }
