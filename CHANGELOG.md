@@ -11,6 +11,7 @@ next:
   * Fix license checks for people with space in their name.
   * Fix holeText usage while editing groups.
   * Display number of events next to group title.
+  * Fixed section reordering in sequential starts.
 
 2015.03.11:
 ===========
