@@ -67,7 +67,7 @@ class Section
     /**
      * Returns all members of this sectoin
     */
-    function getPlayers()
+    function GetPlayers()
     {
         static $data = array();
         if (isset($data[$this->id]))
