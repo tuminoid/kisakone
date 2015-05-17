@@ -124,7 +124,6 @@ class Section
                 $changes = true;
         }
 
-        core_UpdateGroups($groups);
         $this->CreateGroupsFor($playersById, $start, $round);
 
         return $changes || count($playersById);
@@ -253,11 +252,4 @@ function core_GetGroupSizes($people)
     }
 
     return $groupsof;
-}
-
-function core_UpdateGroups($groups)
-{
-    foreach ($groups as $group)
-        if (isset($group['changed']))
-            UpdateGroup($group);
 }
