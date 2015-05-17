@@ -56,9 +56,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         redirect("Location: " . url_smarty(array('page' => 'editgroups', 'id' => @$_GET['id'], 'round' => @$_GET['round']), $_GET));
     }
     else {
-        if ($round->InitializeGroups()) {
+        if ($round->InitializeGroups())
             $smarty->assign('suggestRegeneration', true);
-        }
     }
 
     $smarty->assign('round', $round);
