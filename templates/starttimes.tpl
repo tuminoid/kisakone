@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Section start time management
  *
@@ -37,11 +38,8 @@
         background-color: #CCC;
     }
 
-
-
     .droponme {
         border: 2px solid blue;
-
     }
 
     .groupman td {
@@ -62,7 +60,6 @@
     .grouplist {
         width: 400px;
         float: left;
-
     }
 
     .tagged {
@@ -76,36 +73,26 @@
 
     .subclass {
         background-color: #EEE;
-
         padding: 16px;
         margin: 8px;
         max-width: 400px;
     }
 
-
     h2 {
         clear: both;
     }
-
-
     {/literal}
 </style>
 {/capture}
 {include file='include/header.tpl'  ui=1 }
-
-
 {include file=support/eventlockhelper.tpl}
 
-
-
 <div class="nojs">
-{translate id=page_requires_javascript}
+    {translate id=page_requires_javascript}
 </div>
 
 <div class="jsonly">
     <p>{translate id=starttimes_help}</p>
-
-
     <p>{translate id=round_starts_at start=$startTime interval=$interval}</p>
 
 <form method="post">
@@ -115,8 +102,6 @@
         <input type="submit" value="{translate id=save}" />
         <input type="submit" name="cancel" value="{translate id=cancel}" />
     </div>
-
-
 
         {foreach from=$sections item=section}
 
@@ -162,14 +147,9 @@ var startTime = '{$startTime}';
 var interval = {$interval};
 
 {literal}
-
-
-
 $("document").ready(function(){
-   AttachHandlers($(".subclass"));
-
+  AttachHandlers($(".subclass"));
   RedoTimes();
-
 });
 
 function AttachHandlers(to) {
@@ -180,22 +160,21 @@ function AttachHandlers(to) {
 }
 
 function changeStartTime() {
-
     var div = this.parentNode.parentNode;
     var hidden = $(div).find(".timeInput").get(0);
     var typeSpan = $(div).find(".timeType").get(0);
 
     var evStart = prompt(changeTimePrompt, hidden.value);
 
-    if (evStart == undefined) {
+    if (evStart == undefined)
         return false;
-    }
 
     if (evStart == "") {
         $(typeSpan).empty();
         typeSpan.appendChild(document.createTextNode(automaticText));
         hidden.value = "";
-    } else {
+    }
+    else {
         if (!(evStart.match(/\d\d?(:\d\d)/))) {
             alert(invalidFormat);
             return false;
@@ -214,10 +193,10 @@ function changeStartTime() {
 function earlier(){
     var theDiv = this.parentNode.parentNode;
 
-
     var before = $(theDiv).prev("div").get(0);
     if (before) {
-        if (before.className == "buttonarea") return false;
+        if (before.className == "buttonarea")
+            return false;
         $(theDiv).remove();
 
         before.parentNode.insertBefore(theDiv, before);
@@ -231,21 +210,17 @@ function earlier(){
 
 function later() {
     var theDiv = this.parentNode.parentNode;
-
-
     var before = $(theDiv).next("div").next("div").get(0);
+
     if (before) {
         //$(theDiv).next("div").remove();
         $(theDiv).remove();
-
         before.parentNode.insertBefore(theDiv, before);
-
         AttachHandlers($(theDiv));
     }
 
     RedoTimes();
     return false;
-
 }
 
 function RedoTimes() {
@@ -262,37 +237,34 @@ function RedoTimes() {
         var present = $(this).find(".presentCb").get(0).checked;
 
         if (present) {
-
-
             if (hidden.value != '') {
                 $(span).empty();
                 span.appendChild(document.createTextNode(hidden.value));
                 now = hidden.value.split(':');
-            } else {
-
+            }
+            else {
                 now = offsetTime(now, interval * numGroupsInLast);
-
                 $(span).empty();
                 span.appendChild(document.createTextNode(now[0] + ":" + now[1]));
             }
             numGroupsInLast = parseInt(groupnumElement.innerText || groupnumElement.textContent);
-        } else {
+        }
+        else {
             $(span).empty();
             span.appendChild(document.createTextNode(notPresentText));
         }
-
-
     });
 }
 
 function offsetTime(time, offset) {
     var hourString = time[0];
-    if (hourString.substring(0, 1) == "0" && hourString != "0") hourString = hourString.substring(1);
+    if (hourString.substring(0, 1) == "0" && hourString != "0")
+        hourString = hourString.substring(1);
     var hours = parseInt(hourString);
 
     var minuteString = time[1];
-    if (minuteString.substring(0, 1) == "0" && minuteString != "0") minuteString = minuteString.substring(1);
-
+    if (minuteString.substring(0, 1) == "0" && minuteString != "0")
+        minuteString = minuteString.substring(1);
     var minutes = parseInt(minuteString);
 
     minutes += offset;
@@ -303,15 +275,13 @@ function offsetTime(time, offset) {
 
     hours = hours % 24;
 
-    if (minutes < 10) minutes = "0" + minutes;
+    if (minutes < 10)
+        minutes = "0" + minutes;
 
     return [hours + "", minutes + ""];
 }
 
-
 {/literal}
-
-
 //]]>
 </script>
 
