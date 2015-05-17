@@ -85,9 +85,8 @@ function ProcessForm()
 
 function InitNewGroup($round, $section, $template, $startingHole)
 {
-    if (!$template) {
+    if (!$template)
         $template = array('GroupNumber' => 0, 'StartingTime' => $round->starttime - $round->interval * 60, 'StartingHole' => null, 'Section' => null,);
-    }
 
     if ($section->id != $template['Section']) {
         if ($section->startTime)
