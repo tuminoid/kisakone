@@ -87,7 +87,7 @@ function GetSectionMembers($sectionId)
                             INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                             INNER JOIN :SectionMembership SM ON SM.Participation = :Participation.id
                             WHERE SM.Section = $sectionId
-                            ORDER BY SM.id");
+                            ORDER BY :Participation.OverallResult DESC, SM.id");
     $result = execute_query($query);
 
     $retValue = array();
