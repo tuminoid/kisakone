@@ -435,7 +435,6 @@ CREATE TABLE :PDGAPlayers
     last_updated DATETIME,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
     birth_year INT(4) NOT NULL,
     gender ENUM('M', 'F') NOT NULL,
     membership_status ENUM('expired', 'current') NOT NULL,
@@ -474,5 +473,24 @@ CREATE TABLE :PDGAStats
     UNIQUE KEY(pdga_number, year, class),
     INDEX(pdga_number, year),
     INDEX(country, year)
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+
+
+CREATE TABLE :PDGAEvents
+(
+    tournament_id INT NOT NULL,
+    tournament_name VARCHAR(255) NOT NULL,
+    city VARCHAR(255),
+    state_prov VARCHAR(30),
+    country VARCHAR(2) NOT NULL,
+    start_date DATETIME,
+    end_date DATETIME,
+    class VARCHAR(20),
+    tier VARCHAR(20),
+    format VARCHAR(20),
+    last_updated DATETIME,
+    PRIMARY KEY (tournament_id),
+    INDEX(country)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;

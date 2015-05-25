@@ -3,6 +3,10 @@ Upgrading to version 2015.xxxxx:
 
 Add missing foreign key to `:Event` table.
 
+Drop deprecated `full_name` from `:PDGAPlayers` table.
+
+Create new `:PDGAEvents` table.
+
 --
 
 Upgrade script will read your database settings from `config.php`, no changes required.
