@@ -13,6 +13,7 @@ next:
   * Display number of events next to group title.
   * Fixed section reordering in sequential starts, not ignoring priority.
   * Sort players by overall score for grouping within sections.
+  * You can add players by pdga# even if pdga data tells they're finnish.
 
 2015.03.11:
 ===========
