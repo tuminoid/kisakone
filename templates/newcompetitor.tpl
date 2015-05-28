@@ -36,7 +36,7 @@
 <p class="error">{translate id=$sfl_error}</p>
 {/if}
 
-{if !$id_entered || $pdga_error || $sfl_error}
+{if !$id_entered || $sfl_error}
 <form method="post" class="evenform" id="regform">
     <input type="hidden" name="formid" value="new_competitor" />
 

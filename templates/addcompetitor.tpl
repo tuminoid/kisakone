@@ -202,7 +202,15 @@ $(document).ready(function(){
                 {if $sfl_license_b && $licenses_ok == false}
                     {translate id='licenses_fail_onlyb'}
                 {else}
-                    {translate id='licenses_fail'}
+                    <p>
+                        {translate id='licenses_fail'}
+                    </p>
+                    <p class="searcharea">
+                        {translate id="pdga_shouldnt_add_finnish"}
+                        <br />
+                        <label for="allow_foreigners">{translate id=pdga_allow_foreigner}</label>
+                        <input id="allow_foreigners" type="checkbox" onclick="$('input[type=submit]').removeAttr('disabled');">
+                    </p>
                 {/if}
             {/if}
             </div>
