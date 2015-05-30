@@ -192,7 +192,6 @@ function pdga_api_updatePlayer($pdga_number, $force = false)
             return false;
 
         unset($data['sessid']);
-        unset($data['last_modified']); # we don't want that now
         foreach ($data as $key => $value)
             $data[$key] = escape_string($value);
 
