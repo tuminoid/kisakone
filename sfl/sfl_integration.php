@@ -57,6 +57,9 @@ function sfl_api_run_query($where)
         $rows[] = $row;
     mysql_free_result($result);
 
+    if (!count($rows))
+        return null;
+
     $result = array();
     $result['status'] = false;
     $year = null;
