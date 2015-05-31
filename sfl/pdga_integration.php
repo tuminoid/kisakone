@@ -193,13 +193,17 @@ function pdga_db_updatePlayer($pdga_number, $force = false)
             return false;
 
         unset($data['sessid']);
-        foreach ($data as $key => $value)
+        $extra = "";
+        foreach ($data as $key => $value) {
             $data[$key] = escape_string($value);
+            $extra .= ", $key = " . $data[$key];
+        }
 
         $keys = implode(", ", array_keys($data));
         $vals = "'" . implode("', '", array_values($data)) . "'";
 
-        $query = format_query("REPLACE INTO :PDGAPlayers ($keys, last_updated) VALUES($vals, NOW())");
+        $query = format_query("INSERT INTO :PDGAPlayers (last_updated, $keys) VALUES(NOW(), $vals)
+                    ON DUPLICATE KEY UPDATE last_updated=NOW() $extra");
         execute_query($query);
 
         $cache_key = "data_" . $pdga_number;
