@@ -432,7 +432,6 @@ SHOW WARNINGS;
 CREATE TABLE :PDGAPlayers
 (
     pdga_number INT NOT NULL,
-    last_updated DATETIME,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     birth_year INT(4) NOT NULL,
@@ -447,6 +446,8 @@ CREATE TABLE :PDGAPlayers
     rating_effective_date DATE,
     official_status ENUM('yes', 'no') NOT NULL,
     official_expiration_date DATE,
+    last_modified DATE,
+    last_updated DATETIME,
     PRIMARY KEY(pdga_number),
     INDEX(first_name, last_name, city)
 ) ENGINE=InnoDB;
@@ -469,6 +470,7 @@ CREATE TABLE :PDGAStats
     rating_rounds_used INT NOT NULL DEFAULT 0,
     points INT NOT NULL DEFAULT 0,
     prize FLOAT(12,2) DEFAULT 0.00,
+    last_modified DATE,
     last_updated DATETIME,
     UNIQUE KEY(pdga_number, year, class),
     INDEX(pdga_number, year),
@@ -489,6 +491,7 @@ CREATE TABLE :PDGAEvents
     class VARCHAR(20),
     tier VARCHAR(20),
     format VARCHAR(20),
+    last_modified DATE,
     last_updated DATETIME,
     PRIMARY KEY (tournament_id),
     INDEX(country)

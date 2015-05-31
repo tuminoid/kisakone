@@ -4,8 +4,10 @@ Upgrading to version 2015.xxxxx:
 Add missing foreign key to `:Event` table.
 
 Drop deprecated `full_name` from `:PDGAPlayers` table.
+Add `last_modified` field for all PDGA tables, representing when data has last changed in PDGA database.
+(For clarity `last_updated` is datetime when data in our database has been refreshed from PDGA.)
 
-Create new `:PDGAEvents` table.
+Create new `:PDGAEvents` table for holding event data from PDGA.
 
 --
 

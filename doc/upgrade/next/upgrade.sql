@@ -5,6 +5,10 @@
 ALTER TABLE :Event ADD CONSTRAINT FOREIGN KEY (Tournament) REFERENCES :Tournament(id);
 
 ALTER TABLE :PDGAPlayers DROP COLUMN full_name;
+ALTER TABLE :PDGAPlayers ADD COLUMN last_modified DATE AFTER official_expiration_date;
+ALTER TABLE :PDGAPlayers MODIFY COLUMN last_updated DATETIME AFTER last_modified;
+
+ALTER TABLE :PDGAStats ADD COLUMN last_modified DATE NOT NULL AFTER prize;
 
 CREATE TABLE :PDGAEvents
 (
@@ -18,6 +22,7 @@ CREATE TABLE :PDGAEvents
     class VARCHAR(20),
     tier VARCHAR(20),
     format VARCHAR(20),
+    last_modified DATE,
     last_updated DATETIME,
     PRIMARY KEY (tournament_id),
     INDEX(country)
