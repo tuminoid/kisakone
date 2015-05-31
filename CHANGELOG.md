@@ -14,6 +14,7 @@ next:
   * Fixed section reordering in sequential starts, not ignoring priority.
   * Sort players by overall score for grouping within sections.
   * You can add players by pdga# even if pdga data tells they're finnish.
+  * PDGA data now includes `last_modified` field, signalling when data was last modified in PDGA database.
 
 2015.03.11:
 ===========
