@@ -1,4 +1,4 @@
-Upgrading to version 2015.xxxxx:
+Upgrading to version 2015.05.31:
 ================================
 
 Add missing foreign key to `:Event` table.
