@@ -196,7 +196,7 @@ function pdga_db_updatePlayer($pdga_number, $force = false)
         $extra = "";
         foreach ($data as $key => $value) {
             $data[$key] = escape_string($value);
-            $extra .= ", $key = " . $data[$key];
+            $extra .= ", $key = '" . $data[$key] ."'";
         }
 
         $keys = implode(", ", array_keys($data));
