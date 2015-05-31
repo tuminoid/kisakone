@@ -193,6 +193,7 @@ function pdga_db_updatePlayer($pdga_number, $force = false)
             return false;
 
         unset($data['sessid']);
+        unset($data['full_name']);
         $extra = "";
         foreach ($data as $key => $value) {
             $data[$key] = escape_string($value);
