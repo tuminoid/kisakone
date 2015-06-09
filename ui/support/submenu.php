@@ -92,6 +92,10 @@ function page_getSubMenu()
     if (getmainmenuselection() == "users" && @$_GET['id']) {
         $selectedusername = @$_GET['id'];
         $selecteduser = GetUserDetails(GetUserId($selectedusername));
+
+        if ((!$selecteduser || is_a($selecteduser, 'Error')) && is_numeric($selectedusername))
+            $selecteduser = GetUserDetails($selectedusername);
+
         if (!$selecteduser || is_a($selecteduser, 'Error'))
             $selectedusername = "?";
         else

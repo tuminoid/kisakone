@@ -32,13 +32,16 @@ function InitializeSmartyVariables(&$smarty, $error)
     global $settings;
 
     $userid = GetUserId($_GET['id']);
-
-    if (!$userid)
-        return Error::NotFound('user');
-
-    $user = GetUserDetails($userid);
-    if (is_a($user, 'Error'))
-        return $user;
+    if ($userid) {
+        $user = GetUserDetails($userid);
+        if (is_a($user, 'Error'))
+            return $user;
+    }
+    else {
+        $user = GetUserDetails($_GET['id']);
+        if (is_a($user, 'Error'))
+            return $user;
+    }
 
     if (!$user)
         return Error::NotFound('user_record');
