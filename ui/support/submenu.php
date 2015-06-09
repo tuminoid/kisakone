@@ -91,19 +91,14 @@ function page_getSubMenu()
 
     if (getmainmenuselection() == "users" && @$_GET['id']) {
         $selectedusername = @$_GET['id'];
-        if (is_numeric($selectedusername)) {
-            $selecteduser = GetUserDetails($selectedusername);
-            if (!$selecteduser) {
-                $selecteduser = GetUserDetails(GetUserId($selectedusername));
-                if (!$selecteduser)
-                    $selectedusername = "?";
-            }
-            else
-                $selectedusername = $selecteduser->firstname . ' ' . $selecteduser->lastname;
-        }
-    } else {
-        $selectedusername = "";
+        $selecteduser = GetUserDetails(GetUserId($selectedusername));
+        if (!$selecteduser || is_a($selecteduser, 'Error'))
+            $selectedusername = "?";
+        else
+            $selectedusername = $selecteduser->firstname . ' ' . $selecteduser->lastname;
     }
+    else
+        $selectedusername = "";
 
     // The list of events one can manage is only shown if there is anything that can be managed
     $eventManagementAccess = $user && ($user->IsAdmin() || UserIsManagerAnywhere($user->id));

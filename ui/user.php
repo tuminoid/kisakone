@@ -31,11 +31,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     global $settings;
 
-    $getId = $_GET['id'];
-    if (is_numeric($getId) && is_a(GetUserDetails($getId), 'User'))
-        $userid = $getId;
-    else
-        $userid = GetUserId($getId);
+    $userid = GetUserId($_GET['id']);
 
     if (!$userid)
         return Error::NotFound('user');
