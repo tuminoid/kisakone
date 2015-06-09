@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Fix handling of all numeric usernames.
+
 2015.05.31:
 ===========
   * Serve TinyMCE buttons as static files by adding exceptions to htaccess.
