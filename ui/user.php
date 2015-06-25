@@ -41,6 +41,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $user = GetUserDetails($_GET['id']);
         if (is_a($user, 'Error'))
             return $user;
+        $userid = $user->id;
     }
 
     if (!$user)
