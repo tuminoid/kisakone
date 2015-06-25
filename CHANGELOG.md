@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Fix handling of all numeric usernames.
+  * Fix handling of TD-created userless player's license checks.
 
 2015.05.31:
 ===========
