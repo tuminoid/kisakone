@@ -32,6 +32,8 @@ global $settings;
 $settings['DB_TYPE'] = 'mysql';
 EpiDatabase::employ($settings['DB_TYPE'], $settings['DB_DB'], $settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
 
+require_once '../data/db_init.php';
+
 getRoute()->get('/', 'live_index');
 getRoute()->get('/(\d+)', 'live_event');
 getRoute()->run();
@@ -45,32 +47,32 @@ getRoute()->run();
  */
 function query_results($round)
 {
-    $rows = getDatabase()->all("
-SELECT kisakone_Player.player_id AS PlayerId, kisakone_Player.firstname AS FirstName, kisakone_Player.lastname AS LastName,
-    kisakone_Player.pdga AS PDGANumber, kisakone_PDGAPlayers.rating AS Rating, kisakone_RoundResult.Result AS Total,
-    kisakone_RoundResult.Penalty, kisakone_RoundResult.SuddenDeath,
-    kisakone_StartingOrder.GroupNumber, (kisakone_HoleResult.Result - kisakone_Hole.Par) AS Plusminus, Completed,
-    kisakone_HoleResult.Result AS HoleResult, kisakone_Hole.id AS HoleId, kisakone_Hole.HoleNumber, kisakone_RoundResult.PlusMinus AS RoundPlusMinus,
-    kisakone_Classification.Name AS ClassName, CumulativePlusminus, CumulativeTotal, kisakone_RoundResult.DidNotFinish,
-    kisakone_Classification.id AS Classification, kisakone_Club.ShortName AS ClubName,
-    kisakone_PDGAPlayers.country AS PDGACountry
-FROM kisakone_Round
-LEFT JOIN kisakone_Section ON kisakone_Round.id = kisakone_Section.Round
-LEFT JOIN kisakone_StartingOrder ON (kisakone_StartingOrder.Section = kisakone_Section.id)
-LEFT JOIN kisakone_RoundResult ON (kisakone_RoundResult.Round = kisakone_Round.id AND kisakone_RoundResult.Player = kisakone_StartingOrder.Player)
-LEFT JOIN kisakone_HoleResult ON (kisakone_HoleResult.RoundResult = kisakone_RoundResult.id AND kisakone_HoleResult.Player = kisakone_StartingOrder.Player)
-LEFT JOIN kisakone_Player ON kisakone_StartingOrder.Player = kisakone_Player.player_id
-LEFT JOIN kisakone_User ON kisakone_Player.player_id = kisakone_User.Player
-LEFT JOIN kisakone_Participation ON (kisakone_Participation.Player = kisakone_Player.player_id AND kisakone_Participation.Event = kisakone_Round.Event)
-LEFT JOIN kisakone_Classification ON kisakone_Classification.id = kisakone_Participation.Classification
-LEFT JOIN kisakone_Hole ON kisakone_HoleResult.Hole = kisakone_Hole.id
-LEFT JOIN kisakone_Club ON kisakone_Participation.Club = kisakone_Club.id
-LEFT JOIN kisakone_PDGAPlayers ON kisakone_Player.pdga = kisakone_PDGAPlayers.pdga_number
-WHERE kisakone_Round.id = $round AND kisakone_Section.Present
+    $rows = getDatabase()->all(format_query("
+SELECT :Player.player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
+    :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total,
+    :RoundResult.Penalty, :RoundResult.SuddenDeath,
+    :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus, Completed,
+    :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber, :RoundResult.PlusMinus AS RoundPlusMinus,
+    :Classification.Name AS ClassName, CumulativePlusminus, CumulativeTotal, :RoundResult.DidNotFinish,
+    :Classification.id AS Classification, :Club.ShortName AS ClubName,
+    :PDGAPlayers.country AS PDGACountry
+FROM :Round
+LEFT JOIN :Section ON :Round.id = :Section.Round
+LEFT JOIN :StartingOrder ON (:StartingOrder.Section = :Section.id)
+LEFT JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
+LEFT JOIN :HoleResult ON (:HoleResult.RoundResult = :RoundResult.id AND :HoleResult.Player = :StartingOrder.Player)
+LEFT JOIN :Player ON :StartingOrder.Player = :Player.player_id
+LEFT JOIN :User ON :Player.player_id = :User.Player
+LEFT JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
+LEFT JOIN :Classification ON :Classification.id = :Participation.Classification
+LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
+LEFT JOIN :Club ON :Participation.Club = :Club.id
+LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
+WHERE :Round.id = $round AND :Section.Present
 ORDER BY
-    (kisakone_RoundResult.DidNotFinish IS NULL OR kisakone_RoundResult.DidNotFinish = 0) DESC,
-    kisakone_Hole.id IS NULL, kisakone_RoundResult.CumulativePlusminus, kisakone_Player.player_id
-");
+    (:RoundResult.DidNotFinish IS NULL OR :RoundResult.DidNotFinish = 0) DESC,
+    :Hole.id IS NULL, :RoundResult.CumulativePlusminus, :Player.player_id
+"));
 
     $retValue = array();
     $lastrow = null;
@@ -119,12 +121,7 @@ ORDER BY
  */
 function query_rounds($event)
 {
-    return getDatabase()->all("
-SELECT id
-FROM kisakone_Round
-WHERE Event = $event
-ORDER BY StartTime
-");
+    return getDatabase()->all(format_query("SELECT id FROM :Round WHERE Event = $event ORDER BY StartTime"));
 }
 
 
@@ -138,12 +135,12 @@ function create_event_select()
     $start = time() - 7*24*60*60;
     $end = time() + 7*24*60*60;
 
-    $events = getDatabase()->all("
+    $events = getDatabase()->all(format_query("
 SELECT id, Name
-FROM kisakone_Event
+FROM :Event
 WHERE Date BETWEEN FROM_UNIXTIME($start) AND FROM_UNIXTIME($end)
 ORDER BY Date, id
-");
+"));
 
     $data = '
         <label for="event">Choose event:</label>
@@ -209,12 +206,12 @@ function create_class_select($event)
 {
     $prev_class = @$_GET['class'];
 
-    $classes = getDatabase()->all("
-SELECT kisakone_Classification.id AS id, Name
-FROM kisakone_Classification
-INNER JOIN kisakone_ClassInEvent ON (kisakone_ClassInEvent.Event = $event AND kisakone_ClassInEvent.Classification = kisakone_Classification.id)
-ORDER BY kisakone_Classification.id
-");
+    $classes = getDatabase()->all(format_query("
+SELECT :Classification.id AS id, Name
+FROM :Classification
+INNER JOIN :ClassInEvent ON (:ClassInEvent.Event = $event AND :ClassInEvent.Classification = :Classification.id)
+ORDER BY :Classification.id
+"));
 
     $data = '
     <label for="class">Class:</label>
@@ -260,24 +257,24 @@ function create_scroll_select()
 
 function get_event_data($event)
 {
-    return getDatabase()->one("SELECT id, Name FROM kisakone_Event WHERE id = $event");
+    return getDatabase()->one(format_query("SELECT id, Name FROM :Event WHERE id = $event"));
 }
 
 
 function get_course_data($round)
 {
-    $data = getDatabase()->one("SELECT Course FROM kisakone_Round WHERE id = $round");
+    $data = getDatabase()->one(format_query("SELECT Course FROM :Round WHERE id = $round"));
     $course = $data['Course'];
 
     if (!$course)
         return array();
 
-    return getDatabase()->all("
+    return getDatabase()->all(format_query("
 SELECT Course, HoleNumber, HoleText, Par, Length
-FROM kisakone_Hole
+FROM :Hole
 WHERE Course = $course
 ORDER BY HoleNumber
-");
+"));
 }
 
 
@@ -357,7 +354,7 @@ function live_index()
     $event = @$_GET['event'];
 
     if ($event) {
-        getRoute()->redirect("/kisakone/live/$event");
+        getRoute()->redirect("/live/$event");
         return null;
     }
 
@@ -410,12 +407,10 @@ function output_html_response($event, $round, $class_filter)
     $eventdata = get_event_data($event);
     $rows = query_results($round);
 
-    html_header("Kisakone Live - " . $eventdata['Name']);
+    html_header($eventdata['Name'] . " - Kisakone Live");
 ?>
 
 <div id="header" class="cntr col-lg-10 col-md-12 col-sm-12 col-lg-offset-1">
-    <h1><?php echo $eventdata['Name'] ?></h1>
-
     <form method="get" id="filter-form">
         <div id="round-selector" class="event-filter">
             <?php echo create_round_select($event); ?>
@@ -431,8 +426,8 @@ function output_html_response($event, $round, $class_filter)
 
 <div class="col-lg-10 col-md-12 col-sm-12 col-lg-offset-1">
 <div class="table-responsive">
-<table class="table table-stripped">
-<tbody>
+<table class="table table-stripped table-hover table-condensed table-bordered">
+<thead>
 
 <?php
     $course = get_course_data($round);
@@ -466,6 +461,8 @@ function output_html_response($event, $round, $class_filter)
     <td>&nbsp;</td><td class="totals"><?php echo $total_par ?></td><td colspan="2" class="noborder">&nbsp;</td>
 </tr>
 
+</thead>
+<tbody>
 
 <?php
     foreach ($rows as $class) {
@@ -551,7 +548,7 @@ function html_header($title)
 
 <script>
 var scrolltime = 2 * <?php echo @$_GET['presentation'] ?>0 * 100;
-var reloadtime = scrolltime*2 + 15*1000;
+var reloadtime = 3 * 60 * 1000;
 
 function autoscroll() {
     $('#filter-form').hide();
