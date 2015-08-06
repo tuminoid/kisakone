@@ -547,7 +547,7 @@ function html_header($title)
 <link rel="stylesheet" href="../css/live.css" />
 <script src="../sfl/js/analytics.js"></script>
 
-<script>
+<script defer="defer">
 var scrolltime = 2 * <?php echo @$_GET['presentation'] ?>0 * 100;
 var reloadtime = 3 * 60 * 1000;
 
@@ -561,7 +561,16 @@ function reload_page() {
     window.location.reload(true);
 }
 
+function stop_scrolling() {
+
+    $('#filter-form').show();
+    $('html, body').stop(true, false).animate({ scrollTop: $('#header').offset().top }, 0);
+}
+
 setTimeout(reload_page, reloadtime);
+
+$(document).keyup(function (e) { if (e.keyCode === 27) stop_scrolling(); });
+
 </script>
 <body<?php if (@$_GET['presentation']) echo ' onload="autoscroll();"' ?>>
 <?php
