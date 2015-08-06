@@ -315,6 +315,10 @@ a {
     margin-bottom: 1em;
 }
 
+.nowrap {
+    white-space: nowrap !important;
+}
+
 .jsonly {
     display: none;
 }
