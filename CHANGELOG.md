@@ -7,6 +7,8 @@ next:
 =====
   * Fix handling of all numeric usernames.
   * Fix handling of TD-created userless player's license checks.
+  * Introduce Kisakone Live screen, suitable for presentation and mobile.
+  * Fix country flags wrapping to another line when screen is scrammed full.
 
 2015.05.31:
 ===========
