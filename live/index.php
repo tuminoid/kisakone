@@ -543,8 +543,9 @@ function html_header($title)
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="/css/flag-icon/css/flag-icon.min.css" type="text/css" />
-<link rel="stylesheet" href="/css/live.css" type="text/css" />
+<link rel="stylesheet" href="../css/flag-icon/css/flag-icon.min.css" />
+<link rel="stylesheet" href="../css/live.css" />
+<script src="../sfl/js/analytics.js"></script>
 
 <script>
 var scrolltime = 2 * <?php echo @$_GET['presentation'] ?>0 * 100;
