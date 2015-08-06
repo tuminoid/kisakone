@@ -512,6 +512,5 @@ function pdr_IncludeStanding($d)
 
         $out[] = $item;
     }
-    //print_r($out);
     return $out;
 }
