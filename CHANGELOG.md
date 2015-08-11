@@ -9,6 +9,7 @@ next:
   * Fix handling of TD-created userless player's license checks.
   * Introduce Kisakone Live screen, suitable for presentation and mobile.
   * Fix country flags wrapping to another line when screen is scrammed full.
+  * Display player's club in the schedule page.
 
 2015.05.31:
 ===========
