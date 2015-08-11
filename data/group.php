@@ -134,7 +134,7 @@ function GetRoundGroups($roundid)
 
     $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName,
-                                :User.id AS UserId, :Participation.OverallResult
+                                :User.id AS UserId, :Participation.OverallResult, :Club.ShortName AS ClubName
                             FROM :StartingOrder
                             INNER JOIN :Section ON :Section.id = :StartingOrder.Section
                             INNER JOIN :Round ON :Round.id = :Section.Round
@@ -142,6 +142,7 @@ function GetRoundGroups($roundid)
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                             INNER JOIN :Classification ON :Participation.Classification = :Classification.id
+                            LEFT JOIN :Club ON (:User.Club = :Club.id)
                             WHERE :Round.id = $roundid
                             ORDER BY GroupNumber, :StartingOrder.id");
     $result = execute_query($query);

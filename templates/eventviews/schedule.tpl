@@ -112,6 +112,7 @@
                     {/if}
                 </td>
                 <td>{$group.LastName|escape} {$group.FirstName|escape}</td>
+                <td>{$group.ClubName|escape}</td>
                 <td>{$group.ClassificationName}</td>
                 {if $group.OverallResult > 0}<td>{$group.OverallResult}</td>{/if}
             </tr>
