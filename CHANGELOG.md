@@ -3,11 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.08.11:
+===========
   * Fix handling of all numeric usernames.
   * Fix handling of TD-created userless player's license checks.
-  * Introduce Kisakone Live screen, suitable for presentation and mobile.
+  * Introduce Kisakone Live screen, suitable for presentation and mobile (not linked via menus yet).
   * Fix country flags wrapping to another line when screen is scrammed full.
   * Display player's club in the schedule page.
 
