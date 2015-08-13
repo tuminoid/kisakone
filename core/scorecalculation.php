@@ -57,8 +57,13 @@ function GetScoreCalculationMethod($type, $name)
         return Error::AccessDenied();
 
     $filename = "core/${type}Scores/$name.php";
-    require_once($filename);
-    $className = sprintf("scorecalc_%s_%s", $type, $name);
+    if (file_exists($filename))
+        require_once($filename);
+    else {
+        error_log("scorecalculation type '$type', name '$name' as file '$filename' does not exist!");
+        return Error::InternalError();
+    }
 
+    $className = sprintf("scorecalc_%s_%s", $type, $name);
     return new $className();
 }
