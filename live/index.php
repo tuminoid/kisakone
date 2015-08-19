@@ -23,19 +23,22 @@
  */
 
 
+# setup epiphany
 require_once 'epiphany/src/Epi.php';
 Epi::setPath('base', 'epiphany/src');
 Epi::init('route', 'database');
 
+# setup configs and database
 require_once '../config.php';
 global $settings;
 $settings['DB_TYPE'] = 'mysql';
 EpiDatabase::employ($settings['DB_TYPE'], $settings['DB_DB'], $settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
-
 require_once '../data/db_init.php';
 
+# setup routes
 getRoute()->get('/', 'live_index');
 getRoute()->get('/(\d+)', 'live_event');
+getRoute()->get('.*', 'live_not_found');
 getRoute()->run();
 
 
@@ -45,8 +48,10 @@ getRoute()->run();
  * @param  int $round round id
  * @return array of data
  */
-function query_results($round)
+function GetRoundResults($round)
 {
+    $round = esc_or_null($round, 'int');
+
     $rows = getDatabase()->all(format_query("
 SELECT :Player.player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
     :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total,
@@ -107,7 +112,7 @@ ORDER BY
     }
 
     foreach ($retValue as $k => $v)
-        $retValue[$k] = calculate_standings($v);
+        $retValue[$k] = CalculateStandings($v);
 
     return $retValue;
 }
@@ -119,8 +124,10 @@ ORDER BY
  * @param  int $event event id
  * @return array of data
  */
-function query_rounds($event)
+function GetRounds($event)
 {
+    $event = esc_or_null($event, 'int');
+
     return getDatabase()->all(format_query("SELECT id FROM :Round WHERE Event = $event ORDER BY StartTime"));
 }
 
@@ -130,7 +137,7 @@ function query_rounds($event)
  *
  * @return html output with select drop-down
  */
-function create_event_select()
+function GetEventSelector()
 {
     $start = time() - 7*24*60*60;
     $end = time() + 7*24*60*60;
@@ -142,23 +149,24 @@ WHERE Date BETWEEN FROM_UNIXTIME($start) AND FROM_UNIXTIME($end)
 ORDER BY Date, id
 "));
 
-    $data = '
+    $data = <<<EOF
         <label for="event">Choose event:</label>
         <select id="event" name="event">
             <option value="">---</option>
-    ';
+EOF;
+
     foreach ($events as $event) {
         $data .= '<option value="' . $event['id'] . '">' . $event['Name'] . '</option>' . "\n";
     }
     $data .= '        </select>' . "\n";
-    $data .= "
+    $data .= <<<EOF
             <script>
             $('#event').change(function() {
-                var url = '/live/' + $('#event').val();
+                var url = $('#event').val();
                 $(location).attr('href', url);
             });
             </script>
-    ";
+EOF;
 
     return $data;
 }
@@ -170,15 +178,16 @@ ORDER BY Date, id
  * @param int $event event id
  * @return html code with drop-down
  */
-function create_round_select($event)
+function GetRoundSelector($event)
 {
+    $event = esc_or_null($event, 'int');
     $prev_round = @$_GET['round'];
 
-    $rounds = query_rounds($event);
-    $data = '
+    $rounds = GetRounds($event);
+    $data = <<<EOF
     <label for="round">Round:</label>
     <select id="round" name="round">
-    ';
+EOF;
 
     $round_idx = 1;
 
@@ -187,10 +196,10 @@ function create_round_select($event)
             ($prev_round == $round['id'] ? ' selected="selected"' : '') . '>Round ' . $round_idx++ . '</option>' . "\n";
     }
 
-    $data .= '
+    $data .= <<<EOF
     </select>
     <script defer="defer">$("#round").change(function() { $("#filter-form").submit(); });</script>
-    ';
+EOF;
 
     return $data;
 }
@@ -202,8 +211,9 @@ function create_round_select($event)
  * @param int $event event id
  * @return html code with drop-down
  */
-function create_class_select($event)
+function GetClassSelector($event)
 {
+    $event = esc_or_null($event, 'int');
     $prev_class = @$_GET['class'];
 
     $classes = getDatabase()->all(format_query("
@@ -213,21 +223,21 @@ INNER JOIN :ClassInEvent ON (:ClassInEvent.Event = $event AND :ClassInEvent.Clas
 ORDER BY :Classification.id
 "));
 
-    $data = '
+    $data = <<<EOF
     <label for="class">Class:</label>
     <select id="class" name="class">
         <option value="">---</option>
-    ';
+EOF;
 
     foreach ($classes as $class) {
         $data .= '<option value="' . $class['id'] . '"' .
             ($prev_class == $class['id'] ? ' selected="selected"' : '') . '>' . $class['Name'] . '</option>' . "\n";
     }
 
-    $data .= '
+    $data .= <<<EOF
     </select>
     <script defer="defer">$("#class").change(function() { $("#filter-form").submit(); });</script>
-    ';
+EOF;
 
     return $data;
 }
@@ -238,9 +248,9 @@ ORDER BY :Classification.id
  *
  * @return html code with drop-down
  */
-function create_scroll_select()
+function GetScrollSelector()
 {
-    return '
+    return <<<EOF
     <label for="scroll">Scrolling:</label>
     <select id="scroll" name="presentation">
         <option value="">---</value>
@@ -251,17 +261,17 @@ function create_scroll_select()
         <option value="90">Really slow</value>
     </select>
     <script defer="defer">$("#scroll").change(function() { $("#filter-form").submit(); });</script>
-';
+EOF;
 }
 
 
-function get_event_data($event)
+function GetEventData($event)
 {
     return getDatabase()->one(format_query("SELECT id, Name FROM :Event WHERE id = $event"));
 }
 
 
-function get_course_data($round)
+function GetCourseData($round)
 {
     $data = getDatabase()->one(format_query("SELECT Course FROM :Round WHERE id = $round"));
     $course = $data['Course'];
@@ -285,7 +295,7 @@ ORDER BY HoleNumber
  * @param int $par hole par
  * @return html class with color
  */
-function map_score_to_color($score, $par)
+function Score2Color($score, $par)
 {
     $diff = $score - $par;
 
@@ -314,7 +324,7 @@ function map_score_to_color($score, $par)
  * @param array $data full competition data
  * @return return modified array
  */
-function calculate_standings($data)
+function CalculateStandings($data)
 {
     $out = array();
     $lastResult = - 999;
@@ -346,26 +356,24 @@ function calculate_standings($data)
 
 /**
  * Show an index page for choosing a event
- *
- * If year is available in _GET, redirect to real api url
  */
 function live_index()
 {
     $event = @$_GET['event'];
 
     if ($event) {
-        getRoute()->redirect("/live/$event");
+        getRoute()->redirect("live/$event");
         return null;
     }
 
-    html_header("Kisakone Live - Choose event and view to present");
+    html_header("Kisakone Live");
 
 ?>
 <div class="col-lg-8 col-md-10 col-sm-12">
-<strong>Kisakone Live Presentation</strong>
+<strong>Kisakone Live</strong>
 <form method="get">
     <div id="event-selector" class="event-filter"></div>
-        <?php echo create_event_select(false); ?>
+        <?php echo GetEventSelector(); ?>
     </div>
 </form>
 
@@ -386,13 +394,20 @@ function live_event($event)
     $round = @$_GET['round'];
 
     if (!$round) {
-        $rounds = query_rounds($event);
+        $rounds = GetRounds($event);
         $round = $rounds[0]['id'];
     }
 
     output_html_response($event, $round, $class);
 }
 
+
+/**
+ * If page is not found, redirect to index.
+ */
+function live_not_found() {
+    getRoute()->redirect('index.php');
+}
 
 
 /**
@@ -404,8 +419,8 @@ function live_event($event)
  */
 function output_html_response($event, $round, $class_filter)
 {
-    $eventdata = get_event_data($event);
-    $rows = query_results($round);
+    $eventdata = GetEventData($event);
+    $rows = GetRoundResults($round);
 
     html_header($eventdata['Name'] . " - Kisakone Live");
 ?>
@@ -413,13 +428,13 @@ function output_html_response($event, $round, $class_filter)
 <div id="header" class="cntr col-lg-10 col-md-12 col-sm-12 col-lg-offset-1">
     <form method="get" id="filter-form">
         <div id="round-selector" class="event-filter">
-            <?php echo create_round_select($event); ?>
+            <?php echo GetRoundSelector($event); ?>
         </div>
         <div id="class-selector" class="event-filter">
-            <?php echo create_class_select($event); ?>
+            <?php echo GetClassSelector($event); ?>
         </div>
         <div id="scroll-selector" class="event-filter">
-            <?php echo create_scroll_select(); ?>
+            <?php echo GetScrollSelector(); ?>
         </div>
     </form>
 </div>
@@ -430,7 +445,7 @@ function output_html_response($event, $round, $class_filter)
 <thead>
 
 <?php
-    $course = get_course_data($round);
+    $course = GetCourseData($round);
     $holes = count(array_keys($course));
     $colspan = 7 + $holes;
 ?>
@@ -487,7 +502,7 @@ function output_html_response($event, $round, $class_filter)
             foreach (range(1, $holes) as $holenum) {
                 $score = @$row['Results'][$holenum]['Result'];
                 $par = $course[$holenum-1]['Par'];
-                $color = map_score_to_color($score, $par);
+                $color = Score2Color($score, $par);
 
                 if ($score >= 99) {
                     $score = "";
@@ -519,7 +534,7 @@ function output_html_response($event, $round, $class_filter)
 </table>
 </div>
 
-<footer class="clear cntr" id="footer">Kisakone Live v1.0</footer>
+<footer class="clear cntr" id="footer">Kisakone Live v1.1</footer>
 </div>
 
 <?php
@@ -534,6 +549,7 @@ function output_html_response($event, $round, $class_filter)
 function html_header($title)
 {
     header("Content-Type: text/html; charset=utf-8");
+    header("Cache-Control: private, max-age=0, no-cache");
 ?>
 <!doctype html>
 <html>
@@ -546,33 +562,8 @@ function html_header($title)
 <link rel="stylesheet" href="../css/flag-icon/css/flag-icon.min.css" />
 <link rel="stylesheet" href="../css/live.css" />
 <script src="../sfl/js/analytics.js"></script>
-
-<script defer="defer">
-var scrolltime = 2 * <?php echo @$_GET['presentation'] ?>0 * 100;
-var reloadtime = 3 * 60 * 1000;
-
-function autoscroll() {
-    $('#filter-form').hide();
-    $('html, body').animate({ scrollTop: $('#footer').offset().top }, scrolltime);
-    $('html, body').animate({ scrollTop: $('#header').offset().top }, scrolltime);
-}
-
-function reload_page() {
-    window.location.reload(true);
-}
-
-function stop_scrolling() {
-
-    $('#filter-form').show();
-    $('html, body').stop(true, false).animate({ scrollTop: $('#header').offset().top }, 0);
-}
-
-setTimeout(reload_page, reloadtime);
-
-$(document).keyup(function (e) { if (e.keyCode === 27) stop_scrolling(); });
-
-</script>
-<body<?php if (@$_GET['presentation']) echo ' onload="autoscroll();"' ?>>
+<script src="../js/live.js"></script>
+<body onload='setup_reloading(<?php echo @$_GET['presentation'] ?>);'>
 <?php
 }
 
