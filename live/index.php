@@ -180,8 +180,7 @@ EOF;
  */
 function GetRoundSelector($event)
 {
-    $event = esc_or_null($event, 'int');
-    $prev_round = esc_or_null(@$_GET['round'], 'int');
+    $prev_round = @$_GET['round'];
 
     $rounds = GetRounds($event);
     $data = <<<EOF
@@ -363,7 +362,7 @@ function CalculateStandings($data)
  */
 function live_index()
 {
-    $event = esc_or_null(@$_GET['event'], 'int');
+    $event = @$_GET['event'];
 
     if ($event) {
         getRoute()->redirect("live/$event");
@@ -394,12 +393,13 @@ function live_index()
  */
 function live_event($event)
 {
-    $class = esc_or_null(@$_GET['class'], 'int');
-    $round = esc_or_null(@$_GET['round'], 'int');
+    $round = @$_GET['round'];
+    $class = @$_GET['class'];
 
     if (!$round) {
         $rounds = GetRounds($event);
-        $round = $rounds[0]['id'];
+        if ($rounds)
+            $round = $rounds[0]['id'];
     }
 
     output_html_response($event, $round, $class);
@@ -423,10 +423,6 @@ function live_not_found() {
  */
 function output_html_response($event, $round, $class_filter)
 {
-    $event = esc_or_null($event, 'int');
-    $round = esc_or_null($round, 'int');
-    $class_filter = esc_or_null($class_filter, 'int');
-
     $eventdata = GetEventData($event);
     $rows = GetRoundResults($round);
 
@@ -507,18 +503,20 @@ function output_html_response($event, $round, $class_filter)
     <td class="left"><?php echo $row['ClubName'] ?></td>
 <?php
             $dnf = 0;
-            foreach (range(1, $holes) as $holenum) {
-                $score = @$row['Results'][$holenum]['Result'];
-                $par = $course[$holenum-1]['Par'];
-                $color = Score2Color($score, $par);
+            if ($holes > 1) {
+                foreach (range(1, $holes) as $holenum) {
+                    $score = @$row['Results'][$holenum]['Result'];
+                    $par = $course[$holenum-1]['Par'];
+                    $color = Score2Color($score, $par);
 
-                if ($score >= 99) {
-                    $score = "";
-                    $dnf = "DNF";
-                }
+                    if ($score >= 99) {
+                        $score = "";
+                        $dnf = "DNF";
+                    }
 ?>
     <td class="<?php echo $color ?>"><?php echo $score ?></td>
 <?php
+                }
             }
 
             $round_pm = $row['RoundPlusMinus'];
