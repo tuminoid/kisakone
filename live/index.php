@@ -181,7 +181,7 @@ EOF;
 function GetRoundSelector($event)
 {
     $event = esc_or_null($event, 'int');
-    $prev_round = @$_GET['round'];
+    $prev_round = esc_or_null(@$_GET['round'], 'int');
 
     $rounds = GetRounds($event);
     $data = <<<EOF
@@ -214,7 +214,7 @@ EOF;
 function GetClassSelector($event)
 {
     $event = esc_or_null($event, 'int');
-    $prev_class = @$_GET['class'];
+    $prev_class = esc_or_null(@$_GET['class'], 'int');
 
     $classes = getDatabase()->all(format_query("
 SELECT :Classification.id AS id, Name
@@ -267,12 +267,16 @@ EOF;
 
 function GetEventData($event)
 {
+    $event = esc_or_null($event, 'int');
+
     return getDatabase()->one(format_query("SELECT id, Name FROM :Event WHERE id = $event"));
 }
 
 
 function GetCourseData($round)
 {
+    $round = esc_or_null($round, 'int');
+
     $data = getDatabase()->one(format_query("SELECT Course FROM :Round WHERE id = $round"));
     $course = $data['Course'];
 
@@ -359,7 +363,7 @@ function CalculateStandings($data)
  */
 function live_index()
 {
-    $event = @$_GET['event'];
+    $event = esc_or_null(@$_GET['event'], 'int');
 
     if ($event) {
         getRoute()->redirect("live/$event");
@@ -390,8 +394,8 @@ function live_index()
  */
 function live_event($event)
 {
-    $class = @$_GET['class'];
-    $round = @$_GET['round'];
+    $class = esc_or_null(@$_GET['class'], 'int');
+    $round = esc_or_null(@$_GET['round'], 'int');
 
     if (!$round) {
         $rounds = GetRounds($event);
@@ -419,6 +423,10 @@ function live_not_found() {
  */
 function output_html_response($event, $round, $class_filter)
 {
+    $event = esc_or_null($event, 'int');
+    $round = esc_or_null($round, 'int');
+    $class_filter = esc_or_null($class_filter, 'int');
+
     $eventdata = GetEventData($event);
     $rows = GetRoundResults($round);
 
