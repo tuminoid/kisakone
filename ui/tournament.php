@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament details page
  *
@@ -26,17 +26,16 @@
  * @param Smarty $smarty Reference to the smarty object being initialized
  * @param Error $error If input processor encountered a minor error, it will be present here
  */
+
+require_once 'core/tournament.php';
+
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    require_once 'core/tournament.php';
-
     language_include('users');
-    SetContentType('text/html; charset=utf-8');
     $tournament = GetTournamentDetails($_GET['id']);
 
-    if (!$tournament) {
+    if (!$tournament)
         return Error::NotFound('tournament');
-    }
 
     $eph = array();
     $numev = $tournament->GetNumEvents();
