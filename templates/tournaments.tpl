@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament listing page
  *
@@ -26,30 +27,22 @@
 
 {if $error}
     <p class="error">{$error}</p>
-
 {else}
 
 <table>
     <tr>
         <th>{sortheading id='tournament_name' sortType=alphabetical}</th>
-
         <th>{sortheading id='tournament_participants' sortType=integer}</th>
         <th>{sortheading id='tournament_events_held' sortType=alphabetical}</th>
-
     </tr>
 
-   {foreach from=$tournaments item=t}
-
-        <tr>
-
-            <td><a href="{url page="tournament" id=$t->id}">{$t->name|escape}</a> </td>
-
-            <td>{$t->GetNumParticipants()}</td>
-            <td>{$t->GetEventsHeld()} / {$t->GetNumEvents()}</td>
-
-
-        </tr>
-    {/foreach}
+{foreach from=$tournaments item=t}
+    <tr>
+        <td><a href="{url page="tournament" id=$t->id}">{$t->name|escape}</a> </td>
+        <td>{$t->GetNumParticipants()}</td>
+        <td>{$t->GetEventsHeld()} / {$t->GetNumEvents()}</td>
+    </tr>
+{/foreach}
 </table>
 
 <script type="text/javascript">
@@ -60,8 +53,6 @@ $(document).ready(function(){
 });
 
 {/literal}
-
-
 //]]>
 </script>
 {/if}
