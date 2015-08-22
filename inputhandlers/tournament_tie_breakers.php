@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Adjust tournament tie breaking
  *
@@ -20,20 +21,23 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'core/tournament.php';
+
+
 function processForm()
 {
-    if (!Isadmin())
+    if (!IsAdmin())
         return Error::AccessDenied();
 
     $tid = @$_GET['id'];
     foreach ($_POST as $key => $value) {
         if (substr($key, 0, 3) == 'tb_') {
             $pid = substr($key, 3);
-            SetTournamentTieBreaker($tid, $pid, $value);
+            $class = $_POST["class_$pid"];
+            SetTournamentTieBreaker($tid, $pid, $class, $value);
         }
     }
-
-    require_once 'core/tournament.php';
 
     UpdateTournamentPoints((int) $tid);
 }
