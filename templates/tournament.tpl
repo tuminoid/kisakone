@@ -30,24 +30,17 @@
 
 <table class="narrow">
     <tr><td>{translate id=tournament_name}</td><td>{$tournament->name|escape}</td></tr>
-        <tr><td>{translate id=tournament_year}</td><td>{$tournament->year}</td></tr>
-        <tr><td>{translate id=tournament_participants}</td><td>{$tournament->GetNumParticipants()}</td></tr>
-        <tr><td>{translate id=tournament_events_held}</td><td>
-        {$tournament->GetEventsHeld()} / {$tournament->GetNumEvents()}
-
-        </td></tr>
-        <tr><td>{translate id=tournament_level}</td><td>
-            {assign var=level value=$tournament->GetLevel()}
-            {$level->name}
-        </td>
-        </tr>
-        <tr><td>{translate id=tournament_scorecalculation}</td>
-        <td>
-            {assign var=scm value=$tournament->GetScoreCalculation()}
-            {$scm->name}
-            </td></tr>
-
-
+    <tr><td>{translate id=tournament_year}</td><td>{$tournament->year}</td></tr>
+    <tr><td>{translate id=tournament_participants}</td><td>{$tournament->GetNumParticipants()}</td></tr>
+    <tr><td>{translate id=tournament_events_held}</td><td>{$tournament->GetEventsHeld()} / {$tournament->GetNumEvents()}</td></tr>
+    <tr>
+        <td>{translate id=tournament_level}</td>
+        <td>{assign var=level value=$tournament->GetLevel()}{$level->name}</td>
+    </tr>
+    <tr>
+        <td>{translate id=tournament_scorecalculation}</td>
+        <td>{assign var=scm value=$tournament->GetScoreCalculation()}{$scm->name}</td>
+    </tr>
 </table>
 
 <h2>{translate id=tournament_events}</h2>
@@ -99,7 +92,9 @@
 
 <table>
 {foreach from=$tournament->GetResultsByClass() key=classname item=participants}
-<tr><td colspan="5"><h3>{$classname|escape}</h3></td></tr>
+    <tr>
+        <td colspan="5"><h3>{$classname|escape}</h3></td>
+    </tr>
 
     <tr>
         <th rowspan="2">{translate id=tournament_pos}</th>
@@ -128,14 +123,17 @@
             {assign var=eventid value=$event->id}
             {assign var=result value=$part.Results[$eventid]}
             {assign var=score value=$result.Score}
-            {if !$score}<td>-</td>
-            {else}<td>{math equation="x / 10" x=$score}</td>
+            {if !$score}
+                <td>-</td>
+            {else}
+                <td>{math equation="x / 10" x=$score}</td>
             {/if}
         {/foreach}
 
         {if is_numeric($part.OverallScore)}
-        <td>{math equation="x/10" x=$part.OverallScore}</td>
-            {else}<td></td>
+            <td>{math equation="x/10" x=$part.OverallScore}</td>
+        {else}
+            <td>&nbsp;</td>
         {/if}
         {if $edit}
             <td>
