@@ -190,6 +190,7 @@ pagetitle_leaderboard_csv   PDGA tulokset CSV
 pagetitle_participant_csv   PDGA osallistujat CSV
 tournament_scores_all       Kaikkien kilpailujen pisteet huomioidaan
 tournament_scores_ignoreworst Huonoin tulos jätetään huomioimatta
+tournament_scores_ignore2worst Kaksi huonointa tulosta jätetään huomioimatta
 event_info_schedule     Etusivun aikataulu
 
 pagetitle_index_schedu  (otsikko ei käytössä)
