@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2015.08.22:
+===========
   * DNF does not give tournament points. GH #137.
   * New scorecalculation: ignore2worst (required for SFL MA1-tour 2015 rules).
 
