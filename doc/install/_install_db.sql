@@ -353,8 +353,10 @@ CREATE TABLE :TournamentStanding
     TieBreaker SMALLINT NOT NULL DEFAULT 0,
     Classification INT,
     PRIMARY KEY(id),
+    UNIQUE KEY(Player, Tournament, Classification),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
-    FOREIGN KEY(Tournament) REFERENCES :Tournament(id)
+    FOREIGN KEY(Tournament) REFERENCES :Tournament(id),
+    FOREIGN KEY(Classification) REFERENCES :Classification(id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
