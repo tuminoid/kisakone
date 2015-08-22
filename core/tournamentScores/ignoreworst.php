@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament overall score calculation: worst event ignored
  *
@@ -39,24 +39,27 @@ class scorecalc_tournament_ignoreworst
     function AssignScores(&$data, $numEvents)
     {
         foreach ($data as $pid => $pdetails) {
-            $score = $playerEvents = 0;
-            $minScore = null;
+            $scores = array();
+            $score = 0;
+
             foreach ($pdetails['Events'] as $event) {
-                if (!$event['ResultsLocked']) {
+                if (!$event['ResultsLocked'])
                     continue;
-                }
-                $playerEvents++;
-                $s = (int) $event['TournamentPoints'];
-                $score += $s;
-                if ($minScore === null || $s < $minScore)
-                    $minScore = $s;
+
+                $scores[] = (int) $event['TournamentPoints'];
             }
 
-            if ($playerEvents < $numEvents)
-                $minScore = 0;
+            sort($scores, SORT_NUMERIC);
+            $scores = array_reverse($scores);
 
-            $score -= $minScore;
-            // ignore lowest
+            $plrEvents = count($scores);
+            $maxEvents = $numEvents - 1;
+
+            for ($i = 0; $i < $maxEvents; $i++) {
+                if (@$scores[$i] > 0)
+                    $score += $scores[$i];
+            }
+
             if ($pdetails['OverallScore'] != $score) {
                 $data[$pid]['OverallScore'] = $score;
                 $data[$pid]['changed'] = true;
