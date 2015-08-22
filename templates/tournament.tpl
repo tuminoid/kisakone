@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament details page
  *
@@ -137,7 +138,10 @@
             {else}<td></td>
         {/if}
         {if $edit}
-            <td><input type="text" value="{$part.TieBreaker}" name="tb_{$part.PlayerId}" /></td>
+            <td>
+                <input type="text" value="{$part.TieBreaker}" name="tb_{$part.PlayerId}" />
+                <input type="hidden" value="{$part.Classification}" name="class_{$part.PlayerId}" />
+            </td>
         {/if}
     </tr>
     {/foreach}
