@@ -351,6 +351,7 @@ CREATE TABLE :TournamentStanding
     OverallScore SMALLINT NOT NULL,
     Standing SMALLINT,
     TieBreaker SMALLINT NOT NULL DEFAULT 0,
+    Classification INT,
     PRIMARY KEY(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
     FOREIGN KEY(Tournament) REFERENCES :Tournament(id)
