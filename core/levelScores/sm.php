@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Finnish Championship style tournament score calculation
  *
@@ -94,6 +94,9 @@ class scorecalc_level_sm
                 $score = round($score * 10 / ($same + 1)) / 10;
             }
             $score *= 10;
+
+            if ($participant['DidNotFinish'])
+                $score = 0;
 
             if ($score != $participant['TournamentPoints']) {
                 $participants[$index]['TournamentPoints'] = $score;
