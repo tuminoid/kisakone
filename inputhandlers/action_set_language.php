@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Language selection handler
  *
@@ -20,6 +21,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+require_once 'core/url.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -29,8 +33,7 @@ function processAction()
     $language = basename(@$_GET['language']);
     if (file_exists('ui/languages/' . $language)) {
         $_SESSION['kisakone_language'] = $language;
-        setcookie('kisakone_language', $language, time() + 60 * 60 * 24 * 45, baseurl());
-        // 45 days
+        set_secure_cookie('kisakone_language', $language, time() + 60 * 60 * 24 * 45);
         LoadLanguage($language);
     }
 

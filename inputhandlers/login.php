@@ -60,16 +60,15 @@ function processForm()
         return $user;
 
     // Make sure a session is used from now on
-    setcookie("kisakone_login", 1);
+    set_secure_cookie("kisakone_login", 1, 0);
     if (!(@$_COOKIE['kisakone_login']))
         session_start();
     $_SESSION['user'] = $user;
 
     if (@$_POST['rememberMe']) {
         $expires = time() + 60 * 60 * 24 * 30 * 2;
-        // about 2 months
-        setcookie('kisakone_autologin_as', $user->username, $expires);
-        setcookie('kisakone_autologin_key', GetAutoLoginToken($user->id), $expires);
+        set_secure_cookie('kisakone_autologin_as', $user->username, $expires);
+        set_secure_cookie('kisakone_autologin_key', GetAutoLoginToken($user->id), $expires);
     }
 
     // Normally we just redirect user to the next page using header() call, but

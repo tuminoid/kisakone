@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * PDR module initialization
  *
@@ -78,8 +78,7 @@ function page_ChooseLanguage()
         $chosen = $options['default'];
 
     $_SESSION['kisakone_language'] = $chosen;
-    setcookie('kisakone_language', $chosen, time() + 60 * 60 * 24 * 45, baseurl());
-    // 45 days
+    set_secure_cookie('kisakone_language', $chosen, time() + 60 * 60 * 24 * 45);
     return $chosen;
 }
 

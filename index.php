@@ -79,7 +79,7 @@ else {
 
         if ($key == @$_COOKIE['kisakone_autologin_key']) {
             session_start();
-            setcookie('kisakone_login', 1);
+            set_secure_cookie('kisakone_login', 1);
             global $user;
             $user = GetUserDetails($uid);
             $_SESSION['user'] = $user;
@@ -87,8 +87,8 @@ else {
         else {
             // Login failed; no error message, just clear the cookies so that
             // the login doesn't have to be attempted for every page load
-            setcookie('kisakone_autologin_key', '');
-            setcookie('kisakone_autologin_as', '');
+            set_secure_cookie('kisakone_autologin_key', '');
+            set_secure_cookie('kisakone_autologin_as', '');
         }
     }
 }

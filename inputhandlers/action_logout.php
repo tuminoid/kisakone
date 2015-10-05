@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Logs user out
  *
@@ -20,6 +21,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+require_once 'core/url.php';
+
+
 /**
  * Logs out the user. As a side-effect, redirects the user to the index page.
  * @return Nothing or Error object on error
@@ -29,9 +33,10 @@ function ProcessAction()
     // Clearing the session
     @session_destroy();
     $_SESSION = array();
-    setcookie('kisakone_login', 0);
-    setcookie('kisakone_autologin_as');
-    setcookie('kisakone_autologin_key');
+
+    set_secure_cookie('kisakone_login', 0);
+    set_secure_cookie('kisakone_autologin_as', '');
+    set_secure_cookie('kisakone_autologin_key', '');
 
     redirect("Location: " . baseurl());
 }

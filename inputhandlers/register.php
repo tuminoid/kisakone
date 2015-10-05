@@ -112,7 +112,7 @@ function processForm()
         return $r;
     }
     else {
-        setcookie("kisakone_login", 1);
+        set_secure_cookie("kisakone_login", 1);
         $nuid = GetUserId($username);
         $newuser = GetUserDetails($nuid);
 
