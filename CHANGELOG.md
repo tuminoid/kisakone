@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Use secure, httponly cookies.
+
 2015.08.22:
 ===========
   * DNF does not give tournament points. GH #137.
