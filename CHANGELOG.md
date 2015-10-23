@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Use secure, httponly cookies.
+  * Get rid of XHTML declaration, HTML5 is the standard.
 
 2015.08.22:
 ===========
