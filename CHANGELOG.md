@@ -7,6 +7,7 @@ next:
 =====
   * Use secure, httponly cookies.
   * Get rid of XHTML declaration, HTML5 is the standard.
+  * Don't allow course removal (or trying it) if it is in use. GH #217.
 
 2015.08.22:
 ===========
