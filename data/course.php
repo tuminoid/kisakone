@@ -57,7 +57,7 @@ function CourseUsed($courseid)
     if (!$result)
         return Error::Query($query);
 
-    return mysql_num_rows($result) > 1;
+    return mysql_num_rows($result) == 1;
 }
 
 
