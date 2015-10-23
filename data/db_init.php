@@ -160,7 +160,13 @@ function execute_query($query)
 
 
 /**
- * Log information about a query for debug purposes
+ * Log information about a query for debug purposes.
+ *
+ * If 'DB_ERROR_LOGGING' is set to true in config.php,
+ * print out stack trace in error log.
+ *
+ * If 'DB_ERROR_DIE' is set to true, dump the stack
+ * on browser too. DO NOT DO THIS ON PRODUCTION!
  *
  * You need to have 'php5-xdebug' module installed
  */
@@ -170,9 +176,17 @@ function debug_query_and_die($query)
     $db_error_log = $settings['DB_ERROR_LOGGING'];
 
     if (isset($db_error_log) && $db_error_log) {
-        error_log($query);
-        error_log(mysql_error());
-        0 / 0; // cheap trick to get proper xdebug trace which formats nicely ;-)
+        error_log("query: $query");
+        error_log("mysql error: " . mysql_error());
+
+        $cnt = 1;
+        foreach (xdebug_get_function_stack() as $line) {
+            $out = sprintf("%2d: %s(%s) %s:%d", $cnt++,
+                $line['function'], implode(", ", $line['params']),
+                $line['file'], $line['line']
+            );
+            error_log($out);
+        }
     }
 
     $db_error_die = $settings['DB_ERROR_DIE'];
