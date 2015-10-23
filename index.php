@@ -198,15 +198,7 @@ if (@$settings['TRACK_JS_TOKEN'])
 
 $smarty->assign("kisakone_version", getKisakoneVersion());
 
-// The type of the data that is being passed to the browser has to be at some point.
-// The type depends on a number of factors:
-// - a single page can use a special content type (such as text/xml for RSS feeds)
-// - by default application/xhtml+xml is used
-// - but IE doesn't understand that so text/html is served for IE
-// - pages with user-made HTML content set the global disable_xhtml, which
-//   enables HTML mode (as opposed to XHTML)
 if (@$GLOBALS['contentTypeSet']) {
-    // already done, do nothing now
     $smarty->assign('contentType', $GLOBALS['contentTypeSet']);
 }
 else {
