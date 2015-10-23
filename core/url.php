@@ -57,5 +57,5 @@ function redirect($url)
 // set cookies securely
 function set_secure_cookie($name, $value = '', $expires = 0)
 {
-    setcookie($name, $value, $expires, baseurl(), $_SERVER['HTTP_HOST'], isset($_SERVER['HTTPS']), true);
+    setcookie($name, $value, $expires, baseurl(), null, isset($_SERVER['HTTPS']), true);
 }
