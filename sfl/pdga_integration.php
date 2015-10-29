@@ -318,8 +318,10 @@ function pdga_getPlayerRating($pdga_number = 0, $force = false)
  */
 function SmartifyPDGA(&$smarty, $pdga_data)
 {
-    if (!$smarty || !$pdga_data)
+    if (!$smarty || !$pdga_data) {
+        $smarty->assign('pdga', false);
         return null;
+    }
 
     $smarty->assign('pdga', @$pdga_data['pdga_number']);
     $smarty->assign('pdga_rating', @$pdga_data['rating']);

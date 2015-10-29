@@ -23,6 +23,7 @@
  * */
 
 require_once 'core/event_management.php';
+require_once 'sfl/pdga_integration.php';
 
 
 /**
@@ -56,8 +57,11 @@ function processForm()
     if ($status != 'notsigned')
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 
+    global $settings;
+    $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+
     $class = GetClassDetails(@$_POST['class']);
-    if (!$player->IsSuitableClass($class)) {
+    if (!$player->IsSuitableClass($class, $pdga_data)) {
         $error = new Error();
         $error->title = 'invalid_class_selection';
         $error->function = 'InputProcessing:sign_up:processForm';

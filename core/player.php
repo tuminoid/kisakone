@@ -168,7 +168,7 @@ class Player
      *
      * Returns true if class is fine, false otherwise
      */
-    function IsSuitableClass($class)
+    function IsSuitableClass($class, $pdga_data = null)
     {
         if (!$class)
             return false;
@@ -181,6 +181,14 @@ class Player
             $problems++;
         if ($class->maxAge && $class->maxAge < $age)
             $problems++;
+
+        if ($pdga_data) {
+            if (@$pdga_data['classification'] == 'P' && $class->status != 'P')
+                $problems++;
+
+            if ($class->ratinglimit > 0 && @$pdga_data['rating'] >= $class->ratinglimit)
+                $problems++;
+        }
 
         return $problems == 0;
     }

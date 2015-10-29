@@ -88,13 +88,13 @@
         {foreach from=$classes item=class}
             <div>
                 <input type="radio" name="class" id="class" value="{$class->id}" />
-                <label for="class">{$class->name|escape}</label>
+                <label for="class">{$class->getName()|escape}</label>
             </div>
         {/foreach}
         {foreach from=$unsuited item=class}
             <div>
                 <input type="radio" name="class" id="class" value="{$class->id}" disabled="disabled" />
-                <label for="class" style="color: #888;">{$class->name|escape}</label>
+                <label for="class" style="color: #888;">{$class->getName()|escape}</label>
             </div>
         {/foreach}
 

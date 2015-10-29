@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class editor UI backend
  *
@@ -44,6 +45,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     $smarty->assign('genderOptions', array('' => translate('noRestriction'), 'M' => translate('male'), 'F' => translate('female'),));
+    $smarty->assign('statusOptions', array('' => translate('class_notdefined'), 'A' => translate('class_am'), 'P' => translate('class_pro'),));
 
     $smarty->assign('deletable', !ClassBeingUsed($_GET['id']));
 }

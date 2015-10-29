@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event main page
  *
@@ -47,15 +47,20 @@
         <td>{$event->fulldate|escape}</td>
     </tr>
 
+    {if $event->level}
     <tr>
         <td>{translate id=event_level}</td>
         <td>{$event->level|escape}</td>
     </tr>
+    {/if}
 
+    {if $event->tournament}
     <tr>
         <td>{translate id=event_tournament}</td>
         <td>{$event->tournament|escape}</td>
     </tr>
+    {/if}
+
     <tr>
         <td>{translate id=event_contact}</td>
         <td id="contactInfo"><div style="font-family: monospace">{$contactInfoHTML}</div></td>

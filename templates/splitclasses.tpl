@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Splitting classes into multiple sections
  *
@@ -37,11 +38,8 @@
         background-color: #CCC;
     }
 
-
-
     .droponme {
         border: 2px solid blue;
-
     }
 
     .groupman td {
@@ -62,7 +60,6 @@
     .grouplist {
         width: 400px;
         float: left;
-
     }
 
     .tagged {
@@ -89,17 +86,12 @@
         min-width: 120px;
         display: inline-block;
     }
-
-
     {/literal}
 </style>
 {/capture}
+
 {include file='include/header.tpl'  ui=1 }
-
-
 {include file=support/eventlockhelper.tpl}
-
-
 
 {if $suggestRegeneration}
     <div class="error">
@@ -147,7 +139,7 @@
                     {foreach from=$section->GetPlayers() item=player}
                         <li><input type="hidden" name="p{$player.PlayerId}" value="c_{$section->id}" />
                             <span class="name">{$player.FirstName|escape} {$player.LastName|escape}, </span>
-                            <span class="pdga">{$player.PDGANumber}</span>{if $firstRound},
+                            <span class="pdga">{$player.PDGANumber|escape}</span>{if $firstRound},
                             <span class="class">{$player.Classification|escape}</span>{else}, #{counter}{/if}</li>
                     {/foreach}
                 </ul>

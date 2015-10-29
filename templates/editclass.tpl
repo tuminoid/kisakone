@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class editor UI
  *
@@ -35,10 +36,17 @@
     </div>
 
     <div>
+        <label for="Short">{translate id=short}</label>
+        <input type="text" id="Short" name="Short" value="{$class->short|escape}" />
+        {formerror field='Short'}
+    </div>
+
+    <div>
         <label for="MinimumAge">{translate id=minage}</label>
         <input type="text" id="MinimumAge" name="MinimumAge" value="{$class->minAge|escape}" />
         {formerror field='MinimumAge'}
     </div>
+
     <div>
         <label for="MaximumAge">{translate id=maxage}</label>
         <input type="text" id="MaximumAge" name="MaximumAge" value="{$class->maxAge|escape}" />
@@ -50,21 +58,38 @@
         <select name="GenderRequirement" id="GenderRequirement">
             {html_options options=$genderOptions selected=$class->gender}
         </select>
-
     </div>
 
     <div>
-        <input type="checkbox" id="Available" name="Available" {if $class->available || $smarty.get.id == 'new'} checked="checked" {/if}
-        />
+        <label for="Status">{translate id=class_status}</label>
+        <select name="Status" id="ClassStatus">
+            {html_options options=$statusOptions selected=$class->status}
+        </select>
+    </div>
+
+    <div>
+        <label for="Priority">{translate id=priority}</label>
+        <input type="text" id="Priority" name="Priority" value="{$class->priority|escape}" />
+        {formerror field='Priority'}
+    </div>
+
+    <div>
+        <label for="RatingLimit">{translate id=ratinglimit}</label>
+        <input type="text" id="RatingLimit" name="RatingLimit" value="{$class->ratinglimit|escape}" />
+        {formerror field='RatingLimit'}
+    </div>
+
+    <div>
+        <input type="checkbox" id="Available" name="Available" {if $class->available || $smarty.get.id == 'new'} checked="checked" {/if}/>
         <label class="checkboxlabel" for="Available">{translate id=available}</label>
     </div>
+
 <hr />
-<div>
+
+    <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
         <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-
     </div>
-
 
 
 <script type="text/javascript">
@@ -72,20 +97,22 @@
 {literal}
 $(document).ready(function(){
     CheckedFormField('form', 'Name', NonEmptyField, null);
+    CheckedFormField('form', 'Short', NonEmptyField, null);
     CheckedFormField('form', 'MinimumAge', PositiveIntegerField, true);
     CheckedFormField('form', 'MaximumAge', PositiveIntegerField, true);
+    CheckedFormField('form', 'Priority', PositiveIntegerField, true);
 
     $("#cancelButton").click(CancelSubmit);
-
 });
 
 
 {/literal}
-
-
 //]]>
 </script>
-</td><td style="border-left: 1px dotted #AAA; padding-left: 32px;">
+
+</td>
+
+<td style="border-left: 1px dotted #AAA; padding-left: 32px;">
 {if $smarty.get.id != 'new'}
     <h2>{translate id=delete_class}</h2>
 

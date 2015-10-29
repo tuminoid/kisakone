@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class management listing
  *
@@ -27,15 +28,20 @@
 <table class="oddrows narrow">
     <tr>
         <th>{translate id=name}</th>
+        <th>{translate id=short}</th>
         <th>{translate id=minage}</th>
         <th>{translate id=maxage}</th>
         <th>{translate id=gender}</th>
+        <th>{translate id=status}</th>
+        <th>{translate id=priority}</th>
+        <th>{translate id=ratinglimit}</th>
         <th>{translate id=available}</th>
         <th>{translate id=edit}</th>
     </tr>
 {foreach from=$classes item=class}
     <tr>
         <td>{$class->name|escape}</td>
+        <td>{$class->short|escape}</td>
         <td>{$class->minAge}
         {if !$class->minAge}-{/if}
         </td>
@@ -48,9 +54,19 @@
                 {translate id=female}
                 {else}
                 {translate id=any}
-
             {/if}
         </td>
+        <td>
+            {if $class->status == A}
+                {translate id=class_am}
+                {elseif $class->status == P}
+                {translate id=class_pro}
+                {else}
+                {translate id=class_notdefined}
+            {/if}
+        </td>
+        <td>{$class->priority}</td>
+        <td>{if $class->ratinglimit}{$class->ratinglimit}{else}-{/if}</td>
         <td>
             {if $class->available}
             {translate id=yes!}

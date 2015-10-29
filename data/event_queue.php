@@ -61,7 +61,8 @@ function GetEventQueue($eventId, $sortedBy, $search)
 
     $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
                     :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
-                    pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth, :Classification.Name AS ClassName,
+                    pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
+                    :Classification.Name AS ClassName, :Classification.Short AS ClassShort,
                     :EventQueue.id AS QueueId, :EventQueue.Rating AS Rating,
                     :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
                     UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp, :Classification.id AS ClassId
@@ -91,6 +92,7 @@ function GetEventQueue($eventId, $sortedBy, $search)
             $pdata['queueId'] = $row['QueueId'];
             $pdata['signupTimestamp'] = $row['SignupTimestamp'];
             $pdata['className'] = $row['ClassName'];
+            $pdata['classShort'] = $row['ClassShort'];
             $pdata['classId'] = $row['ClassId'];
             $pdata['clubName'] = $row['ClubName'];
             $pdata['clubLongName'] = $row['ClubLongName'];

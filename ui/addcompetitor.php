@@ -53,17 +53,11 @@ function InitializeSmartyVariables(&$smarty, $error)
         $classOptions = array();
 
         foreach ($classes as $class)
-            $classOptions[$class->id] = $class->name;
+            $classOptions[$class->id] = $class->getName();
 
         $userdata = GetUserDetails($user);
         $smarty->assign('userdata', $userdata);
         $player = GetUserPlayer($user);
-
-        foreach ($classOptions as $cid => $cname) {
-            $class = GetClassDetails($cid);
-            if ($player && !$player->IsSuitableClass($class))
-                unset($classOptions[$cid]);
-        }
 
         $year = date('Y');
         $data = SFL_getPlayer($user);
@@ -76,25 +70,16 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('license_required', $fees);
         $smarty->assign('licenses_ok', $licenses_ok);
 
-        // Get user's pdga data
         global $settings;
-        $smarty->assign('pdga', false);
+        $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+        SmartifyPDGA($smarty, $pdga_data);
 
-        // if PDGA API is enabled and player has PDGA number assigned, do the checks
-        if (@$settings['PDGA_ENABLED'] && isset($player->pdga) && $player->pdga > 0) {
-            $smarty->assign('pdga', true);
-            $pdga_data = pdga_getPlayer($player->pdga);
-            SmartifyPDGA($smarty, $pdga_data);
-
-            // Remove classes from drop-down based on PDGA data
-            foreach ($classOptions as $cid => $cname) {
-                if ($pdga_data['gender'] == "M" && $pdga_data['gender'] != substr($cname, 0, 1))
-                    unset($classOptions[$cid]);
-                $ama_or_junior = (substr($cname, 1, 1) == "A" || substr($cname, 1, 1) == "J");
-                if ($pdga_data['classification'] == "P" && $ama_or_junior)
-                    unset($classOptions[$cid]);
-            }
+        foreach ($classOptions as $cid => $cname) {
+            $class = GetClassDetails($cid);
+            if ($player && !$player->IsSuitableClass($class, $pdga_data))
+                unset($classOptions[$cid]);
         }
+
         $smarty->assign('classOptions', $classOptions);
     }
     elseif (@$_GET['op_s'] || $player) {

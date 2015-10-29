@@ -47,6 +47,6 @@ function page_InitializeEventFormData(&$smarty, $creatingNew)
     $classes = array();
     foreach ($classList as $class)
         if ($class->available)
-            $classes[$class->id] = $class->name;
+            $classes[$class->id] = $class->getName();
     $smarty->assign('class_options', $classes);
 }

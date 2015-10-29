@@ -176,10 +176,14 @@ CREATE TABLE :Classification
 (
     id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(40) NOT NULL,
+    Short VARCHAR(6,
     MinimumAge INT,
     MaximumAge INT,
     GenderRequirement CHAR(1),
     Available TINYINT NOT NULL,
+    Status ENUM('P', 'A') NOT NULL,
+    Priority INT DEFAULT 1000,
+    RatingLimit INT,
     PRIMARY KEY(id),
     INDEX(Available)
 ) ENGINE=InnoDB;

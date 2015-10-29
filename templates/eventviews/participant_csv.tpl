@@ -1,8 +1,8 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * Participant list export to CSV
+ * Participant list export to TSV for exporting to PDGA Tour Manager
  *
  * --
  *
@@ -26,7 +26,6 @@
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         text-align: center;
-
         margin: 0;
     }
 
@@ -38,7 +37,6 @@
 
     .round_selection_table .selected {
         background-color: #DDD;
-
     }
 
     .results {
@@ -52,17 +50,14 @@
         text-align: left !important;
     }
 
-    .thr {
-
+    .sdtd {
+        background-color: white !important;
     }
-    .sdtd { background-color: white !important}
 
     .sd {
         background-color: #EEE !important;
         font-weight: bold;
         min-width: 16px;
-
-
     }
 
 {/literal}</style>
@@ -77,14 +72,14 @@
     {translate id=preliminary_results}
 </p>
 
-<p>{translate id=leaderboard_cvs_help}</p>
+<p class="searcharea">{translate id=participant_cvs_help}</p>
 
 <textarea cols=120 rows=140>
 {counter assign=rowind start=-1}{foreach from=$resultsByClass key=class item=results}
 {foreach from=$results item=result}{counter assign=rowind}{if $rowind == 0}
 {translate id=result_division}{""|indent:1:"\t"}{translate id=result_firstname}{""|indent:1:"\t"}{translate id=result_lastname}{""|indent:1:"\t"}PDGA{""|indent:1:"\t"}
 {/if}
-{$class|truncate:3:""}{""|indent:1:"\t"}{$result.user->firstname|escape}{""|indent:1:"\t"}{$result.user->lastname|escape}{""|indent:1:"\t"}{$result.player->pdga|escape}{""|indent:1:"\t"}
+{$result.classShort}{""|indent:1:"\t"}{$result.user->firstname|escape}{""|indent:1:"\t"}{$result.user->lastname|escape}{""|indent:1:"\t"}{$result.player->pdga|escape}{""|indent:1:"\t"}
 {/foreach}
 {/foreach}
 {/if}

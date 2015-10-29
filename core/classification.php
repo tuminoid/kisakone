@@ -34,11 +34,15 @@ class Classification
     var $maxAge;
     var $gender;
     var $available;
+    var $status;
+    var $priority;
+    var $ratinglimit;
 
     /** ************************************************************************
      * Class constructor
      */
-    function Classification($id = null, $name = null, $minAge = 0, $maxAge = 0, $gender = null, $available = 0)
+    function Classification($id = null, $name = null, $short = null, $minAge = 0, $maxAge = 0,
+        $gender = null, $available = 0, $status = 'P', $priority = 0, $ratinglimit = null)
     {
         if (is_array($id)) {
             $this->initializeFromArray($id);
@@ -46,10 +50,14 @@ class Classification
         else {
             $this->id = $id;
             $this->name = $name;
+            $this->short = $short;
             $this->minAge = $minAge;
             $this->maxAge = $maxAge;
             $this->gender = $gender;
             $this->available = $available;
+            $this->status = $status;
+            $this->priority = $priority;
+            $this->ratinglimit = $ratinglimit;
         }
     }
 
@@ -57,10 +65,22 @@ class Classification
     {
         $this->id = $array['id'];
         $this->name = $array['Name'];
+        $this->short = $array['Short'];
         $this->minAge = $array['MinimumAge'];
         $this->maxAge = $array['MaximumAge'];
         $this->gender = $array['GenderRequirement'];
         $this->available = $array['Available'];
+        $this->status = $array['Status'];
+        $this->priority = $array['Priority'];
+        $this->ratinglimit = $array['RatingLimit'];
+    }
+
+    function getName()
+    {
+        if ($this->short)
+            return $this->short . ' (' . $this->name . ')';
+
+        return $this->name;
     }
 
     function getPlayers($event = null)

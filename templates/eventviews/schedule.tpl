@@ -52,7 +52,11 @@
                 <p style="float: left; margin: 8px;">
                 {if $round->starttype == 'simultaneous'}
                     {math assign="holeIndex" equation="x-y" x=$group.0.StartingHole y=1}
-                    {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+                    {if $holes[$holeIndex]->holeText}
+                        {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
+                    {else}
+                        {translate id=your_group_starting_hole hole=$group.0.StartingHole}
+                    {/if}
                 {else}
                     {$group.0.StartingTime|date_format:"%H:%M"}
                 {/if}</p>

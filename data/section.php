@@ -79,7 +79,11 @@ function GetSectionMembers($sectionId)
 
     $query = format_query("SELECT :Player.player_id AS PlayerId, :User.UserFirstName, :User.UserLastName,
                                 :Player.pdga AS PDGANumber, :Player.firstname AS pFN, :Player.lastname AS pLN,
-                                :Player.email AS pEM, :Classification.Name AS Classification,
+                                :Player.email AS pEM,
+                                IF(:Classification.Short IS NOT NULL,
+                                    CONCAT(:Classification.Short, ' (', :Classification.Name, ')'),
+                                    :Classification.Name
+                                ) AS Classification,
                                 SM.id AS MembershipId, :Participation.OverallResult
                             FROM :User
                             INNER JOIN :Player ON :User.Player = :Player.player_id

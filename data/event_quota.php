@@ -29,7 +29,7 @@ function GetEventQuotas($eventId)
 {
     $event = (int) $eventId;
 
-    $query = format_query("SELECT :Classification.id, Name, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
+    $query = format_query("SELECT :Classification.id, Name, Short, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
                             FROM :Classification, :ClassInEvent
                             WHERE :ClassInEvent.Classification = :Classification.id AND :ClassInEvent.Event = $event
                             ORDER BY Name");

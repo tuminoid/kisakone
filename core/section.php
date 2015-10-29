@@ -57,6 +57,8 @@ class Section
     {
         if ($this->classification) {
             $class = GetClassDetails($this->classification);
+            if ($class->short)
+                return $class->short . ' (' . $class->name . ')';
             return $class->name;
         }
         else

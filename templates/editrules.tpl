@@ -36,7 +36,7 @@
     <input type="hidden" name="eventid" value="{$event->id}" />
 
     {foreach from=$classes item=class name=classes}
-        <h2>{$class->name}</h2>
+        <h2>{$class->getName()}</h2>
         <table id="ruletable_{$class->id}">
             <tr>
                 <th>{translate id=ruletype_header}</th>

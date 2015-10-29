@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Move players from one class to another within an event
  *
@@ -84,11 +84,11 @@
                     {assign var=cid value=$class->id}
                     {if !$badClasses.$cid}
                         <option value="{$class->id}" {if $user.classId == $class->id}selected="selected"{/if}>
-                        {$class->name}
+                        {$class->getName()}
                         </option>
                     {elseif $class->id == $user.classId}
                      <option value="{$class->id}" {if $user.classId == $class->id}selected="selected"{/if} class="bad_class">
-                        {$class->name}
+                        {$class->getName()}
                         </option>
                     {/if}
                     {/foreach}

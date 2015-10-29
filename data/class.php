@@ -31,10 +31,7 @@ function GetClasses($onlyAvailable = false)
 {
     $available = $onlyAvailable ? " WHERE Available <> 0" : "";
 
-    $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
-                            FROM :Classification
-                            $available
-                            ORDER BY Name");
+    $query = format_query("SELECT * FROM :Classification $available ORDER BY Priority ASC, Name");
     $result = execute_query($query);
 
     $retValue = array();
@@ -53,14 +50,13 @@ function GetClassDetails($classId)
 {
     $classId = (int) $classId;
 
-    $query = format_query("SELECT id, Name, MinimumAge, MaximumAge, GenderRequirement, Available FROM :Classification WHERE id = $classId");
+    $query = format_query("SELECT * FROM :Classification WHERE id = $classId");
     $result = execute_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
         $row = mysql_fetch_assoc($result);
-        $retValue = new Classification($row['id'], $row['Name'], $row['MinimumAge'],
-            $row['MaximumAge'], $row['GenderRequirement'], $row['Available']);
+        $retValue = new Classification($row);
     }
     mysql_free_result($result);
 
@@ -109,17 +105,23 @@ function SetClasses($eventid, $classes)
 }
 
 
-function EditClass($id, $name, $minage, $maxage, $gender, $available)
+function EditClass($id, $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
     $name = esc_or_null($name);
+    $short = esc_or_null($short);
     $minage = esc_or_null($minage, 'int');
     $maxage = esc_or_null($maxage, 'int');
     $gender = esc_or_null($gender, 'gender');
     $available = $available ? 1 : 0;
+    $status = esc_or_null(strtolower($status) == 'a' ? 'A' : 'P');
+    $priority = esc_or_null($priority, 'int');
+    $ratinglimit = esc_or_null($ratinglimit, 'int');
 
     $query = "UPDATE :Classification
-                SET Name = $name, MinimumAge = $minage, MaximumAge = $maxage, GenderRequirement = $gender, Available = $available
+                SET Name = $name, Short = $short, MinimumAge = $minage, MaximumAge = $maxage,
+                GenderRequirement = $gender, Available = $available, Status = $status,
+                Priority = $priority, RatingLimit = $ratinglimit
                 WHERE id = $id";
     $query = format_query($query);
     $result = execute_query($query);
@@ -129,16 +131,20 @@ function EditClass($id, $name, $minage, $maxage, $gender, $available)
 }
 
 
-function CreateClass($name, $minage, $maxage, $gender, $available)
+function CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)
 {
     $name = esc_or_null($name);
+    $short = esc_or_null($short);
     $minage = esc_or_null($minage, 'int');
     $maxage = esc_or_null($maxage, 'int');
     $gender = esc_or_null($gender, 'gender');
     $available = $available ? 1 : 0;
+    $status = esc_or_null(strtolower($status) == 'a' ? 'A' : 'P');
+    $priority = esc_or_null($priority, 'int');
+    $ratinglimit = esc_or_null($ratinglimit, 'int');
 
-    $query = "INSERT INTO :Classification (Name, MinimumAge, MaximumAge, GenderRequirement, Available)
-                  VALUES ($name, $minage, $maxage, $gender, $available)";
+    $query = "INSERT INTO :Classification (Name, Short, MinimumAge, MaximumAge, GenderRequirement, Available, Status, Priority, RatingLimit)
+                  VALUES ($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)";
     $query = format_query($query);
     $result = execute_query($query);
 

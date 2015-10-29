@@ -55,8 +55,8 @@
         <input id="name" type="text" name="name" value="{$event.name|escape}" />
         {formerror field='name'}
     </div>
-    <div>
 
+    <div>
         <label for="venueField">{translate id=event_venue}</label>
         <input type="text" name="venue" id="venueField" value="{$event.venue|escape}" />
         {formerror field='venue'}

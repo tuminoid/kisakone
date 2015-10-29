@@ -83,8 +83,8 @@
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
             <td class="classes_max_width">
-            {foreach from=$event->GetClasses()|@array_reverse item=class}
-                {$class->name|substr:0:3|escape}
+            {foreach from=$event->GetClasses() item=class}
+                {if $class->short}{$class->short|escape}{else}{$class->name|substr:0:3|escape}{/if}
             {foreachelse}
                 -
             {/foreach}

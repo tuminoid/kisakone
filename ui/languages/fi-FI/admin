@@ -6,17 +6,21 @@ sitecontent_custom_text         Seuraavan listan sivuihin voidaan luoda linkkej�
 new_page            Uusi sivu
 
 
-
+short               Lyhenne
 minage              Minimi-ikä
 maxage              Maksimi-ikä
 available           Käytettävissä
+status              Pro/Am-luokitus
+priority            Esitysjärjestys
+ratinglimit         Ratingraja
+
+class_notdefined    Ei määritelty
+class_am            Amatööri
+class_pro           Ammattilais
+class_status        Luokitus
 
 new_class           Uusi luokka
-
-
 new_level           Uusi taso
-
-
 new_tournament      Uusi sarja
 
 delete_class        Poista luokka

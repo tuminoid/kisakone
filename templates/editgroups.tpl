@@ -181,7 +181,7 @@
                                         <input type="hidden" name="e[]" value="pid{$player.PlayerId|escape}" />
                                         <span>{$player.LastName|escape} {$player.FirstName|escape}</span>
                                     </td>
-                                    <td>{$player.Classification|escape|substr:0:3}</td>
+                                    <td>{$player.Classification|escape}</td>
                                     {if $player.OverallResult > 0}<td>{$player.OverallResult}</td>{/if}
                                 </tr>
                             {/foreach}

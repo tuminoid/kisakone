@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Set and show quotas (player limits) for events
  *
@@ -62,7 +62,7 @@
       {math assign="fre" equation="x + y" x=$fre y=$free}
 
     <tr>
-      <td>{$quota.Name}</td>
+      <td>{$quota.Short} ({$quota.Name})</td>
       <td>
         <input type="hidden" name="init_{$quota.id}_minquota" value="{$quota.MinQuota}" />
         <input type="text" name="minquota_{$quota.id}" value="{$quota.MinQuota}" />

@@ -224,10 +224,12 @@ function GetEventClasses($event)
 {
     $event = (int) $event;
 
-    $query = format_query("SELECT :Classification.id, Name, MinimumAge, MaximumAge, GenderRequirement, Available
-                            FROM :Classification, :ClassInEvent
-                            WHERE :ClassInEvent.Classification = :Classification.id AND :ClassInEvent.Event = $event
-                            ORDER BY Name");
+    $query = format_query("SELECT :Classification.id, Name, Short, MinimumAge, MaximumAge,
+                                GenderRequirement, Available, Status, Priority, RatingLimit
+                            FROM :Classification
+                            INNER JOIN :ClassInEvent ON :ClassInEvent.Classification = :Classification.id
+                            WHERE :ClassInEvent.Event = $event
+                            ORDER BY Priority ASC, Name");
     $result = execute_query($query);
 
     $retValue = array();
@@ -478,7 +480,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
     $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName,
                     UserEmail, :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM,
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
-                    :Classification.Name AS ClassName, :Participation.id AS ParticipationID,
+                    :Classification.Name AS ClassName, :Classification.Short As ClassShort, :Participation.id AS ParticipationID,
                     UNIX_TIMESTAMP(EventFeePaid) AS EventFeePaid, UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp,
                     :Classification.id AS ClassId, :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
                     :Participation.Rating, :PDGAPlayers.country AS PDGACountry
@@ -513,6 +515,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
             $pdata['participationId'] = $row['ParticipationID'];
             $pdata['signupTimestamp'] = $row['SignupTimestamp'];
             $pdata['className'] = $row['ClassName'];
+            $pdata['classShort'] = $row['ClassShort'];
             $pdata['classId'] = $row['ClassId'];
             $pdata['clubName'] = $row['ClubName'];
             $pdata['clubLongName'] = $row['ClubLongName'];
@@ -627,7 +630,7 @@ function GetEventResultsWithoutHoles($eventId)
                     :Player.lastname AS LastName, :Player.pdga AS PDGANumber,
                     :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
                     :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
-                    :Classification.Name AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
+                    :Classification.Short AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
                     TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
                     :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
                     :RoundResult.DidNotFinish AS DNF, :PDGAPlayers.country AS PDGACountry

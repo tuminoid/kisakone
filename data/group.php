@@ -33,7 +33,11 @@ function GetGroups($sectid)
                     :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
                     :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
                     :User.UserFirstName, :User.UserLastName, firstname AS pFN, lastname AS pLN,
-                    :Classification.Name AS Classification, :Participation.OverallResult
+                    IF(:Classification.Short IS NOT NULL,
+                        :Classification.Short,
+                        SUBSTR(:Classification.Name, 1, 3)
+                    ) AS Classification,
+                    :Participation.OverallResult
                 FROM :StartingOrder
                 INNER JOIN :Player ON :StartingOrder.Player = :Player.player_id
                 INNER JOIN :User ON :Player.player_id = :User.Player
@@ -132,7 +136,8 @@ function GetRoundGroups($roundid)
 {
     $roundid = (int) $roundid;
 
-    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole, :Classification.Name AS ClassificationName,
+    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole,
+                                CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName,
                                 :User.id AS UserId, :Participation.OverallResult, :Club.ShortName AS ClubName
                             FROM :StartingOrder
@@ -165,7 +170,8 @@ function GetSingleGroup($roundid, $playerid)
     $playerid = (int) $playerid;
 
     $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
-                                :StartingOrder.StartingHole, :Classification.Name AS ClassificationName,
+                                :StartingOrder.StartingHole,
+                                CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
                             FROM :StartingOrder
                             INNER JOIN :Section ON :Section.id = :StartingOrder.Section
@@ -197,7 +203,8 @@ function GetUserGroupSummary($eventid, $playerid)
     $playerid = (int) $playerid;
 
     $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
-                                :StartingOrder.StartingHole, :Classification.Name AS ClassificationName, :Round.GroupsFinished,
+                                :StartingOrder.StartingHole, :Round.GroupsFinished,
+                                CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
                             FROM :StartingOrder
                             INNER JOIN :Section ON :Section.id = :StartingOrder.Section

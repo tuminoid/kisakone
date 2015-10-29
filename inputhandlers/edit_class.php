@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class editor input handler
  *
@@ -43,6 +44,10 @@ function processForm()
     if ($name == '')
         $problems['Name'] = translate('FormError_NotEmpty');
 
+    $short = $_POST['Short'];
+    if ($short == '')
+        $problems['Short'] = translate('FormError_NotEmpty');
+
     $minage = $_POST['MinimumAge'];
     if ($minage != '' && !is_numeric($minage))
         $problems['MinimumAge'] = translate('FormError_NotPositiveInteger');
@@ -56,6 +61,18 @@ function processForm()
         $problems['GenderRequirement'] = translate('FormError_InternalError');
 
     $available = (bool) @$_POST['Available'];
+
+    $status = $_POST['Status'];
+    if (!in_array($status, array('', 'A', 'P')))
+        $problems['Status'] = translate('FormError_InternalError');
+
+    $priority = $_POST['Priority'];
+    if (!is_numeric($priority) || $priority <= 0)
+        $problems['Priority'] = translate('FormError_NotPositiveInteger');
+
+    $ratinglimit = $_POST['RatingLimit'];
+    if ($ratinglimit != '' && !is_numeric($ratinglimit))
+        $problems['RatingLimit'] = translate('FormError_NotPositiveInteger');
 
     if (count($problems)) {
         $error = new Error();
@@ -71,12 +88,14 @@ function processForm()
         $minage = null;
     if (!$maxage)
         $maxage = null;
+    if (!$ratinglimit)
+        $ratinglimit = null;
 
     if ($_GET['id'] != 'new') {
-        $result = EditClass($_GET['id'], $name, $minage, $maxage, $gender, $available);
+        $result = EditClass($_GET['id'], $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit);
     }
     else {
-        $result = CreateClass($name, $minage, $maxage, $gender, $available);
+        $result = CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit);
     }
 
     if (is_a($result, 'Error')) {
