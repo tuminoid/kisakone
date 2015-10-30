@@ -6,8 +6,10 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Use secure, httponly cookies.
-  * Get rid of XHTML declaration, HTML5 is the standard.
+  * Get rid of XHTML declaration, HTML5 is the standard. GH #220.
   * Don't allow course removal (or trying it) if it is in use. GH #217.
+  * Classes now include sorting priority, rating limits, pro/am statuses etc.
+  * New class information is used to limit registration options based on rating, status etc.
 
 2015.08.22:
 ===========
