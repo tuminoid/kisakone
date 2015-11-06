@@ -489,7 +489,7 @@ CREATE TABLE :PDGAEvents
     tournament_name VARCHAR(255) NOT NULL,
     city VARCHAR(255),
     state_prov VARCHAR(30),
-    country VARCHAR(2) NOT NULL,
+    country VARCHAR(100) NOT NULL,
     start_date DATETIME,
     end_date DATETIME,
     class VARCHAR(20),

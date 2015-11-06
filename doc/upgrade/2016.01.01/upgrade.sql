@@ -2,6 +2,8 @@
 -- SQL migration from version 2015.05.31
 -- Use the upgrade script upgrade.php!
 
+ALTER TABLE :PDGAEvents MODIFY COLUMN country VARCHAR(100) NOT NULL;
+
 ALTER TABLE :Classification ADD COLUMN Short VARCHAR(6) AFTER Name;
 ALTER TABLE :Classification ADD COLUMN Status ENUM('P', 'A') NOT NULL AFTER Available;
 ALTER TABLE :Classification ADD COLUMN Priority INT DEFAULT 1000 AFTER Status;
