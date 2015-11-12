@@ -10,6 +10,7 @@ next:
   * Don't allow course removal (or trying it) if it is in use. GH #217.
   * Classes now include sorting priority, rating limits, pro/am statuses etc.
   * New class information is used to limit registration options based on rating, status etc.
+  * All other configs except database settings are now in Admin UI. GH #180.
 
 2015.08.22:
 ===========
