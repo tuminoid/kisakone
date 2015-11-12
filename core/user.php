@@ -23,6 +23,7 @@
  * */
 
 require_once 'data/user.php';
+require_once 'sfl/sfl_licensetypes.php';
 
 
 /* *****************************************************************************

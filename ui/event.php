@@ -28,6 +28,7 @@ require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 require_once 'data/calendar.php';
+require_once 'data/config.php';
 
 
 /**
@@ -37,8 +38,6 @@ require_once 'data/calendar.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    global $settings;
-
     $event = GetEventDetails($_GET['id']);
 
     if (is_a($event, 'Error'))
@@ -54,8 +53,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('user', $user);
     $smarty->assign('player', $player);
 
-    $smarty->assign('pdga_enabled', @$settings['PDGA_ENABLED']);
-    $smarty->assign('sfl_enabled', @$settings['SFL_ENABLED']);
+    $smarty->assign('pdga_enabled', GetConfig(PDGA_ENABLED));
+    $smarty->assign('sfl_enabled', GetConfig(SFL_ENABLED));
     $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
     $textType = '';
@@ -158,7 +157,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
 
             if ($status == 'notsigned') {
-                $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+                $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
                 SmartifyPDGA($smarty, $pdga_data);
 
                 $year = date('Y');

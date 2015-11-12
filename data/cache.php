@@ -22,6 +22,7 @@
  * */
 
 require_once 'config.php';
+require_once 'data/config.php';
 
 
 /**
@@ -31,34 +32,37 @@ require_once 'config.php';
  */
 function cache_connect()
 {
-    global $settings;
-    static $memcached;
+    static $_memcached;
 
-    if (!@$settings['MEMCACHED_ENABLED'])
+    if ($_memcached)
+        return $_memcached;
+
+    if (!GetConfig(CACHE_ENABLED))
         return null;
 
-    if ($memcached)
-        return $memcached;
+    // We only support memcached now
+    if (GetConfig(CACHE_TYPE) != 'memcached')
+        return null;
 
     // connect to memcached pool
-    $name = $settings['MEMCACHED_NAME'];
-    $host = $settings['MEMCACHED_HOST'];
-    $port = $settings['MEMCACHED_PORT'];
-    $memcached = new Memcached($name);
-    if (!$memcached)
+    $name = GetConfig(CACHE_NAME);
+    $host = GetConfig(CACHE_HOST);
+    $port = GetConfig(CACHE_PORT);
+    $_memcached = new Memcached($name);
+    if (!$_memcached)
         return null;
 
-    $servers = $memcached->getServerList();
+    $servers = $_memcached->getServerList();
     if (!is_array($servers) || count($servers) < 1)
-        $memcached->addServer($host, $port);
+        $_memcached->addServer($host, $port);
 
     // check the pool is ok
-    $stats = $memcached->getStats();
+    $stats = $_memcached->getStats();
     $key = $host . ":" .$port;
     if (!(isset($stats[$key]) && @$stats[$key]['pid'] > 0))
-        $memcached = null;
+        $_memcached = null;
 
-    return $memcached;
+    return $_memcached;
 }
 
 

@@ -281,8 +281,6 @@ global \$settings;
 
 \$settings['USE_MOD_REWRITE'] = $rewrite;
 
-include_once('config_site.php');
-
 $q>
 EOF;
 

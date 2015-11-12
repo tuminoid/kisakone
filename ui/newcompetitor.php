@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'config.php';
+require_once 'data/config.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 require_once 'data/event.php';
@@ -34,8 +34,6 @@ require_once 'data/event.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    global $settings;
-
     $event = GetEventDetails(@$_GET['id']);
     $pdga = @$_GET['pdga'];
     $sflid = @$_GET['sflid'];
@@ -49,9 +47,9 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('id_entered', $pdga || $sflid);
     $smarty->assign('fail', @$_GET['fail']);
 
-    if ($pdga && $settings['PDGA_ENABLED'])
+    if ($pdga && GetConfig(PDGA_ENABLED))
         return pdga_competitor($smarty, $pdga);
-    if ($sflid && $settings['SFL_ENABLED'])
+    if ($sflid && GetConfig(SFL_ENABLED))
         return sfl_competitor($smarty, $sflid);
 
     // show empty form

@@ -25,6 +25,8 @@
 
 require_once 'data/db_init.php';
 require_once 'data/user.php';
+require_once 'sfl/sfl_licensetypes.php';
+require_once 'data/config.php';
 
 
 /**
@@ -105,7 +107,7 @@ function sfl_api_parseLicenses($data)
     $year = date('Y');
 
     // For development/club use purposes
-    if (IGNORE_PAYMENTS == true)
+    if (GetConfig(LICENSE_ENABLED) != 'sfl')
         return array('a_license' => array("$year" => true), 'b_license' => array("$year" => true), 'membership' => array("$year" => true));
 
     if (!$data || $data['status'] == false)

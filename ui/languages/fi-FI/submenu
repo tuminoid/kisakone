@@ -80,6 +80,7 @@ submenu_recover_password    Unohtunut salasana
 manage_rounds           Kierrosten määritys
 class_starting_times    Luokkien lähtöajat
 
+submenu_edit_config     Asetukset
 submenu_manage_users    Käyttäjien hallinnointi
 submenu_manage_submenutext   Sivuvalikon lisäteksti
 submenu_manage_index   Etusivun lisäteksti

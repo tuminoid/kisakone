@@ -1,7 +1,5 @@
 /Smarty/templates_c/*
 /config.php
-/config_email.php
-/config_site.php
 temp*.txt
 /php5-cgi
 /php5-fcgi

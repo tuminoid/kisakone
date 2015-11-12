@@ -24,6 +24,8 @@
  * */
 
 require_once 'config.php';
+require_once 'data/config.php';
+
 
 /**
  * E-mail tokens are bits of text which are converted within an e-mail message
@@ -140,17 +142,15 @@ class Email
 
     function Send($recipientAddress)
     {
-        if (!$this->text) {
+        if (!$this->text)
             return;
-        }
 
-        global $settings;
-        $from = $settings['EMAIL_SENDER'];
-        $mailer = $settings['EMAIL_MAILER'];
-        $from_header = "$mailer <$from>";
-
-        if ($settings['EMAIL_ENABLED'] !== true)
+        if (!GetConfig(EMAIL_ENABLED))
             return;
+
+        $from = GetConfig(EMAIL_ADDRESS);
+        $sender = GetConfig(EMAIL_SENDER);
+        $from_header = "$sender <$from>";
 
         return  mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text),
             "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer, "-f$from");
@@ -163,7 +163,7 @@ class Email
  * get their values from the recipient. Event and link token values are provided
  * as parameters to this function.
  *
- * Some details of the messages can be adjusted in config_site.php file.
+ * Some details of the messages can be adjusted in Config database.
  */
 function SendEmail($emailid, $userid, $event, $link = '', $token = '')
 {
@@ -172,5 +172,6 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
     $special = array('link' => $link, 'token' => $token);
     $email = new Email($emailid);
     $email->prepare($user, $player, $event, $special);
+
     return $email->send($user->email);
 }

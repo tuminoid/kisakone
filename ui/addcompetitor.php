@@ -71,7 +71,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('licenses_ok', $licenses_ok);
 
         global $settings;
-        $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+        $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
         SmartifyPDGA($smarty, $pdga_data);
 
         foreach ($classOptions as $cid => $cname) {

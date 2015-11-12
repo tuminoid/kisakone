@@ -66,3 +66,41 @@ map_url             Osoite karttakuvaan
 link                Linkki radan tietoihin
 
 course_edit_warning Tämä rata on käytössä ainakin yhdessä kilpailussa. Muutokset vaikuttavat sekä uusiin että vanhoihin kilpailuihin -- kopioiden teko on suositeltavaa.
+
+config_title        Asetukset
+config_translation  Asetus
+config_value        Arvo
+config_yes          Päällä
+config_no           Pois päältä
+
+config_email        Sähköpostiasetukset
+config_license      Lisenssiasetukset
+config_sfl          SFL API asetukset
+config_pdga         PDGA API asetukset
+config_cache        Välimuistiasetukset
+config_trackjs      TrackJS asetukset
+config_devel        Kehitysasetukset
+
+EmailEnabled        Sähköpostien lähetys
+EmailAddress        Lähettäjän osoite
+EmailSender         Lähettäjän nimi
+LicenseEnabled      Lisenssien tarkastus
+LicenseEnabled_no   Ei tarkasteta
+LicenseEnabled_sfl  SFL:n lisenssitarkastus
+LicenseEnabled_internal Kisakoneen sisäinen tarkastus
+SflEnabled          SFL API
+SflUsername         SFL käyttäjätunnus
+SflPassword         SFL salasana
+PdgaEnabled         PDGA API
+PdgaUsername        PDGA käyttäjätunnus
+PdgaPassword        PDGA salasana
+CacheEnabled        Välimuisti
+CacheType           Välimuistin tyyppi
+CacheType_memcached Memcached
+CacheName           Välimuistin nimi
+CacheHost           Välimuistin osoite
+CachePort           Välimuistin portti
+TrackjsEnabled      TrackJS virheenseuranta
+TrackjsToken        TrackJS API avain
+Devel_DbLogging     Kirjaa tietokantavirheet logiin
+Devel_DbDieOnError  Kaadu tietokantavirheeseen

@@ -23,6 +23,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/config.php';
+
+
 /**
  * Connects to the database
  *
@@ -96,6 +99,10 @@ function esc_or_null($param, $type = 'string')
                 $retValue = $param ? 1 : 0;
                 break;
 
+            case 'key':
+                $retValue = '`' . escape_string($param) . '`';
+                break;
+
             default:
                 die("Unknown type: $type (param = $param)");
                 break;
@@ -120,7 +127,7 @@ function format_query($query)
     global $settings;
     $prefix = $settings['DB_PREFIX'];
 
-    $tables = array(':Club', ':Player', ':User', ':Venue', ':Level',
+    $tables = array(':Config', ':Club', ':Player', ':User', ':Venue', ':Level',
         ':File', ':AdBanner', ':EventQueue', ':EventManagement', ':Event', ':TextContent',
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
         ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
@@ -173,7 +180,7 @@ function execute_query($query)
 function debug_query_and_die($query)
 {
     global $settings;
-    $db_error_log = $settings['DB_ERROR_LOGGING'];
+    $db_error_log = GetConfig(DEVEL_DB_LOGGING);
 
     if (isset($db_error_log) && $db_error_log) {
         error_log("query: $query");
@@ -189,7 +196,7 @@ function debug_query_and_die($query)
         }
     }
 
-    $db_error_die = $settings['DB_ERROR_DIE'];
+    $db_error_die = GetConfig(DEVEL_DB_DIEONERROR);
     if (isset($db_error_die) && $db_error_die) {
         header("Content-Type: text/plain; charset=utf-8");
         xdebug_print_function_stack();

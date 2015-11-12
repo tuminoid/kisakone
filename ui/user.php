@@ -22,15 +22,13 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'config.php';
+require_once 'data/config.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 
 
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    global $settings;
-
     $userid = GetUserId($_GET['id']);
     if ($userid) {
         $user = GetUserDetails($userid);
@@ -61,10 +59,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    $smarty->assign('sfl_enabled', @$settings['SFL_ENABLED']);
-    $smarty->assign('pdga_enabled', @$settings['PDGA_ENABLED']);
+    $smarty->assign('sfl_enabled', GetConfig(SFL_ENABLED));
+    $smarty->assign('pdga_enabled', GetConfig(PDGA_ENABLED));
 
-    if (@$settings['SFL_ENABLED'] == true) {
+    if (GetConfig(SFL_ENABLED) == true) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
         $data = SFL_getPlayer($userid);
@@ -77,7 +75,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('fees', $fees);
     }
 
-    if (@$settings['PDGA_ENABLED'] == true) {
+    if (GetConfig(PDGA_ENABLED) == true) {
         // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
         $force = false; // no forced reasons to go get it from pdga api
         $pdga_data = pdga_getPlayer($player->pdga, $force);

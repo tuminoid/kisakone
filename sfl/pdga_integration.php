@@ -21,11 +21,12 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-define('PDGA_API_SERVER', "https://api.pdga.com");
+const PDGA_API_SERVER = "https://api.pdga.com";
 
 require_once 'config.php';
 require_once 'data/db_init.php';
 require_once 'data/cache.php';
+require_once 'data/config.php';
 
 
 /**
@@ -38,16 +39,14 @@ require_once 'data/cache.php';
  */
 function pdga_api_settings()
 {
-    global $settings;
-
-    if ($settings['PDGA_ENABLED'] != true)
+    if (GetConfig(PDGA_ENABLED) != true)
         return false;
 
-    $username = @$settings['PDGA_USERNAME'];
+    $username = GetConfig(PDGA_USERNAME);
     if (empty($username) || strlen($username) <= 0)
         return false;
 
-    $password = @$settings['PDGA_PASSWORD'];
+    $password = GetConfig(PDGA_PASSWORD);
     if (empty($password) || strlen($password) <= 0)
         return false;
 
@@ -97,7 +96,7 @@ function pdga_api_getSession()
     $session = $logged_user->session_name . '=' . $logged_user->sessid;
     curl_close($curl);
 
-    cache_set('pdga_session', $session, 10*60);
+    cache_set('pdga_session', $session, 15*60);
 
     return $session;
 }
@@ -239,6 +238,39 @@ function pdga_db_getPlayer($pdga_number)
 
 /* ************ ONlY FUNCTIONS CALLED OUTSIDE SHOULD BE ONES BELOW ************** */
 
+
+
+/**
+ * pdga_testCredentials
+ *
+ * Login to PDGA API and return session cookie.
+ *
+ * @return session on success
+ * @return null on failure
+ */
+function pdga_testCredentials($username = null, $password = null)
+{
+    if (!($username && $password))
+        return false;
+
+    $request_url = PDGA_API_SERVER . '/services/json/user/login';
+    $user_data = array('username' => $username, 'password' => $password);
+
+    $user_data = http_build_query($user_data);
+    $curl = curl_init($request_url);
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $user_data);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+    $response = curl_exec($curl);
+    $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+    if ($http_code != 200)
+        return false;
+
+    return true;
+}
 
 
 /**

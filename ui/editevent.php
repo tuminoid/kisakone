@@ -23,7 +23,8 @@
  * */
 
 require_once 'ui/support/eventform_init.php';
-require_once 'config_site.php';
+require_once 'data/config.php';
+require_once 'sfl/sfl_licensetypes.php';
 
 
 /**
@@ -39,8 +40,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $e = array();
 
-    if (@$settings['SFL_ENABLED']) {
+    if (GetConfig(SFL_ENABLED)) {
         $smarty->assign('sfl_enabled', true);
+        $smarty->assign('sfl_membership', LICENSE_MEMBERSHIP);
+        $smarty->assign('sfl_license', LICENSE);
+
+        // FIXME: Deprecated
         $smarty->assign('sfl_license_a', LICENSE_A);
         $smarty->assign('sfl_license_b', LICENSE_B);
         $smarty->assign('sfl_license_m', LICENSE_MEMBERSHIP);

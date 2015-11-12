@@ -26,6 +26,8 @@ require_once 'data/class.php';
 require_once 'core/event_management.php';
 require_once 'core/user_operations.php';
 require_once 'sfl/pdga_integration.php';
+require_once 'data/config.php';
+
 
 /**
  * Processes the form
@@ -67,8 +69,7 @@ function processForm()
         $player = $u->GetPlayer();
         $class = GetClassDetails($_POST['class']);
 
-        global $settings;
-        $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+        $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
 
         if (!$player->IsSuitableClass($class, $pdga_data))
             return translate("error_invalid_class");

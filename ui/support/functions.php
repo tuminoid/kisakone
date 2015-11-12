@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Additional smarty template functions
  *
@@ -20,6 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'config.php';
+
+
 /**
  * This function normally called through smarty returns and URL to specified internal page.
  * A nice-looking url is returned if mod_rewrite can be used, a index.php?page=xxx... url
@@ -33,11 +38,15 @@
  */
 function url_smarty($params, &$smarty)
 {
+    global $settings;
+    global $language;
+
     if (count($params) == 1 && array_key_exists('arguments', $params))
         $params = $params['arguments'];
 
     if (@$params['extend_current']) {
         unset($params['extend_current']);
+
         foreach (@$_GET as $key => $value) {
             if ($key == 'path')
                 continue;
@@ -48,8 +57,6 @@ function url_smarty($params, &$smarty)
         }
     }
 
-    global $settings;
-    global $language;
     $suffix = '';
     if (@$params['_url_suffix']) {
         $suffix = $params['_url_suffix'];
@@ -57,7 +64,7 @@ function url_smarty($params, &$smarty)
     }
 
     if ($settings['USE_MOD_REWRITE']) {
-        $string = baseurl();
+        $string = baseUrl();
         $page = $params['page'];
 
         if (array_key_exists(":page:" . $page, $language->data))
@@ -92,18 +99,15 @@ function url_smarty($params, &$smarty)
             if (array_key_exists(":param:" . $key, $language->data))
                 $key = substr(translate(":param:" . $key), 6);
 
-
             $string .= '/' . urlencode($key) . '/' . urlencode($value);
         }
 
         $string .= $suffix;
     }
     else {
-
         // No mod_rewrite, simply append all the parameters to the index url.
         $string = "index.php?";
         foreach ($params as $key => $value) {
-
             $string .= urlencode($key) . '=' . urlencode($value) . '&';
         }
     }
@@ -113,10 +117,9 @@ function url_smarty($params, &$smarty)
     if (is_a($smarty, 'Smarty')) {
         return htmlentities($string);
     }
-    else {
-        return $string;
-    }
+    return $string;
 }
+
 
 /**
  * This function provides an interface through which smarty templates can translate
@@ -132,21 +135,22 @@ function url_smarty($params, &$smarty)
 function translate_smarty($params, &$smarty)
 {
     global $language;
+
     $escape = true;
     if (array_key_exists('escape', $params))
         $escape = (bool) $params['escape'];
+
     $string = $language->Translate($params['id'], $params);
 
     if (!$escape)
         $string = html_entity_decode($string);
 
-    if (array_key_exists('assign', $params)) {
+    if (array_key_exists('assign', $params))
         $smarty->assign($params['assign'], $string);
-    }
-    else {
+    else
         return $string;
-    }
 }
+
 
 /**
  * This function generates notification fields for form filling errors
@@ -161,19 +165,18 @@ function formerror_smarty($params, &$smarty)
     $errors = $smarty->get_template_vars('error');
     $error = @$errors[$params['field']];
 
-    if ($error) {
+    if ($error)
         return "<div class=\"fielderror\">$error</div>";
-    }
-    else {
-        return "<div class=\"fielderror\"></div>";
-    }
+
+    return "<div class=\"fielderror\"></div>";
 }
+
 
 function initializeGetFormFields_Smarty($params, &$smarty)
 {
-    $out = '';
-
     global $parameterInPath;
+
+    $out = '';
 
     foreach ($_GET as $param => $value) {
         if ($param == 'path')
@@ -184,6 +187,7 @@ function initializeGetFormFields_Smarty($params, &$smarty)
             continue;
         if ($param == 'page' && is_array($value))
             $value = implode('/', $value);
+
         $value = htmlentities($value);
         $param = htmlentities($param);
 
@@ -192,6 +196,7 @@ function initializeGetFormFields_Smarty($params, &$smarty)
 
     return $out;
 }
+
 
 /**
  * Smarty function, that can be used for providing a sortable heading field for a table.
@@ -203,35 +208,38 @@ function sortheading_smarty($params, &$smarty)
 {
     static $index = 0;
 
-    $prefix = <<<CODE
+    $prefix = <<<EOF
     <script type="text/javascript">
 //<![CDATA[
 $(document).ready(function () {
-CODE;
 
-    if ($index == 0) {
+EOF;
+
+    if ($index == 0)
         $prefix .= "SortableTable();";
-    }
 
-    $prefix .= <<<CODE
+    $prefix .= <<<EOF
         SortField($index,${params['sortType']}Sort);
     });
     //]]>
 </script>
-CODE;
+
+EOF;
+
     $index++;
     $data = $_GET;
     if (@$data['id'] === "")
         unset($data['id']);
+
     unset($data['path']);
     $data['page'] = implode('/', $data['page']);
+
     $sort = @$_GET['sort'];
-    if ($sort != '') {
+    if ($sort != '')
         $sort = explode(",", $sort);
-    }
-    else {
+    else
         $sort = array();
-    }
+
     $id = $params['id'];
     $field = @$params['field'];
 
@@ -256,6 +264,7 @@ CODE;
     return "$prefix<a class=\"SortHeading\" href=\"#\">" . translate($params['id']) . "</a>";
 }
 
+
 /**
  * Links to other help files. As the help system is not used at all in the current
  * version, this one is unused as well
@@ -266,15 +275,16 @@ function Helplink_Smarty($params, &$smarty)
 
     if (@$_GET['inline']) {
         $l = sprintf('<a class="helplink" href="%s"><span style="display: none">%s</span>%s</a>',
-url_smarty(array('page' => 'help', 'id' => $helpid), $helpid), htmlentities($helpid), $params['title']);
+            url_smarty(array('page' => 'help', 'id' => $helpid), $helpid), htmlentities($helpid), $params['title']);
     }
     else {
         $l = sprintf('<a class="helplink" href="%s"><span style="display: none">%s</span>%s</a>',
-url_smarty(array('extend_current' => true, 'showhelp' => $helpid), $helpid), htmlentities($helpid), $params['title']);
+            url_smarty(array('extend_current' => true, 'showhelp' => $helpid), $helpid), htmlentities($helpid), $params['title']);
     }
 
     return $l;
 }
+
 
 /**
  * Provides a list containing links to all submenu items under the selected one
@@ -285,7 +295,6 @@ function submenulinks_smarty($params, &$smarty)
 
     $out = "<ul>";
     foreach ($links['children'] as $link) {
-        //print_r($link);
         $out .= sprintf("<li>
             <a href=\"%s\">%s</a></li>", url_smarty($link['link'], $smarty), $link['title']);
     }

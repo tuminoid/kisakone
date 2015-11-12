@@ -14,7 +14,7 @@ UPDATE :Classification SET Name = SUBSTR(REPLACE(Name, ')', ''), 6) WHERE Name R
 
 -- Below is updates to SFL formatted classifications
 -- They are as non-invasive as possible, and won't update anything unless lines above
--- have been triggered to insert Short name, which happens only when original classname is XXX (YYY) format
+-- have been triggered to insert Short name, which happens only when original classname is in XXX (YYY) format
 
 INSERT INTO :Classification (Name, Short, MaximumAge, Available) VALUES('Juniorit-8', 'MJ5', 8, 1);
 INSERT INTO :Classification (Name, Short, MaximumAge, Available, GenderRequirement) VALUES('Tytöt-8', 'FJ5', 8, 1, 'F');
@@ -23,40 +23,74 @@ UPDATE :Classification SET Status = 'A' WHERE Short IS NOT NULL;
 UPDATE :Classification SET Status = 'P' WHERE SUBSTR(Short, 2, 1) = 'P';
 UPDATE :Classification SET Priority = 1 WHERE Short = 'MPO';
 UPDATE :Classification SET Priority = 2 WHERE Short = 'FPO';
-UPDATE :Classification SET Priority = 3 WHERE Short = 'MPM';
-UPDATE :Classification SET Priority = 4 WHERE Short = 'MPS';
-UPDATE :Classification SET Priority = 5 WHERE Short = 'MPG';
-UPDATE :Classification SET Priority = 6 WHERE Short = 'MPL';
-UPDATE :Classification SET Priority = 7 WHERE Short = 'MPE';
-UPDATE :Classification SET Priority = 8 WHERE Short = 'MPR';
-UPDATE :Classification SET Priority = 9 WHERE Short = 'FPM';
-UPDATE :Classification SET Priority = 10 WHERE Short = 'FPG';
-UPDATE :Classification SET Priority = 11 WHERE Short = 'FPS';
-UPDATE :Classification SET Priority = 12 WHERE Short = 'FPL';
-UPDATE :Classification SET Priority = 13 WHERE Short = 'MA1';
-UPDATE :Classification SET Priority = 14, RatingLimit = 935 WHERE Short = 'MA2';
-UPDATE :Classification SET Priority = 15, RatingLimit = 900 WHERE Short = 'MA3';
-UPDATE :Classification SET Priority = 16, RatingLimit = 850 WHERE Short = 'MA4';
-UPDATE :Classification SET Priority = 17 WHERE Short = 'MM1';
-UPDATE :Classification SET Priority = 18 WHERE Short = 'MG1';
-UPDATE :Classification SET Priority = 19 WHERE Short = 'MS1';
-UPDATE :Classification SET Priority = 20 WHERE Short = 'ML1';
-UPDATE :Classification SET Priority = 21 WHERE Short = 'FA1';
-UPDATE :Classification SET Priority = 22, RatingLimit = 825 WHERE Short = 'FA2';
-UPDATE :Classification SET Priority = 23, RatingLimit = 775 WHERE Short = 'FA3';
-UPDATE :Classification SET Priority = 24, RatingLimit = 725 WHERE Short = 'FA4';
-UPDATE :Classification SET Priority = 25 WHERE Short = 'FM1';
-UPDATE :Classification SET Priority = 26 WHERE Short = 'FG1';
-UPDATE :Classification SET Priority = 27 WHERE Short = 'FS1';
-UPDATE :Classification SET Priority = 28, MaximumAge = 18, Name = 'Juniorit-18' WHERE Short = 'MJ1';
-UPDATE :Classification SET Priority = 29, MaximumAge = 15, Name = 'Juniorit-15' WHERE Short = 'MJ2';
-UPDATE :Classification SET Priority = 30, MaximumAge = 12, Name = 'Juniorit-12' WHERE Short = 'MJ3';
-UPDATE :Classification SET Priority = 31, MaximumAge = 10, Name = 'Juniorit-10' WHERE Short = 'MJ4';
-UPDATE :Classification SET Priority = 32 WHERE Short = 'MJ5';
-UPDATE :Classification SET Priority = 33, MaximumAge = 18, Name = 'Tytöt-18' WHERE Short = 'FJ1';
-UPDATE :Classification SET Priority = 34, MaximumAge = 15, Name = 'Tytöt-15' WHERE Short = 'FJ2';
-UPDATE :Classification SET Priority = 35, MaximumAge = 12, Name = 'Tytöt-12' WHERE Short = 'FJ3';
-UPDATE :Classification SET Priority = 36, MaximumAge = 10, Name = 'Tytöt-10' WHERE Short = 'FJ4';
-UPDATE :Classification SET Priority = 37 WHERE Short = 'FJ5';
+UPDATE :Classification SET Priority = 10 WHERE Short = 'MPM';
+UPDATE :Classification SET Priority = 11 WHERE Short = 'MPS';
+UPDATE :Classification SET Priority = 12 WHERE Short = 'MPG';
+UPDATE :Classification SET Priority = 13 WHERE Short = 'MPL';
+UPDATE :Classification SET Priority = 14 WHERE Short = 'MPE';
+UPDATE :Classification SET Priority = 15 WHERE Short = 'MPR';
+UPDATE :Classification SET Priority = 20 WHERE Short = 'FPM';
+UPDATE :Classification SET Priority = 21 WHERE Short = 'FPG';
+UPDATE :Classification SET Priority = 22 WHERE Short = 'FPS';
+UPDATE :Classification SET Priority = 23 WHERE Short = 'FPL';
+UPDATE :Classification SET Priority = 30 WHERE Short = 'MA1';
+UPDATE :Classification SET Priority = 31, RatingLimit = 935 WHERE Short = 'MA2';
+UPDATE :Classification SET Priority = 32, RatingLimit = 900 WHERE Short = 'MA3';
+UPDATE :Classification SET Priority = 33, RatingLimit = 850 WHERE Short = 'MA4';
+UPDATE :Classification SET Priority = 40 WHERE Short = 'MM1';
+UPDATE :Classification SET Priority = 41 WHERE Short = 'MG1';
+UPDATE :Classification SET Priority = 42 WHERE Short = 'MS1';
+UPDATE :Classification SET Priority = 43 WHERE Short = 'ML1';
+UPDATE :Classification SET Priority = 50 WHERE Short = 'FA1';
+UPDATE :Classification SET Priority = 51, RatingLimit = 825 WHERE Short = 'FA2';
+UPDATE :Classification SET Priority = 52, RatingLimit = 775 WHERE Short = 'FA3';
+UPDATE :Classification SET Priority = 53, RatingLimit = 725 WHERE Short = 'FA4';
+UPDATE :Classification SET Priority = 60 WHERE Short = 'FM1';
+UPDATE :Classification SET Priority = 61 WHERE Short = 'FG1';
+UPDATE :Classification SET Priority = 62 WHERE Short = 'FS1';
+UPDATE :Classification SET Priority = 70, MaximumAge = 18, Name = 'Juniorit-18' WHERE Short = 'MJ1';
+UPDATE :Classification SET Priority = 71, MaximumAge = 15, Name = 'Juniorit-15' WHERE Short = 'MJ2';
+UPDATE :Classification SET Priority = 72, MaximumAge = 12, Name = 'Juniorit-12' WHERE Short = 'MJ3';
+UPDATE :Classification SET Priority = 73, MaximumAge = 10, Name = 'Juniorit-10' WHERE Short = 'MJ4';
+UPDATE :Classification SET Priority = 74 WHERE Short = 'MJ5';
+UPDATE :Classification SET Priority = 80, MaximumAge = 18, Name = 'Tytöt-18' WHERE Short = 'FJ1';
+UPDATE :Classification SET Priority = 81, MaximumAge = 15, Name = 'Tytöt-15' WHERE Short = 'FJ2';
+UPDATE :Classification SET Priority = 82, MaximumAge = 12, Name = 'Tytöt-12' WHERE Short = 'FJ3';
+UPDATE :Classification SET Priority = 83, MaximumAge = 10, Name = 'Tytöt-10' WHERE Short = 'FJ4';
+UPDATE :Classification SET Priority = 84 WHERE Short = 'FJ5';
 UPDATE :Classification SET Priority = 900, Short = 'SEKA' WHERE Short = 'SEK';
 UPDATE :Classification SET Priority = 999 WHERE Priority = 0;
+
+
+-- All settings are moved to database from config_site.php
+CREATE TABLE :Config
+(
+    EmailEnabled BOOL NOT NULL DEFAULT 0,
+    EmailAddress VARCHAR(200) DEFAULT '',
+    EmailSender VARCHAR(200) DEFAULT 'Kisakone',
+
+    LicenseEnabled ENUM('no', 'internal', 'sfl') NOT NULL DEFAULT 'no',
+
+    SflEnabled BOOL NOT NULL DEFAULT 0,
+    SflUsername VARCHAR(30) DEFAULT '',
+    SflPassword VARCHAR(100) DEFAULT '',
+
+    PdgaEnabled BOOL NOT NULL DEFAULT 0,
+    PdgaUsername VARCHAR(30) DEFAULT '',
+    PdgaPassword VARCHAR(100) DEFAULT '',
+
+    CacheEnabled BOOL NOT NULL DEFAULT 0,
+    CacheType VARCHAR(100) DEFAULT 'memcached',
+    CacheName VARCHAR(100) DEFAULT 'kisakone',
+    CacheHost VARCHAR(100) DEFAULT '127.0.0.1',
+    CachePort INT(10) DEFAULT '11211',
+
+    TrackjsEnabled BOOL NOT NULL DEFAULT 0,
+    TrackjsToken VARCHAR(100) DEFAULT '',
+
+    Devel_DbLogging BOOL NOT NULL DEFAULT 0,
+    Devel_DbDieOnError BOOL NOT NULL DEFAULT 0
+) ENGINE=InnoDB;
+
+-- Insert defaults into db, they'll be updated during upgrade.php run
+INSERT INTO :Config VALUES();

@@ -28,7 +28,7 @@ setlocale(LC_ALL, array('fi_FI.UTF-8', 'fi_FI@euro', 'fi_FI', 'finnish'));
 
 // Our configs
 require_once 'config.php';
-require_once 'config_site.php';
+require_once 'data/config.php';
 
 // Some version of PHP 5 complain about lack of time zone data,
 // so if we can we'll set it now
@@ -193,8 +193,8 @@ if (file_exists("js/analytics.js"))
     $smarty->assign('analytics', true);
 
 // add track.js if it is set
-if (@$settings['TRACK_JS_TOKEN'])
-    $smarty->assign('trackjs', $settings['TRACK_JS_TOKEN']);
+if (GetConfig(TRACKJS_ENABLED))
+    $smarty->assign('trackjs', GetConfig(TRACKJS_TOKEN));
 
 $smarty->assign("kisakone_version", getKisakoneVersion());
 

@@ -1,10 +1,9 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
- * License and membership fee management
+ * Page for modifying Configurations
  *
  * --
  *
@@ -32,16 +31,14 @@ require_once 'data/config.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (GetConfig(SFL_ENABLED) == true)
+    if (!IsAdmin())
         return Error::AccessDenied();
 
-    if (!IsAdmin()) {
-        return Error::AccessDenied('eventfees');
-    }
+    if ($error)
+        $smarty->assign('error', $error->data);
 
-    $users = GetFeePayments(true, @$_GET['search'], @$_GET['sort']);
-
-    $smarty->assign('users', $users);
+    $smarty->assign('configs', GetConfigs());
+    $smarty->assign('bool_options', array('0' => translate('config_no'), '1' => translate('config_yes')));
 }
 
 /**
@@ -50,5 +47,5 @@ function InitializeSmartyVariables(&$smarty, $error)
  */
 function getMainMenuSelection()
 {
-    return 'users';
+    return 'administration';
 }

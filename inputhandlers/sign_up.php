@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
  * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Signs user up for an event
@@ -24,6 +24,7 @@
 
 require_once 'core/event_management.php';
 require_once 'sfl/pdga_integration.php';
+require_once 'data/config.php';
 
 
 /**
@@ -57,8 +58,7 @@ function processForm()
     if ($status != 'notsigned')
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 
-    global $settings;
-    $pdga_data = (@$settings['PDGA_ENABLED'] && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+    $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
 
     $class = GetClassDetails(@$_POST['class']);
     if (!$player->IsSuitableClass($class, $pdga_data)) {

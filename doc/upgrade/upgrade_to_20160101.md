@@ -1,7 +1,11 @@
 Upgrading to version 2016.01.01:
 ================================
 
-Add more fields to `:Classification` table.
+Introduce new `:Config` table, replacing `config_site.php` configuration file.
+`upgrade.php` will migrate your file into DB automatically.
+
+Add many fields to `:Classification` table.
+
 
 --
 

@@ -1,3 +1,35 @@
+CREATE TABLE :Config
+(
+    EmailEnabled BOOL NOT NULL DEFAULT 0,
+    EmailAddress VARCHAR(200) DEFAULT '',
+    EmailSender VARCHAR(200) DEFAULT 'Kisakone',
+
+    LicenseEnabled ENUM('no', 'internal', 'sfl') NOT NULL DEFAULT 'no',
+
+    SflEnabled BOOL NOT NULL DEFAULT 0,
+    SflUsername VARCHAR(30) DEFAULT '',
+    SflPassword VARCHAR(100) DEFAULT '',
+
+    PdgaEnabled BOOL NOT NULL DEFAULT 0,
+    PdgaUsername VARCHAR(30) DEFAULT '',
+    PdgaPassword VARCHAR(100) DEFAULT '',
+
+    CacheEnabled BOOL NOT NULL DEFAULT 0,
+    CacheType VARCHAR(100) DEFAULT 'memcached',
+    CacheName VARCHAR(100) DEFAULT 'kisakone',
+    CacheHost VARCHAR(100) DEFAULT '127.0.0.1',
+    CachePort INT(10) DEFAULT '11211',
+
+    TrackjsEnabled BOOL NOT NULL DEFAULT 0,
+    TrackjsToken VARCHAR(100) DEFAULT '',
+
+    Devel_DbLogging BOOL NOT NULL DEFAULT 0,
+    Devel_DbDieOnError BOOL NOT NULL DEFAULT 0
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+INSERT INTO :Config VALUES();
+
+
 CREATE TABLE :Club
 (
     id INT NOT NULL AUTO_INCREMENT,
