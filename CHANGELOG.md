@@ -11,6 +11,7 @@ next:
   * Classes now include sorting priority, rating limits, pro/am statuses etc.
   * New class information is used to limit registration options based on rating, status etc.
   * All other configs except database settings are now in Admin UI. GH #180.
+  * SFL: In December, next year's license is already valid.
 
 2015.08.22:
 ===========
