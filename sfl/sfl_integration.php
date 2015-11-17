@@ -71,12 +71,14 @@ function sfl_api_run_query($where)
                     break;
 
                 case 'license':
+                    // Bonus year means if month is december, next year's license is valid already
+                    $bonus_year = date('m') == 12 ? $year - 1 : $year;
                     if ($row['license'] == LICENSE_MEMBERSHIP)
-                        $result['membership'][$year] = true;
+                        $result['membership'][$year] = $result['membership'][$bonus_year] = true;
                     elseif ($row['license'] == LICENSE_A)
-                        $result['a_license'][$year] = true;
+                        $result['a_license'][$year] = $result['a_license'][$bonus_year] = true;
                     elseif ($row['license'] == LICENSE_B)
-                        $result['b_license'][$year] = true;
+                        $result['b_license'][$year] = $result['b_license'][$bonus_year] = true;
                     break;
 
                 default:
