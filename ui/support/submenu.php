@@ -110,7 +110,6 @@ function page_getSubMenu()
     // out (and won't have to be checked every single time)
     $submenu = array(
 
-
         'events' => array('title' => translate('events'), 'link' => array('page' => 'events'), 'children' => array(
             array('open' => 'auto', 'title' => translate('submenu_all_events'), 'link' => array('page' => 'events', 'id' => ''), 'access' => null, 'children' => array(
                 array('title' => translate('submenu_relevant_events'), 'link' => array('page' => 'events', 'id' => 'relevant'), 'access' => null, 'children' => array()),
@@ -126,7 +125,6 @@ function page_getSubMenu()
             )),
             array('title' => translate('submenu_new_event'), 'link' => array('page' => 'newevent'), 'access' => 'admin', 'children' => array()),
         )),
-
 
         'users' => array('title' => translate('users'), 'link' => array('page' => 'users'), 'children' => array(
             array('open' => 'auto', 'title' => $selectedusername, 'link' => array('page' => 'user', 'id' => @$_GET['id']), 'access' => '', 'condition' => @$_GET['id'] && @$_GET['id'] != $username , 'children' => array(
@@ -146,7 +144,7 @@ function page_getSubMenu()
                 array('title' => translate('submenu_ban_and_remove_users'), 'link' => array('page' => 'manageaccess' ), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin' ), 'access' => null, 'children' => array()),
 
-                )),
+            )),
         )),
 
         'administration' => array('title' => translate('administration'), 'link' => array('page' => 'admin'), 'children' => array(
@@ -164,20 +162,16 @@ function page_getSubMenu()
             array('title' => translate('submenu_courses'), 'link' => array('page' => 'managecourses'), 'access' => 'admin', 'children' => array(
                 array('title' => translate('editcourse'), 'link' => array('page' => 'editcourse', 'id' => @$_GET['id']), 'access' => null, 'children' => array(), 'condition' => PageIs('editcourse')
             ))),
-)),
-           array('title' => translate('submenu_manage_content'), 'link' => array('page' => 'sitecontent_main'), 'access' => 'admin', 'children' => array(
-
-                                                                                                                                                    )),
-           array('title' => translate('submenu_manage_emails'), 'link' => array('page' => 'manage_email'), 'access' => 'admin', 'children' => array()),
-           array('title' => translate('submenu_ads'), 'link' => array('page' => 'ads'), 'access' => 'admin', 'children' => array()),
-           array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin'), 'access' => 'admin', 'children' => array()),
-           array('title' => translate('submenu_new_event'), 'link' => array('page' => 'newevent'), 'access' => 'admin', 'children' => array()),
-           array('title' => translate('submenu_manage_users'), 'link' => array('page' => 'manage_users'), 'access' => 'admin', 'children' => array()),
-           array('title' => translate('submenu_edit_config'), 'link' => array('page' => 'editconfig'), 'access' => 'admin', 'children' => array()),
         )),
 
-
-
+        array('title' => translate('submenu_manage_content'), 'link' => array('page' => 'sitecontent_main'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_manage_emails'), 'link' => array('page' => 'manage_email'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_ads'), 'link' => array('page' => 'ads'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_new_event'), 'link' => array('page' => 'newevent'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_manage_users'), 'link' => array('page' => 'manage_users'), 'access' => 'admin', 'children' => array()),
+            array('title' => translate('submenu_edit_config'), 'link' => array('page' => 'editconfig'), 'access' => 'admin', 'children' => array()),
+        )),
     );
 
     // Event details part can only be shown if there is a selected event; because of that it's added
@@ -187,22 +181,26 @@ function page_getSubMenu()
             array('title' => translate('event_info'), 'link' => array('page' => 'event', 'id' => $id, 'view' => ''), 'access' => null, 'children' => array(
                 array('title' => translate('event_newsarchive'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'newsarchive'), 'access' => null, 'children' => array()),
             )),
+
             /*array('title' => translate('event_news'), 'link' => array('page' => 'news', 'id' => $id, 'view' => ''), 'access' => null, 'children' => array()),*/
+
             array('title' => translate('event_results'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'results'), 'access' => null, 'children' => array(
                             array('title' => translate('event_live_results'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'liveresults'), 'access' => null, 'children' => array()),
                             array('title' => translate('event_leaderboard'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'leaderboard'), 'access' => null, 'children' => array())
             )),
+
             array('title' => translate('event_competitors'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'competitors'), 'access' => null, 'children' => array(
                 array('title' => translate('event_queue'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'queue'), 'access' => null, 'children' => array()),
             )),
+
             array('title' => translate('event_quotas'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'quotas'), 'access' => null, 'children' => array()),
             array('title' => translate('event_course'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'course'), 'access' => null, 'children' => array()),
             array('title' => translate('event_schedule'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'schedule'), 'access' => null, 'children' => array()),
+
             array('title' => translate('event_signup_info'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'signupinfo'), 'access' => null, 'children' => array(
                 array('title' => translate('event_payment'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'payment'), 'access' => null, 'children' => array()),
                 array('title' => translate('event_cancel_signup'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'cancelsignup'), 'access' => null, 'children' => array(), 'condition' => @$_GET['view'] == 'cancelsignup'),
             )),
-
         ));
 
         // It is possible to edit the titles of the event pages and add new custom pages; these
@@ -214,20 +212,25 @@ function page_getSubMenu()
         // Event management links for TDs and admins
         $eventData['children'][] =
             array('title' => translate('edit_event'), 'link' => array('page' => 'manageevent', 'id' => $id), 'access' => 'td', 'children' => array(
+
                 array('title' => translate('edit_event_info'), 'link' => array('page' => 'editevent', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_news'), 'link' => array('page' => 'editnews', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('new_news_item'), 'link' => array('page' => 'editeventpage', 'mode' => 'news', 'id' => $id, 'content' => '*'), 'access' => null, 'children' => array()),
                     array('title' => translate('edit_news_item'), 'link' => array('page' => 'editeventpage', 'mode' => 'news', 'id' => $id, 'content' => @$_GET['content']), 'access' => null, 'children' => array(), 'condition' => @$_GET['content']),
                 )),
+
                 array('title' => translate('add_offline_competitor'), 'link' => array('page' => 'addcompetitor', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('new_offline_competitor'), 'link' => array('page' => 'newcompetitor', 'id' => $id), 'access' => null, 'children' => array(), 'condition' => PageIs('newcompetitor'))
                 )),
+
                 array('title' => translate('edit_event_fees'), 'link' => array('page' => 'eventfees', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('remind'), 'link' => array('page' => 'remind'), 'access' => null, 'children' => array(), 'condition' => PageIs('remind'))
                 )),
+
                 array('title' => translate('edit_event_classes'), 'link' => array('page' => 'eventclasses', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'editquotas', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_rules'), 'link' => array('page' => 'editrules', 'id' => $id), 'access' => null, 'children' => array()),
+
                 array('title' => translate('edit_event_pages'), 'link' => array('page' => 'editeventpages', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('event_info'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index'), 'access' => null, 'children' => array()),
                     array('title' => translate('event_info_schedule'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'index_schedule'), 'access' => null, 'children' => array()),
@@ -244,8 +247,8 @@ function page_getSubMenu()
                     array('title' => translate('event_custom_pages'), 'link' => array('page' => 'editcustomeventpages', 'id' => $id), 'access' => null, 'children' => array(
                         array('title' => translate('edit'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'mode' => 'custom'), 'access' => null, 'children' => array(), 'condition' => @$_GET['mode'] == 'custom'),
                     )),
-
                 )),
+
                 array('title' => translate('edit_ads'), 'link' => array('page' => 'eventads', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_rounds'), 'link' => array('page' => 'editrounds', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('manage_rounds'), 'link' => array('page' => 'managerounds', 'id' => $id), 'access' => null, 'children' => array(
@@ -255,13 +258,14 @@ function page_getSubMenu()
                     array('title' => translate('class_starting_times'), 'link' => array('page' => 'starttimes', 'id' => $id), 'access' => null, 'children' => array()),
                     array('title' => translate('edit_groups'), 'link' => array('page' => 'editgroups', 'id' => $id), 'access' => null, 'children' => array()),
                 )),
+
                 array('title' => translate('enter_results'), 'link' => array('page' => 'enterresults', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('results_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'leaderboard_csv'), 'access' => null, 'children' => array()),
                 array('title' => translate('participants_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'participant_csv'), 'access' => null, 'children' => array()),
             ));
 
-            // Event management links for officials
-        $eventData['children'][] =    array('title' => translate('edit_event'), 'link' => array('page' => 'manageevent_official', 'id' => $id), 'access' => 'officialonly', 'children' => array(
+        // Event management links for officials
+        $eventData['children'][] = array('title' => translate('edit_event'), 'link' => array('page' => 'manageevent_official', 'id' => $id), 'access' => 'officialonly', 'children' => array(
                 array('title' => translate('edit_news'), 'link' => array('page' => 'editnews', 'id' => $id), 'access' => null, 'children' => array(
                     array('title' => translate('new_news_item'), 'link' => array('page' => 'editnewsitem', 'id' => $id, 'news' => ''), 'access' => null, 'children' => array()),
                     array('title' => translate('edit_news_item'), 'link' => array('page' => 'editnewsitem', 'id' => $id, 'news' => @$_GET['news']), 'access' => null, 'children' => array(), 'condition' => @$_GET['news']),
@@ -270,7 +274,6 @@ function page_getSubMenu()
             ));
 
         array_unshift($submenu['events']['children'], $eventData);
-
     }
 
     // Special case of dynamic behavior: username appears in the submenu when the user wants to view
@@ -283,22 +286,21 @@ function page_getSubMenu()
     }
 
     if (getmainmenuselection() == 'tournaments') {
-            // Not unlike event archive, tournaments have a dynamic year-based submenu as well
-            $tyear = @$_GET['id'];
-            if (!$tyear) $tyear = date('Y');
+        // Not unlike event archive, tournaments have a dynamic year-based submenu as well
+        $tyear = @$_GET['id'];
+        if (!$tyear)
+            $tyear = date('Y');
 
-            $submenu['tournaments'] = array('title' => translate('tournaments'), 'link' => array('page' => 'tournaments'), 'children' => array());
-            if (@$_GET['page'] == 'tournament' || @$_GET['page'][0] == 'tournament') {
-                $t = GetTournamentDetails(@$_GET['id']);
-                $tname = $t->name;
-                $submenu['tournaments']['children'][] = array('title' => $tname, 'link' => array('page' => 'tournament', 'id' => @$_GET['id']), 'children' => array());
-            }
-
-            foreach (GetTournamentYears() as $year) {
-                $submenu['tournaments']['children'][] = array('title' => $year, 'link' => array('page' => 'tournaments', 'id' => $year), 'children' => array());
-            }
-
+        $submenu['tournaments'] = array('title' => translate('tournaments'), 'link' => array('page' => 'tournaments'), 'children' => array());
+        if (@$_GET['page'] == 'tournament' || @$_GET['page'][0] == 'tournament') {
+            $t = GetTournamentDetails(@$_GET['id']);
+            $tname = $t->name;
+            $submenu['tournaments']['children'][] = array('title' => $tname, 'link' => array('page' => 'tournament', 'id' => @$_GET['id']), 'children' => array());
         }
+
+        foreach (GetTournamentYears() as $year)
+            $submenu['tournaments']['children'][] = array('title' => $year, 'link' => array('page' => 'tournaments', 'id' => $year), 'children' => array());
+    }
 
     // Open the branch which contains the currently selected page
     foreach ($submenu as $index => $ignore) {
@@ -307,6 +309,7 @@ function page_getSubMenu()
 
     return $submenu;
 }
+
 
 /**
  * Opens branches of the submenu according to the page selection. Called recursively.
@@ -321,37 +324,43 @@ function page_openSubmenuBranchs(&$submenu)
     foreach ($submenu['children'] as $index => $ignoreAsNoReference) {
 
         // Filter out all entries that are to be hidden
-       if (array_key_exists('condition', $submenu['children'][$index])) {
+        if (array_key_exists('condition', $submenu['children'][$index])) {
             if (!$submenu['children'][$index]['condition']) {
                 unset($submenu['children'][$index]);
                 continue;
             }
-       }
-       $childContainsSelection = page_openSubmenuBranchs($submenu['children'][$index]);
-       if ($childContainsSelection !== false) $containsSelection = $childContainsSelection;
+        }
+        $childContainsSelection = page_openSubmenuBranchs($submenu['children'][$index]);
 
+        if ($childContainsSelection !== false)
+            $containsSelection = $childContainsSelection;
     }
 
     // Set default values if the user hasn't overridden them
-    if (!array_key_exists('open', $submenu)) $submenu['open'] = false;
-    if (!array_key_exists('selected', $submenu)) $submenu['selected'] = false;
-    if (!array_key_exists('condition', $submenu)) $submenu['condition'] = true;
+    if (!array_key_exists('open', $submenu))
+        $submenu['open'] = false;
+    if (!array_key_exists('selected', $submenu))
+        $submenu['selected'] = false;
+    if (!array_key_exists('condition', $submenu))
+        $submenu['condition'] = true;
 
     if (page_selected($submenu['link'])) {
         // This page was selected
-
-        $submenu['open'] = $submenu['open'] || count($submenu['children']) > 0; // Only consider this one to be open if there's something inside (or if forced open)
+        // Only consider this one to be open if there's something inside (or if forced open)
+        $submenu['open'] = $submenu['open'] || count($submenu['children']) > 0;
         $submenu['selected'] = true;
-    } else {
+    }
+    else {
         // Not selected, open the menu item if the selected item is found inside though
-        if ($containsSelection !== false) $submenu['open'] = true;
-
+        if ($containsSelection !== false)
+            $submenu['open'] = true;
     }
 
     //
     //return $submenu['open'] || $submenu['selected'];
     return $containsSelection || $submenu['selected'];
 }
+
 
 /**
  * Returns true if the page matching the link (as defined in submenu) is the current page
@@ -360,12 +369,16 @@ function page_selected($link)
 {
     foreach ($link as $parameter => $value) {
         $getValue = @$_GET[$parameter];
-        if (is_array($getValue)) $getValue = implode('/', $getValue);
-        if ($getValue != $value) return false;
+
+        if (is_array($getValue))
+            $getValue = implode('/', $getValue);
+        if ($getValue != $value)
+            return false;
     }
 
     return true;
 }
+
 
 /**
  * Simple wrapper to return event name based on its id
@@ -373,9 +386,13 @@ function page_selected($link)
 function pdr_GetEventName($evid)
 {
     $event = GetEventDetails($evid);
-    if (!$event || is_a($event, 'Error')) return '';
-    else return $event->name;
+
+    if (!$event || is_a($event, 'Error'))
+        return '';
+
+    return $event->name;
 }
+
 
 /**
  * Customizes the submenu for an event based on entered custom pages and modified titles
@@ -385,7 +402,8 @@ function page_customizeEventMenu($eventid, &$menu)
     $data = GetAllTextContent($eventid);
     foreach ($data as $row) {
         // Ignoring pages set up to use default title
-        if (!$row->title) continue;
+        if (!$row->title)
+            continue;
 
         if ($row->type == 'custom') {
             // Custom page; add it
@@ -394,10 +412,12 @@ function page_customizeEventMenu($eventid, &$menu)
                 'link' => array('page' => 'event', 'id' => $eventid, 'view' => $row->id),
                 'access' => null,
                 'children' => array()
-                );
-        } else {
+            );
+        }
+        else {
             // For the purpose of links, index page is page with no view defined
-            if ($row->type == 'index') $row->type = '';
+            if ($row->type == 'index')
+                $row->type = '';
 
             // Try to find the item matching the page and change its title
             foreach ($menu['children'] as $key => $item) {
@@ -409,6 +429,7 @@ function page_customizeEventMenu($eventid, &$menu)
     }
 }
 
+
 // Returns the deepest selected menu item from the provided submenu
 function page_GetSelectedMenuItem($menu)
 {
@@ -416,8 +437,8 @@ function page_GetSelectedMenuItem($menu)
     $from = $menu[$mm];
 
     return page_GetSelectedMenuItem2($from);
-
 }
+
 
 // Returns the deepest selected menu item from the provided submenu item recursively
 function page_GetSelectedMenuItem2($from)
@@ -425,24 +446,23 @@ function page_GetSelectedMenuItem2($from)
     if ($from['selected']) {
         // This item is selected; if one of its children is selected then that children is deeper
         // and must be considered, otherwise this is the item
-
         foreach ($from['children'] as $child) {
-            if ($child['selected']) {
+            if ($child['selected'])
                 return page_GetSelectedMenuItem2($child);
-            }
         }
-
         return $from;
-    } elseif ($from['open']) {
+
+    }
+    elseif ($from['open']) {
         // Not selected but open, one of the children might be selected
         foreach ($from['children'] as $child) {
             if ($child['open'] || $child['selected']) {
                 $found = page_GetSelectedMenuItem2($child);
-                if  ($found) return $found;
+                if ($found)
+                    return $found;
             }
         }
     }
 
     return null;
-
 }
