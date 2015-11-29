@@ -17,7 +17,9 @@ UPDATE :Classification SET Name = SUBSTR(REPLACE(Name, ')', ''), 6) WHERE Name R
 -- have been triggered to insert Short name, which happens only when original classname is in XXX (YYY) format
 
 INSERT INTO :Classification (Name, Short, MaximumAge, Available) VALUES('Juniorit-8', 'MJ5', 8, 1);
+INSERT INTO :Classification (Name, Short, MaximumAge, Available) VALUES('Juniorit-6', 'MJ6', 6, 1);
 INSERT INTO :Classification (Name, Short, MaximumAge, Available, GenderRequirement) VALUES('Tytöt-8', 'FJ5', 8, 1, 'F');
+INSERT INTO :Classification (Name, Short, MaximumAge, Available, GenderRequirement) VALUES('Tytöt-6', 'FJ6', 6, 1, 'F');
 
 UPDATE :Classification SET Status = 'A' WHERE Short IS NOT NULL;
 UPDATE :Classification SET Status = 'P' WHERE SUBSTR(Short, 2, 1) = 'P';
@@ -53,11 +55,13 @@ UPDATE :Classification SET Priority = 71, MaximumAge = 15, Name = 'Juniorit-15' 
 UPDATE :Classification SET Priority = 72, MaximumAge = 12, Name = 'Juniorit-12' WHERE Short = 'MJ3';
 UPDATE :Classification SET Priority = 73, MaximumAge = 10, Name = 'Juniorit-10' WHERE Short = 'MJ4';
 UPDATE :Classification SET Priority = 74 WHERE Short = 'MJ5';
+UPDATE :Classification SET Priority = 75 WHERE Short = 'MJ6';
 UPDATE :Classification SET Priority = 80, MaximumAge = 18, Name = 'Tytöt-18' WHERE Short = 'FJ1';
 UPDATE :Classification SET Priority = 81, MaximumAge = 15, Name = 'Tytöt-15' WHERE Short = 'FJ2';
 UPDATE :Classification SET Priority = 82, MaximumAge = 12, Name = 'Tytöt-12' WHERE Short = 'FJ3';
 UPDATE :Classification SET Priority = 83, MaximumAge = 10, Name = 'Tytöt-10' WHERE Short = 'FJ4';
 UPDATE :Classification SET Priority = 84 WHERE Short = 'FJ5';
+UPDATE :Classification SET Priority = 85 WHERE Short = 'FJ6';
 UPDATE :Classification SET Priority = 900, Short = 'SEKA' WHERE Short = 'SEK';
 UPDATE :Classification SET Priority = 999 WHERE Priority = 0;
 
