@@ -10,3 +10,4 @@ temp*.txt
 /*.sublime-*
 *.tumi
 stellar.yaml
+/config_site.php
