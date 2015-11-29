@@ -26,6 +26,8 @@ require_once 'data/db_init.php';
 
 
 // Mappings to config_name keys in DB
+const ADMIN_EMAIL = 'AdminEmail';
+
 const EMAIL_ENABLED = 'EmailEnabled';
 const EMAIL_ADDRESS = 'EmailAddress';
 const EMAIL_SENDER = 'EmailSender';
@@ -63,6 +65,10 @@ const DEVEL_DB_DIEONERROR = 'Devel_DbDieOnError';
 function GetConfigs()
 {
     return array(
+        "config_admin" => array(
+            array(ADMIN_EMAIL,          'string',   GetConfig(ADMIN_EMAIL)),
+        ),
+
         "config_email" => array(
             array(EMAIL_ENABLED,        'bool',     GetConfig(EMAIL_ENABLED)),
             array(EMAIL_ADDRESS,        'string',   GetConfig(EMAIL_ADDRESS)),

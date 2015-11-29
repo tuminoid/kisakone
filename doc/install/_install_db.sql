@@ -1,5 +1,7 @@
 CREATE TABLE :Config
 (
+    AdminEmail VARCHAR(200) DEFAULT '',
+
     EmailEnabled BOOL NOT NULL DEFAULT 0,
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',

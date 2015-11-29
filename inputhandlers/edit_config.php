@@ -37,6 +37,8 @@ function processForm()
         return Error::AccessDenied();
 
     // Check for errors
+    $admin_email = $_POST[ADMIN_EMAIL];
+
     $email_enabled = $_POST[EMAIL_ENABLED] ? 1 : 0;
     $email_sender = $_POST[EMAIL_SENDER];
     $email_address = $_POST[EMAIL_ADDRESS];
@@ -114,6 +116,8 @@ function processForm()
 
 
     // Save configs
+    SetConfig(ADMIN_EMAIL, $admin_email, 'string');
+
     SetConfig(EMAIL_ENABLED, $email_enabled, 'int');
     SetConfig(EMAIL_ADDRESS, $email_address, 'string');
     SetConfig(EMAIL_SENDER,  $email_sender, 'string');

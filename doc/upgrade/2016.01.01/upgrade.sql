@@ -69,6 +69,8 @@ UPDATE :Classification SET Priority = 999 WHERE Priority = 0;
 -- All settings are moved to database from config_site.php
 CREATE TABLE :Config
 (
+    AdminEmail VARCHAR(200) DEFAULT '',
+
     EmailEnabled BOOL NOT NULL DEFAULT 0,
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',

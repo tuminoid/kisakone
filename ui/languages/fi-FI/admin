@@ -73,6 +73,7 @@ config_value        Arvo
 config_yes          Päällä
 config_no           Pois päältä
 
+config_admin        Ylläpitäjän asetukset
 config_email        Sähköpostiasetukset
 config_license      Lisenssiasetukset
 config_sfl          SFL API asetukset
@@ -81,6 +82,7 @@ config_cache        Välimuistiasetukset
 config_trackjs      TrackJS asetukset
 config_devel        Kehitysasetukset
 
+AdminEmail          Ylläpidon sähköposti
 EmailEnabled        Sähköpostien lähetys
 EmailAddress        Lähettäjän osoite
 EmailSender         Lähettäjän nimi
