@@ -65,7 +65,6 @@ submenu_new_admin   Lisää ylläpitäjä
 submenu_tournaments Sarjat
 submenu_levels      Tasot
 submenu_classes     Luokat
-submenu_manage_fees_item Maksut
 submenu_ban_and_remove_users    Käyttöoikeuksien poisto
 submenu_edit_user       Muokkaa
 submenu_user_events     Käyttäjän kilpailut
@@ -84,6 +83,5 @@ submenu_edit_config     Asetukset
 submenu_manage_users    Käyttäjien hallinnointi
 submenu_manage_submenutext   Sivuvalikon lisäteksti
 submenu_manage_index   Etusivun lisäteksti
-submenu_manage_fees   Lisenssi- ja jäsenmaksujen lisäteksti
 submenu_manage_terms    Käyttöehdot
 submenu_courses     Radat

@@ -71,11 +71,8 @@ function processForm()
         return $error;
     }
 
-    $fees = $event->FeesRequired();
-    if ($fees) {
-        if (!$user->FeesPaidForYear(date('Y', $event->startdate), $fees))
-            return Error::AccessDenied();
-    }
+    if (!$user->LicensesPaidForYear(date('Y', $event->startdate), $event->LicensesRequired()))
+        return Error::AccessDenied();
 
     $result = SignUpUser($event->id, $user->id, $class->id);
     if (is_a($result, 'Error')) {
@@ -85,13 +82,8 @@ function processForm()
     }
 
     $signup = $result ? 1 : 0;
-    if ($result) {
-        // Show payment if signup true
+    if ($result && payment_enabled())
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $signup), $nothing));
-    }
-    else {
-        // Show queue if signup false
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $signup), $nothing));
-    }
-    die();
+
+    redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $signup), $nothing));
 }

@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event fee payment information
  *
@@ -25,14 +26,16 @@
 </div>
 
 {if !$user}
-<p>{translate id=login_to_sign_up}</p>
+    <p>{translate id=login_to_sign_up}</p>
 {elseif $queued}
-<p class="signup_status">{translate id=signed_up_in_queue}</p>
+    <p class="signup_status">{translate id=signed_up_in_queue}</p>
 {elseif !$signedup}
-<p class="signup_status">{translate id=not_signed_up_nothere}</p>
+    <p class="signup_status">{translate id=not_signed_up_nothere}</p>
+{elseif !$payment_enabled}
+    <p class="signup_status">{translate id=signed_up_payment_disabled}</p>
 {elseif $paid}
-<p class="signup_status">{translate id=signed_up_and_paid}</p>
+    <p class="signup_status">{translate id=signed_up_and_paid}</p>
 {else}
-<p class="signup_status">{translate id=signed_up_not_paid}</p>
+    <p class="signup_status">{translate id=signed_up_not_paid}</p>
 {/if}
 {/if}

@@ -47,10 +47,12 @@ function processForm()
     if ($email_enabled && !$email_address)
         $problems[EMAIL_ADDRESS] = translate('FormError_NotEmptyIfEnabled');
 
-    $ok_licenses = array('no', 'sfl', 'internal');
+    $ok_licenses = array('no', 'sfl');
     $license_check = $_POST[LICENSE_ENABLED];
     if (!in_array($license_check, $ok_licenses))
         $problems[LICENSE_ENABLED] = translate('FormError_Default');
+
+    $payment_enabled = $_POST[PAYMENT_ENABLED] ? 1 : 0;
 
     $pdga_enabled = $_POST[PDGA_ENABLED] ? 1 : 0;
     $pdga_user = $_POST[PDGA_USERNAME];
@@ -106,6 +108,7 @@ function processForm()
     SetConfig(EMAIL_SENDER,  $email_sender, 'string');
 
     SetConfig(LICENSE_ENABLED, $license_check, 'string');
+    SetConfig(PAYMENT_ENABLED, $payment_enabled, 'bool');
 
     SetConfig(PDGA_ENABLED,  $pdga_enabled, 'int');
     SetConfig(PDGA_USERNAME, $pdga_user, 'string');

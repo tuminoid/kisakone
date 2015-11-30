@@ -65,7 +65,8 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
                                     UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked,
                                     :Level.Name AS LevelName, :EventManagement.Role AS Management, :Participation.Approved,
-                                    :Participation.EventFeePaid, :Participation.Standing
+                                    :Participation.EventFeePaid, :Participation.Standing,
+                                    (SELECT PaymentEnabled FROM :Config) AS PaymentEnabled
                                 FROM :Event
                                 LEFT JOIN :EventManagement ON (:Event.id = :EventManagement.Event AND :EventManagement.User = $uid)
                                 LEFT JOIN :Participation ON (:Participation.Event = :Event.id AND :Participation.Player = $playerid)
@@ -184,7 +185,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
     $pdgaid = esc_or_null($pdgaid, 'int');
 
     $query = format_query("INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
-                                SignupStart, SignupEnd, ContactInfo, FeesRequired, PdgaEventId)
+                                SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId)
                             VALUES ($venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
                                 FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees, $pdgaid)");
     $result = execute_query($query);
@@ -327,7 +328,7 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
                                 Duration = $duration, PlayerLimit = $playerlimit,
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
-                                ContactInfo = $contact, FeesRequired = $requireFees, PdgaEventId = $pdgaid
+                                ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid
                             WHERE id = $eventid");
     $result = execute_query($query);
 
@@ -511,7 +512,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
 
             $pdata['user'] = $user;
             $pdata['player'] = $player;
-            $pdata['eventFeePaid'] = $row['EventFeePaid'];
+            $pdata['eventFeePaid'] = payment_enabled() ? $row['EventFeePaid'] : true;
             $pdata['participationId'] = $row['ParticipationID'];
             $pdata['signupTimestamp'] = $row['SignupTimestamp'];
             $pdata['className'] = $row['ClassName'];

@@ -38,11 +38,8 @@
         {translate id=fees_necessary_for_signup_pdga}
     {elseif $feesMissing == 1}
         {translate id=fees_necessary_for_signup_1}
-    {elseif $feesMissing == 2}
+    {else}
         {translate id=fees_necessary_for_signup_2}
-    {elseif $feesMissing == 6}
-        <p>{translate id=fees_necessary_for_signup_3}</p>
-        <p>{translate id=check_registry_data}</p>
     {/if}
     </div>
     {assign var=nosignup value=true}
@@ -102,6 +99,13 @@
         </div>
     {/if}
 </form>
+
+{elseif !$payment_enabled}
+
+    <p class="signup_status">{translate id=signed_up_payment_disabled}</p>
+    <ul>
+        <li><a href="{url page=event view=cancelsignup id=$smarty.get.id}">{translate id=cancel_signup}</a></li>
+    </ul>
 
 {elseif $paid}
 

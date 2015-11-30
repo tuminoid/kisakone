@@ -6,7 +6,8 @@ CREATE TABLE :Config
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',
 
-    LicenseEnabled ENUM('no', 'internal', 'sfl') NOT NULL DEFAULT 'no',
+    LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
+    PaymentEnabled BOOL NOT NULL DEFAULT 1,
 
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
@@ -142,7 +143,7 @@ CREATE TABLE :Event
     SignupEnd DATETIME,
     ResultsLocked DATETIME NULL,
     ContactInfo VARCHAR(250) NOT NULL,
-    FeesRequired TINYINT NOT NULL,
+    LicensesRequired TINYINT NOT NULL,
     AdBanner INT NULL,
     PdgaEventId INT,
     PlayerLimit INT NOT NULL DEFAULT 0,
@@ -402,28 +403,6 @@ CREATE TABLE :ClassInEvent
     PRIMARY KEY(id),
     FOREIGN KEY(Classification) REFERENCES :Classification(id),
     FOREIGN KEY(Event) REFERENCES :Event(id)
-) ENGINE=InnoDB;
-SHOW WARNINGS;
-
-
-CREATE TABLE :LicensePayment
-(
-    id INT NOT NULL AUTO_INCREMENT,
-    Player SMALLINT NOT NULL,
-    Year INT NOT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY(Player) REFERENCES :Player(player_id)
-) ENGINE=InnoDB;
-SHOW WARNINGS;
-
-
-CREATE TABLE :MembershipPayment
-(
-    id INT NOT NULL AUTO_INCREMENT,
-    Player SMALLINT NOT NULL,
-    Year INT NOT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY(Player) REFERENCES :Player(player_id)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 

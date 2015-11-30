@@ -61,11 +61,11 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $year = date('Y');
         $data = SFL_getPlayer($user);
-        $smarty->assign('sfl_license', @$data['competition'][$year]);
         $smarty->assign('sfl_membership', @$data['membership'][$year]);
+        $smarty->assign('sfl_license', @$data['license'][$year]);
 
-        $smarty->assign('license_required', $event->FeesRequired());
-        $smarty->assign('licenses_ok', $userdata->FeesPaidForYear($year, $fees));
+        $smarty->assign('license_required', $event->LicensesRequired());
+        $smarty->assign('licenses_ok', $userdata->LicensesPaidForYear($year, $event->LicensesRequired()));
 
         global $settings;
         $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;

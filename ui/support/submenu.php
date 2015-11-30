@@ -139,8 +139,6 @@ function page_getSubMenu()
                 array('title' => translate('submenu_my_user_events'), 'link' => array('page' => 'events', 'id' => 'byUser', 'username' => $username), 'access' => null, 'children' => array()),
             )),
             array('open' => 'auto', 'title' => translate('submenu_manage'), 'link' => array('page' => 'manage_users'), 'access' => 'admin', 'children' => array(
-                array('title' => translate('submenu_manage_fees_item'), 'link' => array('page' => 'managefees' ), 'access' => null, 'children' => array(),
-                      'condition' => !sfl_enabled()),
                 array('title' => translate('submenu_ban_and_remove_users'), 'link' => array('page' => 'manageaccess' ), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin' ), 'access' => null, 'children' => array()),
 
@@ -185,8 +183,8 @@ function page_getSubMenu()
             /*array('title' => translate('event_news'), 'link' => array('page' => 'news', 'id' => $id, 'view' => ''), 'access' => null, 'children' => array()),*/
 
             array('title' => translate('event_results'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'results'), 'access' => null, 'children' => array(
-                            array('title' => translate('event_live_results'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'liveresults'), 'access' => null, 'children' => array()),
-                            array('title' => translate('event_leaderboard'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'leaderboard'), 'access' => null, 'children' => array())
+                array('title' => translate('event_live_results'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'liveresults'), 'access' => null, 'children' => array()),
+                array('title' => translate('event_leaderboard'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'leaderboard'), 'access' => null, 'children' => array())
             )),
 
             array('title' => translate('event_competitors'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'competitors'), 'access' => null, 'children' => array(
@@ -198,7 +196,8 @@ function page_getSubMenu()
             array('title' => translate('event_schedule'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'schedule'), 'access' => null, 'children' => array()),
 
             array('title' => translate('event_signup_info'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'signupinfo'), 'access' => null, 'children' => array(
-                array('title' => translate('event_payment'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'payment'), 'access' => null, 'children' => array()),
+                array('title' => translate('event_payment'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'payment'), 'access' => null, 'children' => array(),
+                    'condition' => payment_enabled()),
                 array('title' => translate('event_cancel_signup'), 'link' => array('page' => 'event', 'id' => $id, 'view' => 'cancelsignup'), 'access' => null, 'children' => array(), 'condition' => @$_GET['view'] == 'cancelsignup'),
             )),
         ));
@@ -224,8 +223,11 @@ function page_getSubMenu()
                 )),
 
                 array('title' => translate('edit_event_fees'), 'link' => array('page' => 'eventfees', 'id' => $id), 'access' => null, 'children' => array(
-                    array('title' => translate('remind'), 'link' => array('page' => 'remind'), 'access' => null, 'children' => array(), 'condition' => PageIs('remind'))
-                )),
+                    array('title' => translate('remind'), 'link' => array('page' => 'remind'), 'access' => null, 'children' => array(),
+                        'condition' => PageIs('remind'))
+                    ),
+                    'condition' => payment_enabled()
+                ),
 
                 array('title' => translate('edit_event_classes'), 'link' => array('page' => 'eventclasses', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_event_quotas'), 'link' => array('page' => 'editquotas', 'id' => $id), 'access' => null, 'children' => array()),
@@ -245,7 +247,8 @@ function page_getSubMenu()
                     array('title' => translate('event_payment'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'payment'), 'access' => null, 'children' => array()),
                     array('title' => translate('event_cancel_signup'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'content' => 'cancelsignup'), 'access' => null, 'children' => array()),
                     array('title' => translate('event_custom_pages'), 'link' => array('page' => 'editcustomeventpages', 'id' => $id), 'access' => null, 'children' => array(
-                        array('title' => translate('edit'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'mode' => 'custom'), 'access' => null, 'children' => array(), 'condition' => @$_GET['mode'] == 'custom'),
+                        array('title' => translate('edit'), 'link' => array('page' => 'editeventpage', 'id' => $id, 'mode' => 'custom'), 'access' => null, 'children' => array(),
+                            'condition' => @$_GET['mode'] == 'custom'),
                     )),
                 )),
 

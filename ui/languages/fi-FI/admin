@@ -75,7 +75,7 @@ config_no           Pois päältä
 
 config_admin        Ylläpitäjän asetukset
 config_email        Sähköpostiasetukset
-config_license      Lisenssiasetukset
+config_payments     Maksuasetukset
 config_pdga         PDGA API asetukset
 config_cache        Välimuistiasetukset
 config_trackjs      TrackJS asetukset
@@ -88,7 +88,7 @@ EmailSender         Lähettäjän nimi
 LicenseEnabled      Lisenssien tarkastus
 LicenseEnabled_no   Ei tarkasteta
 LicenseEnabled_sfl  SFL:n lisenssitarkastus
-LicenseEnabled_internal Kisakoneen sisäinen tarkastus
+PaymentEnabled      Maksujen tarkastus
 PdgaEnabled         PDGA API
 PdgaUsername        PDGA käyttäjätunnus
 PdgaPassword        PDGA salasana

@@ -8,6 +8,7 @@ ALTER TABLE :Classification ADD COLUMN Short VARCHAR(6) AFTER Name;
 ALTER TABLE :Classification ADD COLUMN Status ENUM('P', 'A') NOT NULL AFTER Available;
 ALTER TABLE :Classification ADD COLUMN Priority INT DEFAULT 1000 AFTER Status;
 ALTER TABLE :Classification ADD COLUMN RatingLimit INT AFTER Priority;
+ALTER TABLE :Event CHANGE COLUMN FeesRequired LicensesRequired TINYINT NOT NULL;
 
 UPDATE :Classification SET Short = SUBSTR(Name, 1, 3) WHERE Name RLIKE '^[A-Z0-9]{3} (.+)$';
 UPDATE :Classification SET Name = SUBSTR(REPLACE(Name, ')', ''), 6) WHERE Name RLIKE '^[A-Z0-9]{3} (.+)$';
@@ -75,7 +76,8 @@ CREATE TABLE :Config
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',
 
-    LicenseEnabled ENUM('no', 'internal', 'sfl') NOT NULL DEFAULT 'no',
+    LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
+    PaymentEnabled BOOL NOT NULL DEFAULT 1,
 
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
@@ -96,3 +98,7 @@ CREATE TABLE :Config
 
 -- Insert defaults into db, they'll be updated during upgrade.php run
 INSERT INTO :Config VALUES();
+
+-- We have removed support for internal payment tables
+DROP TABLE :LicensePayment;
+DROP TABLE :MembershipPayment;

@@ -33,6 +33,7 @@ const EMAIL_ADDRESS = 'EmailAddress';
 const EMAIL_SENDER = 'EmailSender';
 
 const LICENSE_ENABLED = 'LicenseEnabled';
+const PAYMENT_ENABLED = 'PaymentEnabled';
 
 const SFL_ENABLED = 'SflEnabled';
 const SFL_USERNAME = 'SflUsername';
@@ -75,8 +76,9 @@ function GetConfigs()
             array(EMAIL_SENDER,         'string',   GetConfig(EMAIL_SENDER))
         ),
 
-        "config_license" => array(
-            array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl', 'internal'))
+        "config_payments" => array(
+            array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl')),
+            array(PAYMENT_ENABLED,      'bool',     GetConfig(PAYMENT_ENABLED))
         ),
 
         "config_pdga" => array(

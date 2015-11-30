@@ -109,14 +109,18 @@
                 {/if}
             {elseif $event->approved !== null}
                 {* There is a participation record  *}
-                {if $event->eventFeePaid}
-                    <span class="nowrap"><img src="{$url_base}images/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
-                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a></span>
+                {if $event->paymentEnabled}
+                    {if $event->eventFeePaid}
+                        <span class="nowrap"><img src="{$url_base}images/thumb_up_green.png" width="15" title="{translate id=fee_paid}" alt="{translate id=fee_paid}" />
+                        <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=paid}</a></span>
+                    {else}
+                        <span class="nowrap"><img src="{$url_base}images/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
+                        <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a></span>
+                    {/if}
                 {else}
-                    <span class="nowrap"><img src="{$url_base}images/exclamation.png" width="15" title="{translate id=fee_not_paid}" alt="{translate id=fee_not_paid}" />
-                    <a href="{url page=event view=payment id=$event->id}">{translate id=fee_payment_info}</a></span>
+                    <span class="nowrap"><img src="{$url_base}images/infoIcon.png" width="15" title="{translate id=registration_ok}" alt="{translate id=registration_ok}" />
+                    <a href="{url page='event' view=cancelsignup id=$event->id}">{translate id=registration_ok}</a></span>
                 {/if}
-
             {/if}
 
             {if $loggedon}

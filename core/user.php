@@ -376,9 +376,12 @@ class User
      * Determines membership and license payments for a given year
      * Returns true if player's licenses match the requirements
     */
-    function FeesPaidForYear($year, $required)
+    function LicensesPaidForYear($year, $required)
     {
         if (!$required)
+            return true;
+
+        if (GetConfig(LICENSE_ENABLED) == 'no')
             return true;
 
         $player = GetUserPlayer($this->id);
@@ -393,12 +396,12 @@ class User
                 return true;
         }
 
-        $year = date('Y');
         if (sfl_enabled()) {
             $data = SFL_getPlayer($this->id);
             if ($data) {
+                $year = date('Y');
                 $membership = @$data['membership'][$year];
-                $license = @$data['competition'][$year];
+                $license = @$data['license'][$year];
 
                 // If there is any requirements for competition, membership is a must
                 if ($required && !$membership)

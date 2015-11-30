@@ -38,6 +38,8 @@ require_once 'data/config.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
+    global $user;
+
     $event = GetEventDetails($_GET['id']);
 
     if (is_a($event, 'Error'))
@@ -48,7 +50,6 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('event', $event);
     $smarty->assign('eventid', $event->id);
 
-    global $user;
     $player = $user ? $user->GetPlayer() : null;
     $smarty->assign('user', $user);
     $smarty->assign('player', $player);
@@ -56,6 +57,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('pdga_enabled', pdga_enabled());
     $smarty->assign('sfl_enabled', sfl_enabled());
     $smarty->assign('pdgaUrl', $event->getPDGAUrl());
+    $smarty->assign('payment_enabled', payment_enabled());
 
     $textType = '';
     $evp = null;
@@ -162,8 +164,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
                 $year = date('Y');
                 $data = SFL_getPlayer(@$user->id);
-                $smarty->assign('sfl_license', @$data['competition'][$year]);
                 $smarty->assign('sfl_membership', @$data['membership'][$year]);
+                $smarty->assign('sfl_license', @$data['license'][$year]);
 
                 $classes = $event->GetClasses();
                 $unsuited_classes = array();
@@ -177,10 +179,9 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $smarty->assign('classes', $classes);
                 $smarty->assign('unsuited', $unsuited_classes);
 
-                $requiredFees = $event->FeesRequired();
-                if ($requiredFees && $user) {
-                    if (!$user->FeesPaidForYear(date('Y', $event->startdate), $requiredFees))
-                        $smarty->assign('feesMissing', $requiredFees);
+                if ($user) {
+                    if (!$user->LicensesPaidForYear(date('Y', $event->startdate), $event->LicensesRequired()))
+                        $smarty->assign('feesMissing', $event->LicensesRequired());
                 }
             }
 

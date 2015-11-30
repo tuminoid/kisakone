@@ -109,8 +109,9 @@ event_contact       Yhteystiedot
 
 my_general_info     Yleiset tiedot
 my_payment_info     Maksujen tila
-not_paid        Ei maksettu
-paid            Maksettu
+not_paid            Ei maksettu
+paid                Maksettu
+paid_default        Maksuja ei tarkasteta
 
 fee_paid        Kilpailumaksu maksettu
 signup_by_start Ilmoittautuminen sulkeutuu
@@ -204,7 +205,8 @@ signup_closed_dates     Ilmoittautuminen on mahdollista välillä {from} - {to}.
 cancel_signup           Peruuta ilmoittautuminen
 signed_up_in_queue      Olet ilmoittautunut kilpailuun, mutta olet jonossa.
 signed_up_not_paid      Olet ilmoittautunut kilpailuun. Et ole vielä maksanut kilpailumaksua, tai maksua ei ole syötetty kisakoneeseen.
-signed_up_and_paid          Olet ilmoittautunut kilpailuun ja kilpailumaksu on maksettu.
+signed_up_and_paid      Olet ilmoittautunut kilpailuun ja kilpailumaksu on maksettu.
+signed_up_payment_disabled Olet ilmoittautunut kilpailuun. Maksua ei tarkasteta Kisakoneessa.
 no_news             Ei uutisia.
 no_matching_events      Valitussa kategoriassa ei ole yhtäkään kilpailua.
 
@@ -364,6 +366,8 @@ leaderboard_hole    Väyliä
 
 result_penalty_panel    R
 result_dnf              DNF
+result_dns              DNS
+result_dq               DQ
 result_sd_panel         SD
 
 move_tagged_object_here  Siirrä tänne
@@ -379,8 +383,7 @@ remove_player_from_event        Poista kilpailusta
 player_removal_failed           Kilpailijan poisto epäonnistui. Kilpailija on luultavasti jo sijoitettu johonkin lohkoon.
 fees_necessary_for_signup      Tähän kilpailuun ilmoittautuminen vaatii jäsen- ja lisenssimaksujen maksun.
 fees_necessary_for_signup_1    Tähän kilpailuun ilmoittautuminen vaatii jäsenmaksun maksetuksi.
-fees_necessary_for_signup_2    Tähän kilpailuun ilmoittautuminen vaatii A-lisenssin.
-fees_necessary_for_signup_3    Tähän kilpailuun ilmoittautuminen vaatii vähintään B-lisenssin.
+fees_necessary_for_signup_2    Tähän kilpailuun ilmoittautuminen vaatii kilpailulisenssin.
 fees_necessary_for_signup_pdga Ulkomaalaisilta pelaajilta vaaditaan voimassaoleva PDGA-jäsenyys.
 check_registry_data            Tarkasta, että nimesi ja syntymävuotesi sekä PDGA-numero täsmäävät jäsenrekisterin tietojen kanssa.
 event_is_locked_cant_edit       Kilpailu on lukittu. Muutokset eivät ole mahdollisia ellei kilpailua avata uudelleen.

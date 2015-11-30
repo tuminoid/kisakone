@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event fee change handler
  *
@@ -21,21 +22,22 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/event_management.php';
+require_once 'inputhandlers/support/event_edit_notification.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    require_once 'core/event_management.php';
-
     $event = GetEventDetails($_GET['id']);
+
     if ($event->resultsLocked)
         return Error::AccessDenied();
-
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventfees');
-    }
 
     $reminds = array();
     $payments = array();
@@ -43,14 +45,11 @@ function processForm()
         if (substr($key, 0, 7) == 'oldfee_') {
             list($ignore, $userid, $partid) = explode('_', $key);
             $newfee = @$_POST['newfee_' . $userid . '_' . $partid];
-
             $newfee = (bool) $newfee;
             $value = (bool) $value;
 
-            if ($newfee != $value) {
-
+            if ($newfee != $value)
                 $payments[] = array('participationId' => $partid, 'payment' => $newfee);
-            }
         }
         elseif (substr($key, 0, 7) == 'remind_') {
             $reminds[] = substr($key, 7);
@@ -64,7 +63,6 @@ function processForm()
     if (count($reminds)) {
         if (in_array('all', $reminds))
             $reminds = GetAllToRemind($event->id);
-        //redirect("Location: " . url_smarty(array('page' => 'eventfeereminder', 'id' => $_GET['id'], 'users' => implode($reminds, ',')), $reminds));
         $error = new Error();
         $error->internalDescription = 'redirecting, not a real error';
         $error->errorPage = 'remind';
@@ -73,8 +71,6 @@ function processForm()
         return $error;
     }
     else {
-        require_once 'inputhandlers/support/event_edit_notification.php';
-
         return input_EditNotification();
     }
 }

@@ -29,6 +29,8 @@ require_once 'data/payments.php';
 require_once 'data/level.php';
 require_once 'data/round.php';
 require_once 'data/rules.php';
+require_once 'core/textcontent.php';
+require_once 'core/scorecalculation.php';
 
 
 // Valid Event->signupState attribute values
@@ -88,9 +90,6 @@ class Event
 
     var $approved;
 
-    // User-specific fields (for logged in user)
-    var $eventFeePaid;
-    // null if not signed up at all
     /** ************************************************************************
      * Class constructor
      */
@@ -275,7 +274,6 @@ class Event
      */
     function GetTextContent($contentId)
     {
-        require_once 'core/textcontent.php';
         if (is_numeric($contentId)) {
             $content = GetTextContent($contentId);
             if (!$content || $content->event != $this->id) {
@@ -347,12 +345,9 @@ class Event
      * Returns true if license and membership fees must be paid before signing up
      * is possible
     */
-    function FeesRequired()
+    function LicensesRequired()
     {
-        // As the option whether or not license and membership fees are necessary for signing
-        // up was added in such a late stage, it was much easier to add this as a function instead
-        // of changing all the constructor calls.
-        return EventRequiresFees($this->id);
+        return EventRequiresLicenses($this->id);
     }
 
     /**
@@ -405,7 +400,7 @@ function GetRelevantEvents()
  * @param array    $officialIds  - array of official user ids
  * @param array    $rounds       - array of rounds (date, time, holes, datestring, roundid)
  */
-function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaId)
+function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId)
 {
     $retvalue = null;
 
@@ -451,7 +446,7 @@ function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament,
     }
 
     if (!isset($retValue)) {
-        $eventId = CreateEvent($name, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requireFees, $pdgaId);
+        $eventId = CreateEvent($name, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId);
         $retValue = $eventId;
         if (!is_a($eventId, 'Error')) {
             $err = SetRounds($eventId, $rounds);
@@ -725,7 +720,6 @@ function core_EventScoreCalculation($event)
 {
     $levelid = $event->levelId;
     $level = GetLevelDetails($levelid);
-    require_once 'core/scorecalculation.php';
 
     return GetScoreCalculationMethod('level', $level->scoreCalculationMethod);
 }

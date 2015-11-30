@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
 {translate id='eventfees_title' assign='title'}
-{include file='include/header.tpl' }
+{include file='include/header.tpl'}
 {if $error}
 <p class="error">{$error}</p>
 {/if}
@@ -57,8 +57,9 @@
           <th>{sortheading field=birthyear id=birthyear sortType=integer}</th>
           <th>{sortheading field=gender id=gender sortType=alphabetical}</th>
           <th>{sortheading field=class id=class sortType=selectText}</th>
-
-
+          {if !$payment_enabled}
+          <th>{sortheading field=payment id=users_eventfees sortType=alphabetical}</th>
+          {/if}
        </tr>
 
 
@@ -70,16 +71,13 @@
             <td><a href="{url page="user" id="$userid"}">{$user.user->firstname|escape}</a></td>
 
              <td>{$user.player->pdga|escape}</td>
-             <td>{$user.player->birthyear}</td>
+             <td>{$user.player->birthyear|escape}</td>
              <td>{if $user.player->gender == 'M'}{translate id=male}{else}{translate id=female}{/if}</td>
              <td>
                 <input type="hidden" name="init_{$user.player->id}" value="{$user.classId}" />
                 <select name="class_{$user.player->id}"
-                {assign var=userclass value=$user.classId}
-                {if $badClasses.$userclass}
-                        class="bad_class"
-                        {/if}
-                >
+                  {assign var=userclass value=$user.classId}
+                  {if $badClasses.$userclass} class="bad_class" {/if} >
                     {foreach from=$classes item=class}
                     {assign var=cid value=$class->id}
                     {if !$badClasses.$cid}
@@ -97,7 +95,11 @@
                 </select>
 
              </td>
-
+             <td>
+             {if !$payment_enabled}
+             {translate id=paid_default}
+             {/if}
+             </td>
          </tr>
        {/foreach}
     </table>

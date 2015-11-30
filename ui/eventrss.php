@@ -48,11 +48,6 @@ function InitializeSmartyVariables(&$smarty, $error)
         }
     }
 
-    /*
-     User-specific items; not supported at this time, only event-specific items
-    if ($event->approved !== null) $items[] = page_SignedUp($event);
-    if ($event->eventFeePaid !== null) $items[] = page_Paid($eventFeePaid);
-   */
     $rounds = $event->GetRounds();
     foreach ($rounds as $ind => $round) {
         if ($round->groupsFinished) {

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Move players from one class to another within an event
  *
@@ -23,6 +23,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/config.php';
+
+
 /* Initializes the variables and other data necessary for showing the matching template
 * @param Smarty $smarty Reference to the smarty object being initialized
 * @param Error $error If input processor encountered a minor error, it will be present here
@@ -31,11 +34,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     if ($error)
         $smarty->assign('error', translate('player_removal_failed'));
-    $event = GetEventDetails($_GET['id']);
 
-    if (!IsAdmin() && $event->management != 'td') {
+    $event = GetEventDetails($_GET['id']);
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventfees');
-    }
 
     if ($event->resultsLocked)
         $smarty->assign('locked', true);
@@ -46,12 +48,12 @@ function InitializeSmartyVariables(&$smarty, $error)
     $badClasses = array();
     $goodClasses = array();
 
-    foreach ($classes as $class) {
+    foreach ($classes as $class)
         $goodClasses[$class->id] = true;
-    }
 
     foreach ($users as $user) {
         $classid = $user['classId'];
+
         if (!@$goodClasses[$classid]) {
             $goodClasses[$classid] = true;
             $badClasses[$classid] = true;
@@ -62,6 +64,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('badClasses', $badClasses);
     $smarty->assign('classes', $classes);
     $smarty->assign('users', $users);
+
+    $smarty->assign('payment_enabled', payment_enabled());
 }
 
 /**

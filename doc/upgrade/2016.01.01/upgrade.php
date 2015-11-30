@@ -49,18 +49,27 @@ function Upgrade() {
 }
 
 
-function MigrateConfigs()
+function CheckUpgrade()
 {
-    if (file_exists(CONFIG_SITE)) {
-        require_once CONFIG_SITE;
-    }
-    else {
-        echo "warning: config_site.php not present, skipping config migration!";
-        return;
-    }
-
+    require_once CONFIG_SITE;
 
     global $settings;
+
+    if (IGNORE_PAYMENTS == false && $settings['SFL_ENABLED'] !== true) {
+        echo "fatal: You don't ignore payments and SFL integration is disabled.\n";
+        echo "fatal: Support for managing fees internally in Kisakone has been deprecated and removed.\n";
+        echo "fatal: Cannot continue upgrade as you would lose functionality you are currently using.\n";
+        exit(1);
+    }
+}
+
+
+function MigrateConfigs()
+{
+    require_once CONFIG_SITE;
+    global $settings;
+
+
     $migrate_sql = sprintf("
 UPDATE :Config SET
     AdminEmail = '',
@@ -70,10 +79,7 @@ UPDATE :Config SET
     EmailSender = '%s',
 
     LicenseEnabled = '%s',
-
-    SflEnabled = '%d',
-    SflUsername = '%s',
-    SflPassword = '%s',
+    PaymentEnabled = '%d',
 
     PdgaEnabled = '%d',
     PdgaUsername = '%s',
@@ -90,12 +96,13 @@ UPDATE :Config SET
 
     Devel_DbLogging = '%d',
     Devel_DbDieOnError = '%d'
-;",
+;\n",
     $settings['EMAIL_ENABLED'] == true ? 1 : 0,
     $settings['EMAIL_SENDER'],
     $settings['EMAIL_MAILER'],
 
-    IGNORE_PAYMENTS ? 'no' : ($settings['SFL_ENABLED'] ? 'sfl' : 'internal'),
+    IGNORE_PAYMENTS !== false ? 'no' : 'sfl',
+    IGNORE_PAYMENTS === true ? 0 : 1,
 
     $pdga_enabled = $settings['PDGA_ENABLED'] == true ? 1 : 0,
     $settings["PDGA_USERNAME"],
@@ -121,20 +128,18 @@ UPDATE :Config SET
         die(mysql_error() . "\n");
     }
 
-    $config = file_get_contents(CONFIG);
-    if ($config === false) {
-        echo "error: failed to read the config.php...";
-        return;
-    }
 
+    $config = file_get_contents(CONFIG);
     $config = str_replace("include_once('config_site.php');", "// Migrated to :Config db\n// include_once('config_site.php');", $config);
     if (file_put_contents(CONFIG, $config) === false) {
         echo "error: failed to write config into 'config.php'.\n";
-        echo "Comment out 'incluce_once('config_site.php');' line and delete 'config_site.php'";
+        echo "Comment out 'incluce_once('config_site.php');' line and delete 'config_site.php'\n";
+        echo "Settings are now available at Admin interface.\n";
     }
 }
 
 
 InitializeDatabaseConnection();
+CheckUpgrade();
 Upgrade();
 MigrateConfigs();

@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Mark event fees paid, and send reminder emails
  *
@@ -32,15 +33,13 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if ($event->resultsLocked)
         $smarty->assign('locked', true);
-
-    if (!IsAdmin() && $event->management != 'td') {
+    if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventfees');
-    }
 
     $users = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
-
     $smarty->assign('users', $users);
 }
+
 
 /**
  * Determines which main menu option this page falls under.

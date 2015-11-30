@@ -41,11 +41,13 @@ function GetTournamentEvents($tournamentId)
 function GetTournamentParticipantCount($tournamentId)
 {
     $tournamentId = (int) $tournamentId;
+    $filter = payment_enabled() ? "AND :Participation.EventFeePaid IS NOT NULL" : "";
 
     $query = format_query("SELECT COUNT(DISTINCT :Participation.Player) AS Count
                             FROM :Event
                             INNER JOIN :Participation ON :Participation.Event = :Event.id
-                            WHERE :Event.Tournament = $tournamentId AND :Participation.EventFeePaid IS NOT NULL");
+                            WHERE :Event.Tournament = $tournamentId
+                            $filter");
     $result = execute_query($query);
 
     $retValue = null;

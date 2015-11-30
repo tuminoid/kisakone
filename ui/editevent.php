@@ -103,8 +103,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         elseif ($event->isActive)
             $e['event_state'] = 'active';
 
-        $fees = $event->FeesRequired();
-        $e['requireFees'] = $fees;
+        $licenses = $event->LicensesRequired();
+        $e['requireFees'] = $licenses;
 
         $e['classes'] = array();
         foreach ($event->GetClasses() as $class)

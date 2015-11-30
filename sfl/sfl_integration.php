@@ -79,7 +79,7 @@ function sfl_api_run_query($where)
                     if ($row['license'] == LICENSE_MEMBERSHIP)
                         $result['membership'][$year] = $result['membership'][$bonus_year] = true;
                     elseif ($row['license'] == LICENSE_COMPETITION)
-                        $result['competition'][$year] = $result['competition'][$bonus_year] = true;
+                        $result['license'][$year] = $result['license'][$bonus_year] = true;
                     break;
 
                 default:
@@ -106,14 +106,14 @@ function sfl_api_parseLicenses($data)
     $year = date('Y');
 
     // For development/club use purposes
-    if (GetConfig(LICENSE_ENABLED) != 'sfl')
-        return array('competition' => array("$year" => true), 'membership' => array("$year" => true));
+    if (!sfl_enabled())
+        return array('license' => array("$year" => true), 'membership' => array("$year" => true));
 
     if (!$data || $data['status'] == false)
         return null;
 
     $data['membership'] = isset($data['membership']) ? $data['membership'] : false;
-    $data['competition'] = isset($data['competition']) ? $data['competition'] : false;
+    $data['license'] = isset($data['license']) ? $data['license'] : false;
 
     return $data;
 }
