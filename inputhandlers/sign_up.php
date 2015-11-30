@@ -58,7 +58,7 @@ function processForm()
     if ($status != 'notsigned')
         redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 
-    $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+    $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
 
     $class = GetClassDetails(@$_POST['class']);
     if (!$player->IsSuitableClass($class, $pdga_data)) {

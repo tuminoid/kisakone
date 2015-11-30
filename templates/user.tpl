@@ -81,26 +81,11 @@
          </td>
       </tr>
       <tr>
-         <td >{translate id=user_alicensefee}: </td>
+         <td >{translate id=user_licensefee}: </td>
          <td>
-            {foreach from=$fees.aLicense key=year item=paid}
+            {foreach from=$fees.license key=year item=paid}
                {if $paid}
-                  {assign var=alicense_paid value=true}
-                  {$year} {translate id=user_ispaid}
-               {else}
-                  {$year} {translate id=user_notpaid}
-               {/if}
-               <br />
-            {/foreach}
-         </td>
-      </tr>
-      <tr>
-         <td >{translate id=user_blicensefee}: </td>
-         <td>
-            {foreach from=$fees.bLicense key=year item=paid}
-               {if $alicense_paid}
-                  {$year} {translate id=user_alicense_paid}
-               {elseif $paid}
+                  {assign var=license_paid value=true}
                   {$year} {translate id=user_ispaid}
                {else}
                   {$year} {translate id=user_notpaid}

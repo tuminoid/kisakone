@@ -177,15 +177,13 @@ $(document).ready(function(){
     <div>
         {if $licenses_ok}
             <div class="searcharea">
-            {if $sfl_license_a}
-                {translate id='license_ok_a'}
-            {elseif $sfl_license_b}
-                {translate id='license_ok_b'}
+            {if $sfl_license}
+                {translate id='license_ok'}
             {else}
                 {if $pdga && $pdga_country != "FI" && $pdga_membership_status == "current"}
                     {translate id='license_ok_foreign'}
                 {else}
-                    This shouldn't happen...
+                    BUG: This shouldn't happen in 2016 (B-license was removed)
                 {/if}
             {/if}
             </div>
@@ -199,19 +197,15 @@ $(document).ready(function(){
                     This shouldn't happen...
                 {/if}
             {else}
-                {if $sfl_license_b && $licenses_ok == false}
-                    {translate id='licenses_fail_onlyb'}
-                {else}
-                    <p>
-                        {translate id='licenses_fail'}
-                    </p>
-                    <p class="searcharea">
-                        {translate id="pdga_shouldnt_add_finnish"}
-                        <br />
-                        <label for="allow_foreigners">{translate id=pdga_allow_foreigner}</label>
-                        <input id="allow_foreigners" type="checkbox" onclick="$('input[type=submit]').removeAttr('disabled');">
-                    </p>
-                {/if}
+                <p>
+                    {translate id='licenses_fail'}
+                </p>
+                <p class="searcharea">
+                    {translate id="pdga_shouldnt_add_finnish"}
+                    <br />
+                    <label for="allow_foreigners">{translate id=pdga_allow_foreigner}</label>
+                    <input id="allow_foreigners" type="checkbox" onclick="$('input[type=submit]').removeAttr('disabled');">
+                </p>
             {/if}
             </div>
         {/if}

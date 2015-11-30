@@ -75,12 +75,11 @@ function sfl_api_run_query($where)
                 case 'license':
                     // Bonus year means if month is december, next year's license is valid already
                     $bonus_year = date('m') == 12 ? $year - 1 : $year;
+
                     if ($row['license'] == LICENSE_MEMBERSHIP)
                         $result['membership'][$year] = $result['membership'][$bonus_year] = true;
-                    elseif ($row['license'] == LICENSE_A)
-                        $result['a_license'][$year] = $result['a_license'][$bonus_year] = true;
-                    elseif ($row['license'] == LICENSE_B)
-                        $result['b_license'][$year] = $result['b_license'][$bonus_year] = true;
+                    elseif ($row['license'] == LICENSE_COMPETITION)
+                        $result['competition'][$year] = $result['competition'][$bonus_year] = true;
                     break;
 
                 default:
@@ -108,14 +107,13 @@ function sfl_api_parseLicenses($data)
 
     // For development/club use purposes
     if (GetConfig(LICENSE_ENABLED) != 'sfl')
-        return array('a_license' => array("$year" => true), 'b_license' => array("$year" => true), 'membership' => array("$year" => true));
+        return array('competition' => array("$year" => true), 'membership' => array("$year" => true));
 
     if (!$data || $data['status'] == false)
         return null;
 
     $data['membership'] = isset($data['membership']) ? $data['membership'] : false;
-    $data['a_license'] = isset($data['a_license']) ? $data['a_license'] : false;
-    $data['b_license'] = isset($data['b_license']) ? $data['b_license'] : false;
+    $data['competition'] = isset($data['competition']) ? $data['competition'] : false;
 
     return $data;
 }
@@ -225,4 +223,15 @@ function SFL_getPlayer($userid)
     }
 
     return null;
+}
+
+
+/**
+ * SFL enabled
+ *
+ * @return  true if SFL connection is enabled
+ */
+function sfl_enabled()
+{
+    return GetConfig(LICENSE_ENABLED) == 'sfl';
 }

@@ -125,10 +125,9 @@
             <option value="0" {if $event.requireFees == 0}selected="selected"{/if}>{translate id=event_require_no_fees}</option>
             {else}
             {* membership not allowed in sfl and useless in non-sfl
-            <option value="{$sfl_license_m}" {if $event.requireFees == $sfl_license_m}selected="selected"{/if}>{translate id=event_require_member_fee}</option>
+            <option value="{$sfl_membership}" {if $event.requireFees == $sfl_membership}selected="selected"{/if}>{translate id=event_require_member_fee}</option>
             *}
-            <option value="{$sfl_license_b}" {if $event.requireFees == $sfl_license_b}selected="selected"{/if}>{translate id=event_require_blicense_fee}</option>
-            <option value="{$sfl_license_a}" {if $event.requireFees == $sfl_license_a}selected="selected"{/if}>{translate id=event_require_alicense_fee}</option>
+            <option value="{$sfl_license}" {if $event.requireFees == $sfl_license}selected="selected"{/if}>{translate id=event_require_license_fee}</option>
             {/if}
         </select>
     </div>

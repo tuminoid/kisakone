@@ -59,10 +59,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('ad', $ad);
     }
 
-    $smarty->assign('sfl_enabled', GetConfig(SFL_ENABLED));
-    $smarty->assign('pdga_enabled', GetConfig(PDGA_ENABLED));
+    $smarty->assign('sfl_enabled', sfl_enabled());
+    $smarty->assign('pdga_enabled', pdga_enabled());
 
-    if (GetConfig(SFL_ENABLED) == true) {
+    if (sfl_enabled()) {
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
         $data = SFL_getPlayer($userid);
@@ -75,7 +75,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('fees', $fees);
     }
 
-    if (GetConfig(PDGA_ENABLED) == true) {
+    if (pdga_enabled()) {
         // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
         $force = false; // no forced reasons to go get it from pdga api
         $pdga_data = pdga_getPlayer($player->pdga, $force);

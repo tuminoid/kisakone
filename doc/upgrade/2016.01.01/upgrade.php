@@ -63,6 +63,8 @@ function MigrateConfigs()
     global $settings;
     $migrate_sql = sprintf("
 UPDATE :Config SET
+    AdminEmail = '',
+
     EmailEnabled = '%d',
     EmailAddress = '%s',
     EmailSender = '%s',
@@ -94,10 +96,6 @@ UPDATE :Config SET
     $settings['EMAIL_MAILER'],
 
     IGNORE_PAYMENTS ? 'no' : ($settings['SFL_ENABLED'] ? 'sfl' : 'internal'),
-
-    $settings['SFL_ENABLED'] == true ? 1 : 0,
-    $settings['SFL_USERNAME'],
-    $settings['SFL_PASSWORD'],
 
     $pdga_enabled = $settings['PDGA_ENABLED'] == true ? 1 : 0,
     $settings["PDGA_USERNAME"],

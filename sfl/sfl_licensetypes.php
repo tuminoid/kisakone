@@ -22,9 +22,4 @@
  * */
 
 const LICENSE_MEMBERSHIP = 1;
-const LICENSE = 2;
-
-// Deprecated
-
-const LICENSE_A = 2;
-const LICENSE_B = 6;
+const LICENSE_COMPETITION = 2;

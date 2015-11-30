@@ -77,10 +77,6 @@ CREATE TABLE :Config
 
     LicenseEnabled ENUM('no', 'internal', 'sfl') NOT NULL DEFAULT 'no',
 
-    SflEnabled BOOL NOT NULL DEFAULT 0,
-    SflUsername VARCHAR(30) DEFAULT '',
-    SflPassword VARCHAR(100) DEFAULT '',
-
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
     PdgaPassword VARCHAR(100) DEFAULT '',

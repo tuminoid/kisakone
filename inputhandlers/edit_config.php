@@ -52,23 +52,6 @@ function processForm()
     if (!in_array($license_check, $ok_licenses))
         $problems[LICENSE_ENABLED] = translate('FormError_Default');
 
-    $sfl_enabled = $_POST[SFL_ENABLED] ? 1 : 0;
-    if ($license_check == 'sfl' && !$sfl_enabled) {
-        $problems[LICENSE_ENABLED] = translate('FormError_SFLNotEnabled');
-        $problems[SFL_ENABLED] = translate('FormError_SFLNotEnabled');
-    }
-
-    /* SFL API is disabled
-    $sfl_user = $_POST[SFL_USERNAME];
-    $sfl_pass = $_POST[SFL_PASSWORD];
-    if ($sfl_enabled && !$sfl_user)
-        $problems[SFL_USERNAME] = translate('FormError_NotEmptyIfEnabled');
-    if ($sfl_enabled && !$sfl_pass)
-        $problems[SFL_PASSWORD] = translate('FormError_NotEmptyIfEnabled');
-
-    // TODO: Check SFL API credentials
-    */
-
     $pdga_enabled = $_POST[PDGA_ENABLED] ? 1 : 0;
     $pdga_user = $_POST[PDGA_USERNAME];
     $pdga_pass = $_POST[PDGA_PASSWORD];
@@ -123,12 +106,6 @@ function processForm()
     SetConfig(EMAIL_SENDER,  $email_sender, 'string');
 
     SetConfig(LICENSE_ENABLED, $license_check, 'string');
-
-    SetConfig(SFL_ENABLED,  $sfl_enabled, 'int');
-    /*
-    SetConfig(SFL_USERNAME, $sfl_user, 'string');
-    SetConfig(SFL_PASSWORD, $sfl_pass, 'string');
-    */
 
     SetConfig(PDGA_ENABLED,  $pdga_enabled, 'int');
     SetConfig(PDGA_USERNAME, $pdga_user, 'string');

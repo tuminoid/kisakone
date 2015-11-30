@@ -53,8 +53,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('user', $user);
     $smarty->assign('player', $player);
 
-    $smarty->assign('pdga_enabled', GetConfig(PDGA_ENABLED));
-    $smarty->assign('sfl_enabled', GetConfig(SFL_ENABLED));
+    $smarty->assign('pdga_enabled', pdga_enabled());
+    $smarty->assign('sfl_enabled', sfl_enabled());
     $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
     $textType = '';
@@ -157,13 +157,12 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
 
             if ($status == 'notsigned') {
-                $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+                $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
                 SmartifyPDGA($smarty, $pdga_data);
 
                 $year = date('Y');
                 $data = SFL_getPlayer(@$user->id);
-                $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
-                $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
+                $smarty->assign('sfl_license', @$data['competition'][$year]);
                 $smarty->assign('sfl_membership', @$data['membership'][$year]);
 
                 $classes = $event->GetClasses();

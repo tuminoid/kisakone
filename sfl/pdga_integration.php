@@ -39,7 +39,7 @@ require_once 'data/config.php';
  */
 function pdga_api_settings()
 {
-    if (GetConfig(PDGA_ENABLED) != true)
+    if (pdga_enabled() != true)
         return false;
 
     $username = GetConfig(PDGA_USERNAME);
@@ -366,4 +366,16 @@ function SmartifyPDGA(&$smarty, $pdga_data)
     $smarty->assign('pdga_city', @$pdga_data['city']);
     $smarty->assign('pdga_state', @$pdga_data['state']);
     $smarty->assign('pdga_country', strtoupper(@$pdga_data['country']));
+}
+
+
+
+/**
+ * Is PDGA enabled
+ *
+ * @return  true if PDGA API is enabled
+ */
+function pdga_enabled()
+{
+    return GetConfig(PDGA_ENABLED);
 }

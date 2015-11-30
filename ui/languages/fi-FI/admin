@@ -76,7 +76,6 @@ config_no           Pois päältä
 config_admin        Ylläpitäjän asetukset
 config_email        Sähköpostiasetukset
 config_license      Lisenssiasetukset
-config_sfl          SFL API asetukset
 config_pdga         PDGA API asetukset
 config_cache        Välimuistiasetukset
 config_trackjs      TrackJS asetukset
@@ -90,9 +89,6 @@ LicenseEnabled      Lisenssien tarkastus
 LicenseEnabled_no   Ei tarkasteta
 LicenseEnabled_sfl  SFL:n lisenssitarkastus
 LicenseEnabled_internal Kisakoneen sisäinen tarkastus
-SflEnabled          SFL API
-SflUsername         SFL käyttäjätunnus
-SflPassword         SFL salasana
 PdgaEnabled         PDGA API
 PdgaUsername        PDGA käyttäjätunnus
 PdgaPassword        PDGA salasana

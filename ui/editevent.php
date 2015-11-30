@@ -40,15 +40,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $e = array();
 
-    if (GetConfig(SFL_ENABLED)) {
+    if (sfl_enabled()) {
         $smarty->assign('sfl_enabled', true);
         $smarty->assign('sfl_membership', LICENSE_MEMBERSHIP);
-        $smarty->assign('sfl_license', LICENSE);
-
-        // FIXME: Deprecated
-        $smarty->assign('sfl_license_a', LICENSE_A);
-        $smarty->assign('sfl_license_b', LICENSE_B);
-        $smarty->assign('sfl_license_m', LICENSE_MEMBERSHIP);
+        $smarty->assign('sfl_license', LICENSE_COMPETITION);
     }
 
     if ($error) {

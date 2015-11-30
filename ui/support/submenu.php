@@ -140,7 +140,7 @@ function page_getSubMenu()
             )),
             array('open' => 'auto', 'title' => translate('submenu_manage'), 'link' => array('page' => 'manage_users'), 'access' => 'admin', 'children' => array(
                 array('title' => translate('submenu_manage_fees_item'), 'link' => array('page' => 'managefees' ), 'access' => null, 'children' => array(),
-                      'condition' => !GetConfig(SFL_ENABLED)),
+                      'condition' => !sfl_enabled()),
                 array('title' => translate('submenu_ban_and_remove_users'), 'link' => array('page' => 'manageaccess' ), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_new_admin'), 'link' => array('page' => 'newadmin' ), 'access' => null, 'children' => array()),
 

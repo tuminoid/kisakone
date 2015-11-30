@@ -32,7 +32,7 @@ require_once 'data/config.php';
  */
 function InitializeSmartyVariables(&$smarty, $error)
 {
-    if (GetConfig(SFL_ENABLED) == true)
+    if (sfl_enabled())
         return Error::AccessDenied();
 
     if (!IsAdmin()) {

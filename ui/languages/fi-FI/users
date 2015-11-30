@@ -16,19 +16,17 @@ user_name   Nimi
 user_username  Käyttäjätunnus
 user_email  Sähköposti
 user_gender Sukupuoli
-user_yearofbirth  Syntymävuosi
-user_pdga_number  PDGA-numero
-user_alicensefee   A-lisenssimaksu
-user_blicensefee   B-lisenssimaksu
+user_yearofbirth   Syntymävuosi
+user_pdga_number   PDGA-numero
+user_licensefee    Kilpailulisenssimaksu
 user_membershipfee Liiton jäsenmaksu
 user_ispaid maksettu
 user_notpaid maksamatta
-user_alicense_paid A-lisenssi sisältää B-lisenssin
 user_licenses_title Kilpailulisenssit
 user_pdga_title PDGA-tiedot
 user_club Seura
 user_country Maa
-user_no_club Käyttäjän tiedot ei täsmää Jäsenrekisteriin.
+user_no_club Käyttäjän tiedot ei täsmää Jäsenrekisterin tietoihin.
 
 #registration form
 reg_contact_info    Yhteystiedot
@@ -49,10 +47,8 @@ birthyear           Syntymävuosi
 pdga                PDGA-numero
 membership          Jäsenmaksu
 membership_paid     Jäsenmaksu maksettu
-alicense            A-lisenssi
-alicense_paid       A-lisenssimaksu maksettu
-blicense            B-lisenssi
-blicense_paid       B-lisenssimaksu maksettu
+license             Kilpailulisenssi
+license_paid        Kilpailulisenssi maksettu
 none_paid           Ei SFL-jäsen
 
 
@@ -64,11 +60,9 @@ reg_finalize_create    Luo uusi kilpailija
 
 license_status_header  Lisenssitilanne
 license_status         Onko pelaajalla kilpailuun vaaditut lisenssit
-license_ok_a           A-lisenssi OK.
-license_ok_b           B-lisenssi OK.
+license_ok             Kilpailulisenssi OK.
 license_ok_foreign     Ulkomaalaisen pelaajan PDGA-jäsenyys on kunnossa.
 licenses_fail          Lisenssit eivät ole kunnossa. Pelaajaa ei voi lisätä kilpailuun.\n\nTarkastakaa, että henkilön nimi, syntymävuosi ja PDGA-numero ovat oikein Kisakoneen tiedoissa ja täsmäävät Jäsenrekisterin tietoihin.
-licenses_fail_onlyb    Kilpailuun vaaditaan A-lisenssi ja pelaajalla on vain B-lisenssi.
 license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pelaajaa ei voi ilmoittaa kilpailuun tällä hetkellä.
 
 sfl_server_error       Pelaajaa ei löydy tietokannasta.

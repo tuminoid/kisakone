@@ -24,6 +24,9 @@
 
 require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
+require_once 'sfl/sfl_integration.php';
+require_once 'sfl/pdga_integration.php';
+
 
 
 /* *****************************************************************************
@@ -375,16 +378,13 @@ class User
     */
     function FeesPaidForYear($year, $required)
     {
-        require_once 'sfl/sfl_integration.php';
-        require_once 'sfl/pdga_integration.php';
-
         if (!$required)
             return true;
 
         $player = GetUserPlayer($this->id);
         $pdga = $player && $player->pdga ? $player->pdga : null;
 
-        if ($pdga > 0) {
+        if (pdga_enabled() && $pdga > 0) {
             $pdga_data = pdga_getPlayer($pdga);
             $country = strtoupper(@$pdga_data['country']);
             $valid_pdga = @$pdga_data['membership_status'] == 'current';
@@ -394,23 +394,21 @@ class User
         }
 
         $year = date('Y');
-        $data = SFL_getPlayer($this->id);
-        if ($data) {
-            $aLicense = @$data['a_license'][$year];
-            $bLicense = @$data['b_license'][$year];
-            $membership = @$data['membership'][$year];
+        if (sfl_enabled()) {
+            $data = SFL_getPlayer($this->id);
+            if ($data) {
+                $membership = @$data['membership'][$year];
+                $license = @$data['competition'][$year];
 
-            // If there is any requirements for competition, membership is a must
-            if ($required && !$membership)
-                return false;
-            // If A-license is required, we require that strictly
-            if ($required == LICENSE_A && !$aLicense)
-                return false;
-            // If B-license is required, both A- and B-license quality, obviously
-            if ($required == LICENSE_B && !($aLicense || $bLicense))
-                return false;
+                // If there is any requirements for competition, membership is a must
+                if ($required && !$membership)
+                    return false;
+                // If license is required, we require that strictly
+                if ($required == LICENSE_COMPETITION && !$license)
+                    return false;
 
-            return true;
+                return true;
+            }
         }
 
         return false;
@@ -519,3 +517,6 @@ function IsAdmin()
 
     return $retVal;
 }
+        require_once 'sfl/sfl_integration.php';
+        require_once 'sfl/pdga_integration.php';
+

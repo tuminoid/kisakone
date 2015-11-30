@@ -69,7 +69,7 @@ function processForm()
         $player = $u->GetPlayer();
         $class = GetClassDetails($_POST['class']);
 
-        $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+        $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
 
         if (!$player->IsSuitableClass($class, $pdga_data))
             return translate("error_invalid_class");

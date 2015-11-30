@@ -61,17 +61,14 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $year = date('Y');
         $data = SFL_getPlayer($user);
-        $smarty->assign('sfl_license_a', @$data['a_license'][$year]);
-        $smarty->assign('sfl_license_b', @$data['b_license'][$year]);
+        $smarty->assign('sfl_license', @$data['competition'][$year]);
         $smarty->assign('sfl_membership', @$data['membership'][$year]);
 
-        $fees = $event->FeesRequired();
-        $licenses_ok = $userdata->FeesPaidForYear($year, $fees);
-        $smarty->assign('license_required', $fees);
-        $smarty->assign('licenses_ok', $licenses_ok);
+        $smarty->assign('license_required', $event->FeesRequired());
+        $smarty->assign('licenses_ok', $userdata->FeesPaidForYear($year, $fees));
 
         global $settings;
-        $pdga_data = (GetConfig(PDGA_ENABLED) && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
+        $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
         SmartifyPDGA($smarty, $pdga_data);
 
         foreach ($classOptions as $cid => $cname) {

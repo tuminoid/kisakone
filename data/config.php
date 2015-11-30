@@ -79,14 +79,6 @@ function GetConfigs()
             array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl', 'internal'))
         ),
 
-        "config_sfl" => array(
-            array(SFL_ENABLED,          'bool',     GetConfig(SFL_ENABLED)),
-        /* SFL API is disabled currently
-            array(SFL_USERNAME,         'string',   GetConfig(SFL_USERNAME)),
-            array(SFL_PASSWORD,         'string',   GetConfig(SFL_PASSWORD))
-        */
-        ),
-
         "config_pdga" => array(
             array(PDGA_ENABLED,         'bool',     GetConfig(PDGA_ENABLED)),
             array(PDGA_USERNAME,        'string',   GetConfig(PDGA_USERNAME)),
