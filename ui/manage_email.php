@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Listing of emails
  *
@@ -22,6 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once('core/email.php');
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -37,6 +40,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $links[] = array('title' => translate('email_recover_password'), 'id' => '', 'type' => 'email_password');
     $links[] = array('title' => translate('email_remember_fees'), 'id' => '', 'type' => 'email_fee');
     $links[] = array('title' => translate('email_promoted_from_queue'), 'id' => '', 'type' => 'email_promoted');
+    $links[] = array('title' => translate('email_verify_email'), 'id' => '', 'type' => 'email_verify');
 
     $smarty->assign('fixed', $links);
 }
