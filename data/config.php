@@ -31,6 +31,7 @@ const ADMIN_EMAIL = 'AdminEmail';
 const EMAIL_ENABLED = 'EmailEnabled';
 const EMAIL_ADDRESS = 'EmailAddress';
 const EMAIL_SENDER = 'EmailSender';
+const EMAIL_VERIFICATION = 'EmailVerification';
 
 const LICENSE_ENABLED = 'LicenseEnabled';
 const PAYMENT_ENABLED = 'PaymentEnabled';
@@ -66,28 +67,29 @@ const DEVEL_DB_DIEONERROR = 'Devel_DbDieOnError';
 function GetConfigs()
 {
     return array(
-        "config_admin" => array(
+        'config_admin' => array(
             array(ADMIN_EMAIL,          'string',   GetConfig(ADMIN_EMAIL)),
         ),
 
-        "config_email" => array(
+        'config_email' => array(
             array(EMAIL_ENABLED,        'bool',     GetConfig(EMAIL_ENABLED)),
             array(EMAIL_ADDRESS,        'string',   GetConfig(EMAIL_ADDRESS)),
-            array(EMAIL_SENDER,         'string',   GetConfig(EMAIL_SENDER))
+            array(EMAIL_SENDER,         'string',   GetConfig(EMAIL_SENDER)),
+            array(EMAIL_VERIFICATION,   'bool',     GetConfig(EMAIL_VERIFICATION))
         ),
 
-        "config_payments" => array(
+        'config_payments' => array(
             array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl')),
             array(PAYMENT_ENABLED,      'bool',     GetConfig(PAYMENT_ENABLED))
         ),
 
-        "config_pdga" => array(
+        'config_pdga' => array(
             array(PDGA_ENABLED,         'bool',     GetConfig(PDGA_ENABLED)),
             array(PDGA_USERNAME,        'string',   GetConfig(PDGA_USERNAME)),
             array(PDGA_PASSWORD,        'string',   GetConfig(PDGA_PASSWORD))
         ),
 
-        "config_cache" => array(
+        'config_cache' => array(
             array(CACHE_ENABLED,        'bool',     GetConfig(CACHE_ENABLED)),
             array(CACHE_TYPE,           'enum',     GetConfig(CACHE_TYPE),              array('memcached')),
             array(CACHE_NAME,           'string',   GetConfig(CACHE_NAME)),
@@ -95,12 +97,12 @@ function GetConfigs()
             array(CACHE_PORT,           'int',      GetConfig(CACHE_PORT))
         ),
 
-        "config_trackjs" => array(
+        'config_trackjs' => array(
             array(TRACKJS_ENABLED,      'bool',     GetConfig(TRACKJS_ENABLED)),
             array(TRACKJS_TOKEN,        'string',   GetConfig(TRACKJS_TOKEN))
         ),
 
-        "config_devel" => array(
+        'config_devel' => array(
             array(DEVEL_DB_LOGGING,     'bool',     GetConfig(DEVEL_DB_LOGGING)),
             array(DEVEL_DB_DIEONERROR,  'bool',     GetConfig(DEVEL_DB_DIEONERROR))
         )

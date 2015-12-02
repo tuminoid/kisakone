@@ -46,6 +46,7 @@ function processForm()
         $problems[EMAIL_SENDER] = translate('FormError_NotEmptyIfEnabled');
     if ($email_enabled && !$email_address)
         $problems[EMAIL_ADDRESS] = translate('FormError_NotEmptyIfEnabled');
+    $email_verification = $_POST[EMAIL_VERIFICATION] ? 1 : 0;
 
     $ok_licenses = array('no', 'sfl');
     $license_check = $_POST[LICENSE_ENABLED];
@@ -106,6 +107,7 @@ function processForm()
     SetConfig(EMAIL_ENABLED, $email_enabled, 'int');
     SetConfig(EMAIL_ADDRESS, $email_address, 'string');
     SetConfig(EMAIL_SENDER,  $email_sender, 'string');
+    SetConfig(EMAIL_VERIFICATION, $email_verification, 'int');
 
     SetConfig(LICENSE_ENABLED, $license_check, 'string');
     SetConfig(PAYMENT_ENABLED, $payment_enabled, 'bool');
