@@ -26,6 +26,9 @@ require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
+require_once 'core/email.php';
+require_once 'data/login.php';
+require_once 'core/player.php';
 
 
 
@@ -350,7 +353,6 @@ class User
      */
     function GetPlayer()
     {
-        require_once 'core/player.php';
         return GetUserPlayer($this->id);
     }
 
@@ -361,9 +363,6 @@ class User
      */
     function SendPasswordRecoveryEmail()
     {
-        require_once 'core/email.php';
-        require_once 'data/login.php';
-
         $token = GetUserSecurityToken($this->id);
         $rooturl = serverURL();
 
@@ -416,7 +415,39 @@ class User
 
         return false;
     }
+
+    function IsVerified()
+    {
+        return GetUserVerification() ? true : false;
+    }
+
+    function GetVerificationToken()
+    {
+        $md5 = md5($this->email . $this->salt);
+        $token = strtoupper(substr($md5, 10));
+        return $token;
+    }
+
+    function VerifyToken($token = null)
+    {
+        if (!$token)
+            return false;
+        $token = trim(strtoupper($token));
+
+        return $this->GetVerificationToken() == $token;
+    }
+
+    function SendEmailVerificationEmail()
+    {
+        $token = GetVerificationToken();
+        $rooturl = serverURL();
+
+        $url = $rooturl . url_smarty(array('page' => 'emailverification', 'email' => $this->email, 'token' => $token), $_GET);
+
+        SendEmail(EMAIL_VERIFY_EMAIL, $this->id, null, $url, $token);
+    }
 }
+
 
 /* *****************************************************************************
  * Function for checking if users access rights for an event are adequate for
@@ -520,6 +551,3 @@ function IsAdmin()
 
     return $retVal;
 }
-        require_once 'sfl/sfl_integration.php';
-        require_once 'sfl/pdga_integration.php';
-
