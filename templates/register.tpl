@@ -94,7 +94,6 @@
     <h2>{translate id='reg_finalize'}</h2>
     <div>
         <input type="submit" id="registerButton" value="{translate id='form_accept'}" name="register" />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
         {* | <a href="{url page='recoverpassword'}">{translate id=forgottenpassword}</a>*}
     </div>
 </form>

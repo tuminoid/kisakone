@@ -23,22 +23,18 @@
  * */
 
 require_once 'core/user_operations.php';
+require_once 'core/login.php';
+require_once 'data/user.php';
+require_once 'data/config.php';
 
 
 /**
  * Processes the login form
  * @return Nothing or Error object on error
  */
-
-require_once 'core/login.php';
-require_once 'data/user.php';
-
 function processForm()
 {
     $problems = array();
-
-    if (@$_POST['cancel'])
-        redirect("Location: " . BaseURL());
 
     $lastname = $_POST['lastname'];
     if ($lastname == '')
@@ -111,15 +107,17 @@ function processForm()
         $r->errorPage = 'error';
         return $r;
     }
-    else {
-        set_secure_cookie("kisakone_login", 1);
-        $nuid = GetUserId($username);
-        $newuser = GetUserDetails($nuid);
 
-        if (!@$_COOKIE['kisakone_login'])
-            session_start();
+    set_secure_cookie("kisakone_login", 1);
+    $nuid = GetUserId($username);
+    $newuser = GetUserDetails($nuid);
 
-        $_SESSION['user'] = $newuser;
-        redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
-    }
+    if (!@$_COOKIE['kisakone_login'])
+        session_start();
+    $_SESSION['user'] = $newuser;
+
+    if (GetConfig(EMAIL_VERIFICATION))
+        redirect("Location: " . url_smarty(array('page' => 'emailverification', 'email' => $email), $r));
+
+    redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
 }
