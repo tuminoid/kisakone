@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Listing of emails
  *
@@ -20,9 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
-{assign var=title value=$event->name}
+{translate id='submenu_manage_emails' assign='title'}
 {include file='include/header.tpl'}
-{translate id=admin_manage_email_text}
+
+<h2>{translate id=admin_manage_email_text}</h2>
 
 <table class="oddrows">
     {foreach from=$fixed item=link}
@@ -32,7 +33,5 @@
         </tr>
     {/foreach}
 </table>
-
-
 
 {include file='include/footer.tpl' noad=1}
