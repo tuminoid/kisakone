@@ -17,6 +17,7 @@ FormError_TDasOfficial  TD:tä ei saa asettaa myös toimitsijaksi.
 FormError_SFLNotEnabled SFL API tunnukset asetettava, jos lisenssintarkastus on 'sfl'
 FormError_NotEmptyIfEnabled  Pakollinen kenttä, jos asetus on päällä
 FormError_APIFailed     Väärä tunnus/salasana tai muu virhe yhdistettäessä API:in
+FormError_EmailOff      Sähköpostien lähetys on pois päältä, eikä vahvistussähköpostiakaan voida lähettää.
 
 class_already_in_use    Luokka on jo otettu mukaan kilpailuun.
 confirm_class_removal   Haluatko varmasti poistaa valitun luokan?
