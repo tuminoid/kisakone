@@ -33,7 +33,7 @@ define('EMAIL_YOU_ARE_TD', 'email_td');
 define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
 define('EMAIL_PROMOTED_FROM_QUEUE', 'email_promoted');
-define('EMAIL_VERIFY_EMAIL', 'email_verification');
+define('EMAIL_VERIFY_EMAIL', 'email_verify');
 
 
 
