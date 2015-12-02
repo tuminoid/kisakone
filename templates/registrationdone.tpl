@@ -1,6 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm§
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Registration done notification page
  *
@@ -19,12 +20,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
+
 {translate assign=title id=registration_done_title}
 {include file='include/header.tpl'}
+
 {if $cookiewarning}
-<p>{translate id=cookiewarning}</p>
+    <p>{translate id=cookiewarning}</p>
 {/if}
+
 <div>
-{translate id=registration_done_main_text username=$user->username}
+    {translate id=registration_done_main_text username=$user->username}
 </div>
+
 {include file='include/footer.tpl'}
