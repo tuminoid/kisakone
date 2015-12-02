@@ -85,6 +85,7 @@ AdminEmail          Ylläpidon sähköposti
 EmailEnabled        Sähköpostien lähetys
 EmailAddress        Lähettäjän osoite
 EmailSender         Lähettäjän nimi
+EmailVerification   Käyttäjien sähköpostien vahvistus
 LicenseEnabled      Lisenssien tarkastus
 LicenseEnabled_no   Ei tarkasteta
 LicenseEnabled_sfl  SFL:n lisenssitarkastus

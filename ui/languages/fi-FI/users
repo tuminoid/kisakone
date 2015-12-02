@@ -113,6 +113,9 @@ passwordtoken       Salasanatunnus
 error_invalid_token     Virheellinen salasanatunnus syötetty.
 recovering_password_for Käyttäjän {username} salasanan vaihto
 
+email_verification_help   Sähköpostiosoitettasi ei ole vielä vahvistettu.
+email_verification_help2  Vahvistussähköposti lähetetty osoitteeseen {email}. Syötä koodi alle olevaan kenttään.
+
 change_password_help    Voit vaihtaa salasanasi syöttämällä nykyisen salasanasi ensimmäiseen kenttään ja haluamasi salasanan kahteen myöhempään kenttään.
 recover_password_help_final Voit vaihtaa salasanasi oheisen lomakkeen avulla.
 
