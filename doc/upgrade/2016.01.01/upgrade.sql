@@ -4,6 +4,8 @@
 
 ALTER TABLE :PDGAEvents MODIFY COLUMN country VARCHAR(100) NOT NULL;
 
+ALTER TABLE :User ADD COLUMN EmailVerified DATETIME AFTER PasswordChanged;
+
 ALTER TABLE :Classification ADD COLUMN Short VARCHAR(6) AFTER Name;
 ALTER TABLE :Classification ADD COLUMN Status ENUM('P', 'A') NOT NULL AFTER Available;
 ALTER TABLE :Classification ADD COLUMN Priority INT DEFAULT 1000 AFTER Status;
@@ -75,6 +77,7 @@ CREATE TABLE :Config
     EmailEnabled BOOL NOT NULL DEFAULT 0,
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',
+    EmailVerification BOOL NOT NULL DEFAULT 0,
 
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,

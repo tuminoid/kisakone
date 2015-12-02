@@ -5,6 +5,7 @@ CREATE TABLE :Config
     EmailEnabled BOOL NOT NULL DEFAULT 0,
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',
+    EmailVerification BOOL NOT NULL DEFAULT 1,
 
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,
@@ -68,6 +69,7 @@ CREATE TABLE :User
     Player SMALLINT,
     LastLogin DATETIME,
     PasswordChanged DATETIME,
+    EmailVerified DATETIME,
     SflId INT,
     Club INT,
     PRIMARY KEY(id),
