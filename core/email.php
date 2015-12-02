@@ -25,26 +25,17 @@
 
 require_once 'config.php';
 require_once 'data/config.php';
+require_once 'core/textcontent.php';
 
-
-/**
- * E-mail tokens are bits of text which are converted within an e-mail message
- * with appropriate content.
- */
-function GetEmailTokens()
-{
-    // The key stands for the token itself, the value is instruction for
-    // the Email::Prepare function letting it know how to deal with it
-    return array('event' => 'event.name', 'pdga' => 'player.pdga', 'lastname' => 'user.lastname', 'firstname' => 'user.firstname', 'username' => 'user.username', //'admin_firstname' => 'user.firstname',
-    //'admin_lastname' => 'user.lastname',
-    'startdate' => 'event.startdate/d', 'signup_end' => 'event.signupEnd/d', 'link' => 'special.link', 'token' => 'special.token',);
-}
 
 // E-mail types
 define('EMAIL_YOU_ARE_TD', 'email_td');
 define('EMAIL_REMEMBER_FEES', 'email_fee');
 define('EMAIL_PASSWORD', 'email_password');
 define('EMAIL_PROMOTED_FROM_QUEUE', 'email_promoted');
+define('EMAIL_VERIFY_EMAIL', 'email_verification');
+
+
 
 class Email
 {
@@ -57,14 +48,10 @@ class Email
     // TextContent object for the message
     function Email($content)
     {
-        require_once 'core/textcontent.php';
-
-        if (is_a($content, 'TextContent')) {
+        if (is_a($content, 'TextContent'))
             $this->textcontent = $content;
-        }
-        else {
+        else
             $this->textcontent = GetGlobalTextContent($content);
-        }
     }
 
     /**
@@ -175,3 +162,28 @@ function SendEmail($emailid, $userid, $event, $link = '', $token = '')
 
     return $email->send($user->email);
 }
+
+
+/**
+ * E-mail tokens are bits of text which are converted within an e-mail message
+ * with appropriate content.
+ */
+function GetEmailTokens()
+{
+    // The key stands for the token itself, the value is instruction for
+    // the Email::Prepare function letting it know how to deal with it
+    return array(
+        'event' => 'event.name',
+        'pdga' => 'player.pdga',
+        'lastname' => 'user.lastname',
+        'firstname' => 'user.firstname',
+        'username' => 'user.username',
+        //'admin_firstname' => 'user.firstname',
+        //'admin_lastname' => 'user.lastname',
+        'startdate' => 'event.startdate/d',
+        'signup_end' => 'event.signupEnd/d',
+        'link' => 'special.link',
+        'token' => 'special.token'
+    );
+}
+
