@@ -12,6 +12,8 @@ next:
   * New class information is used to limit registration options based on rating, status etc.
   * All other configs except database settings are now in Admin UI. GH #180.
   * SFL: In December, next year's license is already valid.
+  * Add setting for checking payments (for club use). GH #177.
+
 
 2015.08.22:
 ===========
