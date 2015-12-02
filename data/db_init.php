@@ -23,9 +23,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/config.php';
-
-
 /**
  * Connects to the database
  *
@@ -118,6 +115,7 @@ function esc_or_null($param, $type = 'string')
  *
  * FIXME: Find a more reasonable way to sanitize prefix without touching content
  * NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
+ * TODO: MembershipPayment and LicensePayment tables are dropped in 2016.01.01.
  *
  * @param string $query actual SQL query to format
  * @return formatted SQL that is prefixed correctly
@@ -132,7 +130,9 @@ function format_query($query)
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
         ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
         ':TournamentStanding', ':Tournament', ':ClassInEvent',
-        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents');
+        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents',
+        ':MembershipPayment', ':LicensePayment'
+    );
     $realtables = str_replace(":", $prefix, $tables);
 
     return str_replace($tables, $realtables, $query);
@@ -178,10 +178,11 @@ function execute_query($query)
  */
 function debug_query_and_die($query)
 {
-    global $settings;
+    require_once 'data/config.php';
+
     $db_error_log = GetConfig(DEVEL_DB_LOGGING);
 
-    if (isset($db_error_log) && $db_error_log) {
+    if ($db_error_log) {
         error_log("query: $query");
         error_log("mysql error: " . mysql_error());
 
@@ -196,7 +197,7 @@ function debug_query_and_die($query)
     }
 
     $db_error_die = GetConfig(DEVEL_DB_DIEONERROR);
-    if (isset($db_error_die) && $db_error_die) {
+    if ($db_error_die) {
         header("Content-Type: text/plain; charset=utf-8");
         xdebug_print_function_stack();
         xdebug_var_dump($query);
