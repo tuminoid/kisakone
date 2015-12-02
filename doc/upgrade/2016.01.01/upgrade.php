@@ -7,19 +7,15 @@ const CONFIG_SITE = '../../../config_site.php';
 const CONFIG = '../../../config.php';
 
 require_once(CONFIG);
+require_once __DIR__ . '/../../../data/db_init.php';
 
 
-function InitializeDatabaseConnection()
+function InitializeDB()
 {
-  $retValue = null;
-  global $settings;
-  $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+    global $settings;
 
-  if (!($con && @mysql_select_db($settings['DB_DB']))) {
-    die("error: Unable to connect to DB...");
-  }
-
-  return $retValue;
+    if (!InitializeDatabaseConnection())
+        die("fatal: Cannot connect to DB\n");
 }
 
 
@@ -27,23 +23,28 @@ function Upgrade() {
     global $settings;
 
     if (!file_exists('upgrade.sql'))
-        die("error: Please run upgrade.php within directory containing 'upgrade.sql'");
+        die("fatal: Please run upgrade.php within directory containing 'upgrade.sql'");
 
     $source = file_get_contents('upgrade.sql');
     $queries = explode(';', $source);
-    $prefix = $settings['DB_PREFIX'];
+
+    mysql_query("SET autocommit=0; START TRANSACTION;");
 
     foreach ($queries as $query) {
         if (!trim($query))
             continue;
         if (trim($query) == 'SHOW WARNINGS')
             continue;
-        $query = str_replace(':', $prefix, $query);
+        $query = format_query($query);
         if (!mysql_query($query)) {
-            echo $query, "<br>";
-            die(mysql_error() . "\n");
+            echo "fatal: $query\n";
+            echo "error: " . mysql_error() . "\n";
+            mysql_query("ROLLBACK;");
+            die();
         }
     }
+
+    mysql_query("COMMIT;");
 
     return true;
 }
@@ -72,11 +73,12 @@ function MigrateConfigs()
 
     $migrate_sql = sprintf("
 UPDATE :Config SET
-    AdminEmail = '',
+    AdminEmail = '%s',
 
     EmailEnabled = '%d',
     EmailAddress = '%s',
     EmailSender = '%s',
+    EmailVerification = '%d',
 
     LicenseEnabled = '%s',
     PaymentEnabled = '%d',
@@ -97,9 +99,12 @@ UPDATE :Config SET
     Devel_DbLogging = '%d',
     Devel_DbDieOnError = '%d'
 ;\n",
+    '', // admin email
+
     $settings['EMAIL_ENABLED'] == true ? 1 : 0,
     $settings['EMAIL_SENDER'],
     $settings['EMAIL_MAILER'],
+    0, // email verification
 
     IGNORE_PAYMENTS !== false ? 'no' : 'sfl',
     IGNORE_PAYMENTS === true ? 0 : 1,
@@ -139,7 +144,7 @@ UPDATE :Config SET
 }
 
 
-InitializeDatabaseConnection();
+InitializeDB();
 CheckUpgrade();
 Upgrade();
 MigrateConfigs();

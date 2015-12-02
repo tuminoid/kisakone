@@ -5,6 +5,22 @@
 ALTER TABLE :PDGAEvents MODIFY COLUMN country VARCHAR(100) NOT NULL;
 
 ALTER TABLE :User ADD COLUMN EmailVerified DATETIME AFTER PasswordChanged;
+INSERT INTO :TextContent (Event, Title, Content, `Date`, Type, `Order`) VALUES(NULL, "Kisakone: Sähköpostiosoitteen vahvistus", "
+Moi,
+
+Vahvista sähköpostiosoitteesi Kisakoneessa syöttämällä koodi
+
+{token}
+
+vahvistuskoodisivulle, tai vaihtoehtoisesti klikkaa
+
+{link}
+
+Terveisin,
+  Kisakone
+",
+NOW(), "email_verify", 0);
+
 
 ALTER TABLE :Classification ADD COLUMN Short VARCHAR(6) AFTER Name;
 ALTER TABLE :Classification ADD COLUMN Status ENUM('P', 'A') NOT NULL AFTER Available;
@@ -105,3 +121,5 @@ INSERT INTO :Config VALUES();
 -- We have removed support for internal payment tables
 DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
+
+COMMIT;
