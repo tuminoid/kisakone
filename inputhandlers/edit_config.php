@@ -47,6 +47,8 @@ function processForm()
     if ($email_enabled && !$email_address)
         $problems[EMAIL_ADDRESS] = translate('FormError_NotEmptyIfEnabled');
     $email_verification = $_POST[EMAIL_VERIFICATION] ? 1 : 0;
+    if ($email_verification && !$email_enabled)
+        $problems[EMAIL_VERIFICATION] = translate('FormError_EmailOff');
 
     $ok_licenses = array('no', 'sfl');
     $license_check = $_POST[LICENSE_ENABLED];
