@@ -69,10 +69,9 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('data', $data);
 
         $year = date('Y');
-        $fees['membership'][$year] = @$data['membership'][$year];
-        $fees['aLicense'][$year] = @$data['a_license'][$year];
-        $fees['bLicense'][$year] = @$data['b_license'][$year];
-        $smarty->assign('fees', $fees);
+        $licenses['membership'][$year] = @$data['membership'][$year];
+        $licenses['license'][$year] = @$data['license'][$year];
+        $smarty->assign('licenses', $licenses);
     }
 
     if (pdga_enabled()) {

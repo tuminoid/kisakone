@@ -40,7 +40,7 @@
       {if $pdga_country and $pdga_country != 'FI'}
          <td>{translate id=user_country}:</td>
          <td>{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</td>
-      {else}
+      {elseif $sfl_enabled}
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
       {/if}
@@ -56,6 +56,7 @@
    {/if}
 </table>
 
+{if $sfl_enabled}
 {if ($itsme || $isadmin) && $player}
    <h2>{translate id=user_licenses_title}</h2>
 
@@ -66,11 +67,11 @@
    {/if}
 
    <table style="width:500px">
-   {if $fees}
+   {if $licenses}
       <tr>
          <td style="width: 200px">{translate id=user_membershipfee}: </td>
          <td>
-            {foreach from=$fees.membership key=year item=paid}
+            {foreach from=$licenses.membership key=year item=paid}
                {if $paid}
                   {$year} {translate id=user_ispaid}
                {else}
@@ -83,7 +84,7 @@
       <tr>
          <td >{translate id=user_licensefee}: </td>
          <td>
-            {foreach from=$fees.license key=year item=paid}
+            {foreach from=$licenses.license key=year item=paid}
                {if $paid}
                   {assign var=license_paid value=true}
                   {$year} {translate id=user_ispaid}
@@ -97,13 +98,16 @@
    {/if}
    </table>
 {/if}
+{/if}
 
+{if $pdga_enabled}
 {if $player && $player->pdga}
 <h2>{translate id=user_pdga_title}</h2>
 
 <table style="width:335px">
 {include file='include/pdgainfotable.tpl'}
 </table>
+{/if}
 {/if}
 
 {include file='include/footer.tpl'}
