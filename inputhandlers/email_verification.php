@@ -47,17 +47,10 @@ function processForm()
     }
 
     // If token was input
-    if ($token) {
-        error_log("verify token");
-        if ($user->VerifyEmailToken($token)) {
-            $user->SetEmailVerified(true);
-            redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'verified' => 1), $_GET));
-        }
-
-        redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'failed' => 1), $_GET));
+    if ($user->VerifyEmailToken($token)) {
+        $user->SetEmailVerified(true);
+        redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'verified' => 1), $_GET));
     }
 
-    error_log("DO NOT COME HERE!");
-    // This is the token prefill
-    redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'token' => $token), $_GET));
+    redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'failed' => 1), $_GET));
 }

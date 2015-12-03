@@ -1,8 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2013-2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Edit my info ui backend
  *
@@ -21,6 +21,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'data/config.php';
+require_once 'core/url.php';
+
 
 /**
  * Processes the login form
@@ -48,10 +52,6 @@ function processForm()
     }
     $problems = array();
 
-    if (@$_POST['cancel']) {
-        redirect("Location: " . url_smarty(array('page' => 'myinfo')));
-    }
-
     $lastname = $_POST['lastname'];
     if ($lastname == '')
         $problems['lastname'] = translate('FormError_NotEmpty');
@@ -63,12 +63,14 @@ function processForm()
     $email = $_POST['email'];
     if (!preg_match('/^.+@.+\..+$/', $email))
         $problems['email'] = translate('FormError_InvalidEmail');
+    $email_old = $_POST['email_old'];
 
     $player = $eduser->GetPlayer();
     if ($player) {
         $pdga = $_POST['pdga'];
-        if ($pdga == '')
+        if ($pdga == '') {
             $pdga = null;
+        }
         else {
             $pdga = (int) $pdga;
             if (!$pdga)
@@ -111,15 +113,12 @@ function processForm()
             $user->email = $email;
         }
 
-        if (@$_GET['id']) {
-            redirect("Location: " . url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
-        }
-        else {
-            redirect("Location: " . url_smarty(array('page' => 'myinfo'), $user));
-        }
-        die();
+        if (@$_GET['id'])
+            redirect(url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
+        elseif ($email != $email_old && GetConfig(EMAIL_VERIFICATION))
+            redirect(url_smarty(array('page' => 'emailverification', 'email' => $email), $user));
+        redirect(url_smarty(array('page' => 'myinfo'), $user));
     }
-    else {
-        return $result;
-    }
+
+    return $result;
 }

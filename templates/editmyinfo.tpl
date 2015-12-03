@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013, 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User info editor
  *
@@ -41,7 +41,8 @@
     </div>
     <div>
         <label for="email">{translate id='reg_email'}</label>
-        <input id="email" type="text" name="email"  value="{$userdata->email|escape}" />
+        <input id="email" type="text" name="email" value="{$userdata->email|escape}" />
+        <input type="hidden" name="email_old" value="{$userdata->email|escape}" />
         {formerror field='email'}
     </div>
 
@@ -69,40 +70,9 @@
         {formerror field='dob'}
     </div>
      {/if}
-     {*
-     {if $smarty.get.id}
-            <h2>{translate id=administrative_changes}</h2>
-            <div>
-                <h3>{translate id=user_licensefee}</h3>
-                {foreach from=$licensefees item=payment key=year}
-                <div>
-                    <input type="checkbox" name="license_{$year}" {if $payment}checked="checked"{/if} /> {translate id=fee} {$year}
-                </div>
-                {/foreach}
-            </div>
-
-            <div>
-                <h3>{translate id=user_membershipfee}</h3>
-                {foreach from=$membershipfees item=payment key=year}
-                <div>
-                    <input type="checkbox" name="membership_{$year}" {if $payment}checked="checked"{/if} /> {translate id=fee} {$year}
-                </div>
-                {/foreach}
-            </div>
-                <hr />
-            <div>
-                <input type="checkbox" name="ban" {if $banned}checked="checked"{/if} /> {translate id=ban_long}
-            </div>
-            <div>
-                <input type="checkbox" name="delete" /> {translate id=permanent_removal}
-            </div>
-     {/if}
-    *}
     <hr />
     <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
-        {* | <a href="{url page='recoverpassword'}">{translate id=forgottenpassword}</a>*}
     </div>
 </form>
 
