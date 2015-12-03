@@ -147,6 +147,7 @@ mainmenu_help       ?
 
 terms_and_conditions        Käyttöehdot
 confirm_email         Vahvista sähköposti
+send_confirm_email    Lähetä vahvistuskoodi
 verificationcode      Vahvistuskoodi
 
 page_requires_javascript       Tämä toiminnallisuus vaatii selaimelta Javascript-tuen. Tuki ei tällä hetkellä ole käytettävissä, joten toiminnon suoritus ei ole mahdollista. Voit aktivoida tuen joko selaimen asetuksista, tai mahdollisesti lisäämällä kisakoneen NoScript-lisäosan turvallisten sivustojen listaan, jos lisäosa on käytössä.

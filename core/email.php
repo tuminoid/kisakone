@@ -139,8 +139,8 @@ class Email
         $sender = GetConfig(EMAIL_SENDER);
         $from_header = "$sender <$from>";
 
-        return  mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text),
-            "From: " . $from_header . "\r\n" . "X-Mailer: " . $mailer, "-f$from");
+        return mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text),
+            "From: " . $from_header . "\r\n" . "X-Mailer: Kisakone", "-f$from");
     }
 }
 

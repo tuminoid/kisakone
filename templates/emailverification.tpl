@@ -25,31 +25,41 @@
 
 <h2>{translate id=emailverification_title}</h2>
 
-{if $error}
-    <p class="error">{translate id=$error}</p>
+{if $smarty.get.failed}
+    <p class="error">{translate id=email_verification_failed}</p>
 {/if}
 
+{if $smarty.get.verified > 0}
+<p class="searcharea">{translate id=email_verification_step3 email=$smarty.get.email|escape}</p>
+{elseif $smarty.get.step}
 <p>{translate id=email_verification_help}</p>
 
-<p>{translate id=email_verification_help2 email=$email|escape}</p>
+<p>{translate id=email_verification_step1 email=$smarty.get.email|escape}</p>
 
 <form method="post" class="evenform">
     <input type="hidden" name="formid" value="email_verification" />
+    <input type="hidden" name="send_token" value="1" />
+    <input type="hidden" name="email" value="{$smarty.get.email}" />
+    <p>
+        <input type="submit" value="{translate id=send_confirm_email}" />
+    </p>
+</form>
+{else}
+<p>{translate id=email_verification_help2 email=$smarty.get.email|escape}</p>
+
+<form method="post" class="evenform">
+    <input type="hidden" name="formid" value="email_verification" />
+    <input type="hidden" name="email" value="{$smarty.get.email}" />
 
     <div>
         <label for="verificationcode">{translate id='verificationcode'}</label>
-        <input id="verificationcode" type="text" name="verificationcode" value="" length="10" maxlength="10" />
+        <input id="verificationcode" type="text" name="token" value="{if $smarty.get.token}{$smarty.get.token}{/if}" />
     </div>
 
     <p>
         <input type="submit" value="{translate id=confirm_email}" />
     </p>
 </form>
-
-{*
-<p>
-    {translate id=email_resend_code email=$email}
-</p>
-*}
+{/if}
 
 {include file='include/footer.tpl'}

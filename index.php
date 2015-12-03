@@ -63,9 +63,11 @@ else {
 }
 
 // If we're supposed to be logged in, start the session
+global $user;
+$user = null;
+
 if (@$_COOKIE['kisakone_login']) {
     session_start();
-    global $user;
     $user = @$_SESSION['user'];
 }
 else {
@@ -144,6 +146,14 @@ if (!is_array($pagename))
 // Basename removes the path entirely, which in that particular case would leave
 // only "passwd", which is fine.
 $pagename[0] = basename($pagename[0]);
+
+// If user's email is not verified, he may not visit anything before that
+// Certain pages must be allowed to do the verification
+$bypass_verification = array('javascript', 'emailverification', 'myinfo', 'user', 'editmyinfo', 'changepassword', 'login');
+//error_log("bypass: page=" . $pagename[0] . " bypass: " . (in_array($pagename[0], $bypass_verification) ? 'yes' : 'no'));
+if (!in_array($pagename[0], $bypass_verification) && $user && !IsAdmin() && GetConfig(EMAIL_VERIFICATION) && !$user->IsEmailVerified()) {
+    redirect(url_smarty(array('page' => 'emailverification', 'email' => $user->email, 'step' => '1'), $_GET));
+}
 
 // Now it's time to show the actual page.
 global $fullPageName, $fullTemplateName;

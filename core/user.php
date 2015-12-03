@@ -416,33 +416,36 @@ class User
         return false;
     }
 
-    function IsVerified()
+    function IsEmailVerified()
     {
-        return GetUserVerification() ? true : false;
+        return GetUserEmailVerification($this->id) ? true : false;
     }
 
-    function GetVerificationToken()
+    function GetEmailVerificationToken()
     {
         $md5 = md5($this->email . $this->salt);
-        $token = strtoupper(substr($md5, 10));
+        $token = strtoupper(substr($md5, 0, 10));
         return $token;
     }
 
-    function VerifyToken($token = null)
+    function VerifyEmailToken($token = null)
     {
         if (!$token)
             return false;
         $token = trim(strtoupper($token));
 
-        return $this->GetVerificationToken() == $token;
+        return $this->GetEmailVerificationToken() == $token;
+    }
+
+    function SetEmailVerified($verified = false)
+    {
+        return SetUserEmailVerification($this->id, $verified);
     }
 
     function SendEmailVerificationEmail()
     {
-        $token = GetVerificationToken();
-        $rooturl = serverURL();
-
-        $url = $rooturl . url_smarty(array('page' => 'emailverification', 'email' => $this->email, 'token' => $token), $_GET);
+        $token = $this->GetEmailVerificationToken();
+        $url = serverURL() . url_smarty(array('page' => 'emailverification', 'email' => $this->email, 'token' => $token), $_GET);
 
         SendEmail(EMAIL_VERIFY_EMAIL, $this->id, null, $url, $token);
     }

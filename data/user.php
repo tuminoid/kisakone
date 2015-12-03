@@ -371,3 +371,35 @@ function GetUserEvents($ignored, $eventType = 'all')
 
     return data_GetEvents($conditions);
 }
+
+
+function GetUserEmailVerification($id = null)
+{
+    $id = esc_or_null($id, 'int');
+
+    $query = format_query("SELECT EmailVerified FROM :User WHERE id = $id AND EmailVerified > (NOW() - INTERVAL 1 YEAR)");
+    $result = execute_query($query);
+
+    $retValue = false;
+    if (mysql_num_rows($result) == 1) {
+        $row = mysql_fetch_assoc($result);
+        $retValue = $row['EmailVerified'] ? true : false;
+    }
+    mysql_free_result($result);
+
+    return $retValue;
+}
+
+
+function SetUserEmailVerification($id = null, $status = false)
+{
+    if (!$id)
+        return;
+
+    $id = esc_or_null($id, 'int');
+    $status = $status ? "NOW()" : "NULL";
+
+    $query = format_query("UPDATE :User SET EmailVerified = $status WHERE id = $id");
+    error_log("setting verify on db: " . $query);
+    execute_query($query);
+}

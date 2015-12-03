@@ -31,8 +31,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if (!@$_COOKIE['kisakone_login'])
         $smarty->assign('cookiewarning', true);
-
+/*
     $smarty->assign('email', @$_GET['email']);
+    $smarty->assign('step', @$_GET['step']);
+    $smarty->assign('token_prefill', @$_GET['token']);
+    $smarty->assign('verified', @$_GET['verified']);
+*/
 }
 
 /**
