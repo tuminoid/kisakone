@@ -13,7 +13,7 @@ next:
   * All other configs except database settings are now in Admin UI. GH #180.
   * SFL: In December, next year's license is already valid.
   * Add setting for checking payments (for club use). GH #177.
-
+  * Email verification upon registration and for old users too. GH #206.
 
 2015.08.22:
 ===========
