@@ -23,7 +23,7 @@ function Upgrade() {
     global $settings;
 
     if (!file_exists('upgrade.sql'))
-        die("fatal: Please run upgrade.php within directory containing 'upgrade.sql'");
+        die("fatal: Must run upgrade.php within directory containing 'upgrade.sql'");
 
     $source = file_get_contents('upgrade.sql');
     $queries = explode(';', $source);
