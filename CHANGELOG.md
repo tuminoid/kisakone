@@ -54,7 +54,7 @@ next:
 ===========
   * Regression: Fix a typo in EditTournament, causing scorecalculationmethod become invalid.
   * PDGA Stats API changed and `:PDGAStats` table followed suit.
- 
+
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150301.md)
 for additional actions needed.
 
@@ -85,8 +85,8 @@ for additional actions needed.
 ===========
   * Critical: Create only a single memcached connection.
 
-2015.02.15 - "One TD to Rule Them All"
-======================================
+2015.02.15:
+===========
   * Registration rules (rules for requiring CO, Rating, Country, ...) for joining up. GH #7.
   * In Leaderboard_CSV, set 999 correctly for DNS/DNF entries. GH #4.
   * Implement initial memcached support. GH #192.
@@ -97,12 +97,12 @@ for additional actions needed.
   * Track.js support. GH #195.
   * Delete event works for events that have Course defined. GH #196.
   * Support AddThisEvent Calendar Widget. GH #197.
- 
+
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150215.md)
 for additional actions needed.
 
-2015.02.10 - "Rating, Rating, Rating"
-=====================================
+2015.02.10:
+===========
   * Club didn't save for players when one other user already had that club.
   * Don't link to userinfo page of users that are TD added "virtual" users.
   * Use local jQuery again. Upgrade to jQuery UI 1.11.2.
@@ -115,8 +115,8 @@ for additional actions needed.
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150210.md)
 for additional actions needed.
 
-2015.02.07 - "The Rise of the Clubs"
-====================================
+2015.02.07:
+===========
   * PDGA integration during sign up/add competitor.
   * PDGA event id number and auto-generated links to PDGA.com for event info. GH #33.
   * First version of a proper upgrade guide. GH #112.
@@ -128,14 +128,14 @@ for additional actions needed.
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20150207.md)
 for additional actions needed.
 
-2015.02.04 - "Data... It Is All About Data"
-===========================================
+2015.02.04:
+===========
   * Humongous data_access.php is split into 15 data/* files.
   * Various optimizations around database handling.
   * Regression: Entering scores fixed.
 
-2015.01.30 - "Security Over Obscurity"
-======================================
+2015.01.30:
+===========
   * Fix `combine.sh` (reported by Niko Palokangas, thx!). GH #165 and GH #166.
   * Reformat `data_access.php` entirely to make it readable and as a first step,
       introduce `login.php` in `core/data` to handle login related functions.
