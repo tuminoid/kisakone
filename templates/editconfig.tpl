@@ -26,12 +26,10 @@
 <h2>{translate id=config_title}</h2>
 
 {if $error}
-<p class="error">
-{translate id=FormError_Summary}
-</p>
+    <p class="error">{translate id=FormError_Summary}</p>
 {/if}
 
-<form method="post" enctype="multipart/form-data">
+<form method="post">
     <input name="formid" type="hidden" value="edit_config" />
 
 {foreach from=$configs item=group key=title}
@@ -76,4 +74,4 @@
 
 </form>
 
-{include file='include/footer.tpl' noad=1 }
+{include file='include/footer.tpl' noad=1}
