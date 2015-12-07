@@ -120,4 +120,39 @@ INSERT INTO :Config VALUES();
 DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
 
+
+
+CREATE TABLE :EventPayout
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    Event INT NOT NULL,
+    Classification INT NOT NULL,
+    Curve ENUM('custom', 'pro', 'am') NOT NULL DEFAULT 'pro',
+    Percentage ENUM('custom', 'p25', 'p33', 'p40', 'p50'),
+    PlacesPaid INT,
+    PRIMARY KEY(id),
+    FOREIGN KEY(Event) REFERENCES :Event(id),
+    FOREIGN KEY(Classification) REFERENCES :Classification(id),
+    UNIQUE KEY(Event, Classification)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE :EventPrizes
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    Event INT NOT NULL,
+    Player INT DEFAULT NULL,
+    Classification INT NOT NULL,
+    Standing INT NOT NULL,
+    CashPrize INT NOT NULL DEFAULT '0',
+    OtherPrize INT NOT NULL DEFAULT '0',
+    DeclineCash BOOL DEFAULT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(Player) REFERENCES :Player(player_id),
+    FOREIGN KEY(Event) REFERENCES :Event(id),
+    FOREIGN KEY(Classification) REFERENCES :Classification(id),
+    UNIQUE KEY(Event, Player)
+) ENGINE=InnoDB;
+
+
 COMMIT;

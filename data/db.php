@@ -128,12 +128,17 @@ function format_query($query)
     global $settings;
     $prefix = $settings['DB_PREFIX'];
 
-    $tables = array(':Config', ':Club', ':Player', ':User', ':Venue', ':Level',
-        ':File', ':AdBanner', ':EventQueue', ':EventManagement', ':Event', ':TextContent',
-        ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
-        ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
-        ':TournamentStanding', ':Tournament', ':ClassInEvent',
-        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents',
+    $tables = array(
+        ':Config', ':Club', ':Player', ':User', ':Venue', ':Level',
+        ':File', ':AdBanner', ':TextContent',
+        ':Classification', ':Course', ':Participation',
+        ':StartingOrder', ':ClassInEvent', ':RegistrationRules',
+        ':RoundResult', ':Round',
+        ':EventQueue', ':EventManagement', ':EventPayout', ':EventPrizes', ':Event',
+        ':HoleResult', ':Hole',
+        ':SectionMembership', ':Section',
+        ':TournamentStanding', ':Tournament',
+        ':PDGAPlayers', ':PDGAStats', ':PDGAEvents',
         ':MembershipPayment', ':LicensePayment'
     );
     $realtables = str_replace(":", $prefix, $tables);

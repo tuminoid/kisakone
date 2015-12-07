@@ -39,6 +39,7 @@
 :view:course        view:rata
 :view:queue         view:jono
 :view:quotas        view:kiintiot
+:view:prizes        view:palkinnot
 
 :id:currentYear     id:kuluvaVuosi
 :id:mine            id:omat

@@ -214,6 +214,11 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('news', $event->GetNews(0, 9999));
             break;
 
+        case 'prizes':
+        case 'payout':
+            $view = 'prizes';
+            break;
+
         case 'results':
         case 'liveresults':
             $view = 'results';

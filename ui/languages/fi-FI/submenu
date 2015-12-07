@@ -41,6 +41,7 @@ event_competitors   Kilpailijat
 event_queue         Jono
 event_quotas        Kiintiöt
 event_schedule      Aikataulu
+event_prizes        Palkinnot
 event_course        Rata
 event_signup_info   Ilmoittautuminen
 event_rss           Tilaa RSS
@@ -56,6 +57,9 @@ edit_news_item      Muokkaa uutista
 edit_event_classes  Luokat
 edit_event_quotas   Kiintiöt
 edit_event_rules    Rajat ja ehdot
+edit_event_prizes   Palkinnot
+edit_payout         Payoutit
+edit_prizes         Palkinnot ja verotus
 edit_ads            Mainokset
 editclass           Muokkaa luokkaa
 edittournament      Muokkaa sarjaa

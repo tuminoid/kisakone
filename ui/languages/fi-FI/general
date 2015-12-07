@@ -84,6 +84,9 @@ managelevels_title      Tasojen hallinta
 eventfees_title         Kilpailumaksut
 classquotas_title       Luokkakiintiöt
 eventrules_title        Ilmoittautumisrajat
+prizes_title            Palkinnot
+payout_title            Payoutit
+prizes_taxes_title      Palkintosummat ja verotus
 editeventpages_title    Kilpailun sivujen muokkaus
 user_edit_done      Muokkaus tehty
 managerounds_title      Kierrosten hallinta
