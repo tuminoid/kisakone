@@ -30,97 +30,91 @@ require_once 'core/rules.php';
 
 
 /* Return event's queue counts by class */
-function GetEventQueueCounts($eventId)
+function GetEventQueueCounts($eventid)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT COUNT(*) AS cnt, Classification
+    $result = db_all("SELECT COUNT(*) AS cnt, Classification
                            FROM :EventQueue
-                           WHERE Event = $eventId
+                           WHERE Event = $eventid
                            GROUP BY Classification");
-    $result = db_query($query);
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $class = $row['Classification'];
-            $retValue[$class] = $row['cnt'];
-        }
+    foreach ($result as $row) {
+        $class = $row['Classification'];
+        $retValue[$class] = $row['cnt'];
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
 
 
 // FIXME: Redo to a simpler form sometime
-function GetEventQueue($eventId, $sortedBy, $search)
+function GetEventQueue($eventid, $sortedby, $search)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
     $where = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate'));
 
-    $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
-                    :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
-                    pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
-                    :Classification.Name AS ClassName, :Classification.Short AS ClassShort,
-                    :EventQueue.id AS QueueId, :EventQueue.Rating AS Rating,
-                    :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
-                    UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp, :Classification.id AS ClassId
-                FROM :User
-                INNER JOIN :Player ON :Player.player_id = :User.Player
-                INNER JOIN :EventQueue ON (:EventQueue.Player = :Player.player_id AND :EventQueue.Event = $eventId)
-                INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
-                LEFT JOIN :Club ON :User.Club = :Club.id
-                WHERE $where
-                ORDER BY SignupTimestamp ASC, :EventQueue.id ASC";
-    $query = format_query($query);
-    $result = db_query($query);
+    $result = db_all("SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
+                        :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
+                        pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
+                        :Classification.Name AS ClassName, :Classification.Short AS ClassShort,
+                        :EventQueue.id AS QueueId, :EventQueue.Rating AS Rating,
+                        :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
+                        UNIX_TIMESTAMP(SignupTimestamp) AS SignupTimestamp, :Classification.id AS ClassId
+                    FROM :User
+                    INNER JOIN :Player ON :Player.player_id = :User.Player
+                    INNER JOIN :EventQueue ON (:EventQueue.Player = :Player.player_id AND :EventQueue.Event = $eventid)
+                    INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
+                    LEFT JOIN :Club ON :User.Club = :Club.id
+                    WHERE $where
+                    ORDER BY SignupTimestamp ASC, :EventQueue.id ASC");
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $pdata = array();
+    foreach ($result as $row) {
+        $pdata = array();
 
-            $firstname = data_GetOne($row['UserFirstName'], $row['pFN']);
-            $lastname = data_GetOne($row['UserLastName'], $row['pLN']);
-            $email = data_GetOne($row['UserEmail'], $row['pEM']);
-            $user = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
-            $player = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
+        $firstname = data_GetOne($row['UserFirstName'], $row['pFN']);
+        $lastname = data_GetOne($row['UserLastName'], $row['pLN']);
+        $email = data_GetOne($row['UserEmail'], $row['pEM']);
+        $user = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
+        $player = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
 
-            $pdata['user'] = $user;
-            $pdata['player'] = $player;
-            $pdata['queueId'] = $row['QueueId'];
-            $pdata['signupTimestamp'] = $row['SignupTimestamp'];
-            $pdata['className'] = $row['ClassName'];
-            $pdata['classShort'] = $row['ClassShort'];
-            $pdata['classId'] = $row['ClassId'];
-            $pdata['clubName'] = $row['ClubName'];
-            $pdata['clubLongName'] = $row['ClubLongName'];
-            $pdata['rating'] = $row['Rating'];
+        $pdata['user'] = $user;
+        $pdata['player'] = $player;
+        $pdata['queueId'] = $row['QueueId'];
+        $pdata['signupTimestamp'] = $row['SignupTimestamp'];
+        $pdata['className'] = $row['ClassName'];
+        $pdata['classShort'] = $row['ClassShort'];
+        $pdata['classId'] = $row['ClassId'];
+        $pdata['clubName'] = $row['ClubName'];
+        $pdata['clubLongName'] = $row['ClubLongName'];
+        $pdata['rating'] = $row['Rating'];
 
-            $retValue[] = $pdata;
-        }
+        $retValue[] = $pdata;
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
 
 
 // Check if we can raise players from queue after someone left
-function CheckQueueForPromotions($eventId)
+function CheckQueueForPromotions($eventid)
 {
-    $queuers = GetEventQueue($eventId, '', '');
+    $queuers = GetEventQueue($eventid, '', '');
 
     foreach ($queuers as $queuer) {
-        $playerId = (int) $queuer['player']->id;
-        $classId = (int) $queuer['classId'];
+        $playerid = (int) $queuer['player']->id;
+        $classid = (int) $queuer['classId'];
 
-        $quota_ok = CheckSignupQuota($eventId, $playerId, $classId);
-        $rules_ok = (CheckEventRules($eventId, $classId, $playerId) === true ? true : false);
+        $quota_ok = CheckSignupQuota($eventid, $playerid, $classid);
+        $rules_ok = (CheckEventRules($eventid, $classid, $playerid) === true ? true : false);
 
         if ($quota_ok && $rules_ok)
-            PromotePlayerFromQueue($eventId, $playerId);
+            PromotePlayerFromQueue($eventid, $playerid);
     }
 
     return null;
@@ -128,36 +122,31 @@ function CheckQueueForPromotions($eventId)
 
 
 // Raise competitor from queue to the event
-function PromotePlayerFromQueue($eventId, $playerId)
+function PromotePlayerFromQueue($eventid, $playerid)
 {
-    $eventId = (int) $eventId;
-    $playerId = (int) $playerId;
+    $eid = esc_or_null($eventid, 'int');
+    $pid = esc_or_null($playerid, 'int');
+    $row = db_one("SELECT * FROM :EventQueue WHERE Player = $pid AND Event = $eid");
 
-    // Get data from queue
-    $query = format_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-    $result = db_query($query);
+    if (db_is_error($row))
+        return $row;
 
-    if (!$result)
-        return Error::Query($query);
+    if (empty($row))
+        return null;
 
-    if (mysql_num_rows($result) > 0) {
-        $row = mysql_fetch_assoc($result);
+    // Insert into competition
+    $player = (int) $row['Player'];
+    $event = (int) $row['Event'];
+    $class = (int) $row['Classification'];
+    $user = GetPlayerUser($player);
+    $userid = $user ? $user->id : null;
 
-        // Insert into competition
-        $player = (int) $row['Player'];
-        $event = (int) $row['Event'];
-        $class = (int) $row['Classification'];
-        $user = GetPlayerUser($player);
-        $userid = $user ? $user->id : null;
+    // cancel player from both queue/competition and set it again
+    CancelSignup($eventid, $playerid, false);
+    SetPlayerParticipation($player, $event, $class, true);
 
-        // cancel player from both queue/competition and set it again
-        CancelSignup($eventId, $playerId, false);
-        SetPlayerParticipation($player, $event, $class, true);
-
-        if ($user !== null)
-            SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventId));
-    }
-    mysql_free_result($result);
+    if ($user !== null)
+        SendEmail(EMAIL_PROMOTED_FROM_QUEUE, $user->id, GetEventDetails($eventid));
 
     return null;
 }
@@ -165,18 +154,12 @@ function PromotePlayerFromQueue($eventId, $playerId)
 
 function UserQueueing($eventid, $userid)
 {
-    $eventid = (int) $eventid;
-    $userid = (int) $userid;
+    $eventid = esc_or_null($eventid);
+    $userid = esc_or_null($userid);
 
-    $query = format_query("SELECT :EventQueue.id
+    return db_one("SELECT :EventQueue.id AS id
                             FROM :EventQueue
                             INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
-    $result = db_query($query);
-
-    $retValue = (mysql_num_rows($result) > 0);
-    mysql_free_result($result);
-
-    return $retValue;
 }
