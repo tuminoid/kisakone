@@ -31,16 +31,11 @@ function GetLevels($availableOnly = false)
 {
     $where = $availableOnly ? "WHERE Available <> 0" : "";
 
-    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level $where");
-    $result = db_query($query);
+    $result = db_all("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level $where");
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
     return $retValue;
 }
 
@@ -48,84 +43,57 @@ function GetLevels($availableOnly = false)
 // Gets a Level object by id
 function GetLevelDetails($levelid)
 {
-    $levelid = (int) $levelid;
+    $levelid = esc_or_null($levelid, 'int');
 
-    $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available
+    $row = db_one("SELECT id, Name, ScoreCalculationMethod, Available
                             FROM :Level
                             WHERE id = $levelid");
-    $result = db_query($query);
 
-    $retValue = array();
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
-    }
-    mysql_free_result($result);
+    if (db_is_error($row))
+        return $row;
 
-    return $retValue;
+    return new Level($row['id'], $row['Name'], $row['ScoreCalculationMethod'], $row['Available']);
 }
 
 
 function EditLevel($id, $name, $method, $available)
 {
-    $id = (int) $id;
-    $name = esc_or_null($name);
-    $method = esc_or_null($method);
+    $id = esc_or_null($id, 'int');
+    $name = esc_or_null($name, 'string');
+    $method = esc_or_null($method, 'string');
     $available = $available ? 1 : 0;
 
-    $query = format_query("UPDATE :Level
+    return db_exec("UPDATE :Level
                             SET Name = $name, ScoreCalculationMethod = $method, Available = $available
                             WHERE id = $id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
 }
 
 
 function CreateLevel($name, $method, $available)
 {
-    $name = esc_or_null($name);
-    $method = esc_or_null($method);
+    $name = esc_or_null($name, 'string');
+    $method = esc_or_null($method, 'string');
     $available = $available ? 1 : 0;
 
-    $query = format_query("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ($name, $method, $available)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return mysql_insert_id();
+    return db_exec("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ($name, $method, $available)");
 }
 
 
 function DeleteLevel($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("DELETE FROM :Level WHERE id = $id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("DELETE FROM :Level WHERE id = $id");
 }
 
 
 // Returns true if the provided level is being used in any event or tournament, false otherwise
 function LevelBeingUsed($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = $id) AS Events,
+    $row = db_one("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = $id) AS Events,
                            (SELECT COUNT(*) FROM :Tournament WHERE Level = $id) AS Tournaments");
-    $result = db_query($query);
 
-    $retValue = true;
-    if (mysql_num_rows($result) > 0) {
-        $temp = mysql_fetch_assoc($result);
-        $retValue = ($temp['Events'] + $temp['Tournaments']) > 0;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
+    return (($row['Events'] + $row['Tournaments']) > 0);
 }
