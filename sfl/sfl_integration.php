@@ -37,27 +37,18 @@ require_once 'data/config.php';
  */
 function sfl_api_run_query($where)
 {
-    $query = "SELECT year, license,
-                sfl_player.pdga, sfl_player.sfl_id, sfl_clubs.club_id,
-                CAST(CAST(sfl_clubs.club_name AS char character set utf8) AS binary) AS club_name,
-                CAST(CAST(sfl_clubs.club_short AS char character set utf8) AS binary) AS club_short,
-                CAST(CAST(sfl_player.firstname AS char character set utf8) AS binary) AS firstname,
-                CAST(CAST(sfl_player.lastname AS char character set utf8) AS binary) AS lastname,
-                YEAR(sfl_player.birthdate) AS birthyear, sfl_player.email,
-                UPPER(SUBSTR(sfl_player.sex, 1, 1)) AS gender
-            FROM sfl_membership
-            INNER JOIN sfl_player ON (sfl_player.player_id = sfl_membership.player_id)
-            INNER JOIN sfl_clubs ON (sfl_player.club_id = sfl_clubs.club_id)
-            $where";
-    $result = db_query($query);
-
-    if (!$result)
-        return null;
-
-    $rows = null;
-    while (($row = mysql_fetch_assoc($result)) !== false)
-        $rows[] = $row;
-    mysql_free_result($result);
+    $rows = db_all("SELECT year, license,
+                        sfl_player.pdga, sfl_player.sfl_id, sfl_clubs.club_id,
+                        CAST(CAST(sfl_clubs.club_name AS char character set utf8) AS binary) AS club_name,
+                        CAST(CAST(sfl_clubs.club_short AS char character set utf8) AS binary) AS club_short,
+                        CAST(CAST(sfl_player.firstname AS char character set utf8) AS binary) AS firstname,
+                        CAST(CAST(sfl_player.lastname AS char character set utf8) AS binary) AS lastname,
+                        YEAR(sfl_player.birthdate) AS birthyear, sfl_player.email,
+                        UPPER(SUBSTR(sfl_player.sex, 1, 1)) AS gender
+                    FROM sfl_membership
+                    INNER JOIN sfl_player ON (sfl_player.player_id = sfl_membership.player_id)
+                    INNER JOIN sfl_clubs ON (sfl_player.club_id = sfl_clubs.club_id)
+                    $where");
 
     if (!count($rows))
         return null;
@@ -176,29 +167,19 @@ function sfl_api_get_by_pdga($pdga)
  */
 function SFL_getPlayer($userid)
 {
-    $userid = (int) $userid;
+    $userid = esc_or_null($userid, 'int');
+    $row = db_one("SELECT UserFirstname, UserLastname, SflId, :Player.pdga AS PDGA,
+                            YEAR(:Player.birthdate) AS Birthdate
+                        FROM :User
+                        INNER JOIN :Player ON :User.Player = :Player.player_id
+                        WHERE :User.id = $userid");
 
-    if (!$userid)
-        return null;
-
-    $query = format_query("SELECT UserFirstname, UserLastname, SflId, :Player.pdga AS PDGA,
-                                YEAR(:Player.birthdate) AS Birthdate
-                            FROM :User
-                            INNER JOIN :Player ON :User.Player = :Player.player_id
-                            WHERE :User.id = $userid");
-    $result = db_query($query);
-
-    if (!$result)
-        return null;
-
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
+    if (is_array($row)) {
         $sflid = $row['SflId'];
         $pdga = $row['PDGA'];
         $firstname = $row['UserFirstname'];
         $lastname = $row['UserLastname'];
         $birthdate = $row['Birthdate'];
-        mysql_free_result($result);
 
         // sanitize input a little, mostly because we have legacy doubles people
         if (strstr($firstname, '/') || strstr($lastname, '/') || $birthdate == 1900)
@@ -214,7 +195,7 @@ function SFL_getPlayer($userid)
             $data = sfl_api_get_by_name($firstname, $lastname, $birthdate);
 
         if ($data) {
-            if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']))
+            if (SaveClub(@$data['club_id'], @$data['club_name'], @$data['club_short']) !== false)
                 SaveUserClub($userid, @$data['club_id']);
             SaveUserSflId($userid, @$data['sfl_id']);
         }
