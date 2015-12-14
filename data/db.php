@@ -23,8 +23,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'core/error.php';
-
 
 /**
  * Connects to the database
@@ -161,8 +159,10 @@ function db_query($query)
     }
 
     $result = mysql_query($query);
-    if (!$result)
+    if (!$result) {
+        require_once 'core/error.php';
         $result = debug_query_and_die($query);
+    }
 
     return $result;
 }
