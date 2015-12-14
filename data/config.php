@@ -120,16 +120,8 @@ function GetConfig($key)
 {
     static $_config;
 
-    if (!$_config) {
-        $query = format_query("SELECT * FROM :Config");
-        $result = db_query($query);
-
-        if (mysql_num_rows($result) > 0) {
-            $_config = mysql_fetch_assoc($result);
-        }
-
-        mysql_free_result($result);
-    }
+    if (!$_config)
+        $_config = db_one("SELECT * FROM :Config");
 
     return $_config[$key];
 }
@@ -147,6 +139,5 @@ function SetConfig($key, $value, $value_type = null)
     $key = esc_or_null($key, 'key');
     $value = esc_or_null($value, $value_type);
 
-    $query = format_query("UPDATE :Config SET $key = $value");
-    db_query($query);
+    return db_exec("UPDATE :Config SET $key = $value");
 }
