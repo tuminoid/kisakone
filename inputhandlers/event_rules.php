@@ -33,6 +33,7 @@ function processForm()
 {
     $eventid = (int) $_POST['eventid'];
 
+    $rules = array();
     foreach ($_POST as $key => $val) {
         if (substr($key, 0, 4) != "rule")
             continue;

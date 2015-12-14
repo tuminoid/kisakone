@@ -44,7 +44,7 @@ function GetRuleActions()
 
 function GetEventRules($eventid, $classid = -1)
 {
-    $eventid = (int) $eventid;
+    $eventid = esc_or_null($eventid, 'int');
 
     if ($classid === -1)
         $where_class = "";
@@ -53,52 +53,38 @@ function GetEventRules($eventid, $classid = -1)
     else
         $where_class = "AND Classification = " . esc_or_null($classid);
 
-    $query = format_query("SELECT :RegistrationRules.id AS id, Event, Classification, Type, Op, Value, Action,
-                                DATE_FORMAT(ValidUntil, '%Y-%m-%d %H:%i') AS ValidUntil, NOW() < ValidUntil AS Valid,
-                                :Classification.Name AS ClassName
-                            FROM :RegistrationRules
-                            LEFT JOIN :Classification ON :RegistrationRules.Classification = :Classification.id
-                            WHERE Event = $eventid
-                            $where_class
-                            ORDER BY Classification ASC, ValidUntil, id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = array();
-    while (($row = mysql_fetch_assoc($result)) !== false)
-        $retValue[] = $row;
-    mysql_free_result($result);
-
-    return $retValue;
+    return db_all("SELECT :RegistrationRules.id AS id, Event, Classification, Type, Op, Value, Action,
+                            DATE_FORMAT(ValidUntil, '%Y-%m-%d %H:%i') AS ValidUntil, NOW() < ValidUntil AS Valid,
+                            :Classification.Name AS ClassName
+                        FROM :RegistrationRules
+                        LEFT JOIN :Classification ON :RegistrationRules.Classification = :Classification.id
+                        WHERE Event = $eventid
+                        $where_class
+                        ORDER BY Classification ASC, ValidUntil, id");
 }
 
 
 function DeleteEventRules($eventid)
 {
-    $eventid = (int) $eventid;
-    db_query(format_query("DELETE FROM :RegistrationRules WHERE Event = $eventid"));
+    $eventid = esc_or_null($eventid, 'int');
+
+    return db_exec("DELETE FROM :RegistrationRules WHERE Event = $eventid");
 }
 
 
 function SaveRule($ruleid, $eventid, $classid, $type, $op, $value, $action, $validuntil)
 {
     $ruleid = esc_or_null($ruleid, 'int');
-    $eventid = (int) $eventid;
+    $eventid = esc_or_null($eventid, 'int');
     $classid = esc_or_null($classid, 'int');
-    $type = esc_or_null($type);
-    $op = esc_or_null($op);
-    $value = esc_or_null($value);
-    $action = esc_or_null($action);
-    $validuntil = esc_or_null($validuntil);
+    $type = esc_or_null($type, 'string');
+    $op = esc_or_null($op, 'string');
+    $value = esc_or_null($value, 'string');
+    $action = esc_or_null($action, 'string');
+    $validuntil = esc_or_null($validuntil, 'string');
 
-    $query = format_query("INSERT INTO :RegistrationRules (id, Event, Classification, Type, Op, Value, Action, ValidUntil)
-                            VALUES($ruleid, $eventid, $classid, $type, $op, $value, $action, $validuntil)
-                            ON DUPLICATE KEY UPDATE Event = $eventid, Classification = $classid,
-                            Type = $type, Op = $op, Value = $value, Action = $action, ValidUntil = $validuntil");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("INSERT INTO :RegistrationRules (id, Event, Classification, Type, Op, Value, Action, ValidUntil)
+                        VALUES($ruleid, $eventid, $classid, $type, $op, $value, $action, $validuntil)
+                        ON DUPLICATE KEY UPDATE Event = $eventid, Classification = $classid,
+                        Type = $type, Op = $op, Value = $value, Action = $action, ValidUntil = $validuntil");
 }
