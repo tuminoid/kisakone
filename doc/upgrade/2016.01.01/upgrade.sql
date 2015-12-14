@@ -27,7 +27,10 @@ ALTER TABLE :Classification ADD COLUMN Short VARCHAR(6) AFTER Name;
 ALTER TABLE :Classification ADD COLUMN Status ENUM('P', 'A') NOT NULL AFTER Available;
 ALTER TABLE :Classification ADD COLUMN Priority INT DEFAULT 1000 AFTER Status;
 ALTER TABLE :Classification ADD COLUMN RatingLimit INT AFTER Priority;
+
 ALTER TABLE :Event CHANGE COLUMN FeesRequired LicensesRequired TINYINT NOT NULL;
+ALTER TABLE :Event ADD COLUMN Club INT AFTER id;
+ALTER TABLE :Event ADD CONSTRAINT FOREIGN KEY (Club) REFERENCES :Club(id);
 
 UPDATE :Classification SET Short = SUBSTR(Name, 1, 3) WHERE Name RLIKE '^[A-Z0-9]{3} (.+)$';
 UPDATE :Classification SET Name = SUBSTR(REPLACE(Name, ')', ''), 6) WHERE Name RLIKE '^[A-Z0-9]{3} (.+)$';
@@ -116,7 +119,7 @@ CREATE TABLE :Config
 -- Insert defaults into db, they'll be updated during upgrade.php run
 INSERT INTO :Config VALUES();
 
--- We have removed support for internal payment tables
+-- We have removed support for internal license payment tables
 DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
 

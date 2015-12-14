@@ -57,6 +57,15 @@
     </div>
 
     <div>
+        <label for="club">{translate id=event_club}</label>
+        <select id="club" name="club">
+            <option value="" {if !$event.club}selected="true"{/if}>{translate id=select_none}</option>
+            {html_options options=$club_options selected=$event.club}
+        </select>
+        {formerror field='club'}
+    </div>
+
+    <div>
         <label for="venueField">{translate id=event_venue}</label>
         <input type="text" name="venue" id="venueField" value="{$event.venue|escape}" />
         {formerror field='venue'}

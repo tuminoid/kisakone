@@ -131,6 +131,7 @@ SHOW WARNINGS;
 CREATE TABLE :Event
 (
     id INT NOT NULL AUTO_INCREMENT,
+    Club INT,
     Venue INT,
     Tournament INT,
     Level INT,
@@ -147,6 +148,7 @@ CREATE TABLE :Event
     PdgaEventId INT,
     PlayerLimit INT NOT NULL DEFAULT 0,
     PRIMARY KEY(id),
+    FOREIGN KEY(Club) REFERENCES :Club(id),
     FOREIGN KEY(Venue) REFERENCES :Venue(id),
     FOREIGN KEY(Tournament) REFERENCES :Tournament(id),
     FOREIGN KEY(Level) REFERENCES :Level(id)

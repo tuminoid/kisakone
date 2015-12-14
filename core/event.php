@@ -57,6 +57,7 @@ class Event
 {
     var $id;
     var $name;
+    var $club;
 
     // String, from database
     var $date;
@@ -107,6 +108,7 @@ class Event
 
         $this->id = $id;
         $this->name = $name;
+        $this->club = null;
 
         $this->startdate = $startdate;
         $this->venue = $venue;
@@ -362,6 +364,11 @@ class Event
     function getRules($class = -1)
     {
         return GetEventRules($this->id, $class);
+    }
+
+    function getClub()
+    {
+        return GetEventClub($this->id);
     }
 }
 
