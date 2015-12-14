@@ -29,55 +29,50 @@ require_once 'core/section.php';
 // Get sections for a Round
 function GetSections($round, $order = 'time')
 {
-    $roundid = (int) $round;
+    $roundid = esc_or_null($round, 'int');
 
     if ($order == 'time')
         $order = "Priority, StartTime, Name";
     else
         $order = "Classification, Name";
 
-    $query = format_query("SELECT :Section.id, Name, UNIX_TIMESTAMP(StartTime) AS StartTime,
+    $result = db_all("SELECT :Section.id, Name, UNIX_TIMESTAMP(StartTime) AS StartTime,
                                 Priority, Classification, Round, Present
                             FROM :Section
                             WHERE :Section.Round = $roundid
                             ORDER BY $order");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Section($row);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new Section($row);
     return $retValue;
 }
 
 
 // Gets a Section object by id
-function GetSectionDetails($sectionId)
+function GetSectionDetails($sectionid)
 {
-    $sectionId = (int) $sectionId;
+    $sectionid = esc_or_null($sectionid, 'int');
 
-    $query = format_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) AS StartTime, Present, Classification
+    $row = db_one("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) AS StartTime, Present, Classification
                             FROM :Section
-                            WHERE id = $sectionId");
-    $result = db_query($query);
+                            WHERE id = $sectionid");
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new Section(mysql_fetch_assoc($result));
-    mysql_free_result($result);
+    if (db_is_error($row))
+        return $row;
 
-    return $retValue;
+    return new Section($row);
 }
 
 
-function GetSectionMembers($sectionId)
+function GetSectionMembers($sectionid)
 {
-    $sectionId = (int) $sectionId;
+    $sectionid = esc_or_null($sectionid, 'int');
 
-    $query = format_query("SELECT :Player.player_id AS PlayerId, :User.UserFirstName, :User.UserLastName,
+    $result = db_all("SELECT :Player.player_id AS PlayerId, :User.UserFirstName, :User.UserLastName,
                                 :Player.pdga AS PDGANumber, :Player.firstname AS pFN, :Player.lastname AS pLN,
                                 :Player.email AS pEM,
                                 IF(:Classification.Short IS NOT NULL,
@@ -90,19 +85,18 @@ function GetSectionMembers($sectionId)
                             INNER JOIN :Participation ON :Player.player_id = :Participation.Player
                             INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                             INNER JOIN :SectionMembership SM ON SM.Participation = :Participation.id
-                            WHERE SM.Section = $sectionId
+                            WHERE SM.Section = $sectionid
                             ORDER BY :Participation.OverallResult DESC, SM.id");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
-            $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
-            $retValue[] = $row;
-        }
+    foreach ($result as $row) {
+        $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
+        $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
+        $retValue[] = $row;
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
@@ -110,66 +104,45 @@ function GetSectionMembers($sectionId)
 
 function CreateSection($round, $baseClassId, $name)
 {
-    $round = (int) $round;
+    $round = esc_or_null($round, 'int');
     $classid = esc_or_null($baseClassId, 'int');
     $name = esc_or_null($name);
 
-    $query = format_query("INSERT INTO :Section(Round, Classification, Name, Present)
-                            VALUES($round, $classid, $name, 1)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return mysql_insert_id();
+    return db_exec("INSERT INTO :Section(Round, Classification, Name, Present)
+                        VALUES($round, $classid, $name, 1)");
 }
 
 
-function RenameSection($classId, $newName)
+function RenameSection($classid, $newName)
 {
-    $classId = (int) $classId;
-
+    $classid = esc_or_null($classid, 'int');
     $newName = esc_or_null($newName);
-    $query = format_query("UPDATE :Section SET Name = $newName WHERE id = $classId");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("UPDATE :Section SET Name = $newName WHERE id = $classid");
 }
 
 
 function AssignPlayersToSection($roundid, $sectionid, $playerids)
 {
-    $roundid = (int) $roundid;
-    $sectionid = (int) $sectionid;
-
     $each = array();
     foreach ($playerids as $playerid)
         $each[] = sprintf("(%d, %d)", GetParticipationIdByRound($roundid, $playerid), $sectionid);
 
     $data = implode(", ", $each);
-    $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES $data");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("INSERT INTO :SectionMembership (Participation, Section) VALUES $data");
 }
 
 
 function AdjustSection($sectionid, $priority, $sectiontime, $present)
 {
-    $sectionid = (int) $sectionid;
+    $sectionid = esc_or_null($sectionid, 'int');
     $priority = esc_or_null($priority, 'int');
     $sectiontime = esc_or_null($sectiontime, 'int');
     $present = $present ? 1 : 0;
 
-    $query = format_query("UPDATE :Section
-                            SET Priority = $priority, StartTime = FROM_UNIXTIME($sectiontime), Present = $present
-                            WHERE id = $sectionid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("UPDATE :Section
+                        SET Priority = $priority, StartTime = FROM_UNIXTIME($sectiontime), Present = $present
+                        WHERE id = $sectionid");
 }
 
 
@@ -184,16 +157,14 @@ function RemovePlayersDefinedforAnySection($a)
 
     $key = sprintf("%d_%d", $round, $section);
     if (!isset($data[$key])) {
-        $query = format_query("SELECT Player FROM :StartingOrder
-                                INNER JOIN :Section ON :StartingOrder.Section = :Section.id
-                                WHERE :Section.Round = $round");
-        $result = db_query($query);
+        $result = db_all("SELECT Player FROM :StartingOrder
+                            INNER JOIN :Section ON :StartingOrder.Section = :Section.id
+                            WHERE :Section.Round = $round");
 
         $mydata = array();
-        while (($row = mysql_fetch_assoc($result)) !== false)
+        foreach ($result as $row)
             $mydata[$row['Player']] = true;
         $data[$key] = $mydata;
-        mysql_free_result($result);
     }
 
     return !@$data[$key][$a['PlayerId']];
@@ -202,14 +173,12 @@ function RemovePlayersDefinedforAnySection($a)
 
 function RemoveEmptySections($round)
 {
-    $round = (int) $round;
-
     $sections = GetSections($round);
     foreach ($sections as $section) {
         $players = $section->GetPlayers();
-        $id = (int) $section->id;
+        $id = esc_or_null($section->id, 'int');
 
         if (!count($players))
-            db_query(format_query("DELETE FROM :Section WHERE id = $id"));
+            db_exec("DELETE FROM :Section WHERE id = $id");
     }
 }
