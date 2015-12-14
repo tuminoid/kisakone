@@ -35,31 +35,25 @@ function SaveAd($ad)
     $type = esc_or_null($ad->type);
     $id = (int) $ad->id;
 
-    $query = format_query("UPDATE :AdBanner
+    $result = db_exec("UPDATE :AdBanner
                             SET URL = $url, ImageURL = $imageurl, LongData = $longdata, ImageReference = $imagereference, Type = $type
                             WHERE id = $id");
-    $result = db_query($query);
-
-    if (!$result)
+    if ($result === false)
         return Error::Query($query);
 }
 
 
 function GetAllAds($eventid)
 {
-    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
+    $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : " IS NULL";
 
-    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
+    $result = db_all("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
                             FROM :AdBanner
                             WHERE Event $eventCond");
-    $result = db_query($query);
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Ad($row);
-    }
-    mysql_free_result($result);
+    foreach ($result as $row)
+        $retValue[] = new Ad($row);
 
     return $retValue;
 }
@@ -67,23 +61,17 @@ function GetAllAds($eventid)
 
 function GetAd($eventid, $contentid)
 {
-    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
+    $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : " IS NULL";
     $contentid = esc_or_null($contentid);
 
-    $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
+    $result = db_one("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
                             FROM :AdBanner
                             WHERE Event $eventCond AND ContentId = $contentid");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result) || empty($result))
+        return null;
 
-    $retValue = null;
-    if (mysql_num_rows($result) > 0)
-        $retValue = new Ad(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    return new Ad($result);
 }
 
 
@@ -93,12 +81,11 @@ function InitializeAd($eventid, $contentid)
     $cid = esc_or_null($contentid);
     $type = esc_or_null($eventid ? AD_EVENT_DEFAULT : AD_DEFAULT);
 
-    $query = format_query("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
+    $result = db_exec("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
                             VALUES ($eid, NULL, NULL, NULL, NULL, $type, $cid)");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     return GetAd($eventid, $contentid);
 }
