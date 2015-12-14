@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/cache.php';
+require_once 'core/cache.php';
 
 
 /**

@@ -41,7 +41,7 @@ require_once './Smarty/libs/Smarty.class.php';
 require_once 'core/init_core.php';
 require_once 'ui/support/init_pagedatarelay.php';
 require_once 'inputhandlers/support/init_input.php';
-require_once 'data/cache.php';
+require_once 'core/cache.php';
 require_once 'data/login.php';
 require_once 'data/ads.php';
 

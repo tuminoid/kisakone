@@ -23,9 +23,8 @@
 
 const PDGA_API_SERVER = "https://api.pdga.com";
 
-require_once 'config.php';
 require_once 'data/db.php';
-require_once 'data/cache.php';
+require_once 'core/cache.php';
 require_once 'data/config.php';
 
 
