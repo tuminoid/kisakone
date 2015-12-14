@@ -28,178 +28,133 @@ require_once 'core/hole.php';
 
 
 // Gets events for a specific tournament
-function GetTournamentEvents($tournamentId)
+function GetTournamentEvents($tournamentid)
 {
-    $tournamentId = (int) $tournamentId;
-    $conditions = ":Event.Tournament = $tournamentId";
+    $tournamentid = esc_or_null($tournamentid, 'int');
+    $conditions = ":Event.Tournament = $tournamentid";
 
     return data_GetEvents($conditions);
 }
 
 
 // Gets the number of people who have signed up for a tournament
-function GetTournamentParticipantCount($tournamentId)
+function GetTournamentParticipantCount($tournamentid)
 {
-    $tournamentId = (int) $tournamentId;
+    $tournamentid = esc_or_null($tournamentid, 'int');
     $filter = payment_enabled() ? "AND :Participation.EventFeePaid IS NOT NULL" : "";
 
-    $query = format_query("SELECT COUNT(DISTINCT :Participation.Player) AS Count
-                            FROM :Event
-                            INNER JOIN :Participation ON :Participation.Event = :Event.id
-                            WHERE :Event.Tournament = $tournamentId
-                            $filter");
-    $result = db_query($query);
+    $row = db_one("SELECT COUNT(DISTINCT :Participation.Player) AS Count
+                        FROM :Event
+                        INNER JOIN :Participation ON :Participation.Event = :Event.id
+                        WHERE :Event.Tournament = $tournamentid
+                        $filter");
 
-    $retValue = null;
-    if (mysql_num_rows($result) > 0) {
-        $temp = mysql_fetch_assoc($result);
-        $retValue = $temp['Count'];
-    }
-    mysql_free_result($result);
+    if (db_is_error($row))
+        return $row;
 
-    return $retValue;
+    return $row['Count'];
 }
 
 
 // Gets an array of Tournament objects for a specific year
 function GetTournaments($year, $onlyAvailable = false)
 {
-    if ($year && ($year < 2000 || $year > 2100))
-        return Error::InternalError();
-
-    $year = $year ? " AND Year = ". (int) $year : "";
+    $year = $year ? " AND Year = ". esc_or_null($year, 'int') : "";
     $available = $onlyAvailable ? " AND Available <> 0" : "";
 
-    $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available
-                            FROM :Tournament
-                            WHERE 1 $year $available
-                            ORDER BY Year, Name");
-    $result = db_query($query);
+    $result = db_all("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available
+                        FROM :Tournament
+                        WHERE 1 $year $available
+                        ORDER BY Year, Name");
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Tournament($row['id'], $row['Level'], $row['Name'],
-                $row['Year'], $row['ScoreCalculationMethod'], $row['Available']);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new Tournament($row['id'], $row['Level'], $row['Name'],
+            $row['Year'], $row['ScoreCalculationMethod'], $row['Available']);
     return $retValue;
 }
 
 
 function EditTournament($id, $name, $method, $level, $available, $year, $description)
 {
-    $id = (int) $id;
-    $name = esc_or_null($name);
-    $method = esc_or_null($method);
-    $level = (int) $level;
+    $id = esc_or_null($id, 'int');
+    $name = esc_or_null($name, 'string');
+    $method = esc_or_null($method, 'string');
+    $level = esc_or_null($level, 'int');
     $available = $available ? 1 : 0;
-    $year = (int) $year;
-    $description = esc_or_null($description);
+    $year = esc_or_null($year, 'int');
+    $description = esc_or_null($description, 'string');
 
-    $query = format_query("UPDATE :Tournament
-                            SET Name = $name, ScoreCalculationMethod = $method, Level = $level,
-                                Available = $available, Year = $year, Description = $description
-                            WHERE id = $id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("UPDATE :Tournament
+                        SET Name = $name, ScoreCalculationMethod = $method, Level = $level,
+                            Available = $available, Year = $year, Description = $description
+                        WHERE id = $id");
 }
 
 
 function CreateTournament($name, $method, $level, $available, $year, $description)
 {
-    $name = esc_or_null($name);
-    $method = esc_or_null($method);
-    $level = (int) $level;
+    $name = esc_or_null($name, 'string');
+    $method = esc_or_null($method, 'string');
+    $level = esc_or_null($level, 'int');
     $available = $available ? 1 : 0;
-    $year = (int) $year;
-    $description = esc_or_null($description);
+    $year = esc_or_null($year, 'int');
+    $description = esc_or_null($description, 'string');
 
-    $query = format_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description)
-                            VALUES($name, $method, $level, $available, $year, $description)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description)
+                        VALUES($name, $method, $level, $available, $year, $description)");
 }
 
 
 function DeleteTournament($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("DELETE FROM :Tournament WHERE id = $id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("DELETE FROM :Tournament WHERE id = $id");
 }
 
 
 // Returns true if the provided tournament is being used in any event, false otherwise
 function TournamentBeingUsed($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = $id");
-    $result = db_query($query);
-
-    $retValue = true;
-    if (mysql_num_rows($result) > 0) {
-        $temp = mysql_fetch_assoc($result);
-        $retValue = $temp['n'] > 0;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
+    return db_one("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = $id");
 }
 
 
 function GetTournamentDetails($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description
-                            FROM :Tournament
-                            WHERE id = $id");
-    $result = db_query($query);
+    $row = db_one("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description
+                        FROM :Tournament
+                        WHERE id = $id");
 
-    $retValue = array();
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = new Tournament($row['id'], $row['Level'], $row['Name'], $row['Year'],
+    if (db_is_error($row) || !$row)
+        return $row;
+
+    return new Tournament($row['id'], $row['Level'], $row['Name'], $row['Year'],
             $row['ScoreCalculationMethod'], $row['Available'], $row['Description']);
-    }
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetTournamentYears()
 {
-    $query = format_query("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
-    $result = db_query($query);
+    $result = db_all("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = $row['Year'];
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = $row['Year'];
     return $retValue;
 }
 
 
 function GetTournamentData($tid)
 {
-    $tid = (int) $tid;
+    $tid = esc_or_null($tid, 'int');
 
-    $query = format_query("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
+    $result = db_all("SELECT player_id, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
                                 :Participation.TournamentPoints, :Participation.Classification,
                                 :TournamentStanding.id AS TSID, :Player.player_id AS PID, :Tournament.id AS TID,
                                 :Event.ResultsLocked, TieBreaker, :Participation.Standing AS EventStanding
@@ -211,14 +166,13 @@ function GetTournamentData($tid)
                                 AND :TournamentStanding.Player = :Player.player_id)
                             WHERE :Tournament.id = $tid
                             ORDER BY :Player.player_id");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($results);
+    if (db_is_error($result))
+        return $result;
 
     $lastrow = null;
     $retValue = array();
-    while (($row = mysql_fetch_assoc($result)) !== false) {
+    foreach ($result as $row) {
         if (!$lastrow || $row['player_id'] != $lastrow['player_id']) {
             if ($lastrow)
                 $retValue[$lastrow['player_id']] = $lastrow;
@@ -230,8 +184,6 @@ function GetTournamentData($tid)
 
     if ($lastrow)
         $retValue[$lastrow['player_id']] = $lastrow;
-
-    mysql_free_result($result);
 
     return $retValue;
 }
@@ -246,40 +198,36 @@ function SaveTournamentStanding($item)
     $tsid = $item['TSID'];
     $tid = $item['TID'];
 
-    if (!$tsid) {
-        $query = format_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
-                         VALUES ($pid, $tid, 0, NULL)");
-        db_query($query);
-    }
+    if (!$tsid)
+        db_exec("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
+                     VALUES ($pid, $tid, 0, NULL)");
 
     $score = (int) $item['OverallScore'];
     $standing = (int) $item['Standing'];
 
-    $query = format_query("UPDATE :TournamentStanding
-                            SET OverallScore = $score, Standing = $standing
-                            WHERE Player = $pid AND Tournament = $tid");
-    db_query($query);
+    db_exec("UPDATE :TournamentStanding
+                SET OverallScore = $score, Standing = $standing
+                WHERE Player = $pid AND Tournament = $tid");
 }
 
 
 function SetTournamentTieBreaker($tournament, $player, $value)
 {
-    $tournament = (int) $tournament;
-    $player = (int) $player;
-    $value = (int) $value;
+    $tournament = esc_or_null($tournament, 'int');
+    $player = esc_or_null($player, 'int');
+    $value = esc_or_null($value, 'int');
 
-    $query = format_query("UPDATE :TournamentStanding
-                            SET TieBreaker = $value
-                            WHERE Player = $player AND Tournament = $tournament");
-    db_query($query);
+    db_exec("UPDATE :TournamentStanding
+                SET TieBreaker = $value
+                WHERE Player = $player AND Tournament = $tournament");
 }
 
 
-function GetTournamentResults($tournamentId)
+function GetTournamentResults($tournamentid)
 {
-    $tournamentId = (int) $tournamentId;
+    $tournamentid = esc_or_null($tournamentid, 'int');
 
-    $query = "SELECT :Player.player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
+    $result = db_all("SELECT :Player.player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
                     :Player.pdga AS PDGANumber, :User.Username, :TournamentStanding.OverallScore, :TournamentStanding.Standing,
                     :Event.id AS EventId, :Classification.Name AS ClassName, TieBreaker,
                     :Participation.Standing AS EventStanding, :Participation.TournamentPoints AS EventScore
@@ -291,34 +239,29 @@ function GetTournamentResults($tournamentId)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :TournamentStanding ON (:TournamentStanding.Tournament = :Tournament.id
                     AND :TournamentStanding.Player = :Player.player_id)
-                WHERE :Tournament.id = $tournamentId AND :Event.ResultsLocked IS NOT NULL
-                ORDER BY :TournamentStanding.Standing, :Player.lastname, :Player.firstname";
-    $query = format_query($query);
-    $result = db_query($query);
+                WHERE :Tournament.id = $tournamentid AND :Event.ResultsLocked IS NOT NULL
+                ORDER BY :TournamentStanding.Standing, :Player.lastname, :Player.firstname");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        $lastrow = null;
+    $lastrow = null;
 
-        while ($row = mysql_fetch_assoc($result)) {
-            if (@$lastrow['PlayerId'] != $row['PlayerId']) {
-                if ($lastrow)
-                    $retValue[] = $lastrow;
-                $lastrow = $row;
-                $lastrow['Results'] = array();
-            }
-
-            $lastrow['Results'][$row['EventId']] = array('Event' => $row['EventId'],
-                'Standing' => $row['EventStanding'], 'Score' => $row['EventScore']);
+    foreach ($result as $row) {
+        if (@$lastrow['PlayerId'] != $row['PlayerId']) {
+            if ($lastrow)
+                $retValue[] = $lastrow;
+            $lastrow = $row;
+            $lastrow['Results'] = array();
         }
 
-        if ($lastrow)
-            $retValue[] = $lastrow;
+        $lastrow['Results'][$row['EventId']] = array('Event' => $row['EventId'],
+            'Standing' => $row['EventStanding'], 'Score' => $row['EventScore']);
     }
-    mysql_free_result($result);
+
+    if ($lastrow)
+        $retValue[] = $lastrow;
 
     return $retValue;
 }
