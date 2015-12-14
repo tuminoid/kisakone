@@ -106,10 +106,11 @@ function url_smarty($params, &$smarty)
     }
     else {
         // No mod_rewrite, simply append all the parameters to the index url.
-        $string = "index.php?";
+        $str = array();
         foreach ($params as $key => $value) {
-            $string .= urlencode($key) . '=' . urlencode($value) . '&';
+            $str[] = urlencode($key) . '=' . urlencode($value);
         }
+        $string = "index.php?" . implode("&", $str);
     }
 
     // When used from within a template (smarty object as 2nd parameter) the
