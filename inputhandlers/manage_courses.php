@@ -103,7 +103,7 @@ function processForm()
                 $hole = new Hole(array('Course' => $id, 'HoleNumber' => $number, 'id' => null, 'Par' => $value, 'Length' => $_POST['h_' . $number . '_' . $holeid . '_len'], 'HoleText' => $_POST['h_' . $number . '_' . $holeid . '_text']));
             }
             else {
-                $hole = GetHoleDetails($holeid);
+                $hole = GetHole($holeid);
 
                 if (is_a($hole, 'Error'))
                     return $hole;

@@ -26,46 +26,36 @@ require_once 'data/db.php';
 require_once 'core/hole.php';
 
 
-function GetHoleDetails($holeid)
+function GetHole($holeid)
 {
-    $holeid = (int) $holeid;
+    $holeid = esc_or_null($holeid, 'int');
 
-    $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
+    $result = db_one("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length,
                                 :Course.id AS CourseId, :Round.id AS RoundId
                             FROM :Hole
                             LEFT JOIN :Course ON (:Course.id = :Hole.Course)
                             LEFT JOIN :Round ON (:Round.Course = :Course.id)
                             WHERE :Hole.id = $holeid
                             ORDER BY HoleNumber");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
-    $retValue = null;
-    if (mysql_num_rows($result) > 0)
-        $retValue = new Hole(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    return new Hole($result);
 }
 
 
 function SaveHole($hole)
 {
-    $par = (int) $hole->par;
-    $len = (int) $hole->length;
-    $number = (int) $hole->holeNumber;
-    $text = esc_or_null($hole->holeText);
-    $id = (int) $hole->id;
-    $course = (int) $hole->course;
+    $par = esc_or_null($hole->par, 'int');
+    $len = esc_or_null($hole->length, 'int');
+    $number = esc_or_null($hole->holeNumber, 'int');
+    $text = esc_or_null($hole->holeText, 'string');
+    $id = esc_or_null($hole->id, 'int');
+    $course = esc_or_null($hole->course, 'int');
 
-    if ($id)
-        $query = format_query("UPDATE :Hole SET Par = $par, Length = $len, HoleNumber = $number, HoleText = $text WHERE id = $id");
-    else
-        $query = format_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES ($par, $len, $course, $number, $text)");
-    $result = db_query($query);
+    if ($hole->id)
+        return db_exec("UPDATE :Hole SET Par = $par, Length = $len, HoleNumber = $number, HoleText = $text WHERE id = $id");
 
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES ($par, $len, $course, $number, $text)");
 }
