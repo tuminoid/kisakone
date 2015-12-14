@@ -27,62 +27,27 @@ require_once 'core/club.php';
 
 function GetClub($clubid)
 {
-    $clubid = (int) $clubid;
-
-    $query = format_query("SELECT id, Name, ShortName FROM :Club WHERE id = $clubid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new Club(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    $clubid = esc_or_null($clubid, 'int');
+    return db_one("SELECT id, Name, ShortName FROM :Club WHERE id = $clubid");
 }
 
 
 function GetUsersClub($userid)
 {
-    $userid = (int) $userid;
-
-    if (!$userid)
-        return null;
-
-    $query = format_query("SELECT Club FROM :User WHERE id = $userid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = null;
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = $row['Club'];
-    }
-    mysql_free_result($result);
-
-    return $retValue;
+    $userid = esc_or_null($userid, 'int');
+    return db_one("SELECT Club FROM :User WHERE id = $userid");
 }
 
 
 function SaveClub($clubid, $clubname, $clubshort)
 {
-    $clubid = (int) $clubid;
     if (!$clubname || !$clubshort)
         return null;
 
+    $clubid = esc_or_null($clubid, 'int');
     $clubname = esc_or_null($clubname);
     $clubshort = esc_or_null($clubshort);
 
-    $query = format_query("INSERT INTO :Club VALUES($clubid, $clubname, $clubshort)
+    return db_exec("INSERT INTO :Club VALUES($clubid, $clubname, $clubshort)
                             ON DUPLICATE KEY UPDATE Name = $clubname, ShortName = $clubshort");
-    $result = db_query($query);
-
-    if (!$result)
-        return false;
-
-    return true;
 }
