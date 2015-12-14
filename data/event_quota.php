@@ -27,22 +27,12 @@ require_once 'data/db.php';
 /* Get Quotas for Classes in Event */
 function GetEventQuotas($eventId)
 {
-    $event = (int) $eventId;
+    $event = esc_or_null($eventId, 'int');
 
-    $query = format_query("SELECT :Classification.id, Name, Short, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
+    return db_all("SELECT :Classification.id, Name, Short, :ClassInEvent.MinQuota, :ClassInEvent.MaxQuota
                             FROM :Classification, :ClassInEvent
                             WHERE :ClassInEvent.Classification = :Classification.id AND :ClassInEvent.Event = $event
                             ORDER BY Name");
-    $result = db_query($query);
-
-    $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = $row;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
@@ -61,36 +51,27 @@ function GetEventClassQuota($eventid, $classid)
 
 
 // Set class's min quota
-function SetEventClassMinQuota($eventid, $classid, $quota)
+function SetEventClassQuota($eventid, $classid, $quota, $key)
 {
-    $eventid = (int) $eventid;
-    $classid = (int) $classid;
-    $quota = (int) $quota;
+    $eventid = esc_or_null($eventid, 'int');
+    $classid = esc_or_null($classid, 'int');
+    $quota = esc_or_null($quota, 'int');
+    $key = esc_or_null($key, 'key');
 
-    $query = format_query("UPDATE :ClassInEvent SET MinQuota = $quota WHERE Event = $eventid AND Classification = $classid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return mysql_affected_rows() == 1;
+    return db_exec("UPDATE :ClassInEvent SET $key = $quota WHERE Event = $eventid AND Classification = $classid");
 }
 
+
+// Set class's min quota
+function SetEventClassMinQuota($eventid, $classid, $quota)
+{
+    return SetEventClassQuota($eventid, $classid, $quota, 'MinQuota');
+}
 
 // Set class's max quota
 function SetEventClassMaxQuota($eventid, $classid, $quota)
 {
-    $eventid = (int) $eventid;
-    $classid = (int) $classid;
-    $quota = (int) $quota;
-
-    $query = format_query("UPDATE :ClassInEvent SET MaxQuota = $quota WHERE Event = $eventid AND Classification = $classid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return mysql_affected_rows() == 1;
+    return SetEventClassQuota($eventid, $classid, $quota, 'MaxQuota');
 }
 
 
