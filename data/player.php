@@ -30,23 +30,15 @@ require_once 'core/player.php';
 
 function GetPlayerDetails($playerid)
 {
-    $playerid = (int) $playerid;
+    $playerid = esc_or_null($playerid, 'int');
 
-    $query = format_query("SELECT *,YEAR(birthdate) AS birthyear FROM :Player WHERE player_id = $playerid");
-    $result = db_query($query);
+    $row = db_one("SELECT *,YEAR(birthdate) AS birthyear FROM :Player WHERE player_id = $playerid");
 
-    if (!$result)
-        null;
+    if (db_is_error($row) || !$row)
+        return null;
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = new Player($row['player_id'], $row['pdga'], $row['sex'],
-            $row['birthyear'], $row['firstname'], $row['lastname'], $row['email']);
-    }
-    mysql_free_result($result);
-
-    return $retValue;
+    return new Player($row['player_id'], $row['pdga'], $row['sex'],
+                        $row['birthyear'], $row['firstname'], $row['lastname'], $row['email']);
 }
 
 
@@ -56,27 +48,22 @@ function GetPlayerUser($playerid = null)
     if ($playerid === null)
         return null;
 
-    $playerid = (int) $playerid;
+    $playerid = esc_or_null($playerid, 'int');
 
-    $query = format_query("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
+    $row = db_one("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
                                 :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
                             FROM :User
                             INNER JOIN :Player ON :Player.player_id = :User.Player
                             WHERE :Player.player_id = $playerid");
-    $result = db_query($query);
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $retValue = new User($row['id'], $row['Username'], $row['Role'],
+    if (db_is_error($row) || !$row)
+        return null;
+
+    return new User($row['id'], $row['Username'], $row['Role'],
             data_GetOne($row['UserFirstname'], $row['pFN']),
             data_GetOne($row['UserLastname'], $row['pLN']),
             data_GetOne($row['UserEmail'], $row['pEM']),
             $playerid);
-    }
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
@@ -87,10 +74,6 @@ function GetPlayerUser($playerid = null)
  */
 function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly = true)
 {
-    $playerid = (int) $playerid;
-    $eventid = (int) $eventid;
-    $classid = (int) $classid;
-
     $retValue = $signup_directly;
     $table = ($signup_directly === true) ? ":Participation" : ":EventQueue";
 
@@ -105,14 +88,11 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     $clubid = esc_or_null(GetUsersClub($userid), 'int');
     $rating = esc_or_null($rating, 'int');
 
-    $query = format_query("INSERT INTO $table (Player, Event, Classification, Club, Rating)
+    $playerid = esc_or_null($playerid, 'int');
+    $eventid = esc_or_null($eventid, 'int');
+    $classid = esc_or_null($classid, 'int');
+    return db_exec("INSERT INTO $table (Player, Event, Classification, Club, Rating)
                             VALUES ($playerid, $eventid, $classid, $clubid, $rating)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return $retValue;
 }
 
 
@@ -133,15 +113,13 @@ function SetPlayerDetails($player)
     $dobyear = esc_or_null((int) $player->birthyear . '-1-1');
     $email = esc_or_null($player->email);
 
-    $query = format_query("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email)
+    $result = db_exec("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email)
                             VALUES ($pdga, $gender, $lastname, $firstname, $dobyear, $email)");
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
-    $p_id = mysql_insert_id();
-    $player->SetId($p_id);
+    $player->SetId($result);
 
     return $player;
 }
