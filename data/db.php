@@ -162,7 +162,7 @@ function db_query($query)
 
     $result = mysql_query($query);
     if (!$result)
-        debug_query_and_die($query);
+        $result = debug_query_and_die($query);
 
     return $result;
 }
@@ -176,7 +176,7 @@ function db_exec($query)
     $query = format_query($query);
     $result = db_query($query);
     if (!$result)
-        return Error::Query($query);
+        return Error::Query($query, mysql_error());
 
     $words = explode(" ", trim($query));
     $keyword = strtolower($words[0]);
@@ -196,8 +196,6 @@ function db_exec($query)
             break;
     }
 
-    // error_log("db: '$retValue' <= '$query'");
-
     if (is_resource($result))
         mysql_free_result($result);
 
@@ -212,7 +210,7 @@ function db_all($query)
 
     $result = db_query(format_query($query));
     if (!$result)
-        return Error::Query($query);
+        return Error::Query($query, mysql_error());
 
     $retArray = array();
     while ($array = mysql_fetch_assoc($result))
@@ -283,6 +281,8 @@ function debug_query_and_die($query)
 
         die();
     }
+
+    return Error::Query($query, mysql_error());
 }
 
 

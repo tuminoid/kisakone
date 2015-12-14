@@ -151,12 +151,12 @@ class Error
         return $e;
     }
 
-    function Query($query)
+    function Query($query, $error = '')
     {
         $e = new Error();
         $e->isMajor = true;
         $e->errorCode = 500;
-        $e->internalDescription = "Failed SQL query:\n" . $query . "\n" . mysql_error();
+        $e->internalDescription = "Failed SQL query:\n" . $query . "\n" . $error;
         $e->title = 'error_db_query';
         $e->description = translate('error_db_query_description');
         $e->errorPage = 'error';
