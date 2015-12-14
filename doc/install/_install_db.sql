@@ -5,7 +5,7 @@ CREATE TABLE :Config
     EmailEnabled BOOL NOT NULL DEFAULT 0,
     EmailAddress VARCHAR(200) DEFAULT '',
     EmailSender VARCHAR(200) DEFAULT 'Kisakone',
-    EmailVerification BOOL NOT NULL DEFAULT 1,
+    EmailVerification BOOL NOT NULL DEFAULT 0,
 
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,
