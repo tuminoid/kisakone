@@ -33,49 +33,34 @@ function CreateFileRecord($filename, $displayname, $type)
     $displayname = esc_or_null($displayname);
     $type = esc_or_null($type);
 
-    $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES ($filename, $displayname, $type)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    return mysql_insert_id();
+    return db_exec("INSERT INTO :File (Filename, DisplayName, Type) VALUES ($filename, $displayname, $type)");
 }
 
 
 function GetFile($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = $id");
-    $result = db_query($query);
+    $result = db_one("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = $id");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
-    $retValue = null;
-    if (mysql_num_rows($result) > 0)
-        $retValue = new File(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    return new File($result);
 }
 
 
 function GetFilesOfType($type)
 {
-    $type = esc_or_null($type);
+    $type = esc_or_null($type, 'string');
 
-    $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = $type ORDER BY DisplayName");
-    $result = db_query($query);
+    $result = db_all("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = $type ORDER BY DisplayName");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    while (($row = mysql_fetch_Assoc($result)) !== false)
+    foreach ($result as $row)
         $retValue[] = new File($row);
-    mysql_free_result($result);
-
     return $retValue;
 }
