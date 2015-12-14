@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 
 
 // Mappings to config_name keys in DB
@@ -122,7 +122,7 @@ function GetConfig($key)
 
     if (!$_config) {
         $query = format_query("SELECT * FROM :Config");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (mysql_num_rows($result) > 0) {
             $_config = mysql_fetch_assoc($result);
@@ -148,5 +148,5 @@ function SetConfig($key, $value, $value_type = null)
     $value = esc_or_null($value, $value_type);
 
     $query = format_query("UPDATE :Config SET $key = $value");
-    execute_query($query);
+    db_query($query);
 }

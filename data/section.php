@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/section.php';
 
 
@@ -41,7 +41,7 @@ function GetSections($round, $order = 'time')
                             FROM :Section
                             WHERE :Section.Round = $roundid
                             ORDER BY $order");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -62,7 +62,7 @@ function GetSectionDetails($sectionId)
     $query = format_query("SELECT id, Name, Round, Priority, UNIX_TIMESTAMP(StartTime) AS StartTime, Present, Classification
                             FROM :Section
                             WHERE id = $sectionId");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1)
@@ -92,7 +92,7 @@ function GetSectionMembers($sectionId)
                             INNER JOIN :SectionMembership SM ON SM.Participation = :Participation.id
                             WHERE SM.Section = $sectionId
                             ORDER BY :Participation.OverallResult DESC, SM.id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -116,7 +116,7 @@ function CreateSection($round, $baseClassId, $name)
 
     $query = format_query("INSERT INTO :Section(Round, Classification, Name, Present)
                             VALUES($round, $classid, $name, 1)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -131,7 +131,7 @@ function RenameSection($classId, $newName)
 
     $newName = esc_or_null($newName);
     $query = format_query("UPDATE :Section SET Name = $newName WHERE id = $classId");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -149,7 +149,7 @@ function AssignPlayersToSection($roundid, $sectionid, $playerids)
 
     $data = implode(", ", $each);
     $query = format_query("INSERT INTO :SectionMembership (Participation, Section) VALUES $data");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -166,7 +166,7 @@ function AdjustSection($sectionid, $priority, $sectiontime, $present)
     $query = format_query("UPDATE :Section
                             SET Priority = $priority, StartTime = FROM_UNIXTIME($sectiontime), Present = $present
                             WHERE id = $sectionid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -187,7 +187,7 @@ function RemovePlayersDefinedforAnySection($a)
         $query = format_query("SELECT Player FROM :StartingOrder
                                 INNER JOIN :Section ON :StartingOrder.Section = :Section.id
                                 WHERE :Section.Round = $round");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         $mydata = array();
         while (($row = mysql_fetch_assoc($result)) !== false)
@@ -210,6 +210,6 @@ function RemoveEmptySections($round)
         $id = (int) $section->id;
 
         if (!count($players))
-            execute_query(format_query("DELETE FROM :Section WHERE id = $id"));
+            db_query(format_query("DELETE FROM :Section WHERE id = $id"));
     }
 }

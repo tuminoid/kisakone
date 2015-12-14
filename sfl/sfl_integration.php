@@ -23,7 +23,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
 require_once 'data/config.php';
@@ -49,7 +49,7 @@ function sfl_api_run_query($where)
             INNER JOIN sfl_player ON (sfl_player.player_id = sfl_membership.player_id)
             INNER JOIN sfl_clubs ON (sfl_player.club_id = sfl_clubs.club_id)
             $where";
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return null;
@@ -186,7 +186,7 @@ function SFL_getPlayer($userid)
                             FROM :User
                             INNER JOIN :Player ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return null;

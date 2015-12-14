@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 
 
 /* Get Quotas for Classes in Event */
@@ -33,7 +33,7 @@ function GetEventQuotas($eventId)
                             FROM :Classification, :ClassInEvent
                             WHERE :ClassInEvent.Classification = :Classification.id AND :ClassInEvent.Event = $event
                             ORDER BY Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -68,7 +68,7 @@ function SetEventClassMinQuota($eventid, $classid, $quota)
     $quota = (int) $quota;
 
     $query = format_query("UPDATE :ClassInEvent SET MinQuota = $quota WHERE Event = $eventid AND Classification = $classid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -85,7 +85,7 @@ function SetEventClassMaxQuota($eventid, $classid, $quota)
     $quota = (int) $quota;
 
     $query = format_query("UPDATE :ClassInEvent SET MaxQuota = $quota WHERE Event = $eventid AND Classification = $classid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/files.php';
 
 
@@ -34,7 +34,7 @@ function CreateFileRecord($filename, $displayname, $type)
     $type = esc_or_null($type);
 
     $query = format_query("INSERT INTO :File (Filename, DisplayName, Type) VALUES ($filename, $displayname, $type)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -48,7 +48,7 @@ function GetFile($id)
     $id = (int) $id;
 
     $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -67,7 +67,7 @@ function GetFilesOfType($type)
     $type = esc_or_null($type);
 
     $query = format_query("SELECT id, Filename, Type, DisplayName FROM :File WHERE Type = $type ORDER BY DisplayName");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

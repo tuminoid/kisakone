@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/url.php';
 
 
@@ -42,7 +42,7 @@ function SmartifyCalendar($smarty, $eventid)
                             FROM :Event
                             LEFT JOIN :Venue ON :Venue.id = :Event.Venue
                             WHERE :Event.id = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return null;

@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/level.php';
 
 
@@ -32,7 +32,7 @@ function GetLevels($availableOnly = false)
     $where = $availableOnly ? "WHERE Available <> 0" : "";
 
     $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available FROM :Level $where");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -53,7 +53,7 @@ function GetLevelDetails($levelid)
     $query = format_query("SELECT id, Name, ScoreCalculationMethod, Available
                             FROM :Level
                             WHERE id = $levelid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) == 1) {
@@ -76,7 +76,7 @@ function EditLevel($id, $name, $method, $available)
     $query = format_query("UPDATE :Level
                             SET Name = $name, ScoreCalculationMethod = $method, Available = $available
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -90,7 +90,7 @@ function CreateLevel($name, $method, $available)
     $available = $available ? 1 : 0;
 
     $query = format_query("INSERT INTO :Level (Name, ScoreCalculationmethod, Available) VALUES ($name, $method, $available)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -104,7 +104,7 @@ function DeleteLevel($id)
     $id = (int) $id;
 
     $query = format_query("DELETE FROM :Level WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -118,7 +118,7 @@ function LevelBeingUsed($id)
 
     $query = format_query("SELECT (SELECT COUNT(*) FROM :Event WHERE Level = $id) AS Events,
                            (SELECT COUNT(*) FROM :Tournament WHERE Level = $id) AS Tournaments");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = true;
     if (mysql_num_rows($result) > 0) {

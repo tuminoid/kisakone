@@ -23,13 +23,16 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/error.php';
+
+
 /**
  * Connects to the database
  *
  * @return Null on success
  * @return Error object on failure
  */
-function InitializeDatabaseConnection()
+function db_connect()
 {
     global $settings;
     static $con;
@@ -53,7 +56,7 @@ function InitializeDatabaseConnection()
  */
 function escape_string($string)
 {
-    InitializeDatabaseConnection();
+    db_connect();
     return mysql_real_escape_string($string);
 }
 
@@ -140,20 +143,20 @@ function format_query($query)
 
 
 /**
- * Executes SQL query
+ * Executes raw SQL query and return you mysql result object
  *
  * @param string $query SQL query to run
  * @return false on failure
  * @return result object on success
  */
-function execute_query($query)
+function db_query($query)
 {
     if (empty($query))
         return false;
 
-    $conn = InitializeDatabaseConnection();
+    $conn = db_connect();
     if (!$conn) {
-        error_log("error: database connection init failed: " . mysql_error());
+        error_log("error: database connection failed: " . mysql_error());
         return false;
     }
 
@@ -162,6 +165,81 @@ function execute_query($query)
         debug_query_and_die($query);
 
     return $result;
+}
+
+
+function db_exec($query)
+{
+    if (empty($query))
+        return Error::Query($query);
+
+    $query = format_query($query);
+    $result = db_query($query);
+    if (!$result)
+        return Error::Query($query);
+
+    $words = explode(" ", trim($query));
+    $keyword = strtolower($words[0]);
+    switch ($keyword) {
+        case "insert":
+        case "replace":
+            $retValue = mysql_insert_id();
+            break;
+
+        case "update":
+        case "delete":
+            $retValue = mysql_affected_rows();
+            break;
+
+        default:
+            $retValue = true;
+            break;
+    }
+
+    // error_log("db: '$retValue' <= '$query'");
+
+    if (is_resource($result))
+        mysql_free_result($result);
+
+    return $retValue;
+}
+
+
+function db_all($query)
+{
+    if (empty($query))
+        return Error::Query($query);
+
+    $result = db_query(format_query($query));
+    if (!$result)
+        return Error::Query($query);
+
+    $retArray = array();
+    while ($array = mysql_fetch_assoc($result))
+        $retArray[] = $array;
+    mysql_free_result($result);
+
+    return $retArray;
+}
+
+
+function db_one($query)
+{
+    $result = db_all($query);
+
+    if (db_is_error($result))
+        return $result;
+
+    if (!is_array($result) || empty($result))
+        return null;
+
+    return $result[0];
+}
+
+
+function db_is_error($error)
+{
+    return is_a($error, 'Error');
 }
 
 

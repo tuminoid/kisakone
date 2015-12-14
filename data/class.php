@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/classification.php';
 
 
@@ -32,7 +32,7 @@ function GetClasses($onlyAvailable = false)
     $available = $onlyAvailable ? " WHERE Available <> 0" : "";
 
     $query = format_query("SELECT * FROM :Classification $available ORDER BY Priority ASC, Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -51,7 +51,7 @@ function GetClassDetails($classId)
     $classId = (int) $classId;
 
     $query = format_query("SELECT * FROM :Classification WHERE id = $classId");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
@@ -78,14 +78,14 @@ function SetClasses($eventid, $classes)
         return Error::InternalError("Event id argument is not set.");
 
     $quotas = GetEventQuotas($eventid);
-    execute_query(format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid"));
+    db_query(format_query("DELETE FROM :ClassInEvent WHERE Event = $eventid"));
 
     foreach ($classes as $class) {
         $class = (int) $class;
         $eventid = (int) $eventid;
 
         $query = format_query("INSERT INTO :ClassInEvent (Classification, Event) VALUES ($class, $eventid)");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -100,7 +100,7 @@ function SetClasses($eventid, $classes)
         $query = format_query("UPDATE :ClassInEvent
                                 SET MinQuota = $minquota, MaxQuota = $maxquota
                                 WHERE Event = $eventid AND Classification = $cid");
-        execute_query($query);
+        db_query($query);
     }
 }
 
@@ -124,7 +124,7 @@ function EditClass($id, $name, $short, $minage, $maxage, $gender, $available, $s
                 Priority = $priority, RatingLimit = $ratinglimit
                 WHERE id = $id";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -146,7 +146,7 @@ function CreateClass($name, $short, $minage, $maxage, $gender, $available, $stat
     $query = "INSERT INTO :Classification (Name, Short, MinimumAge, MaximumAge, GenderRequirement, Available, Status, Priority, RatingLimit)
                   VALUES ($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -158,7 +158,7 @@ function DeleteClass($id)
     $id = (int) $id;
 
     $query = format_query("DELETE FROM :Classification WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -171,7 +171,7 @@ function ClassBeingUsed($id)
     $id = (int) $id;
 
     $query = format_query("SELECT COUNT(*) AS Events FROM :ClassInEvent WHERE Classification = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = true;
     if (mysql_num_rows($result) > 0) {
@@ -195,7 +195,7 @@ function GetSignupsForClass($event, $class)
                 INNER JOIN :Participation ON :Participation.Player = :Player.id
                 WHERE :Participation.Classification = $classId AND :Participation.Event = $eventId";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -215,7 +215,7 @@ function SetParticipantClass($eventid, $playerid, $newClass)
     $newClass = (int) $newClass;
 
     $query = format_query("UPDATE :Participation SET Classification = $newClass WHERE Player = $playerid AND Event = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 
 
 function GetRuleTypes()
@@ -61,7 +61,7 @@ function GetEventRules($eventid, $classid = -1)
                             WHERE Event = $eventid
                             $where_class
                             ORDER BY Classification ASC, ValidUntil, id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -78,7 +78,7 @@ function GetEventRules($eventid, $classid = -1)
 function DeleteEventRules($eventid)
 {
     $eventid = (int) $eventid;
-    execute_query(format_query("DELETE FROM :RegistrationRules WHERE Event = $eventid"));
+    db_query(format_query("DELETE FROM :RegistrationRules WHERE Event = $eventid"));
 }
 
 
@@ -97,7 +97,7 @@ function SaveRule($ruleid, $eventid, $classid, $type, $op, $value, $action, $val
                             VALUES($ruleid, $eventid, $classid, $type, $op, $value, $action, $validuntil)
                             ON DUPLICATE KEY UPDATE Event = $eventid, Classification = $classid,
                             Type = $type, Op = $op, Value = $value, Action = $action, ValidUntil = $validuntil");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

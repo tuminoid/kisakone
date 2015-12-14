@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/club.php';
 
 
@@ -30,7 +30,7 @@ function GetClub($clubid)
     $clubid = (int) $clubid;
 
     $query = format_query("SELECT id, Name, ShortName FROM :Club WHERE id = $clubid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -52,7 +52,7 @@ function GetUsersClub($userid)
         return null;
 
     $query = format_query("SELECT Club FROM :User WHERE id = $userid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -79,7 +79,7 @@ function SaveClub($clubid, $clubname, $clubshort)
 
     $query = format_query("INSERT INTO :Club VALUES($clubid, $clubname, $clubshort)
                             ON DUPLICATE KEY UPDATE Name = $clubname, ShortName = $clubshort");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return false;

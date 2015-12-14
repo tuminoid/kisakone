@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/login.php';
 
 
@@ -54,7 +54,7 @@ function CheckUserAuthentication($username, $password)
                                 FROM :User
                                 LEFT JOIN :Player ON :User.Player = :Player.player_id
                                 WHERE Username = $usr");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         $retValue = null;
         if (mysql_num_rows($result) == 1) {
@@ -67,7 +67,7 @@ function CheckUserAuthentication($username, $password)
         }
         mysql_free_result($result);
 
-        execute_query(format_query("UPDATE :User SET LastLogin = NOW() WHERE Username = $usr"));
+        db_query(format_query("UPDATE :User SET LastLogin = NOW() WHERE Username = $usr"));
 
         return $retValue;
     }
@@ -90,7 +90,7 @@ function GetLoginData($username)
 
     $usr = esc_or_null($username);
     $query = format_query("SELECT Hash, Salt, Password, PasswordChanged, LastLogin FROM :User WHERE Username = $usr");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1)
@@ -125,7 +125,7 @@ function ChangeUserPassword($userid, $password)
     $query = format_query("UPDATE :User
                             SET Password = $password, Hash = $hash, Salt = $salt, PasswordChanged = NOW()
                             WHERE id = $userid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -162,7 +162,7 @@ function GetAutoLoginToken($userid)
     $id = (int) $userid;
 
     $query = format_query("SELECT id, Username, UserEmail, Password FROM :User WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {

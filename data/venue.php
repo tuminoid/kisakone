@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 
 
 // Gets an array of strings containing Venue names that match the searchQuery
@@ -31,7 +31,7 @@ function GetVenueNames($searchQuery = '')
     $search = data_ProduceSearchConditions($searchQuery, array('Name'));
 
     $query = format_query("SELECT DISTINCT Name FROM :Venue WHERE $search ORDER BY Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -57,7 +57,7 @@ function GetVenueId($venue)
     $venue = esc_or_null($venue);
 
     $query = format_query("SELECT id FROM :Venue WHERE Name = $venue");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $venueid = null;
     if (mysql_num_rows($result) > 0) {
@@ -68,7 +68,7 @@ function GetVenueId($venue)
 
     if (!isset($venueid)) {
         $query = format_query("INSERT INTO :Venue (Name) VALUES ($venue)");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Query::Error($query);

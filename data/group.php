@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 
 
 function GetGroups($sectid)
@@ -48,7 +48,7 @@ function GetGroups($sectid)
                 WHERE :StartingOrder.Section = $sectid
                 ORDER BY GroupNumber, OverallResult";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -106,7 +106,7 @@ function InsertGroupMember($data)
 
     $query = format_query("INSERT INTO :StartingOrder (Player, StartingTime, StartingHole, GroupNumber, Section)
                     VALUES ($playerid, FROM_UNIXTIME($start), $hole, $groupnumber, $section)");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -120,7 +120,7 @@ function AnyGroupsDefined($roundid)
                             INNER JOIN :Round ON :Round.id = :Section.Round
                             WHERE :Round.id = $roundid
                             LIMIT 1");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -150,7 +150,7 @@ function GetRoundGroups($roundid)
                             LEFT JOIN :Club ON (:User.Club = :Club.id)
                             WHERE :Round.id = $roundid
                             ORDER BY GroupNumber, :StartingOrder.id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -183,7 +183,7 @@ function GetSingleGroup($roundid, $playerid)
                             INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
                             WHERE :Round.id = $roundid AND BaseGroup.Player = $playerid
                             ORDER BY GroupNumber, :StartingOrder.id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -215,7 +215,7 @@ function GetUserGroupSummary($eventid, $playerid)
                             INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                             WHERE :Round.Event = $eventid AND :StartingOrder.Player = $playerid
                             ORDER BY :Round.StartTime");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -239,5 +239,5 @@ function SetRoundGroupsDone($roundid, $done)
     $time = esc_or_null($done ? time() : null, 'int');
 
     $query = format_query("UPDATE :Round SET GroupsFinished = FROM_UNIXTIME($time) WHERE id = $roundid");
-    execute_query($query);
+    db_query($query);
 }

@@ -24,7 +24,7 @@
 const PDGA_API_SERVER = "https://api.pdga.com";
 
 require_once 'config.php';
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'data/cache.php';
 require_once 'data/config.php';
 
@@ -160,7 +160,7 @@ function pdga_db_getLastUpdated($pdga_number = 0)
     $query = format_query("SELECT UNIX_TIMESTAMP(last_updated) AS last_update
                             FROM :PDGAPlayers
                             WHERE pdga_number = $pdga_number");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result || mysql_num_rows($result) != 1)
         return 0;
@@ -204,7 +204,7 @@ function pdga_db_updatePlayer($pdga_number, $force = false)
 
         $query = format_query("INSERT INTO :PDGAPlayers (last_updated, $keys) VALUES(NOW(), $vals)
                     ON DUPLICATE KEY UPDATE last_updated=NOW() $extra");
-        execute_query($query);
+        db_query($query);
 
         $cache_key = "data_" . $pdga_number;
         cache_set($cache_key, pdga_db_getPlayer($pdga_number), $update_threshold);
@@ -221,7 +221,7 @@ function pdga_db_updatePlayer($pdga_number, $force = false)
 function pdga_db_getPlayer($pdga_number)
 {
     $query = format_query("SELECT * FROM :PDGAPlayers WHERE pdga_number = $pdga_number");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return null;

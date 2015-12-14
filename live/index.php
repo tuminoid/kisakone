@@ -33,7 +33,7 @@ require_once '../config.php';
 global $settings;
 $settings['DB_TYPE'] = 'mysql';
 EpiDatabase::employ($settings['DB_TYPE'], $settings['DB_DB'], $settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
-require_once '../data/db_init.php';
+require_once '../data/db.php';
 
 # setup routes
 getRoute()->get('/', 'live_index');

@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/textcontent.php';
 
 
@@ -34,7 +34,7 @@ function GetAllTextContent($eventid)
                             FROM :TextContent
                             WHERE Event $eventCond AND Type != 'news'
                             ORDER BY `Order`");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -57,7 +57,7 @@ function GetTextContent($pageid)
     $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
                             FROM :TextContent
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1)
@@ -78,7 +78,7 @@ function GetTextContentByEvent($eventid, $type)
     $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
                             FROM :TextContent
                             WHERE event $eventCond AND type = $type");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) > 0)
@@ -98,7 +98,7 @@ function GetTextContentByTitle($eventid, $title)
     $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
                             FROM :TextContent
                             WHERE event $eventCond AND Title = $title");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1)
@@ -133,7 +133,7 @@ function SaveTextContent($page)
                                 SET Title = $title, Content = $content, Date = FROM_UNIXTIME($time), Type = $type
                                 WHERE id = $id");
     }
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -144,5 +144,5 @@ function DeleteTextContent($id)
 {
     $id = (int) $id;
 
-    execute_query(format_query("DELETE FROM :TextContent WHERE id = $id"));
+    db_query(format_query("DELETE FROM :TextContent WHERE id = $id"));
 }

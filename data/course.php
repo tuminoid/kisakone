@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/hole.php';
 
 
@@ -34,7 +34,7 @@ function GetCourseHoles($courseid)
                             FROM :Hole
                             WHERE Course = $courseid
                             ORDER BY HoleNumber");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -52,7 +52,7 @@ function CourseUsed($courseid)
     $courseid = (int) $courseid;
 
     $query = format_query("SELECT id FROM :Round WHERE :Round.Course = $courseid LIMIT 1");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -64,7 +64,7 @@ function CourseUsed($courseid)
 function GetCourses()
 {
     $query = format_query("SELECT id, Name, Event FROM :Course ORDER BY Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -83,7 +83,7 @@ function GetCourseDetails($id)
     $id = (int) $id;
 
     $query = format_query("SELECT id, Name, Description, Link, Map, Event FROM :Course WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -110,7 +110,7 @@ function SaveCourse($course)
         $query = format_query("UPDATE :Course
                                 SET Name = $name, Description = $description, Link = $link, Map = $map
                                 WHERE id = $id");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -120,7 +120,7 @@ function SaveCourse($course)
 
         $query = format_query("INSERT INTO :Course (Name, Description, Link, Map, Event)
                                 VALUES ($name, $description, $link, $map, $eventid)");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -134,6 +134,6 @@ function DeleteCourse($id)
 {
     $id = (int) $id;
 
-    execute_query(format_query("DELETE FROM :Hole WHERE Course = $id"));
-    execute_query(format_query("DELETE FROM :Course WHERE id = $id"));
+    db_query(format_query("DELETE FROM :Hole WHERE Course = $id"));
+    db_query(format_query("DELETE FROM :Course WHERE id = $id"));
 }

@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'data/venue.php';
 require_once 'data/event_quota.php';
 require_once 'data/class.php';
@@ -88,7 +88,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                 ORDER BY $sort
                                 $limit_limit");
     }
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -149,7 +149,7 @@ function GetEventDetails($eventid)
                                 LEFT Join :Venue ON :Venue.id = :Event.Venue
                                 WHERE :Event.id = $id");
     }
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -188,7 +188,7 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
                                 SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId)
                             VALUES ($venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
                                 FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees, $pdgaid)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if ($result) {
@@ -231,7 +231,7 @@ function GetEventClasses($event)
                             INNER JOIN :ClassInEvent ON :ClassInEvent.Classification = :Classification.id
                             WHERE :ClassInEvent.Event = $event
                             ORDER BY Priority ASC, Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -254,7 +254,7 @@ function GetEventRounds($event)
                             FROM :Round
                             WHERE Event = $event
                             ORDER BY StartTime");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -284,7 +284,7 @@ function GetEventOfficials($event)
                             LEFT JOIN :Player ON :User.Player = :Player.player_id
                             WHERE :EventManagement.User = :User.id AND :EventManagement.Event = $event
                             ORDER BY :EventManagement.Role DESC, Username ASC");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -330,7 +330,7 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
                                 ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid
                             WHERE id = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -352,10 +352,10 @@ function SetTD($eventid, $td)
     $id = (int) $td;
     $role = esc_or_null('td');
 
-    execute_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
+    db_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
 
     $query = format_query("INSERT INTO :EventManagement (User, Event, Role) VALUES ($td, $eventid, $role)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -376,13 +376,13 @@ function SetOfficials($eventid, $officials)
     if (!isset($eventid))
         return Error::InternalError("Event id argument is not set.");
 
-    execute_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
+    db_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
 
     foreach ($officials as $official) {
         $official = (int) $official;
 
         $query = format_query("INSERT INTO :EventManagement (User, Event, Role) VALUES ($official, $eventid, $role)");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -402,7 +402,7 @@ function CancelSignup($eventId, $playerId, $check_promotion = true)
     $queries[] = "DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId";
 
     foreach ($queries as $query) {
-        $result = execute_query(format_query($query));
+        $result = db_query(format_query($query));
         if (!$result)
             return Error::Query($query);
     }
@@ -428,7 +428,7 @@ function GetEventsByYear($year)
 function GetEventYears()
 {
     $query = format_query("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -450,7 +450,7 @@ function GetEventParticipantCounts($eventId)
                               FROM :Participation
                               WHERE Event = $eventId
                               GROUP BY Classification");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -494,7 +494,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                 WHERE $where
                 ORDER BY $sortOrder";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -543,7 +543,7 @@ function GetEventHoles($eventId)
                             INNER JOIN :Event ON :Round.Event = :Event.id
                             WHERE :Event.id = $eventId
                             ORDER BY :Round.StartTime, HoleNumber");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -582,7 +582,7 @@ function GetEventResults($eventId)
                 WHERE :Event.id = $eventId AND :Section.Present
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -650,7 +650,7 @@ function GetEventResultsWithoutHoles($eventId)
                 ORDER BY :Participation.Standing, player_id, :Round.StartTime";
 
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -719,7 +719,7 @@ function GetAllRoundResults($eventid)
                             FROM :RoundResult
                             INNER JOIN :Round ON :Round.id = :RoundResult.Round
                             WHERE :Round.Event = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if ($result) {
@@ -743,7 +743,7 @@ function GetAllParticipations($eventid)
                             FROM :Participation
                             INNER JOIN :Classification ON :Classification.id = :Participation.Classification
                             WHERE Event = $eventid AND EventFeePaid IS NOT NULL");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if ($result) {
@@ -767,7 +767,7 @@ function SaveParticipationResults($entry)
     $query = format_query("UPDATE :Participation
                             SET OverallResult = $overall, Standing = $standing, DidNotFinish = $dnf, TournamentPoints = $points
                             WHERE id = $id");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -781,7 +781,7 @@ function UserParticipating($eventid, $userid)
                             INNER JOIN :Player ON :Participation.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :Participation.Event = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = (mysql_num_rows($result) > 0);
     mysql_free_result($result);
@@ -799,7 +799,7 @@ function GetAllToRemind($eventid)
                             INNER JOIN :Player ON :User.Player = :Player.player_id
                             INNER JOIN :Participation ON :Player.player_id = :Participation.Player
                             WHERE :Participation.Event = $eventid AND :Participation.EventFeePaid IS NULL");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if ($result) {
@@ -919,7 +919,7 @@ function data_GetExtraSortInfo($roundid, $playerList)
                 WHERE :StartingOrder.Player IN ($ids) AND :Round.id <= $roundid AND LinkRound.id = $roundid
                 ORDER BY :Round.StartTime, :StartingOrder.Player";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     while (($row = mysql_fetch_assoc($result)) !== false) {
@@ -990,7 +990,7 @@ function DeleteEvent($event)
         $queries[] = format_query("DELETE FROM :Section WHERE Round = $rid");
 
         $query = format_query("SELECT id FROM :RoundResult WHERE Round = $rid");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (mysql_num_rows($result) > 0) {
             while (($row = mysql_fetch_assoc($result)) !== false) {
@@ -1009,5 +1009,5 @@ function DeleteEvent($event)
     $queries[] = format_query("DELETE FROM :Event WHERE id = $id");
 
     foreach ($queries as $query)
-        execute_query($query);
+        db_query($query);
 }

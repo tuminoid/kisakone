@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/player.php';
 require_once 'data/config.php';
 
@@ -44,7 +44,7 @@ function MarkEventFeePayment($eventid, $participationId, $payment)
     $query = format_query("UPDATE :Participation
                             SET EventFeePaid = FROM_UNIXTIME($payment), Approved = 1
                             WHERE id = $participationId AND Event = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -57,7 +57,7 @@ function EventRequiresLicenses($eventid)
     $eventid = (int) $eventid;
 
     $query = format_query("SELECT LicensesRequired FROM :Event WHERE id = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retVal = null;
     if (mysql_num_rows($result) > 0) {

@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/ads.php';
 
 
@@ -38,7 +38,7 @@ function SaveAd($ad)
     $query = format_query("UPDATE :AdBanner
                             SET URL = $url, ImageURL = $imageurl, LongData = $longdata, ImageReference = $imagereference, Type = $type
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -52,7 +52,7 @@ function GetAllAds($eventid)
     $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
                             FROM :AdBanner
                             WHERE Event $eventCond");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -73,7 +73,7 @@ function GetAd($eventid, $contentid)
     $query = format_query("SELECT id, Event, URL, ImageURL, LongData, ImageReference, Type, ContentId
                             FROM :AdBanner
                             WHERE Event $eventCond AND ContentId = $contentid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -95,7 +95,7 @@ function InitializeAd($eventid, $contentid)
 
     $query = format_query("INSERT INTO :AdBanner (Event, URL, ImageURL, LongData, ImageReference, Type, ContentId)
                             VALUES ($eid, NULL, NULL, NULL, NULL, $type, $cid)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

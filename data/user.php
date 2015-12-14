@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/player.php';
 
 
@@ -38,7 +38,7 @@ function UserIsManagerAnywhere($userid)
                             FROM :User
                             INNER JOIN :EventManagement ON :User.id = :EventManagement.User
                             WHERE :User.id = $userid AND :EventManagement.Role IN ('TD', 'Official')");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -60,7 +60,7 @@ function GetUserIdByEmail($email)
     $email = esc_or_null($email);
 
     $query = format_query("SELECT id FROM :User WHERE UserEmail = $email");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
@@ -90,7 +90,7 @@ function GetUsers($searchQuery = '', $sortOrder = '')
                             LEFT JOIN :Player ON :User.Player = :Player.player_id
                             WHERE $where
                             ORDER BY $sort");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -133,7 +133,7 @@ function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
                             INNER JOIN :Player ON :Player.player_id = :User.Player
                             WHERE :User.Player IS NOT NULL AND $searchConditions
                             ORDER BY $sort");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -163,7 +163,7 @@ function GetUserDetails($userid)
                             FROM :User
                             LEFT JOIN :Player on :Player.player_id = :User.Player
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -194,7 +194,7 @@ function GetUserId($username)
     $username = esc_or_null($username);
 
     $query = format_query("SELECT id FROM :User WHERE Username = $username");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
@@ -220,7 +220,7 @@ function GetUserPlayer($userid)
                             FROM :Player
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -248,7 +248,7 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
     $query = format_query("UPDATE :User
                             SET UserEmail = $email, UserFirstName = $firstname, UserLastName = $lastname
                             WHERE id = $userid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -266,7 +266,7 @@ function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $d
                                 SET sex = $gender, pdga = $pdga, birthdate = $dobyear,
                                     firstname = $firstname, lastname = $lastname, email = $email
                                 WHERE player_id = $playerid");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -302,7 +302,7 @@ function SetUserDetails($user)
         $query = format_query("INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
                              VALUES ($u_username_quoted, $u_email, $u_password, $u_role, $u_firstname,
                                 $u_lastname, $player, $u_hash, $u_salt)");
-        $result = execute_query($query);
+        $result = db_query($query);
 
         if (!$result)
             return Error::Query($query);
@@ -339,7 +339,7 @@ function SaveUserSflId($userid, $sflid)
     $sflid = esc_or_null($sflid, 'int');
 
     $query = format_query("UPDATE :User SET SflId = $sflid WHERE id = $userid");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -353,7 +353,7 @@ function SaveUserClub($userid, $clubid)
     $clubid = esc_or_null($clubid, 'int');
 
     $query = format_query("UPDATE :User SET Club = $clubid WHERE id = $userid");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -378,7 +378,7 @@ function GetUserEmailVerification($id = null)
     $id = esc_or_null($id, 'int');
 
     $query = format_query("SELECT EmailVerified FROM :User WHERE id = $id AND EmailVerified > (NOW() - INTERVAL 1 YEAR)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = false;
     if (mysql_num_rows($result) == 1) {
@@ -401,5 +401,5 @@ function SetUserEmailVerification($id = null, $status = false)
 
     $query = format_query("UPDATE :User SET EmailVerified = $status WHERE id = $id");
     error_log("setting verify on db: " . $query);
-    execute_query($query);
+    db_query($query);
 }

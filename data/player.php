@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'data/club.php';
 require_once 'sfl/pdga_integration.php';
 require_once 'core/player.php';
@@ -33,7 +33,7 @@ function GetPlayerDetails($playerid)
     $playerid = (int) $playerid;
 
     $query = format_query("SELECT *,YEAR(birthdate) AS birthyear FROM :Player WHERE player_id = $playerid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         null;
@@ -63,7 +63,7 @@ function GetPlayerUser($playerid = null)
                             FROM :User
                             INNER JOIN :Player ON :Player.player_id = :User.Player
                             WHERE :Player.player_id = $playerid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) == 1) {
@@ -107,7 +107,7 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
 
     $query = format_query("INSERT INTO $table (Player, Event, Classification, Club, Rating)
                             VALUES ($playerid, $eventid, $classid, $clubid, $rating)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -135,7 +135,7 @@ function SetPlayerDetails($player)
 
     $query = format_query("INSERT INTO :Player (pdga, sex, lastname, firstname, birthdate, email)
                             VALUES ($pdga, $gender, $lastname, $firstname, $dobyear, $email)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

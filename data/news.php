@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/textcontent.php';
 
 
@@ -37,7 +37,7 @@ function GetEventNews($eventid, $from, $count)
                             WHERE Event = $eventid AND Type = 'news'
                             ORDER BY `date` DESC
                             LIMIT $from, $count");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {

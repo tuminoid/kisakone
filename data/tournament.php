@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/tournament.php';
 require_once 'core/hole.php';
 
@@ -48,7 +48,7 @@ function GetTournamentParticipantCount($tournamentId)
                             INNER JOIN :Participation ON :Participation.Event = :Event.id
                             WHERE :Event.Tournament = $tournamentId
                             $filter");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = null;
     if (mysql_num_rows($result) > 0) {
@@ -74,7 +74,7 @@ function GetTournaments($year, $onlyAvailable = false)
                             FROM :Tournament
                             WHERE 1 $year $available
                             ORDER BY Year, Name");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -102,7 +102,7 @@ function EditTournament($id, $name, $method, $level, $available, $year, $descrip
                             SET Name = $name, ScoreCalculationMethod = $method, Level = $level,
                                 Available = $available, Year = $year, Description = $description
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -120,7 +120,7 @@ function CreateTournament($name, $method, $level, $available, $year, $descriptio
 
     $query = format_query("INSERT INTO :Tournament(Name, ScoreCalculationMethod, Level, Available, Year, Description)
                             VALUES($name, $method, $level, $available, $year, $description)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -132,7 +132,7 @@ function DeleteTournament($id)
     $id = (int) $id;
 
     $query = format_query("DELETE FROM :Tournament WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -145,7 +145,7 @@ function TournamentBeingUsed($id)
     $id = (int) $id;
 
     $query = format_query("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = true;
     if (mysql_num_rows($result) > 0) {
@@ -165,7 +165,7 @@ function GetTournamentDetails($id)
     $query = format_query("SELECT id, Level, Name, ScoreCalculationMethod, Year, Available, Description
                             FROM :Tournament
                             WHERE id = $id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) == 1) {
@@ -182,7 +182,7 @@ function GetTournamentDetails($id)
 function GetTournamentYears()
 {
     $query = format_query("SELECT DISTINCT Year FROM :Tournament ORDER BY Year");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -211,7 +211,7 @@ function GetTournamentData($tid)
                                 AND :TournamentStanding.Player = :Player.player_id)
                             WHERE :Tournament.id = $tid
                             ORDER BY :Player.player_id");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($results);
@@ -249,7 +249,7 @@ function SaveTournamentStanding($item)
     if (!$tsid) {
         $query = format_query("INSERT INTO :TournamentStanding (Player, Tournament, OverallScore, Standing)
                          VALUES ($pid, $tid, 0, NULL)");
-        execute_query($query);
+        db_query($query);
     }
 
     $score = (int) $item['OverallScore'];
@@ -258,7 +258,7 @@ function SaveTournamentStanding($item)
     $query = format_query("UPDATE :TournamentStanding
                             SET OverallScore = $score, Standing = $standing
                             WHERE Player = $pid AND Tournament = $tid");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -271,7 +271,7 @@ function SetTournamentTieBreaker($tournament, $player, $value)
     $query = format_query("UPDATE :TournamentStanding
                             SET TieBreaker = $value
                             WHERE Player = $player AND Tournament = $tournament");
-    execute_query($query);
+    db_query($query);
 }
 
 
@@ -294,7 +294,7 @@ function GetTournamentResults($tournamentId)
                 WHERE :Tournament.id = $tournamentId AND :Event.ResultsLocked IS NOT NULL
                 ORDER BY :TournamentStanding.Standing, :Player.lastname, :Player.firstname";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

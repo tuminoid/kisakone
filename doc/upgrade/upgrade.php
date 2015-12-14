@@ -1,7 +1,7 @@
 <?php
 require_once('../../../config.php');
 
-function InitializeDatabaseConnection()
+function db_connect()
 {
   $retValue = null;
   global $settings;
@@ -38,5 +38,5 @@ function Upgrade() {
   return true;
 }
 
-InitializeDatabaseConnection();
+db_connect();
 Upgrade();

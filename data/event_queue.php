@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'data/player.php';
 require_once 'core/player.php';
 require_once 'core/user.php';
@@ -38,7 +38,7 @@ function GetEventQueueCounts($eventId)
                            FROM :EventQueue
                            WHERE Event = $eventId
                            GROUP BY Classification");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -74,7 +74,7 @@ function GetEventQueue($eventId, $sortedBy, $search)
                 WHERE $where
                 ORDER BY SignupTimestamp ASC, :EventQueue.id ASC";
     $query = format_query($query);
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = array();
     if (mysql_num_rows($result) > 0) {
@@ -135,7 +135,7 @@ function PromotePlayerFromQueue($eventId, $playerId)
 
     // Get data from queue
     $query = format_query("SELECT * FROM :EventQueue WHERE Player = $playerId AND Event = $eventId");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -173,7 +173,7 @@ function UserQueueing($eventid, $userid)
                             INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     $retValue = (mysql_num_rows($result) > 0);
     mysql_free_result($result);

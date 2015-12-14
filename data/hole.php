@@ -22,7 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/db_init.php';
+require_once 'data/db.php';
 require_once 'core/hole.php';
 
 
@@ -37,7 +37,7 @@ function GetHoleDetails($holeid)
                             LEFT JOIN :Round ON (:Round.Course = :Course.id)
                             WHERE :Hole.id = $holeid
                             ORDER BY HoleNumber");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);
@@ -64,7 +64,7 @@ function SaveHole($hole)
         $query = format_query("UPDATE :Hole SET Par = $par, Length = $len, HoleNumber = $number, HoleText = $text WHERE id = $id");
     else
         $query = format_query("INSERT INTO :Hole (Par, Length, Course, HoleNumber, HoleText) VALUES ($par, $len, $course, $number, $text)");
-    $result = execute_query($query);
+    $result = db_query($query);
 
     if (!$result)
         return Error::Query($query);

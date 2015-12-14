@@ -7,14 +7,14 @@ const CONFIG_SITE = '../../../config_site.php';
 const CONFIG = '../../../config.php';
 
 require_once(CONFIG);
-require_once __DIR__ . '/../../../data/db_init.php';
+require_once __DIR__ . '/../../../data/db.php';
 
 
 function InitializeDB()
 {
     global $settings;
 
-    if (!InitializeDatabaseConnection())
+    if (!db_connect())
         die("fatal: Cannot connect to DB\n");
 }
 
