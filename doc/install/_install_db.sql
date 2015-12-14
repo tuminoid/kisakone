@@ -209,7 +209,7 @@ CREATE TABLE :Classification
 (
     id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(40) NOT NULL,
-    Short VARCHAR(6,
+    Short VARCHAR(6),
     MinimumAge INT,
     MaximumAge INT,
     GenderRequirement CHAR(1),
