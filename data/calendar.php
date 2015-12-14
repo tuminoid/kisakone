@@ -27,12 +27,13 @@ require_once 'core/url.php';
 
 function SmartifyCalendar($smarty, $eventid)
 {
-    $eventid = (int) $eventid;
-
     if (!$smarty)
         return null;
 
-    $query = format_query("SELECT :Event.id as id,
+    $eventid = esc_or_null($eventid, 'int');
+
+
+    $result = db_one("SELECT :Event.id as id,
                                 DATE_FORMAT(Date, '%d.%m.%Y') AS start, DATE_FORMAT(Date, '%d-%m-%Y') AS start_data,
                                 DATE_FORMAT(Date + INTERVAL Duration - 1 DAY, '%d.%m.%Y') AS end,
                                     DATE_FORMAT(Date + INTERVAL Duration - 1 DAY, '%d-%m-%Y') AS end_data,
@@ -42,16 +43,10 @@ function SmartifyCalendar($smarty, $eventid)
                             FROM :Event
                             LEFT JOIN :Venue ON :Venue.id = :Event.Venue
                             WHERE :Event.id = $eventid");
-    $result = db_query($query);
 
-    if (!$result)
+    if (db_is_error($result))
         return null;
 
-    $retValue = null;
-    while (($row = mysql_fetch_assoc($result)) !== false)
-        $retValue = $row;
-    mysql_free_result($result);
-
-    $retValue['url'] = serverURL() . url_smarty(array('page' => 'event', 'id' => $eventid), $eventid);
-    $smarty->assign('calendar', $retValue);
+    $result['url'] = serverURL() . url_smarty(array('page' => 'event', 'id' => $eventid), $eventid);
+    $smarty->assign('calendar', $result);
 }
