@@ -27,9 +27,9 @@ require_once 'data/db.php';
 
 function GetGroups($sectid)
 {
-    $sectid = (int) $sectid;
+    $sectid = esc_or_null($sectid, 'int');
 
-    $query = "SELECT :Player.player_id AS PlayerId, :Player.pdga AS PDGANumber, :StartingOrder.Section,
+    $result = db_all("SELECT :Player.player_id AS PlayerId, :Player.pdga AS PDGANumber, :StartingOrder.Section,
                     :StartingOrder.id, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
                     :StartingOrder.StartingHole, :StartingOrder.GroupNumber,
                     :User.UserFirstName, :User.UserLastName, firstname AS pFN, lastname AS pLN,
@@ -46,18 +46,16 @@ function GetGroups($sectid)
                 INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = :Round.Event)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                 WHERE :StartingOrder.Section = $sectid
-                ORDER BY GroupNumber, OverallResult";
-    $query = format_query($query);
-    $result = db_query($query);
+                ORDER BY GroupNumber, OverallResult");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $current = null;
     $group = null;
     $retValue = array();
 
-    while (($row = mysql_fetch_assoc($result)) !== false) {
+    foreach ($result as $row) {
         $row['FirstName'] = data_GetOne($row['UserFirstName'], $row['pFN']);
         $row['LastName'] = data_GetOne($row['UserLastName'], $row['pLN']);
 
@@ -80,8 +78,6 @@ function GetGroups($sectid)
     if (count($group))
         $retValue[] = $group;
 
-    mysql_free_result($result);
-
     return $retValue;
 }
 
@@ -98,45 +94,35 @@ function InsertGroup($group)
 
 function InsertGroupMember($data)
 {
-    $playerid = (int) $data['Player'];
-    $start = (int) $data['StartingTime'];
+    $playerid = esc_or_null($data['Player'], 'int');
+    $start = esc_or_null($data['StartingTime'], 'int');
     $hole = esc_or_null($data['StartingHole'], 'int');
-    $groupnumber = (int) $data['GroupNumber'];
-    $section = (int) $data['Section'];
+    $groupnumber = esc_or_null($data['GroupNumber'], 'int');
+    $section = esc_or_null($data['Section'], 'int');
 
-    $query = format_query("INSERT INTO :StartingOrder (Player, StartingTime, StartingHole, GroupNumber, Section)
-                    VALUES ($playerid, FROM_UNIXTIME($start), $hole, $groupnumber, $section)");
-    db_query($query);
+    return db_exec("INSERT INTO :StartingOrder (Player, StartingTime, StartingHole, GroupNumber, Section)
+                        VALUES ($playerid, FROM_UNIXTIME($start), $hole, $groupnumber, $section)");
 }
 
 
 function AnyGroupsDefined($roundid)
 {
-    $roundid = (int) $roundid;
+    $roundid = esc_or_null($roundid, 'int');
 
-    $query = format_query("SELECT 1
+    return db_one("SELECT 1
                             FROM :StartingOrder
                             INNER JOIN :Section ON :Section.id = :StartingOrder.Section
                             INNER JOIN :Round ON :Round.id = :Section.Round
                             WHERE :Round.id = $roundid
                             LIMIT 1");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = mysql_num_rows($result) > 0;
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetRoundGroups($roundid)
 {
-    $roundid = (int) $roundid;
+    $roundid = esc_or_null($roundid, 'int');
 
-    $query = format_query("SELECT GroupNumber, StartingTime, StartingHole,
+    return db_all("SELECT GroupNumber, StartingTime, StartingHole,
                                 CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName,
                                 :User.id AS UserId, :Participation.OverallResult, :Club.ShortName AS ClubName
@@ -150,26 +136,15 @@ function GetRoundGroups($roundid)
                             LEFT JOIN :Club ON (:User.Club = :Club.id)
                             WHERE :Round.id = $roundid
                             ORDER BY GroupNumber, :StartingOrder.id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-        $retValue[] = $row;
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetSingleGroup($roundid, $playerid)
 {
-    $roundid = (int) $roundid;
-    $playerid = (int) $playerid;
+    $roundid = esc_or_null($roundid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
 
-    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
+    return db_all("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
                                 :StartingOrder.StartingHole,
                                 CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
@@ -183,26 +158,15 @@ function GetSingleGroup($roundid, $playerid)
                             INNER JOIN :StartingOrder BaseGroup ON (:StartingOrder.Section = BaseGroup.Section AND :StartingOrder.GroupNumber = BaseGroup.GroupNumber)
                             WHERE :Round.id = $roundid AND BaseGroup.Player = $playerid
                             ORDER BY GroupNumber, :StartingOrder.id");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-        $retValue[] = $row;
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetUserGroupSummary($eventid, $playerid)
 {
-    $eventid = (int) $eventid;
-    $playerid = (int) $playerid;
+    $eventid = esc_or_null($eventid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
 
-    $query = format_query("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
+    return db_all("SELECT :StartingOrder.GroupNumber, UNIX_TIMESTAMP(:StartingOrder.StartingTime) AS StartingTime,
                                 :StartingOrder.StartingHole, :Round.GroupsFinished,
                                 CONCAT(:Classification.Short, ' (', :Classification.Name, ')') AS ClassificationName,
                                 :Player.lastname AS LastName, :Player.firstname AS FirstName, :User.id AS UserId
@@ -215,29 +179,13 @@ function GetUserGroupSummary($eventid, $playerid)
                             INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                             WHERE :Round.Event = $eventid AND :StartingOrder.Player = $playerid
                             ORDER BY :Round.StartTime");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = array();
-    while (($row = mysql_fetch_array($result)) !== false)
-        $retValue[] = $row;
-    mysql_free_result($result);
-
-    if (!count($retValue))
-        return null;
-
-    return $retValue;
 }
 
 
 function SetRoundGroupsDone($roundid, $done)
 {
-    $roundid = (int) $roundid;
-
+    $roundid = esc_or_null($roundid, 'int');
     $time = esc_or_null($done ? time() : null, 'int');
 
-    $query = format_query("UPDATE :Round SET GroupsFinished = FROM_UNIXTIME($time) WHERE id = $roundid");
-    db_query($query);
+    return db_exec("UPDATE :Round SET GroupsFinished = FROM_UNIXTIME($time) WHERE id = $roundid");
 }
