@@ -28,84 +28,67 @@ require_once 'core/textcontent.php';
 
 function GetAllTextContent($eventid)
 {
-    $eventCond = $eventid ? " = " . (int) $eventid : " IS NULL";
+    $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : " IS NULL";
 
-    $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
-                            FROM :TextContent
-                            WHERE Event $eventCond AND Type != 'news'
-                            ORDER BY `Order`");
-    $result = db_query($query);
+    $result = db_all("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
+                        FROM :TextContent
+                        WHERE Event $eventCond AND Type != 'news'
+                        ORDER BY `Order`");
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new TextContent($row);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new TextContent($row);
     return $retValue;
 }
 
 
 function GetTextContent($pageid)
 {
-    if (empty($pageid))
-        return null;
+    $id = esc_or_null($pageid, 'int');
 
-    $id = (int) $pageid;
+    $row = db_one("SELECT id, Event, Title, Content, Date, Type, `Order`
+                        FROM :TextContent
+                        WHERE id = $id");
 
-    $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
-                            FROM :TextContent
-                            WHERE id = $id");
-    $result = db_query($query);
+    if (db_is_error($row) || !$row)
+        return $row;
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new TextContent(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    return new TextContent($row);
 }
 
 
 function GetTextContentByEvent($eventid, $type)
 {
-    $id = (int) $eventid;
-
     $type = esc_or_null($type);
-    $eventCond = $id ? " = $id" : "IS NULL";
+    $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : "IS NULL";
 
-    $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
-                            FROM :TextContent
-                            WHERE event $eventCond AND type = $type");
-    $result = db_query($query);
+    $row = db_one("SELECT id, Event, Title, Content, Date, Type, `Order`
+                        FROM :TextContent
+                        WHERE event $eventCond AND type = $type");
 
-    $retValue = null;
-    if (mysql_num_rows($result) > 0)
-        $retValue = new TextContent(mysql_fetch_assoc($result));
-    mysql_free_result($result);
+    if (db_is_error($row) || !$row)
+        return $row;
 
-    return $retValue;
+    return new TextContent($row);
 }
 
 
 function GetTextContentByTitle($eventid, $title)
 {
-    $id = (int) $eventid;
     $title = esc_or_null($title);
-    $eventCond = $id ? "= $id" : "IS NULL";
+    $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : "IS NULL";
 
-    $query = format_query("SELECT id, Event, Title, Content, Date, Type, `Order`
+    $row = db_one("SELECT id, Event, Title, Content, Date, Type, `Order`
                             FROM :TextContent
                             WHERE event $eventCond AND Title = $title");
-    $result = db_query($query);
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new TextContent(mysql_fetch_assoc($result));
-    mysql_free_result($result);
+    if (db_is_error($row))
+        return $row;
 
-    return $retValue;
+    return new TextContent($row);
 }
 
 
@@ -123,26 +106,21 @@ function SaveTextContent($page)
         $event = esc_or_null($page->event, 'int');
         $order = 0;
 
-        $query = format_query("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
-                       VALUES ($event, $title, $content, FROM_UNIXTIME($time), $type, $order)");
+        return db_exec("INSERT INTO :TextContent (Event, Title, Content, Date, Type, `Order`)
+                           VALUES ($event, $title, $content, FROM_UNIXTIME($time), $type, $order)");
     }
-    else {
-        $id = (int) $page->id;
 
-        $query = format_query("UPDATE :TextContent
-                                SET Title = $title, Content = $content, Date = FROM_UNIXTIME($time), Type = $type
-                                WHERE id = $id");
-    }
-    $result = db_query($query);
+    $id = esc_or_null($page->id, 'int');
 
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("UPDATE :TextContent
+                        SET Title = $title, Content = $content, Date = FROM_UNIXTIME($time), Type = $type
+                        WHERE id = $id");
 }
 
 
 function DeleteTextContent($id)
 {
-    $id = (int) $id;
+    $id = esc_or_null($id, 'int');
 
-    db_query(format_query("DELETE FROM :TextContent WHERE id = $id"));
+    db_exec("DELETE FROM :TextContent WHERE id = $id");
 }
