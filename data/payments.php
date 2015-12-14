@@ -23,7 +23,6 @@
  * */
 
 require_once 'data/db.php';
-require_once 'core/player.php';
 require_once 'data/config.php';
 
 
@@ -35,36 +34,26 @@ function payment_enabled() {
 /**
  * Stores or removes the event fee payment of a single player
  */
-function MarkEventFeePayment($eventid, $participationId, $payment)
+function MarkEventFeePayment($eventid, $participationid, $payment)
 {
-    $eventid = (int) $eventid;
-    $participationId = (int) $participationId;
+    $eventid = esc_or_null($eventid, 'int');
+    $participationId = esc_or_null($participationid, 'int');
     $payment = $payment ? time() : "NULL";
 
-    $query = format_query("UPDATE :Participation
+    return db_exec("UPDATE :Participation
                             SET EventFeePaid = FROM_UNIXTIME($payment), Approved = 1
-                            WHERE id = $participationId AND Event = $eventid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+                            WHERE id = $participationid AND Event = $eventid");
 }
-
 
 
 function EventRequiresLicenses($eventid)
 {
-    $eventid = (int) $eventid;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT LicensesRequired FROM :Event WHERE id = $eventid");
-    $result = db_query($query);
+    $row = db_one("SELECT LicensesRequired FROM :Event WHERE id = $eventid");
 
-    $retVal = null;
-    if (mysql_num_rows($result) > 0) {
-        $row = mysql_fetch_assoc($result);
-        $retVal = $row['LicensesRequired'];
-    }
-    mysql_free_result($result);
+    if (db_is_error($row))
+        return $row;
 
-    return $retVal;
+    return $row['LicensesRequired'];
 }
