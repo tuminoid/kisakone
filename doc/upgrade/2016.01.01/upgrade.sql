@@ -3,6 +3,7 @@
 -- Use the upgrade script upgrade.php!
 
 ALTER TABLE :PDGAEvents MODIFY COLUMN country VARCHAR(100) NOT NULL;
+ALTER TABLE :Venue MODIFY COLUMN Name VARCHAR(100) NOT NULL;
 
 ALTER TABLE :User ADD COLUMN EmailVerified DATETIME AFTER PasswordChanged;
 INSERT INTO :TextContent (Event, Title, Content, `Date`, Type, `Order`) VALUES(NULL, "Kisakone: Sähköpostiosoitteen vahvistus", "
