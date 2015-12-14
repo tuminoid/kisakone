@@ -54,6 +54,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $smarty->assign('error', $error->data);
         $e['name'] = $_POST['name'];
+        $e['club'] = $_POST['club'];
         $e['contact'] = $_POST['contact'];
         $e['venue'] = $_POST['venue'];
         $e['tournament'] = $_POST['tournament'];
@@ -85,6 +86,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             return Error::NotFound('event');
 
         $e['id'] = $event->id;
+        $e['club'] = $event->club;
         $e['name'] = $event->name;
         $e['contact'] = $event->contactInfo;
         $e['venue'] = $event->venue;
