@@ -28,23 +28,18 @@ require_once 'core/textcontent.php';
 
 function GetEventNews($eventid, $from, $count)
 {
-    $eventid = (int) $eventid;
-    $from = (int) $from;
-    $count = (int) $count;
+    $eventid = esc_or_null($eventid, 'int');
+    $from = esc_or_null($from, 'int');
+    $count = esc_or_null($count, 'int');
 
-    $query = format_query("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
+    $result = db_all("SELECT id, Event, Title, Content, UNIX_TIMESTAMP(Date) AS Date, Type, `Order`
                             FROM :TextContent
                             WHERE Event = $eventid AND Type = 'news'
                             ORDER BY `date` DESC
                             LIMIT $from, $count");
-    $result = db_query($query);
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new TextContent($row);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new TextContent($row);
     return $retValue;
 }
