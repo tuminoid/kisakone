@@ -49,25 +49,22 @@ function CheckUserAuthentication($username, $password)
     $usr_hash = GenerateHash($password, $logindata['Hash'], $logindata['Salt']);
 
     if (!strcmp($db_hash, $usr_hash)) {
-        $query = format_query("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname, Player,
+        $row = db_one("SELECT id, Username, UserEmail, Role, UserFirstname, UserLastname, Player,
                                     :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
                                 FROM :User
                                 LEFT JOIN :Player ON :User.Player = :Player.player_id
                                 WHERE Username = $usr");
-        $result = db_query($query);
 
-        $retValue = null;
-        if (mysql_num_rows($result) == 1) {
-            $row = mysql_fetch_assoc($result);
-            $retValue = array($row['id'], $row['Username'], $row['Role'],
-                data_GetOne($row['UserFirstname'], $row['pFN']),
-                data_GetOne($row['UserLastname'], $row['pLN']),
-                data_GetOne($row['UserEmail'], $row['pEM']),
-                $row['Player']);
-        }
-        mysql_free_result($result);
+        if (db_is_error($row) || !$row)
+            return null;
 
-        db_query(format_query("UPDATE :User SET LastLogin = NOW() WHERE Username = $usr"));
+        $retValue = array($row['id'], $row['Username'], $row['Role'],
+            data_GetOne($row['UserFirstname'], $row['pFN']),
+            data_GetOne($row['UserLastname'], $row['pLN']),
+            data_GetOne($row['UserEmail'], $row['pEM']),
+            $row['Player']);
+
+        db_exec("UPDATE :User SET LastLogin = NOW() WHERE Username = $usr");
 
         return $retValue;
     }
@@ -89,15 +86,8 @@ function GetLoginData($username)
         return null;
 
     $usr = esc_or_null($username);
-    $query = format_query("SELECT Hash, Salt, Password, PasswordChanged, LastLogin FROM :User WHERE Username = $usr");
-    $result = db_query($query);
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = mysql_fetch_assoc($result);
-    mysql_free_result($result);
-
-    return $retValue;
+    return db_one("SELECT Hash, Salt, Password, PasswordChanged, LastLogin FROM :User WHERE Username = $usr");
 }
 
 
@@ -122,13 +112,9 @@ function ChangeUserPassword($userid, $password)
     $hash = esc_or_null($hash);
     $password = esc_or_null($password);
 
-    $query = format_query("UPDATE :User
-                            SET Password = $password, Hash = $hash, Salt = $salt, PasswordChanged = NOW()
-                            WHERE id = $userid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    return db_exec("UPDATE :User
+                        SET Password = $password, Hash = $hash, Salt = $salt, PasswordChanged = NOW()
+                        WHERE id = $userid");
 }
 
 
@@ -159,21 +145,13 @@ function GetAutoLoginToken($userid)
     if (empty($userid))
         return null;
 
-    $id = (int) $userid;
+    $id = esc_or_null($userid, 'int');
+    $row = db_one("SELECT id, Username, UserEmail, Password FROM :User WHERE id = $id");
 
-    $query = format_query("SELECT id, Username, UserEmail, Password FROM :User WHERE id = $id");
-    $result = db_query($query);
-
-    $retValue = null;
-    if (mysql_num_rows($result) == 1) {
-        $row = mysql_fetch_assoc($result);
-        $text = '';
-
-        foreach ($row as $field)
-            $text .= $field;
-        $retValue = md5($text);
-    }
-    mysql_free_result($result);
+    $text = "";
+    foreach ($row as $field)
+        $text .= $field;
+    $retValue = md5($text);
 
     return $retValue;
 }
