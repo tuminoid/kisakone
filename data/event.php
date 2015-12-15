@@ -60,7 +60,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
             return $player;
         $playerid = $player ? $player->id : - 1;
 
-        $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+        $result = db_all("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     Level, :Event.Name, UNIX_TIMESTAMP(Date) AS Date, Duration,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
                                     UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked,
@@ -77,7 +77,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                 $limit_limit");
     }
     else {
-        $query = format_query("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+        $result = db_all("SELECT :Event.id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     Level, :Event.Name, UNIX_TIMESTAMP(Date) AS Date, Duration,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
                                     UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, :Level.Name AS LevelName
@@ -88,18 +88,13 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                 ORDER BY $sort
                                 $limit_limit");
     }
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Event($row);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new Event($row);
     return $retValue;
 }
 
@@ -108,10 +103,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
 // FIXME: handle user differently
 function GetEventDetails($eventid)
 {
-    if (empty($eventid))
-        return null;
-
-    $id = (int) $eventid;
+    $id = esc_or_null($eventid, 'int');
 
     global $user;
     if ($user && $user->id) {
@@ -120,7 +112,7 @@ function GetEventDetails($eventid)
         $player = $user->GetPlayer();
         $pid = $player ? $player->id : - 1;
 
-        $query = format_query("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
+        $row = db_one("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
                                     UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId,
@@ -137,7 +129,7 @@ function GetEventDetails($eventid)
                                 WHERE :Event.id = $id");
     }
     else {
-        $query = format_query("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, Tournament, :Event.Name,
+        $row = db_one("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, Tournament, :Event.Name,
                                     UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,
@@ -149,18 +141,13 @@ function GetEventDetails($eventid)
                                 LEFT Join :Venue ON :Venue.id = :Event.Venue
                                 WHERE :Event.id = $id");
     }
-    $result = db_query($query);
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($row))
+        return $row;
 
-    $retValue = null;
-    if (mysql_num_rows($result) == 1)
-        $retValue = new Event(mysql_fetch_assoc($result));
-    mysql_free_result($result);
-
-    return $retValue;
+    return new Event($row);
 }
+
 
 /**
  * Function for creating a new event
@@ -174,34 +161,29 @@ function CreateEvent($name, $venue, $duration, $playerlimit, $contact, $tourname
     $venue = esc_or_null($venue, 'int');
     $tournament = esc_or_null($tournament ? $tournament : null, 'int');
     $level = esc_or_null($level ? $level : null, 'int');
-    $name = esc_or_null($name);
-    $start = (int) $start;
-    $duration = (int) $duration;
-    $playerlimit = (int) $playerlimit;
+    $name = esc_or_null($name, 'string');
+    $start = esc_or_null($start, 'int');
+    $duration = esc_or_null($duration, 'int');
+    $playerlimit = esc_or_null($playerlimit, 'int');
     $signup_start = esc_or_null($signup_start, 'int');
     $signup_end = esc_or_null($signup_end, 'int');
-    $contact = esc_or_null($contact);
-    $requireFees = (int) $requireFees;
+    $contact = esc_or_null($contact, 'string');
+    $requireFees = esc_or_null($requireFees, 'int');
     $pdgaid = esc_or_null($pdgaid, 'int');
 
-    $query = format_query("INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
+    $eventid = db_exec("INSERT INTO :Event (Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
                                 SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId)
                             VALUES ($venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
                                 FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees, $pdgaid)");
-    $result = db_query($query);
 
-    $retValue = null;
-    if ($result) {
-        $eventid = mysql_insert_id();
+    if (db_is_error($eventid))
+        return $eventid;
 
-        $retValue = SetClasses($eventid, $classes);
-        if (!is_a($retValue, 'Error'))
-            $retValue = SetTD($eventid, $td);
-        if (!is_a($retValue, 'Error'))
-            $retValue = SetOfficials($eventid, $officials);
-    }
-    else
-        return Error::Query($query, 'CreateEvent');
+    $retValue = SetClasses($eventid, $classes);
+    if (!is_a($retValue, 'Error'))
+        $retValue = SetTD($eventid, $td);
+    if (!is_a($retValue, 'Error'))
+        $retValue = SetOfficials($eventid, $officials);
 
     if (!is_a($retValue, 'Error'))
         $retValue = $eventid;
@@ -223,23 +205,21 @@ function GetEventsByDate($start, $end)
 // Get all Classifications in an Event
 function GetEventClasses($event)
 {
-    $event = (int) $event;
+    $event = esc_or_null($event, 'int');
 
-    $query = format_query("SELECT :Classification.id, Name, Short, MinimumAge, MaximumAge,
+    $result = db_all("SELECT :Classification.id, Name, Short, MinimumAge, MaximumAge,
                                 GenderRequirement, Available, Status, Priority, RatingLimit
                             FROM :Classification
                             INNER JOIN :ClassInEvent ON :ClassInEvent.Classification = :Classification.id
                             WHERE :ClassInEvent.Event = $event
                             ORDER BY Priority ASC, Name");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return array();
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Classification($row);
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = new Classification($row);
     return $retValue;
 }
 
@@ -247,27 +227,25 @@ function GetEventClasses($event)
 // Get rounds for an event by event id
 function GetEventRounds($event)
 {
-    $event = (int) $event;
+    $event = esc_or_null($event, 'int');
 
-    $query = format_query("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
+    $result = db_all("SELECT id, Event, Course, StartType, UNIX_TIMESTAMP(StartTime) AS StartTime,
                                 `Interval`, ValidResults, GroupsFinished
                             FROM :Round
                             WHERE Event = $event
                             ORDER BY StartTime");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return array();
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        $index = 1;
-        while ($row = mysql_fetch_assoc($result)) {
-            $newRound =  new Round($row['id'], $row['Event'], $row['StartType'],
-                $row['StartTime'], $row['Interval'], $row['ValidResults'],
-                0, $row['Course'], $row['GroupsFinished']);
-            $newRound->roundnumber = $index++;
-            $retValue[] = $newRound;
-        }
+    foreach ($result as $row) {
+        $newRound =  new Round($row['id'], $row['Event'], $row['StartType'],
+            $row['StartTime'], $row['Interval'], $row['ValidResults'],
+            0, $row['Course'], $row['GroupsFinished']);
+        $newRound->roundnumber = count($retValue) + 1;
+        $retValue[] = $newRound;
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
@@ -276,28 +254,27 @@ function GetEventRounds($event)
 // Get event officials for an event
 function GetEventOfficials($event)
 {
-    $event = (int) $event;
+    $event = esc_or_null($event, 'int');
 
-    $query = format_query("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event,
+    $result = db_all("SELECT :User.id as UserId, Username, UserEmail, :EventManagement.Role, UserFirstname, UserLastname, Event,
                                 :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, Player
                             FROM :EventManagement, :User
                             LEFT JOIN :Player ON :User.Player = :Player.player_id
                             WHERE :EventManagement.User = :User.id AND :EventManagement.Event = $event
                             ORDER BY :EventManagement.Role DESC, Username ASC");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return array();
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $tempuser = new User($row['UserId'], $row['Username'], $row['Role'],
-                                    data_GetOne($row['UserFirstname'], $row['pFN']),
-                                    data_GetOne($row['UserLastname'], $row['pLN']),
-                                    data_GetOne($row['UserEmail'], $row['pEM']),
-                                    $row['Player']);
-            $retValue[] = new EventOfficial($row['UserId'], $row['Event'], $tempuser, $row['Role']);
-        }
+    foreach ($result as $row) {
+        $tempuser = new User($row['UserId'], $row['Username'], $row['Role'],
+                                data_GetOne($row['UserFirstname'], $row['pFN']),
+                                data_GetOne($row['UserLastname'], $row['pLN']),
+                                data_GetOne($row['UserEmail'], $row['pEM']),
+                                $row['Player']);
+        $retValue[] = new EventOfficial($row['UserId'], $row['Event'], $tempuser, $row['Role']);
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
@@ -312,28 +289,24 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
     $locking = ($state == 'done') ? time() : 'NULL';
     $tournament = esc_or_null($tournament ? $tournament : null, 'int');
     $level = esc_or_null($level ? $level : null, 'int');
-    $name = esc_or_null($name);
-    $start = (int) $start;
-    $duration = (int) $duration;
-    $playerlimit = (int) $playerlimit;
+    $name = esc_or_null($name, 'string');
+    $start = esc_or_null($start, 'int');
+    $duration = esc_or_null($duration, 'int');
+    $playerlimit = esc_or_null($playerlimit, 'int');
     $signup_start = esc_or_null($signup_start, 'int');
     $signup_end = esc_or_null($signup_end, 'int');
-    $contact = esc_or_null($contact);
-    $requireFees = (int) $requireFees;
-    $eventid = (int) $eventid;
+    $contact = esc_or_null($contact, 'string');
+    $requireFees = esc_or_null($requireFees, 'int');
+    $eventid = esc_or_null($eventid, 'int');
     $pdgaid = esc_or_null($pdgaid, 'int');
 
-    $query = format_query("UPDATE :Event
+    return db_exec("UPDATE :Event
                             SET Venue = $venueid, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
                                 Duration = $duration, PlayerLimit = $playerlimit,
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
                                 ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid
                             WHERE id = $eventid");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
 }
 
 
@@ -345,20 +318,15 @@ function EditEvent($eventid, $name, $venuename, $duration, $playerlimit, $contac
  */
 function SetTD($eventid, $td)
 {
-    if (!isset($eventid) or !isset($td))
+    if (!$eventid || !$td)
         return Error::InternalError("Event id or td argument is not set.");
 
-    $eventid = (int) $eventid;
-    $id = (int) $td;
-    $role = esc_or_null('td');
+    $eventid = esc_or_null($eventid, 'int');
+    $id = esc_or_null($td, 'int');
+    $role = esc_or_null('td', 'string');
 
-    db_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
-
-    $query = format_query("INSERT INTO :EventManagement (User, Event, Role) VALUES ($td, $eventid, $role)");
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
+    db_exec("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role");
+    return db_exec("INSERT INTO :EventManagement (User, Event, Role) VALUES ($td, $eventid, $role)");
 }
 
 
@@ -370,48 +338,35 @@ function SetTD($eventid, $td)
  */
 function SetOfficials($eventid, $officials)
 {
-    $eventid = (int) $eventid;
-    $role = esc_or_null('official');
-
-    if (!isset($eventid))
+    if (!$eventid)
         return Error::InternalError("Event id argument is not set.");
 
-    db_query(format_query("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role"));
+    $eventid = esc_or_null($eventid, 'int');
+    $role = esc_or_null('official');
+    db_exec("DELETE FROM :EventManagement WHERE Event = $eventid AND Role = $role");
 
     foreach ($officials as $official) {
-        $official = (int) $official;
-
-        $query = format_query("INSERT INTO :EventManagement (User, Event, Role) VALUES ($official, $eventid, $role)");
-        $result = db_query($query);
-
-        if (!$result)
-            return Error::Query($query);
+        $official = esc_or_null($official, 'int');
+        db_exec("INSERT INTO :EventManagement (User, Event, Role) VALUES ($official, $eventid, $role)");
     }
 }
 
 
 // Cancels a players signup for an event
-function CancelSignup($eventId, $playerId, $check_promotion = true)
+function CancelSignup($eventid, $playerid, $check_promotion = true)
 {
-    $eventId = (int) $eventId;
-    $playerId = (int) $playerId;
+    $eid = esc_or_null($eventid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
 
-    $queries = array();
-    $queries[] = "DELETE FROM :SectionMembership WHERE Participation = (SELECT id FROM :Participation WHERE Player = $playerId AND Event = $eventId)";
-    $queries[] = "DELETE FROM :Participation WHERE Player = $playerId AND Event = $eventId";
-    $queries[] = "DELETE FROM :EventQueue WHERE Player = $playerId AND Event = $eventId";
-
-    foreach ($queries as $query) {
-        $result = db_query(format_query($query));
-        if (!$result)
-            return Error::Query($query);
-    }
+    db_exec("DELETE FROM :SectionMembership WHERE Participation = (SELECT id FROM :Participation WHERE Player = $playerid AND Event = $eid)");
+    db_exec("DELETE FROM :Participation WHERE Player = $playerid AND Event = $eid");
+    db_exec("DELETE FROM :EventQueue WHERE Player = $playerid AND Event = $eid");
 
     // Check if we can lift someone into competition
     if ($check_promotion !== true)
         return null;
 
-    return CheckQueueForPromotions($eventId);
+    return CheckQueueForPromotions($eventid);
 }
 
 
@@ -427,46 +382,44 @@ function GetEventsByYear($year)
 
 function GetEventYears()
 {
-    $query = format_query("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
-    $result = db_query($query);
+    $result = db_all("SELECT DISTINCT(YEAR(Date)) AS year FROM :Event ORDER BY YEAR(Date) ASC");
+
+    if (db_is_error($result))
+        return array();
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = $row['year'];
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = $row['year'];
     return $retValue;
 }
 
 
 /* Return event's participant counts by class */
-function GetEventParticipantCounts($eventId)
+function GetEventParticipantCounts($eventid)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT COUNT(*) AS cnt, Classification
+    $result = db_all("SELECT COUNT(*) AS cnt, Classification
                               FROM :Participation
-                              WHERE Event = $eventId
+                              WHERE Event = $eventid
                               GROUP BY Classification");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $class = $row['Classification'];
-            $retValue[$class] = $row['cnt'];
-        }
+    foreach ($result as $row) {
+        $class = $row['Classification'];
+        $retValue[$class] = $row['cnt'];
     }
-
     return $retValue;
 }
 
 
-function GetEventParticipants($eventId, $sortedBy, $search)
+function GetEventParticipants($eventid, $sortedBy, $search)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
+
     $sortOrder = data_CreateSortOrder($sortedBy,
         array('name' => array('LastName', 'FirstName'), 'class' => 'ClassName',
             'LastName' => true, 'FirstName' => true, 'birthyear' => 'YEAR(birthdate)', 'pdga', 'gender' => 'sex', 'Username'));
@@ -478,7 +431,7 @@ function GetEventParticipants($eventId, $sortedBy, $search)
         $sortOrder = " LastName, FirstName";
     $where = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate'));
 
-    $query = "SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName,
+    $result = db_all("SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName,
                     UserEmail, :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM,
                     :Player.player_id AS PlayerId, pdga AS PDGANumber, Sex, YEAR(birthdate) AS YearOfBirth,
                     :Classification.Name AS ClassName, :Classification.Short As ClassShort, :Participation.id AS ParticipationID,
@@ -487,202 +440,183 @@ function GetEventParticipants($eventId, $sortedBy, $search)
                     :Participation.Rating, :PDGAPlayers.country AS PDGACountry
                 FROM :User
                 INNER JOIN :Player ON :Player.player_id = :User.Player
-                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventId)
+                INNER JOIN :Participation ON (:Participation.Player = :Player.player_id AND :Participation.Event = $eventid)
                 INNER JOIN :Classification ON :Participation.Classification = :Classification.id
                 LEFT JOIN :Club ON :Participation.Club = :Club.id
                 LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
                 WHERE $where
-                ORDER BY $sortOrder";
-    $query = format_query($query);
-    $result = db_query($query);
+                ORDER BY $sortOrder");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $pdata = array();
+    foreach ($result as $row) {
+        $pdata = array();
 
-            $firstname = data_GetOne($row['UserFirstName'], $row['pFN']);
-            $lastname = data_GetOne($row['UserLastName'], $row['pLN']);
-            $email = data_GetOne($row['UserEmail'], $row['pEM']);
-            $user = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
-            $player = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
+        $firstname = data_GetOne($row['UserFirstName'], $row['pFN']);
+        $lastname = data_GetOne($row['UserLastName'], $row['pLN']);
+        $email = data_GetOne($row['UserEmail'], $row['pEM']);
+        $user = new User($row['UserId'], $row['Username'], $row['Role'], $firstname, $lastname, $email, $row['PlayerId']);
+        $player = new Player($row['PlayerId'], $row['PDGANumber'], $row['Sex'], $row['YearOfBirth'], $firstname, $lastname, $email);
 
-            $pdata['user'] = $user;
-            $pdata['player'] = $player;
-            $pdata['eventFeePaid'] = payment_enabled() ? $row['EventFeePaid'] : true;
-            $pdata['participationId'] = $row['ParticipationID'];
-            $pdata['signupTimestamp'] = $row['SignupTimestamp'];
-            $pdata['className'] = $row['ClassName'];
-            $pdata['classShort'] = $row['ClassShort'];
-            $pdata['classId'] = $row['ClassId'];
-            $pdata['clubName'] = $row['ClubName'];
-            $pdata['clubLongName'] = $row['ClubLongName'];
-            $pdata['rating'] = $row['Rating'];
-            $pdata['PDGACountry'] = $row['PDGACountry'];
+        $pdata['user'] = $user;
+        $pdata['player'] = $player;
+        $pdata['eventFeePaid'] = payment_enabled() ? $row['EventFeePaid'] : true;
+        $pdata['participationId'] = $row['ParticipationID'];
+        $pdata['signupTimestamp'] = $row['SignupTimestamp'];
+        $pdata['className'] = $row['ClassName'];
+        $pdata['classShort'] = $row['ClassShort'];
+        $pdata['classId'] = $row['ClassId'];
+        $pdata['clubName'] = $row['ClubName'];
+        $pdata['clubLongName'] = $row['ClubLongName'];
+        $pdata['rating'] = $row['Rating'];
+        $pdata['PDGACountry'] = $row['PDGACountry'];
 
-            $retValue[] = $pdata;
-        }
+        $retValue[] = $pdata;
     }
-    mysql_free_result($result);
 
     return $retValue;
 }
 
 
-function GetEventHoles($eventId)
+function GetEventHoles($eventid)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round
+    $result = db_all("SELECT :Hole.id, :Hole.Course, HoleNumber, HoleText, Par, Length, :Round.id AS Round
                             FROM :Hole
                             INNER JOIN :Course ON :Course.id = :Hole.Course
                             INNER JOIN :Round ON :Round.Course = :Course.id
                             INNER JOIN :Event ON :Round.Event = :Event.id
-                            WHERE :Event.id = $eventId
+                            WHERE :Event.id = $eventid
                             ORDER BY :Round.StartTime, HoleNumber");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if (mysql_num_rows($result) > 0) {
-        while ($row = mysql_fetch_assoc($result))
-            $retValue[] = new Hole($row);
+    foreach ($result as $row)
+        $retValue[] = new Hole($row);
+    return $retValue;
+}
+
+
+function GetEventResults($eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+
+    $result = db_all("SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
+                            :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
+                            :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
+                            :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
+                            :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
+                            :Participation.Standing, :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF
+                        FROM :Round
+                        INNER JOIN :Event ON :Round.Event = :Event.id
+                        INNER JOIN :Section ON :Section.Round = :Round.id
+                        INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
+                        LEFT JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
+                        LEFT JOIN :HoleResult ON (:HoleResult.RoundResult = :RoundResult.id AND :HoleResult.Player = :StartingOrder.Player)
+                        LEFT JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                        LEFT JOIN :Participation ON (:Participation.Event = $eventid AND :Participation.Player = :Player.player_id)
+                        LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
+                        LEFT JOIN :User ON :Player.player_id = :User.Player
+                        LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
+                        LEFT JOIN :Club ON :Participation.Club = :Club.id
+                        LEFT JOIN :PDGAPlayers ON :PDGAPlayers.pdga_number = :Player.pdga
+                        WHERE :Event.id = $eventid AND :Section.Present
+                        ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber");
+
+    if (db_is_error($result))
+        return $result;
+
+    $retValue = array();
+    $penalties = array();
+    $lastrow = null;
+
+    foreach ($result as $row) {
+        if (!$lastrow || @$lastrow['PlayerId'] != $row['PlayerId']) {
+            if ($lastrow)
+                $retValue[] = $lastrow;
+            $lastrow = $row;
+            $lastrow['Results'] = array();
+            $lastrow['TotalPlusMinus'] = $lastrow['Penalty'];
+            $penalties[$row['RoundId']] = true;
+        }
+
+        if (!@$penalties[$row['RoundId']]) {
+            $penalties[$row['RoundId']] = true;
+            $lastrow['Penalty'] += $row['Penalty'];
+        }
+
+        if ($row['HoleResult']) {
+            $lastrow['Results'][$row['RoundId'] . '_' . $row['HoleNumber']] =
+                array('Hole' => $row['HoleNumber'], 'HoleId' => $row['HoleId'], 'Result' => $row['HoleResult']);
+            $lastrow['TotalPlusMinus'] += $row['Plusminus'];
+        }
     }
-    mysql_free_result($result);
+
+    if ($lastrow)
+        $retValue[] = $lastrow;
 
     return $retValue;
 }
 
 
-function GetEventResults($eventId)
+function GetEventResultsWithoutHoles($eventid)
 {
-    $eventId = (int) $eventId;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = "SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName, :Player.lastname AS LastName,
-                    :Player.pdga AS PDGANumber, :PDGAPlayers.rating AS Rating, :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
-                    :StartingOrder.GroupNumber, (:HoleResult.Result - :Hole.Par) AS Plusminus,
-                    :HoleResult.Result AS HoleResult, :Hole.id AS HoleId, :Hole.HoleNumber,
-                    :Classification.Name AS ClassName, TournamentPoints, :Round.id AS RoundId,
-                    :Participation.Standing, :Club.ShortName AS ClubName, :RoundResult.DidNotFinish AS DNF
-                FROM :Round
-                INNER JOIN :Event ON :Round.Event = :Event.id
-                INNER JOIN :Section ON :Section.Round = :Round.id
-                INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
-                LEFT JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
-                LEFT JOIN :HoleResult ON (:HoleResult.RoundResult = :RoundResult.id AND :HoleResult.Player = :StartingOrder.Player)
-                LEFT JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                LEFT JOIN :Participation ON (:Participation.Event = $eventId AND :Participation.Player = :Player.player_id)
-                LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
-                LEFT JOIN :User ON :Player.player_id = :User.Player
-                LEFT JOIN :Hole ON :HoleResult.Hole = :Hole.id
-                LEFT JOIN :Club ON :Participation.Club = :Club.id
-                LEFT JOIN :PDGAPlayers ON :PDGAPlayers.pdga_number = :Player.pdga
-                WHERE :Event.id = $eventId AND :Section.Present
-                ORDER BY :Participation.Standing, player_id, :Round.StartTime, :Hole.HoleNumber";
-    $query = format_query($query);
-    $result = db_query($query);
+    $result = db_all("SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName,
+                            :Player.lastname AS LastName, :Player.pdga AS PDGANumber,
+                            :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
+                            :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
+                            :Classification.Short AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
+                            TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
+                            :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
+                            :RoundResult.DidNotFinish AS DNF, :PDGAPlayers.country AS PDGACountry
+                        FROM :Round
+                        INNER JOIN :Event ON :Round.Event = :Event.id
+                        INNER JOIN :Section ON :Section.Round = :Round.id
+                        INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
+                        LEFT JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
+                        LEFT JOIN :Player ON :StartingOrder.Player = :Player.player_id
+                        LEFT JOIN :Participation ON (:Participation.Event = $eventid AND :Participation.Player = :Player.player_id)
+                        LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
+                        LEFT JOIN :User ON :Player.player_id = :User.Player
+                        LEFT JOIN :Club ON :Participation.Club = :Club.id
+                        LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
+                        WHERE :Event.id = $eventid AND :Section.Present
+                        ORDER BY :Participation.Standing, player_id, :Round.StartTime");
 
-    if (!$result)
-        return Error::Query($query);
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
     $penalties = array();
-    if (mysql_num_rows($result) > 0) {
-        $lastrow = null;
+    $lastrow = null;
 
-        while ($row = mysql_fetch_assoc($result)) {
-            if (!$lastrow || @$lastrow['PlayerId'] != $row['PlayerId']) {
-                if ($lastrow)
-                    $retValue[] = $lastrow;
-                $lastrow = $row;
-                $lastrow['Results'] = array();
-                $lastrow['TotalPlusMinus'] = $lastrow['Penalty'];
-                $penalties[$row['RoundId']] = true;
-            }
+    foreach ($result as $row) {
+        if (!$lastrow || @$lastrow['PlayerId'] != $row['PlayerId']) {
+            if ($lastrow)
+                $retValue[] = $lastrow;
 
-            if (!@$penalties[$row['RoundId']]) {
-                $penalties[$row['RoundId']] = true;
-                $lastrow['Penalty'] += $row['Penalty'];
-            }
-
-            if ($row['HoleResult']) {
-                $lastrow['Results'][$row['RoundId'] . '_' . $row['HoleNumber']] =
-                    array('Hole' => $row['HoleNumber'], 'HoleId' => $row['HoleId'], 'Result' => $row['HoleResult']);
-                $lastrow['TotalPlusMinus'] += $row['Plusminus'];
-            }
+            $lastrow = $row;
+            $lastrow['Results'] = array();
+            $lastrow['TotalCompleted'] = 0;
+            $lastrow['TotalPlusminus'] = 0;
         }
 
-        if ($lastrow)
-            $retValue[] = $lastrow;
+        $lastrow['TotalCompleted'] += $row['Completed'];
+        $lastrow['TotalPlusminus'] += $row['PlusMinus'];
+        $lastrow['Results'][$row['RoundId']] = $row;
     }
-    mysql_free_result($result);
 
-    return $retValue;
-}
-
-
-function GetEventResultsWithoutHoles($eventId)
-{
-    $eventId = (int) $eventId;
-
-    $query = "SELECT :Participation.*, player_id AS PlayerId, :Player.firstname AS FirstName,
-                    :Player.lastname AS LastName, :Player.pdga AS PDGANumber,
-                    :RoundResult.Result AS Total, :RoundResult.Penalty, :RoundResult.SuddenDeath,
-                    :StartingOrder.GroupNumber, CumulativePlusminus, Completed,
-                    :Classification.Short AS ClassName, PlusMinus, :StartingOrder.id AS StartId,
-                    TournamentPoints, :Round.id AS RoundId, :Participation.Standing,
-                    :Club.ShortName AS ClubName, :Club.Name AS ClubLongName,
-                    :RoundResult.DidNotFinish AS DNF, :PDGAPlayers.country AS PDGACountry
-                FROM :Round
-                INNER JOIN :Event ON :Round.Event = :Event.id
-                INNER JOIN :Section ON :Section.Round = :Round.id
-                INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
-                LEFT JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
-                LEFT JOIN :Player ON :StartingOrder.Player = :Player.player_id
-                LEFT JOIN :Participation ON (:Participation.Event = $eventId AND :Participation.Player = :Player.player_id)
-                LEFT JOIN :Classification ON :Participation.Classification = :Classification.id
-                LEFT JOIN :User ON :Player.player_id = :User.Player
-                LEFT JOIN :Club ON :Participation.Club = :Club.id
-                LEFT JOIN :PDGAPlayers ON :Player.pdga = :PDGAPlayers.pdga_number
-                WHERE :Event.id = $eventId AND :Section.Present
-                ORDER BY :Participation.Standing, player_id, :Round.StartTime";
-
-    $query = format_query($query);
-    $result = db_query($query);
-
-    if (!$result)
-        return Error::Query($query);
-
-    $retValue = array();
-    $penalties = array();
-    if (mysql_num_rows($result) > 0) {
-        $lastrow = null;
-
-        while ($row = mysql_fetch_assoc($result)) {
-            if (!$lastrow || @$lastrow['PlayerId'] != $row['PlayerId']) {
-                if ($lastrow)
-                    $retValue[] = $lastrow;
-
-                $lastrow = $row;
-                $lastrow['Results'] = array();
-                $lastrow['TotalCompleted'] = 0;
-                $lastrow['TotalPlusminus'] = 0;
-            }
-
-            $lastrow['TotalCompleted'] += $row['Completed'];
-            $lastrow['TotalPlusminus'] += $row['PlusMinus'];
-            $lastrow['Results'][$row['RoundId']] = $row;
-        }
-
-        if ($lastrow)
-            $retValue[] = $lastrow;
-    }
-    mysql_free_result($result);
+    if ($lastrow)
+        $retValue[] = $lastrow;
 
     usort($retValue, 'data_sort_leaderboard');
-
     return $retValue;
 }
 
@@ -715,99 +649,72 @@ function data_ProduceSearchConditions($queryString, $fields)
 
 function GetAllRoundResults($eventid)
 {
-    $query = format_query("SELECT :RoundResult.id, Round, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
+    $eventid = esc_or_null($eventid, 'int');
+
+    return db_all("SELECT :RoundResult.id, Round, Result, Penalty, SuddenDeath, Completed, Player, PlusMinus, DidNotFinish
                             FROM :RoundResult
                             INNER JOIN :Round ON :Round.id = :RoundResult.Round
                             WHERE :Round.Event = $eventid");
-    $result = db_query($query);
-
-    $retValue = array();
-    if ($result) {
-        while (($row = mysql_fetch_assoc($result)) !== false)
-            $retValue[] = $row;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetAllParticipations($eventid)
 {
-    $eventid = (int) $eventid;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT Classification, :Classification.Name,
+    return db_all("SELECT Classification, :Classification.Name,
                                 :Participation.Player, :Participation.id,
                                 :Participation.Standing, :Participation.DidNotFinish,
                                 :Participation.TournamentPoints, :Participation.OverallResult
                             FROM :Participation
                             INNER JOIN :Classification ON :Classification.id = :Participation.Classification
                             WHERE Event = $eventid AND EventFeePaid IS NOT NULL");
-    $result = db_query($query);
-
-    $retValue = array();
-    if ($result) {
-        while (($row = mysql_fetch_assoc($result)) !== false)
-            $retValue[] = $row;
-    }
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function SaveParticipationResults($entry)
 {
-    $overall = $entry['OverallResult'];
-    $standing = $entry['Standing'];
-    $dnf = $entry['DidNotFinish'];
+    $overall = esc_or_null($entry['OverallResult'], 'int');
+    $standing = esc_or_null($entry['Standing'], 'int');
+    $dnf = esc_or_null($entry['DidNotFinish'], 'int');
     $points = esc_or_null($entry['TournamentPoints'], 'int');
-    $id = $entry['id'];
+    $id = esc_or_null($entry['id'], 'int');
 
-    $query = format_query("UPDATE :Participation
+    return db_exec("UPDATE :Participation
                             SET OverallResult = $overall, Standing = $standing, DidNotFinish = $dnf, TournamentPoints = $points
                             WHERE id = $id");
-    db_query($query);
 }
 
 
 function UserParticipating($eventid, $userid)
 {
-    $eventid = (int) $eventid;
-    $userid = (int) $userid;
+    $eventid = esc_or_null($eventid, 'int');
+    $userid = esc_or_null($userid, 'int');
 
-    $query = format_query("SELECT :Participation.id
+    return db_one("SELECT :Participation.id
                             FROM :Participation
                             INNER JOIN :Player ON :Participation.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :Participation.Event = $eventid");
-    $result = db_query($query);
-
-    $retValue = (mysql_num_rows($result) > 0);
-    mysql_free_result($result);
-
-    return $retValue;
 }
 
 
 function GetAllToRemind($eventid)
 {
-    $eventid = (int) $eventid;
+    $eventid = esc_or_null($eventid, 'int');
 
-    $query = format_query("SELECT :User.id
+    $result = db_all("SELECT :User.id
                             FROM :User
                             INNER JOIN :Player ON :User.Player = :Player.player_id
                             INNER JOIN :Participation ON :Player.player_id = :Participation.Player
                             WHERE :Participation.Event = $eventid AND :Participation.EventFeePaid IS NULL");
-    $result = db_query($query);
+
+    if (db_is_error($result))
+        return $result;
 
     $retValue = array();
-    if ($result) {
-        while (($row = mysql_fetch_assoc($result)) !== false)
-            $retValue[] = $row['id'];
-    }
-    mysql_free_result($result);
-
+    foreach ($result as $row)
+        $retValue[] = $row['id'];
     return $retValue;
 }
 
@@ -910,24 +817,24 @@ function data_GetExtraSortInfo($roundid, $playerList)
     $ids = array_filter($playerList, 'is_numeric');
     $ids = implode(',', $ids);
 
-    $query = "SELECT :Round.id RoundId, :StartingOrder.id AS StartId, :RoundResult.Result, :StartingOrder.Player
-                FROM :Round LinkRound
-                INNER JOIN :Round ON :Round.Event = LinkRound.Event
-                INNER JOIN :Section ON :Section.Round = :Round.id
-                INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
-                INNER JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
-                WHERE :StartingOrder.Player IN ($ids) AND :Round.id <= $roundid AND LinkRound.id = $roundid
-                ORDER BY :Round.StartTime, :StartingOrder.Player";
-    $query = format_query($query);
-    $result = db_query($query);
+    $result = db_all("SELECT :Round.id RoundId, :StartingOrder.id AS StartId, :RoundResult.Result, :StartingOrder.Player
+                        FROM :Round LinkRound
+                        INNER JOIN :Round ON :Round.Event = LinkRound.Event
+                        INNER JOIN :Section ON :Section.Round = :Round.id
+                        INNER JOIN :StartingOrder ON :StartingOrder.Section = :Section.id
+                        INNER JOIN :RoundResult ON (:RoundResult.Round = :Round.id AND :RoundResult.Player = :StartingOrder.Player)
+                        WHERE :StartingOrder.Player IN ($ids) AND :Round.id <= $roundid AND LinkRound.id = $roundid
+                        ORDER BY :Round.StartTime, :StartingOrder.Player");
+
+    if (db_is_error($result))
+        return array();
 
     $retValue = array();
-    while (($row = mysql_fetch_assoc($result)) !== false) {
+    foreach ($result as $row) {
         if (!isset($retValue[$row['RoundId']]))
             $retValue[$row['RoundId']] = array();
         $retValue[$row['RoundId']][$row['Player']] = $row;
     }
-    mysql_free_result($result);
 
     return array_reverse($retValue);
 }
@@ -989,16 +896,12 @@ function DeleteEvent($event)
         }
         $queries[] = format_query("DELETE FROM :Section WHERE Round = $rid");
 
-        $query = format_query("SELECT id FROM :RoundResult WHERE Round = $rid");
-        $result = db_query($query);
+        $result = db_all("SELECT id FROM :RoundResult WHERE Round = $rid");
 
-        if (mysql_num_rows($result) > 0) {
-            while (($row = mysql_fetch_assoc($result)) !== false) {
-                $hid = $row['id'];
-                $queries[] = format_query("DELETE FROM :HoleResult WHERE RoundResult = $hid");
-            }
+        foreach ($result as $row) {
+            $hid = $row['id'];
+            $queries[] = format_query("DELETE FROM :HoleResult WHERE RoundResult = $hid");
         }
-        mysql_free_result($result);
 
         $queries[] = format_query("DELETE FROM :RoundResult WHERE Round = $rid");
     }
@@ -1009,5 +912,5 @@ function DeleteEvent($event)
     $queries[] = format_query("DELETE FROM :Event WHERE id = $id");
 
     foreach ($queries as $query)
-        db_query($query);
+        db_exec($query);
 }
