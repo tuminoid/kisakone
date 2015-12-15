@@ -425,6 +425,7 @@ class User
     {
         $md5 = md5($this->email . $this->salt);
         $token = strtoupper(substr($md5, 0, 10));
+        //error_log("token: $token for user: " . $this->username);
         return $token;
     }
 
