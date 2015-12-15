@@ -23,6 +23,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+// This is a bit non-standard way of requiring this
+// Upgrade scripts include this code and they cannot handle relative paths
+require_once __DIR__ . '/../core/error.php';
+
 
 /**
  * Connects to the database
@@ -159,10 +163,8 @@ function db_query($query)
     }
 
     $result = mysql_query($query);
-    if (!$result) {
-        require_once 'core/error.php';
+    if (!$result)
         $result = debug_query_and_die($query);
-    }
 
     return $result;
 }
@@ -171,11 +173,11 @@ function db_query($query)
 function db_exec($query)
 {
     if (empty($query))
-        return Error::Query($query);
+        return false;
 
     $query = format_query($query);
     $result = db_query($query);
-    if (!$result)
+    if (!$result || is_a($result, 'Error'))
         return Error::Query($query, mysql_error());
 
     $words = explode(" ", trim($query));
@@ -206,7 +208,7 @@ function db_exec($query)
 function db_all($query)
 {
     if (empty($query))
-        return Error::Query($query);
+        return false;
 
     $result = db_query(format_query($query));
     if (!$result)
@@ -237,7 +239,7 @@ function db_one($query)
 
 function db_is_error($error)
 {
-    return is_a($error, 'Error');
+    return (is_a($error, 'Error') || $error === false);
 }
 
 
