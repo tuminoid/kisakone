@@ -166,9 +166,14 @@ $(document).ready(function(){
         {/if}
 
         <label for="class">{translate id='class'}</label>
+        {if $classOptions}
         <select id="class" name="class">
             {html_options options=$classOptions}
         </select>
+        {else}
+        <div id="class" class="error">{translate id=no_suitable_classes}</div>
+        {assign var=classes_ok value=0}
+        {/if}
 
         {formerror field='class'}
     </div>
@@ -213,9 +218,8 @@ $(document).ready(function(){
 
     <h2>{translate id='reg_finalize'}</h2>
     <div>
-        <input type="submit" value="{translate id='form_add_competitor'}" name="accept" {if !$licenses_ok}disabled="disabled"{/if} />
-        <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" {if !$licenses_ok}disabled="disabled"{/if} />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
+        <input type="submit" value="{translate id='form_add_competitor'}" name="accept" {if !$licenses_ok || !$classes_ok}disabled="disabled"{/if} />
+        <input type="submit" value="{translate id='form_add_competitor_queue'}" name="accept_queue" {if !$licenses_ok || !$classes_ok}disabled="disabled"{/if} />
     </div>
 </form>
 

@@ -27,6 +27,7 @@ event_activate  Aktivoi käyttäjille
 
 event_classes   Luokat
 event_add_class Lisää luokka
+no_suitable_classes Ei pelaajalle sallittuja luokkia.
 
 event_rounds    Kierrokset
 event_management    Hallinnointi
