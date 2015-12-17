@@ -124,7 +124,6 @@ DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
 
 
-
 CREATE TABLE :EventPayout
 (
     id INT NOT NULL AUTO_INCREMENT,
@@ -144,7 +143,7 @@ CREATE TABLE :EventPrizes
 (
     id INT NOT NULL AUTO_INCREMENT,
     Event INT NOT NULL,
-    Player INT DEFAULT NULL,
+    Player SMALLINT DEFAULT NULL,
     Classification INT NOT NULL,
     Standing INT NOT NULL,
     CashPrize INT NOT NULL DEFAULT '0',
@@ -156,6 +155,3 @@ CREATE TABLE :EventPrizes
     FOREIGN KEY(Classification) REFERENCES :Classification(id),
     UNIQUE KEY(Event, Player)
 ) ENGINE=InnoDB;
-
-
-COMMIT;
