@@ -23,9 +23,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-// This is a bit non-standard way of requiring this
-// Upgrade scripts include this code and they cannot handle relative paths
-require_once __DIR__ . '/../core/error.php';
+require_once 'config.php';
+require_once 'core/error.php';
 
 
 /**
@@ -261,14 +260,14 @@ function db_is_error($error)
  */
 function debug_query_and_die($query)
 {
-    require_once 'data/config.php';
-
-    $db_error_log = GetConfig(DEVEL_DB_LOGGING);
+    global $settings;
     $conn = db_connect();
+    $error = mysqli_error($conn);
 
+    $db_error_log = @$settings['DB_ERROR_LOGGING'];
     if ($db_error_log) {
         error_log("query: $query");
-        error_log("mysql error: " . mysqli_error($conn));
+        error_log("mysql error: $error");
 
         $cnt = 1;
         foreach (xdebug_get_function_stack() as $line) {
@@ -280,17 +279,17 @@ function debug_query_and_die($query)
         }
     }
 
-    $db_error_die = GetConfig(DEVEL_DB_DIEONERROR);
+    $db_error_die = @$settings['DB_ERROR_DIE'];
     if ($db_error_die) {
         header("Content-Type: text/plain; charset=utf-8");
         xdebug_print_function_stack();
         xdebug_var_dump($query);
-        xdebug_var_dump(mysqli_error($conn));
+        xdebug_var_dump($error);
 
         die();
     }
 
-    return Error::Query($query, mysqli_error($conn));
+    return Error::Query($query, $error);
 }
 
 

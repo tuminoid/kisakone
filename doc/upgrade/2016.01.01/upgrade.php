@@ -31,8 +31,6 @@ function ExecuteQuery($query)
     global $settings;
     global $conn;
 
-    echo "execute: $query\n";
-
     if (!trim($query))
         return;
     if (trim($query) == 'SHOW WARNINGS')
@@ -44,11 +42,8 @@ function ExecuteQuery($query)
     if (!mysqli_query($conn, $query)) {
         echo "fatal: " . mysqli_error($conn);
         echo "$query\n";
-        ExecuteQuery("ROLLBACK");
-        die("rolled back?");
+        exit(1);
     }
-
-    echo "execute done\n";
 }
 
 
@@ -60,15 +55,8 @@ function Upgrade()
     $source = file_get_contents('upgrade.sql');
     $queries = explode(';', $source);
 
-    ExecuteQuery("SET autocommit=0");
-    ExecuteQuery("BEGIN");
-
     foreach ($queries as $query)
         ExecuteQuery($query);
-
-    ExecuteQuery("COMMIT");
-
-    return true;
 }
 
 
@@ -117,10 +105,7 @@ UPDATE :Config SET
     CachePort = '%s',
 
     TrackjsEnabled = '%d',
-    TrackjsToken = '%s',
-
-    Devel_DbLogging = '%d',
-    Devel_DbDieOnError = '%d'
+    TrackjsToken = '%s'
 ;\n",
     '', // admin email
 
@@ -143,10 +128,7 @@ UPDATE :Config SET
     $settings['MEMCACHED_PORT'],
 
     $settings['TRACK_JS_TOKEN'] != "" ? 1 : 0,
-    $settings['TRACK_JS_TOKEN'],
-
-    $devel_db_logging = $settings['DB_ERROR_LOGGING'] == true ? 1 : 0,
-    $devel_db_dieonerror = $settings['DB_ERROR_DIE'] == true ? 1 : 0
+    $settings['TRACK_JS_TOKEN']
 );
 
     $prefix = $settings['DB_PREFIX'];
@@ -158,7 +140,13 @@ UPDATE :Config SET
 
 
     $config = file_get_contents(CONFIG);
-    $config = str_replace("include_once('config_site.php');", "// Migrated to :Config db\n// include_once('config_site.php');", $config);
+    $config = str_replace("include_once('config_site.php');", "// Migrated to :Config db\n// include_once('config_site.php');\n", $config);
+
+    if ($settings['DB_ERROR_LOGGING'])
+        $config .= '$settings[\'DB_ERROR_LOGGING\'] = ' . ($settings['DB_ERROR_LOGGING'] ? "true" : "false") . ";\n";
+    if ($settings['DB_ERROR_LOGGING'])
+        $config .= '$settings[\'DB_ERROR_DIE\'] = ' . ($settings['DB_ERROR_DIE'] ? "true" : "false") . ";\n";
+
     if (file_put_contents(CONFIG, $config) === false) {
         echo "error: failed to write config into 'config.php'.\n";
         echo "Comment out 'incluce_once('config_site.php');' line and delete 'config_site.php'\n";

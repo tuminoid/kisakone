@@ -53,9 +53,6 @@ const CACHE_PORT = 'CachePort';
 const TRACKJS_ENABLED = 'TrackjsEnabled';
 const TRACKJS_TOKEN = 'TrackjsToken';
 
-const DEVEL_DB_LOGGING = 'Devel_DbLogging';
-const DEVEL_DB_DIEONERROR = 'Devel_DbDieOnError';
-
 
 
 /**
@@ -100,11 +97,6 @@ function GetConfigs()
         'config_trackjs' => array(
             array(TRACKJS_ENABLED,      'bool',     GetConfig(TRACKJS_ENABLED)),
             array(TRACKJS_TOKEN,        'string',   GetConfig(TRACKJS_TOKEN))
-        ),
-
-        'config_devel' => array(
-            array(DEVEL_DB_LOGGING,     'bool',     GetConfig(DEVEL_DB_LOGGING)),
-            array(DEVEL_DB_DIEONERROR,  'bool',     GetConfig(DEVEL_DB_DIEONERROR))
         )
     );
 }
@@ -123,7 +115,7 @@ function GetConfig($key)
     if (!$_config)
         $_config = db_one("SELECT * FROM :Config");
 
-    return $_config[$key];
+    return @$_config[$key];
 }
 
 

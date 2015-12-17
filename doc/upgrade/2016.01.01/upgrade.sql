@@ -110,10 +110,7 @@ CREATE TABLE :Config
     CachePort INT(10) DEFAULT '11211',
 
     TrackjsEnabled BOOL NOT NULL DEFAULT 0,
-    TrackjsToken VARCHAR(100) DEFAULT '',
-
-    Devel_DbLogging BOOL NOT NULL DEFAULT 0,
-    Devel_DbDieOnError BOOL NOT NULL DEFAULT 0
+    TrackjsToken VARCHAR(100) DEFAULT ''
 ) ENGINE=InnoDB;
 
 -- Insert defaults into db, they'll be updated during upgrade.php run

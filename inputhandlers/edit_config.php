@@ -87,9 +87,6 @@ function processForm()
     if ($trackjs_enabled && !$trackjs_token)
         $problems[TRACKJS_TOKEN] = translate('FormError_NotEmptyIfEnabled');
 
-    $db_log = $_POST[DEVEL_DB_LOGGING] ? 1 : 0;
-    $db_die = $_POST[DEVEL_DB_DIEONERROR] ? 1 : 0;
-
 
     // Don't save if there is errors
     if (count($problems)) {
@@ -126,9 +123,6 @@ function processForm()
 
     SetConfig(TRACKJS_ENABLED, $trackjs_enabled, 'int');
     SetConfig(TRACKJS_TOKEN,   $trackjs_token, 'string');
-
-    SetConfig(DEVEL_DB_LOGGING,    $db_log, 'int');
-    SetConfig(DEVEL_DB_DIEONERROR, $db_die, 'int');
 
 
     // Go to main admin page after success
