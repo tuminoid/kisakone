@@ -15,6 +15,7 @@ next:
   * Add setting for checking payments (for club use). GH #177.
   * Email verification upon registration and for old users too. GH #206.
   * All database calls are simplified and centralied to db.php.
+  * Drop deprecated "mysql" calls, use "mysqli". GH #246.
 
 2015.08.22:
 ===========
