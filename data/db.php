@@ -40,10 +40,10 @@ function db_connect()
     static $con;
 
     if (!$con) {
-        $con = @mysql_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD']);
+        $con = @mysqli_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD'], $settings['DB_DB']);
 
-        if (!($con && @mysql_select_db($settings['DB_DB'])))
-            $con = null;
+        if (mysqli_connect_errno())
+            error_log("fatal: db connect failure: " . mysqli_connect_error());
     }
 
     return $con;
@@ -58,8 +58,7 @@ function db_connect()
  */
 function escape_string($string)
 {
-    db_connect();
-    return mysql_real_escape_string($string);
+    return mysqli_real_escape_string(db_connect(), $string);
 }
 
 
@@ -157,12 +156,11 @@ function db_query($query)
         return false;
 
     $conn = db_connect();
-    if (!$conn) {
-        error_log("error: database connection failed: " . mysql_error());
+    if (!$conn)
         return false;
-    }
 
-    $result = mysql_query($query);
+    $query = format_query($query);
+    $result = mysqli_query($conn, $query);
     if (!$result)
         $result = debug_query_and_die($query);
 
@@ -175,22 +173,25 @@ function db_exec($query)
     if (empty($query))
         return false;
 
-    $query = format_query($query);
+    $conn = db_connect();
     $result = db_query($query);
-    if (!$result || is_a($result, 'Error'))
-        return Error::Query($query, mysql_error());
+
+    if (!$result)
+        return Error::Query($query, mysqli_error($conn));
+    if (is_a($result, 'Error'))
+        return $result;
 
     $words = explode(" ", trim($query));
     $keyword = strtolower($words[0]);
     switch ($keyword) {
         case "insert":
         case "replace":
-            $retValue = mysql_insert_id();
+            $retValue = mysqli_insert_id($conn);
             break;
 
         case "update":
         case "delete":
-            $retValue = mysql_affected_rows();
+            $retValue = mysqli_affected_rows($conn);
             break;
 
         default:
@@ -199,7 +200,7 @@ function db_exec($query)
     }
 
     if (is_resource($result))
-        mysql_free_result($result);
+        mysqli_free_result($result);
 
     return $retValue;
 }
@@ -210,14 +211,18 @@ function db_all($query)
     if (empty($query))
         return false;
 
-    $result = db_query(format_query($query));
+    $conn = db_connect();
+    $result = db_query($query);
+
     if (!$result)
-        return Error::Query($query, mysql_error());
+        return Error::Query($query, mysqli_error($conn));
+    if (is_a($result, 'Error'))
+        return $result;
 
     $retArray = array();
-    while ($array = mysql_fetch_assoc($result))
+    while ($array = mysqli_fetch_assoc($result))
         $retArray[] = $array;
-    mysql_free_result($result);
+    mysqli_free_result($result);
 
     return $retArray;
 }
@@ -259,10 +264,11 @@ function debug_query_and_die($query)
     require_once 'data/config.php';
 
     $db_error_log = GetConfig(DEVEL_DB_LOGGING);
+    $conn = db_connect();
 
     if ($db_error_log) {
         error_log("query: $query");
-        error_log("mysql error: " . mysql_error());
+        error_log("mysql error: " . mysqli_error($conn));
 
         $cnt = 1;
         foreach (xdebug_get_function_stack() as $line) {
@@ -279,12 +285,12 @@ function debug_query_and_die($query)
         header("Content-Type: text/plain; charset=utf-8");
         xdebug_print_function_stack();
         xdebug_var_dump($query);
-        xdebug_var_dump(mysql_error());
+        xdebug_var_dump(mysqli_error($conn));
 
         die();
     }
 
-    return Error::Query($query, mysql_error());
+    return Error::Query($query, mysqli_error($conn));
 }
 
 
