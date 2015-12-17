@@ -7,44 +7,66 @@ const CONFIG_SITE = '../../../config_site.php';
 const CONFIG = '../../../config.php';
 
 require_once(CONFIG);
-require_once __DIR__ . '/../../../data/db.php';
+# require_once __DIR__ . '/../../../data/db.php';
 
 
 function InitializeDB()
 {
     global $settings;
+    global $conn;
 
-    if (!db_connect())
-        die("fatal: Cannot connect to DB\n");
+    if (!$conn)
+        $conn = @mysqli_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD'], $settings['DB_DB']);
+
+    if (!$conn) {
+        echo "fatal: code:  " . mysqli_connect_errno();
+        echo "fatal: error: " . mysqli_connect_error();
+        exit(1);
+    }
 }
 
 
-function Upgrade() {
+function ExecuteQuery($query)
+{
     global $settings;
+    global $conn;
 
+    echo "execute: $query\n";
+
+    if (!trim($query))
+        return;
+    if (trim($query) == 'SHOW WARNINGS')
+        return;
+
+    $prefix = $settings['DB_PREFIX'];
+    $query = str_replace(':', $prefix, $query);
+
+    if (!mysqli_query($conn, $query)) {
+        echo "fatal: " . mysqli_error($conn);
+        echo "$query\n";
+        ExecuteQuery("ROLLBACK");
+        die("rolled back?");
+    }
+
+    echo "execute done\n";
+}
+
+
+function Upgrade()
+{
     if (!file_exists('upgrade.sql'))
         die("fatal: Must run upgrade.php within directory containing 'upgrade.sql'");
 
     $source = file_get_contents('upgrade.sql');
     $queries = explode(';', $source);
 
-    mysql_query("SET autocommit=0; START TRANSACTION;");
+    ExecuteQuery("SET autocommit=0");
+    ExecuteQuery("BEGIN");
 
-    foreach ($queries as $query) {
-        if (!trim($query))
-            continue;
-        if (trim($query) == 'SHOW WARNINGS')
-            continue;
-        $query = format_query($query);
-        if (!mysql_query($query)) {
-            echo "fatal: $query\n";
-            echo "error: " . mysql_error() . "\n";
-            mysql_query("ROLLBACK;");
-            die();
-        }
-    }
+    foreach ($queries as $query)
+        ExecuteQuery($query);
 
-    mysql_query("COMMIT;");
+    ExecuteQuery("COMMIT");
 
     return true;
 }
@@ -69,6 +91,7 @@ function MigrateConfigs()
 {
     require_once CONFIG_SITE;
     global $settings;
+    global $conn;
 
 
     $migrate_sql = sprintf("
@@ -128,9 +151,9 @@ UPDATE :Config SET
 
     $prefix = $settings['DB_PREFIX'];
     $query = str_replace(':', $prefix, $migrate_sql);
-    if (!mysql_query($query)) {
+    if (!mysqli_query($conn, $query)) {
         echo "error: $query\n";
-        die(mysql_error() . "\n");
+        die(mysqli_error($conn) . "\n");
     }
 
 
