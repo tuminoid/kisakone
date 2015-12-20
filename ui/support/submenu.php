@@ -29,6 +29,7 @@ require_once 'data/event.php';
 require_once 'data/user.php';
 require_once 'data/textcontent.php';
 require_once 'data/tournament.php';
+require_once 'data/taxes.php';
 
 
 /**
@@ -265,6 +266,9 @@ function page_getSubMenu()
                 array('title' => translate('enter_results'), 'link' => array('page' => 'enterresults', 'id' => $id), 'access' => null, 'children' => array()),
                 array('title' => translate('results_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'leaderboard_csv'), 'access' => null, 'children' => array()),
                 array('title' => translate('participants_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'participant_csv'), 'access' => null, 'children' => array()),
+                array('title' => translate('edit_taxes'), 'link' => array( 'page' => 'edittaxes', 'id'=>$id), 'access' => null, 'children' => array(),
+                    'condition' => taxes_enabled()
+                ),
             ));
 
         // Event management links for officials

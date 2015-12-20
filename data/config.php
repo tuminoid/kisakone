@@ -35,6 +35,7 @@ const EMAIL_VERIFICATION = 'EmailVerification';
 
 const LICENSE_ENABLED = 'LicenseEnabled';
 const PAYMENT_ENABLED = 'PaymentEnabled';
+const TAXES_ENABLED = 'TaxesEnabled';
 
 const SFL_ENABLED = 'SflEnabled';
 const SFL_USERNAME = 'SflUsername';
@@ -77,7 +78,8 @@ function GetConfigs()
 
         'config_payments' => array(
             array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl')),
-            array(PAYMENT_ENABLED,      'bool',     GetConfig(PAYMENT_ENABLED))
+            array(PAYMENT_ENABLED,      'bool',     GetConfig(PAYMENT_ENABLED)),
+            array(TAXES_ENABLED,        'bool',     GetConfig(TAXES_ENABLED))
         ),
 
         'config_pdga' => array(

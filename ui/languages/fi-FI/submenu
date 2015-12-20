@@ -48,8 +48,8 @@ event_info          Yleistiedot
 event_custom_pages  Lisäsivut
 event_manage        Muokkaa
 event_add_news      Lisää uutinen
-event_newsarchive        Uutisarkisto
-event_leaderboard    Leaderboard
+event_newsarchive   Uutisarkisto
+event_leaderboard   Leaderboard
 
 new_news_item       Uusi uutinen
 edit_news_item      Muokkaa uutista
@@ -60,6 +60,7 @@ edit_ads            Mainokset
 editclass           Muokkaa luokkaa
 edittournament      Muokkaa sarjaa
 editlevel           Muokkaa tasoa
+edit_taxes          Verotus
 
 submenu_new_admin   Lisää ylläpitäjä
 submenu_tournaments Sarjat

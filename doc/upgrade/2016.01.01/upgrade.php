@@ -7,7 +7,6 @@ const CONFIG_SITE = '../../../config_site.php';
 const CONFIG = '../../../config.php';
 
 require_once(CONFIG);
-# require_once __DIR__ . '/../../../data/db.php';
 
 
 function InitializeDB()
@@ -93,6 +92,7 @@ UPDATE :Config SET
 
     LicenseEnabled = '%s',
     PaymentEnabled = '%d',
+    TaxesEnabled = '%d',
 
     PdgaEnabled = '%d',
     PdgaUsername = '%s',
@@ -115,6 +115,7 @@ UPDATE :Config SET
     0, // email verification
 
     IGNORE_PAYMENTS !== false ? 'no' : 'sfl',
+    IGNORE_PAYMENTS === true ? 0 : 1,
     IGNORE_PAYMENTS === true ? 0 : 1,
 
     $pdga_enabled = $settings['PDGA_ENABLED'] == true ? 1 : 0,

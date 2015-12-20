@@ -25,6 +25,7 @@ event_registration_rules Ilmoittautumisrajat -ja ehdot
 event_signup_start  Ilmoittautuminen\nalkaa
 event_signup_end  Ilmoittautuminen\nloppuu
 event_activate  Aktivoi käyttäjille
+event_taxes     Verotus
 
 event_classes   Luokat
 event_add_class Lisää luokka
@@ -140,16 +141,16 @@ title       Otsikko
 default_title_for_page  Jos otsikkoa ei syötetä, käytetään oletusotsikkoa {title}.
 content     Sisältö
 
-pagetitle_index     Yleistiedot
-pagetitle_results   Tulokset
+pagetitle_index         Yleistiedot
+pagetitle_results       Tulokset
 pagetitle_competitors   Kilpailijat
 pagetitle_queue         Jono
 pagetitle_quotas        Kiintiöt
 pagetitle_schedule      Aikataulu
 pagetitle_course        Rata
-pagetitle_signupinfo       Ilmoittautuminen
-pagetitle_liveresults      Live-tulokset
-
+pagetitle_signupinfo    Ilmoittautuminen
+pagetitle_liveresults   Live-tulokset
+pagetitle_taxes         Verotus
 
 
 relevant_news       Ajankohtaiset uutiset

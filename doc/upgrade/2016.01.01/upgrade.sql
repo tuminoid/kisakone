@@ -101,6 +101,7 @@ CREATE TABLE :Config
 
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,
+    TaxesEnabled BOOL NOT NULL DEFAULT 0,
 
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
@@ -123,4 +124,29 @@ INSERT INTO :Config VALUES();
 DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
 
-COMMIT;
+
+CREATE TABLE :EventTaxes
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    Event INT NOT NULL,
+    Player SMALLINT DEFAULT NULL,
+    ProPrize INT NOT NULL DEFAULT '0',
+    AmPrize INT NOT NULL DEFAULT '0',
+    OtherPrize INT NOT NULL DEFAULT '0',
+    PRIMARY KEY(id),
+    FOREIGN KEY(Event) REFERENCES :Event(id),
+    FOREIGN KEY(Player) REFERENCES :Player(player_id),
+    UNIQUE KEY(Event, Player)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE :ClubAdmin
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    Club INT NOT NULL,
+    User INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(Club) REFERENCES :Club(id),
+    FOREIGN KEY(User) REFERENCES :User(id)
+) ENGINE=InnoDB;
+

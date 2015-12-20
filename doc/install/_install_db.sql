@@ -9,6 +9,7 @@ CREATE TABLE :Config
 
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,
+    TaxesEnabled BOOL NOT NULL DEFAULT 0,
 
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
