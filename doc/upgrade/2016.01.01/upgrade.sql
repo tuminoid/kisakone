@@ -124,17 +124,39 @@ DROP TABLE :LicensePayment;
 DROP TABLE :MembershipPayment;
 
 
+CREATE TABLE :PayoutTables
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    Name VARCHAR(256) NOT NULL,
+    Curve ENUM('custom', 'pro', 'am') NOT NULL DEFAULT 'pro',
+    Percentage ENUM('custom', 'p25', 'p33', 'p40', 'p50'),
+    PlacesPaid INT,
+    PRIMARY KEY(id)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE :PayoutPlaces
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    PayoutTable INT NOT NULL,
+    Place INT NOT NULL,
+    Payout FLOAT(12,9) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(PayoutTable) REFERENCES :PayoutTables(id)
+) ENGINE=InnoDB;
+
+
 CREATE TABLE :EventPayout
 (
     id INT NOT NULL AUTO_INCREMENT,
     Event INT NOT NULL,
     Classification INT NOT NULL,
-    Curve ENUM('custom', 'pro', 'am') NOT NULL DEFAULT 'pro',
-    Percentage ENUM('custom', 'p25', 'p33', 'p40', 'p50'),
-    PlacesPaid INT,
+    PayoutTable INT NOT NULL,
+    Paid INT,
     PRIMARY KEY(id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
     FOREIGN KEY(Classification) REFERENCES :Classification(id),
+    FOREIGN KEY(PayoutTable) REFERENCES :PayoutTables(id),
     UNIQUE KEY(Event, Classification)
 ) ENGINE=InnoDB;
 
