@@ -16,6 +16,7 @@ next:
   * Email verification upon registration and for old users too. GH #206.
   * All database calls are simplified and centralied to db.php.
   * Drop deprecated "mysql" calls, use "mysqli". GH #246.
+  * Admin: New find_duplicates script for detecting duplicate users.
 
 2015.08.22:
 ===========
