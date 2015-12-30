@@ -51,3 +51,14 @@ function SaveClub($clubid, $clubname, $clubshort)
     return db_exec("INSERT INTO :Club VALUES($clubid, $clubname, $clubshort)
                             ON DUPLICATE KEY UPDATE Name = $clubname, ShortName = $clubshort");
 }
+
+
+function GetClubs()
+{
+    $result = db_all("SELECT id, Name FROM :Club ORDER BY Name ASC");
+
+    if (db_is_error($result))
+        return array();
+
+    return $result;
+}
