@@ -878,10 +878,10 @@ function DeleteEvent($event)
     $id = (int) $event->id;
 
     $queries = array();
-    $queries[] = format_query("DELETE FROM :AdBanner WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :EventQueue WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :ClassInEvent WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :EventManagement WHERE Event = $id");
+    $queries[] = "DELETE FROM :AdBanner WHERE Event = $id";
+    $queries[] = "DELETE FROM :EventQueue WHERE Event = $id";
+    $queries[] = "DELETE FROM :ClassInEvent WHERE Event = $id";
+    $queries[] = "DELETE FROM :EventManagement WHERE Event = $id";
 
     $rounds = $event->GetRounds();
     foreach ($rounds as $round) {
@@ -891,25 +891,25 @@ function DeleteEvent($event)
         foreach ($sections as $section) {
             $sid = (int) $section->id;
 
-            $queries[] = format_query("DELETE FROM :SectionMembership WHERE Section = $sid");
-            $queries[] = format_query("DELETE FROM :StartingOrder WHERE Section = $sid");
+            $queries[] = "DELETE FROM :SectionMembership WHERE Section = $sid";
+            $queries[] = "DELETE FROM :StartingOrder WHERE Section = $sid";
         }
-        $queries[] = format_query("DELETE FROM :Section WHERE Round = $rid");
+        $queries[] = "DELETE FROM :Section WHERE Round = $rid";
 
         $result = db_all("SELECT id FROM :RoundResult WHERE Round = $rid");
 
         foreach ($result as $row) {
             $hid = $row['id'];
-            $queries[] = format_query("DELETE FROM :HoleResult WHERE RoundResult = $hid");
+            $queries[] = "DELETE FROM :HoleResult WHERE RoundResult = $hid";
         }
 
-        $queries[] = format_query("DELETE FROM :RoundResult WHERE Round = $rid");
+        $queries[] = "DELETE FROM :RoundResult WHERE Round = $rid";
     }
-    $queries[] = format_query("UPDATE :Course SET Event = NULL WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :Round WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :TextContent WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :Participation WHERE Event = $id");
-    $queries[] = format_query("DELETE FROM :Event WHERE id = $id");
+    $queries[] = "UPDATE :Course SET Event = NULL WHERE Event = $id";
+    $queries[] = "DELETE FROM :Round WHERE Event = $id";
+    $queries[] = "DELETE FROM :TextContent WHERE Event = $id";
+    $queries[] = "DELETE FROM :Participation WHERE Event = $id";
+    $queries[] = "DELETE FROM :Event WHERE id = $id";
 
     foreach ($queries as $query)
         db_exec($query);
