@@ -143,7 +143,8 @@ function format_query($query)
 
 
 /**
- * Executes raw SQL query and return you mysql result object
+ * Executes raw SQL query and return you mysql result object.
+ * Note: Only used within this file.
  *
  * @param string $query SQL query to run
  * @return false on failure
@@ -167,6 +168,13 @@ function db_query($query)
 }
 
 
+/**
+ * Executes non-SELECT SQL.
+ *
+ * @param string $query SQL query to run
+ * @return false on failure
+ * @return insert_id, affected rows or true on success depending on the SQL
+ */
 function db_exec($query)
 {
     if (empty($query))
@@ -205,6 +213,13 @@ function db_exec($query)
 }
 
 
+/**
+ * Executes SQL query and returns all rows as assoc array
+ *
+ * @param string $query SQL query to run
+ * @return false or Error object on failure
+ * @return assoc array on success
+ */
 function db_all($query)
 {
     if (empty($query))
@@ -227,6 +242,13 @@ function db_all($query)
 }
 
 
+/**
+ * Executes SQL query and returns one row as assoc array
+ *
+ * @param string $query SQL query to run
+ * @return false or Error object on failure
+ * @return assoc array on success or null if array would be empty
+ */
 function db_one($query)
 {
     $result = db_all($query);
@@ -241,6 +263,12 @@ function db_one($query)
 }
 
 
+/**
+ * Checks if value returned from db calls is an error condition
+ *
+ * @param error $mixed Return value from db call
+ * @return true if it is an error condition, false otherwise
+ */
 function db_is_error($error)
 {
     return (is_a($error, 'Error') || $error === false);
