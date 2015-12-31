@@ -17,6 +17,10 @@ next:
   * All database calls are simplified and centralied to db.php.
   * Drop deprecated "mysql" calls, use "mysqli". GH #246.
   * Admin: New find_duplicates script for detecting duplicate users.
+  * New (simple) taxes interface for TDs. It will be improved iteratively over the year.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160101.md)
+for additional actions needed.
 
 2015.08.22:
 ===========
