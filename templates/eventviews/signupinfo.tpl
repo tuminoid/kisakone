@@ -65,9 +65,9 @@
                 <td><label for="sfl_license">{translate id=license_status_header}</label></td>
                 <td><span id="sfl_license">
                     {if $sfl_license}
-                        {translate id=license}
+                        {translate id=license_paid}
                     {elseif $sfl_membership}
-                        {translate id=membership}
+                        {translate id=membership_paid}
                     {else}
                         {translate id=none_paid}
                     {/if}
