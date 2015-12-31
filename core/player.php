@@ -22,6 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/taxes.php';
+
+
 // Valid User->gender attribute values
 define('PLAYER_GENDER_MALE', 'M');
 define('PLAYER_GENDER_FEMALE', 'F');
@@ -202,5 +205,13 @@ class Player
             return pdga_getPlayerData($this->pdga, $field, $force);
 
         return pdga_getPlayer($this->pdga, $force);
+    }
+
+    /**
+     * Get taxes in certain event
+     */
+    function GetEventTax($eventid)
+    {
+        return GetPlayerTaxes($this->id, $eventid);
     }
 }
