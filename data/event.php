@@ -877,41 +877,42 @@ function GetPastEvents($onlySome, $onlyYear = null)
 
 function DeleteEvent($event)
 {
-    $id = (int) $event->id;
+    $eventid = esc_or_null($event->id, 'int');
 
     $queries = array();
-    $queries[] = "DELETE FROM :AdBanner WHERE Event = $id";
-    $queries[] = "DELETE FROM :EventQueue WHERE Event = $id";
-    $queries[] = "DELETE FROM :ClassInEvent WHERE Event = $id";
-    $queries[] = "DELETE FROM :EventManagement WHERE Event = $id";
+    $queries[] = "DELETE FROM :AdBanner WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :EventQueue WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :ClassInEvent WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :EventManagement WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :EventTaxes WHERE Event = $eventid";
 
     $rounds = $event->GetRounds();
     foreach ($rounds as $round) {
-        $rid = $round->id;
-        $sections = GetSections($rid);
-
+        $sections = GetSections($round->id);
         foreach ($sections as $section) {
-            $sid = (int) $section->id;
+            $sectionid = esc_or_null($section->id, 'int');
 
-            $queries[] = "DELETE FROM :SectionMembership WHERE Section = $sid";
-            $queries[] = "DELETE FROM :StartingOrder WHERE Section = $sid";
+            $queries[] = "DELETE FROM :SectionMembership WHERE Section = $sectionid";
+            $queries[] = "DELETE FROM :StartingOrder WHERE Section = $sectionid";
         }
-        $queries[] = "DELETE FROM :Section WHERE Round = $rid";
 
-        $result = db_all("SELECT id FROM :RoundResult WHERE Round = $rid");
+        $roundid = esc_or_null($rid, 'int');
+        $queries[] = "DELETE FROM :Section WHERE Round = $roundid";
+        $result = db_all("SELECT id FROM :RoundResult WHERE Round = $roundid");
 
         foreach ($result as $row) {
-            $hid = $row['id'];
-            $queries[] = "DELETE FROM :HoleResult WHERE RoundResult = $hid";
+            $holeid = esc_or_null($row['id'], 'int');
+
+            $queries[] = "DELETE FROM :HoleResult WHERE RoundResult = $holeid";
         }
 
-        $queries[] = "DELETE FROM :RoundResult WHERE Round = $rid";
+        $queries[] = "DELETE FROM :RoundResult WHERE Round = $roundid";
     }
-    $queries[] = "UPDATE :Course SET Event = NULL WHERE Event = $id";
-    $queries[] = "DELETE FROM :Round WHERE Event = $id";
-    $queries[] = "DELETE FROM :TextContent WHERE Event = $id";
-    $queries[] = "DELETE FROM :Participation WHERE Event = $id";
-    $queries[] = "DELETE FROM :Event WHERE id = $id";
+    $queries[] = "UPDATE :Course SET Event = NULL WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :Round WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :TextContent WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :Participation WHERE Event = $eventid";
+    $queries[] = "DELETE FROM :Event WHERE id = $eventid";
 
     foreach ($queries as $query)
         db_exec($query);
