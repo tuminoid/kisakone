@@ -37,8 +37,12 @@ function processForm()
         return Error::AccessDenied();
 
     $club = $_POST['club'];
-    if (!is_numeric($club))
+    if (sfl_enabled() && !is_numeric($club))
         $problems['club'] = translate('FormError_MustHaveClub');
+    elseif ($club && !is_numeric($club))
+        $problems['club'] = translate('FormError_MustHaveClub');
+    if ($club == 0)
+        $club = null;
 
     $name = $_POST['name'];
     if ($name == '')
