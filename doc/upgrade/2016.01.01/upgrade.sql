@@ -108,7 +108,6 @@ CREATE TABLE :Config
     PdgaPassword VARCHAR(100) DEFAULT '',
 
     CacheEnabled BOOL NOT NULL DEFAULT 0,
-    CacheType VARCHAR(100) DEFAULT 'memcached',
     CacheName VARCHAR(100) DEFAULT 'kisakone',
     CacheHost VARCHAR(100) DEFAULT '127.0.0.1',
     CachePort INT(10) DEFAULT '11211',

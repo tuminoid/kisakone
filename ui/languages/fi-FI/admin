@@ -95,8 +95,6 @@ PdgaEnabled         PDGA API
 PdgaUsername        PDGA käyttäjätunnus
 PdgaPassword        PDGA salasana
 CacheEnabled        Välimuisti
-CacheType           Välimuistin tyyppi
-CacheType_memcached Memcached
 CacheName           Välimuistin nimi
 CacheHost           Välimuistin osoite
 CachePort           Välimuistin portti

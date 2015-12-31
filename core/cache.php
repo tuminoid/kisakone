@@ -39,10 +39,6 @@ function cache_connect()
     if (!GetConfig(CACHE_ENABLED))
         return null;
 
-    // We only support memcached now
-    if (GetConfig(CACHE_TYPE) != 'memcached')
-        return null;
-
     // connect to memcached pool
     $name = GetConfig(CACHE_NAME);
     $host = GetConfig(CACHE_HOST);

@@ -46,7 +46,6 @@ const PDGA_USERNAME = 'PdgaUsername';
 const PDGA_PASSWORD = 'PdgaPassword';
 
 const CACHE_ENABLED = 'CacheEnabled';
-const CACHE_TYPE = 'CacheType';
 const CACHE_NAME = 'CacheName';
 const CACHE_HOST = 'CacheHost';
 const CACHE_PORT = 'CachePort';
@@ -90,7 +89,6 @@ function GetConfigs()
 
         'config_cache' => array(
             array(CACHE_ENABLED,        'bool',     GetConfig(CACHE_ENABLED)),
-            array(CACHE_TYPE,           'enum',     GetConfig(CACHE_TYPE),              array('memcached')),
             array(CACHE_NAME,           'string',   GetConfig(CACHE_NAME)),
             array(CACHE_HOST,           'string',   GetConfig(CACHE_HOST)),
             array(CACHE_PORT,           'int',      GetConfig(CACHE_PORT))

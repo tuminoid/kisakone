@@ -99,7 +99,6 @@ UPDATE :Config SET
     PdgaPassword = '%s',
 
     CacheEnabled = '%d',
-    CacheType = '%s',
     CacheName = '%s',
     CacheHost = '%s',
     CachePort = '%s',
@@ -123,7 +122,6 @@ UPDATE :Config SET
     $settings["PDGA_PASSWORD"],
 
     $cache_enabled = $settings['MEMCACHED_ENABLED'] == true ? 1 : 0,
-    'memcached',
     $settings['MEMCACHED_NAME'],
     $settings['MEMCACHED_HOST'],
     $settings['MEMCACHED_PORT'],

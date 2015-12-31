@@ -68,14 +68,10 @@ function processForm()
     if ($pdga_enabled && !pdga_testCredentials($pdga_user, $pdga_pass))
         $problems[PDGA_ENABLED] = translate('FormError_APIFailed');
 
-    $ok_types = array('memcached');
     $cache_enabled = $_POST[CACHE_ENABLED] ? 1 : 0;
-    $cache_type = $_POST[CACHE_TYPE];
     $cache_name = $_POST[CACHE_NAME];
     $cache_host = $_POST[CACHE_HOST];
     $cache_port = $_POST[CACHE_PORT];
-    if (!in_array($cache_type, $ok_types))
-        $problems[CACHE_TYPE] = translate('FormError_Default');
     if ($cache_enabled && !$cache_name)
         $problems[CACHE_NAME] = translate('FormError_NotEmptyIfEnabled');
     if ($cache_enabled && !$cache_host)
@@ -118,7 +114,6 @@ function processForm()
     SetConfig(PDGA_PASSWORD, $pdga_pass, 'string');
 
     SetConfig(CACHE_ENABLED, $cache_enabled, 'int');
-    SetConfig(CACHE_TYPE,    $cache_type, 'string');
     SetConfig(CACHE_NAME,    $cache_name, 'string');
     SetConfig(CACHE_HOST,    $cache_host, 'string');
     SetConfig(CACHE_PORT,    $cache_port, 'int');
