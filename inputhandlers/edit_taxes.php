@@ -21,6 +21,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/taxes.php';
+
 
 /**
  * Processes the login form
@@ -29,34 +31,20 @@
 function processForm()
 {
     $problems = array();
+    $eventid = @$_GET['id'];
 
     if (!IsAdmin()) {
-        $event = GetEventDetails(@$_GET['id']);
+        $event = GetEventDetails($eventid);
         if ($event->management != 'td')
             return Error::AccessDenied();
     }
 
-/*
-    $name = $_POST['name'];
-    if ($name == '')
-        $problems['name'] = translate('FormError_NotEmpty');
-
-
-    if (count($problems)) {
-        $problems['classList'] = $classes;
-        $problems['roundList'] = $rounds;
-        $problems['officialList'] = $officials;
-
-        $error = new Error();
-        $error->title = 'New event form error';
-        $error->function = 'InputProcessing:Edit_Event:processForm';
-        $error->cause = array_keys($problems);
-        $error->data = $problems;
-
-        return $error;
+    $players = $_POST['player'];
+    foreach ($players as $plr) {
+        list($id, $pro, $am, $other) = $plr;
+        SavePlayerTaxes($id, $eventid, $pro, $am, $other);
     }
-*/
 
     $dummy = null;
-    redirect(url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
+    redirect(url_smarty(array('page' => 'edittaxes', 'id' => $eventid), $dummy));
 }

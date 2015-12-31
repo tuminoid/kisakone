@@ -23,6 +23,7 @@
  * */
 
 require_once 'data/taxes.php';
+require_once 'data/event.php';
 
 
 /* Initializes the variables and other data necessary for showing the matching template
@@ -37,7 +38,15 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventtaxes');
 
+    $smarty->assign('tax_data', GetEventTaxes($eventid));
+
+    $players = GetEventParticipants($eventid);
+    $plrs = array();
+    foreach ($players as $plr)
+        $plrs[] = $plr['player'];
+    $smarty->assign('player_data', $plrs);
 }
+
 
 /**
  * Determines which main menu option this page falls under.

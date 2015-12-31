@@ -25,7 +25,37 @@ require_once 'data/db.php';
 require_once 'data/config.php';
 
 
-function taxes_enabled()
+function TaxesEnabled()
 {
     return GetConfig(TAXES_ENABLED);
 }
+
+
+function GetEventTaxes($eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+
+    return db_all("SELECT * FROM :EventTaxes WHERE Event = $eventid");
+}
+
+
+function SavePlayerTaxes($playerid, $eventid, $pro = 0, $am = 0, $other = 0)
+{
+    $playerid = esc_or_null($playerid, 'int');
+    $eventid = esc_or_null($eventid, 'int');
+    $pro = esc_or_null($pro, 'int');
+    $am = esc_or_null($am, 'int');
+    $other = esc_or_null($other, 'int');
+
+    return db_exec("REPLACE INTO :EventTaxes (Event, Player, ProPrize, AmPrize, OtherPrize)
+                        VALUES($eventid, $playerid, $pro, $am, $other)");
+}
+
+function GetPlayerTaxes($playerid, $eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
+
+    return db_one("SELECT * FROM :EventTaxes WHERE Event = $eventid AND Player = $playerid");
+}
+

@@ -453,3 +453,21 @@ quota_help_promoting     Kaikki toimenpiteet jotka muokkaavat kiintiöitä aiheu
 
 quota_help_who_title     Miten näen kuka nousi jonosta?
 quota_help_who           Mene "Maksut" sivulle ja järjestä pelaajat ilmoittautumisajan mukaan. Jonosta nousseiden ilmoittautumisajaksi tulee se hetki kun he nousivat kilpailuun.
+
+
+
+event_winners           Palkintojen saajat
+event_taxes_help_title  Ohjeet verotukseen
+event_proprize          Rahapalkinnot
+event_amprize           Lahjakortit
+event_otherprize        Muut palkinnot
+
+event_taxes_help        Kaikki palkinnot ilmoitetaan kokonaisina euroina, pyöristettynä alaspäin. Lisäohjeita "Rahapalkinnot", "Lahjakortit" ja "Muut palkinnot" otsikkojen kohdalta.
+event_foreign_taxes_help  Ulkomaalaisilta pelaajilta pidätetään 15% rahapalkinnosta lähdeverona ennen palkinnon maksamista.
+event_notaxes_help      Pokaaleista, mitaleista ja muista muistoesineistä ei kanneta veroa.
+
+event_proprize_help     Rahapalkinnoiksi lasketaan suoritukseen perustuvat palkinnot, jotka ovat rahaa (käteistä, tilisiirtoja ja niin edelleen). Rahapalkinnot arvotetaan täydellä arvollaan.
+event_amprize_help      Lahjakortteihin lasketaan suoritukseen perustuvat palkinnot, jotka ovat kuin käteistä rahaa tietyssä liikkeessä. Lahjakortit arvotetaan täysimääräisenä lahjakortin euromääräiseen arvoon.
+event_otherprize_help   Muihin palkintoihin lasketaan tavarapalkinnot (lippikset, kiekot ja niin edelleen). Nämä palkinnot arvotetaan arviolta sen mukaan, mitä niistä saisi rahaa heti myytynä.
+
+event_taxes_dev_help    Kevään 2016 kuluessa tätä sivua parannetaan TD-ystävällisemmäksi.

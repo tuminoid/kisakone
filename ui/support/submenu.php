@@ -267,7 +267,7 @@ function page_getSubMenu()
                 array('title' => translate('results_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'leaderboard_csv'), 'access' => null, 'children' => array()),
                 array('title' => translate('participants_csv'), 'link' => array( 'page' => 'event', 'id'=>$id, 'view' => 'participant_csv'), 'access' => null, 'children' => array()),
                 array('title' => translate('edit_taxes'), 'link' => array( 'page' => 'edittaxes', 'id'=>$id), 'access' => null, 'children' => array(),
-                    'condition' => taxes_enabled()
+                    'condition' => TaxesEnabled()
                 ),
             ));
 

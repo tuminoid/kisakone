@@ -27,11 +27,53 @@
     <p class="error">{$error}</p>
 {/if}
 
-<h2>{translate id=event_taxes}</h2>
+<h2>{translate id=event_taxes_help_title}</h2>
+
+<div class="error">
+    <p>{translate id=event_taxes_help}</p>
+    <p>{translate id=event_foreign_taxes_help}</p>
+    <p>{translate id=event_notaxes_help}</p>
+    <p>{translate id=event_taxes_dev_help}</p>
+</div>
+
+<h2>{translate id=event_winners}</h2>
 
 <form method="post">
     <input type="hidden" name="formid" value="edit_taxes" />
-Verotus goes here!
+    <input type="hidden" name="id" value="{$smarty.get.id}" />
+
+    <table class="narrow">
+    <thead>
+        <tr>
+            <th>{translate id=name}</th>
+            <th><abbr title="{translate id=event_proprize_help}">{translate id=event_proprize}</abbr></th>
+            <th><abbr title="{translate id=event_amprize_help}">{translate id=event_amprize}</abbr></th>
+            <th><abbr title="{translate id=event_otherprize_help}">{translate id=event_otherprize}</abbr></th>
+        </tr>
+    </thead>
+    <tbody>
+    {foreach from=$player_data item=player}
+        {assign var=taxes value=$player->GetEventTax($smarty.get.id)}
+        <tr>
+            <td>
+                <input type="hidden" name="player[{$player->id}][]" value="{$player->id}" />
+                {$player->lastname|escape}, {$player->firstname|escape}
+            </td>
+            <td>
+                <input type="numeric" name="player[{$player->id}][]" value="{$taxes.ProPrize}" />
+            </td>
+            <td>
+                <input type="numeric" name="player[{$player->id}][]" value="{$taxes.AmPrize}" />
+            </td>
+            <td>
+                <input type="numeric" name="player[{$player->id}][]" value="{$taxes.OtherPrize}" />
+            </td>
+        </tr>
+    {/foreach}
+    </tbody>
+    </table>
+
+    <input type="submit" name="save" value="{translate id=save}" />
 </form>
 
 {include file='include/footer.tpl' noad=true}
