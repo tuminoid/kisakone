@@ -61,10 +61,8 @@ function CheckEventRules($eventid, $classid, $playerid)
     $pdgadata = pdga_getPlayer($pdga);
 
     $rules = array_merge($commonrules, $classrules);
-    if (!count($rules)) {
-        //error_log("no rules, true");
+    if (!count($rules))
         return true;
-    }
 
     foreach ($rules as $index => $rule) {
         $id = $rule['id'];
@@ -74,10 +72,8 @@ function CheckEventRules($eventid, $classid, $playerid)
         $action = $rule['Action'];
         $valid = $rule['Valid'];
 
-        if (!$valid) {
-            //error_log("rule $id is not valid (expired $valid)");
+        if (!$valid)
             continue;
-        }
 
         switch ($type) {
             case 'rating':
@@ -106,12 +102,9 @@ function CheckEventRules($eventid, $classid, $playerid)
         }
 
         $pass = RuleCheck($op, $data, $value);
-        //error_log(sprintf("type: %-8s op: %-2s value: %-5s action: %-6s -> result: %-5s", $type, $op, $value, $action, $pass ? "true" : "false"));
 
-        if ($pass == false) {
-            //error_log("failed, taking action: $action");
+        if ($pass == false)
             return $action;
-        }
     }
 
     return true;
