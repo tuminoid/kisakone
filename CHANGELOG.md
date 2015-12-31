@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2016.01.01:
+===========
   * Use secure, httponly cookies.
   * Get rid of XHTML declaration, HTML5 is the standard. GH #220.
   * Don't allow course removal (or trying it) if it is in use. GH #217.
@@ -12,7 +12,7 @@ next:
   * New class information is used to limit registration options based on rating, status etc.
   * All other configs except database settings are now in Admin UI. GH #180.
   * SFL: In December, next year's license is already valid.
-  * Add setting for checking payments (for club use). GH #177.
+  * Add global setting for not checking payments (for club use). GH #177.
   * Email verification upon registration and for old users too. GH #206.
   * All database calls are simplified and centralied to db.php.
   * Drop deprecated "mysql" calls, use "mysqli". GH #246.

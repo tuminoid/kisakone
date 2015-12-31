@@ -1,3 +1,4 @@
+<!doctype html>
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
@@ -20,7 +21,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
-<!doctype html>
 <html lang="fi-FI">
 <meta charset="utf-8">
 
