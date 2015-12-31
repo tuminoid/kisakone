@@ -26,6 +26,7 @@ require_once 'data/class.php';
 require_once 'data/round.php';
 require_once 'core/tournament.php';
 require_once 'core/email.php';
+require_once 'sfl/sfl_integration.php';
 
 
 /**
@@ -48,8 +49,12 @@ function processForm()
         redirect("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
 
     $club = $_POST['club'];
-    if (!is_numeric($club))
+    if (sfl_enabled() && !is_numeric($club))
         $problems['club'] = translate('FormError_MustHaveClub');
+    elseif ($club && !is_numeric($club))
+        $problems['club'] = translate('FormError_MustHaveClub');
+    if ($club == 0)
+        $club = null;
 
     $name = $_POST['name'];
     if ($name == '')
