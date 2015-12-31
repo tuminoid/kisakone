@@ -35,8 +35,10 @@ function processForm()
 
     if (!IsAdmin())
         return Error::AccessDenied();
-    if (@$_POST['cancel'])
-        redirect("Location: " . BaseURL());
+
+    $club = $_POST['club'];
+    if (!is_numeric($club))
+        $problems['club'] = translate('FormError_MustHaveClub');
 
     $name = $_POST['name'];
     if ($name == '')
@@ -166,7 +168,7 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid);
+    $result = NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';

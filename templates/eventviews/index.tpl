@@ -37,6 +37,13 @@
         <td>{$event->name|escape}</td>
     </tr>
 
+    {if $event->club}
+    <tr>
+        <td>{translate id=event_club}</td>
+        <td>{$event->GetClubName()|escape}</td>
+    </tr>
+    {/if}
+
     <tr>
         <td>{translate id=event_venue}</td>
         <td>{$event->venue|escape}</td>

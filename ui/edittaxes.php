@@ -35,7 +35,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $event = GetEventDetails($eventid);
 
     if (!IsAdmin() && $event->management != 'td')
-        return Error::AccessDenied('eventrules');
+        return Error::AccessDenied('eventtaxes');
 
 }
 

@@ -25,6 +25,7 @@
 require_once 'data/class.php';
 require_once 'data/round.php';
 require_once 'core/tournament.php';
+require_once 'core/email.php';
 
 
 /**
@@ -43,10 +44,12 @@ function processForm()
             return Error::AccessDenied();
     }
 
-    if (@$_POST['cancel'])
-        redirect("Location: " . BaseURL());
-    elseif (@$_POST['delete'])
+    if (@$_POST['delete'])
         redirect("Location: " . url_smarty(array('page' => 'confirm_event_delete', 'id' => $_GET['id']), $_GET));
+
+    $club = $_POST['club'];
+    if (!is_numeric($club))
+        $problems['club'] = translate('FormError_MustHaveClub');
 
     $name = $_POST['name'];
     if ($name == '')
@@ -195,26 +198,24 @@ function processForm()
         return $error;
     }
 
-    $result = EditEvent($eventid, $name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId);
+    $result = EditEvent($eventid, $name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId);
     if (is_a($result, 'Error'))
         return $result;
 
     if (IsAdmin()) {
-        $result = SetTD($event->id, $td);
+        $result = SetEventTD($event->id, $td);
         if (is_a($result, 'Error'))
             return $result;
 
-        if ($td != @$_POST['oldtd']) {
-            require_once 'core/email.php';
+        if ($td != @$_POST['oldtd'])
             SendEmail(EMAIL_YOU_ARE_TD, $td, GetEventDetails($eventid));
-        }
     }
 
-    $result = SetOfficials($eventid, $officialIds);
+    $result = SetEventOfficials($eventid, $officialIds);
     if (is_a($result, 'Error'))
         return $result;
 
-    $result = SetClasses($eventid, $classes);
+    $result = SetEventClasses($eventid, $classes);
     if (is_a($result, 'Error'))
         return $result;
 

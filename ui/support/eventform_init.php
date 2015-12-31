@@ -54,7 +54,9 @@ function page_InitializeEventFormData(&$smarty, $creatingNew)
 
     $clubList = GetClubs();
     $clubs = array();
-    foreach ($clubList as $club)
-        $clubs[$club['id']] = $club['Name'];
+    foreach ($clubList as $club) {
+        $clubid = $club['id'];
+        $clubs[$clubid] = $club['Name'];
+    }
     $smarty->assign('club_options', $clubs);
 }

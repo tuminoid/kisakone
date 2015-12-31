@@ -63,7 +63,7 @@ function GetClassDetails($classid)
  * Returns null for success or
  * an Error in case there was an error in setting the class.
  */
-function SetClasses($eventid, $classes)
+function SetEventClasses($eventid, $classes)
 {
     if (!isset($eventid))
         return Error::InternalError("Event id argument is not set.");

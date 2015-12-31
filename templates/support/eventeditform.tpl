@@ -225,7 +225,6 @@
     {formerror field='officials'}
     <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
-        <input type="submit" id="cancelButton" value="{translate id='form_cancel'}" name="cancel" />
         {if $admin && !$new}
         <input type="submit" style="margin-left: 96px" id="deleteButton" value="{translate id='delete'}" name="delete" />
         {/if}

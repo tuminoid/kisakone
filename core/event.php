@@ -226,6 +226,23 @@ class Event
     }
 
     /** ************************************************************************
+     * Method for getting event organizing club
+     *
+     * Returns club name. If $short is true, then in short form-
+     */
+    function GetClubName($short = false)
+    {
+        if (!$this->club || !is_numeric($this->club))
+            return null;
+
+        $club = GetClub($this->club);
+        if ($short)
+            return $club['ShortName'];
+
+        return $club['Name'];
+    }
+
+    /** ************************************************************************
      * Method for getting a single player's registration status
      *
      * Returns 'paid' for paid, 'signed' for signed up, not paid, 'queued' for queue, 'notsigned' for not signed
@@ -394,6 +411,7 @@ function GetRelevantEvents()
  * an Error object in case there was an error in creating a new event.
  *
  * @param string   $name         - event name
+ * @param int      $club         - club id
  * @param string   $venue        - event venue's name
  * @param int      $duration     - event duration in days
  * @param int      $playerlimit  - maximum players
@@ -407,7 +425,7 @@ function GetRelevantEvents()
  * @param array    $officialIds  - array of official user ids
  * @param array    $rounds       - array of rounds (date, time, holes, datestring, roundid)
  */
-function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId)
+function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId)
 {
     $retvalue = null;
 
@@ -453,7 +471,7 @@ function NewEvent($name, $venue, $duration, $playerlimit, $contact, $tournament,
     }
 
     if (!isset($retValue)) {
-        $eventId = CreateEvent($name, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId);
+        $eventId = CreateEvent($name, $club, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId);
         $retValue = $eventId;
         if (!is_a($eventId, 'Error')) {
             $err = SetRounds($eventId, $rounds);
