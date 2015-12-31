@@ -117,7 +117,7 @@ email_verification_help   Sähköpostiosoitettasi ei ole vielä vahvistettu.
 email_verification_help2  Vahvistussähköposti lähetetty osoitteeseen {email}. Viestin saapuminen voi kestää hetken. Muista tarkastaa myös roskapostikansiosi.
 email_verification_step1  Lähetä vahvistuskoodi sähköpostiosoitteeseen {email}:
 email_verification_step3  Sähköpostisi {email} on nyt vahvistettu.
-email_verification_failed Vahvistuskoodi on virheellinen.
+email_verification_failed Vahvistuskoodi oli virheellinen.
 
 change_password_help    Voit vaihtaa salasanasi syöttämällä nykyisen salasanasi ensimmäiseen kenttään ja haluamasi salasanan kahteen myöhempään kenttään.
 recover_password_help_final Voit vaihtaa salasanasi oheisen lomakkeen avulla.

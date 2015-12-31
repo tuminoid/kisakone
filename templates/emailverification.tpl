@@ -30,26 +30,28 @@
 {/if}
 
 {if $smarty.get.verified > 0}
-<p class="searcharea">{translate id=email_verification_step3 email=$smarty.get.email|escape}</p>
+<p class="searcharea">{translate id=email_verification_step3 email=$smarty.get.id|escape}</p>
+
 {elseif $smarty.get.step}
 <p>{translate id=email_verification_help}</p>
 
-<p>{translate id=email_verification_step1 email=$smarty.get.email|escape}</p>
+<p>{translate id=email_verification_step1 email=$smarty.get.id|escape}</p>
 
 <form method="post" class="evenform">
     <input type="hidden" name="formid" value="email_verification" />
-    <input type="hidden" name="send_token" value="1" />
-    <input type="hidden" name="email" value="{$smarty.get.email}" />
+    <input type="hidden" name="email" value="{$smarty.get.id}" />
     <p>
-        <input type="submit" value="{translate id=send_confirm_email}" />
+        <input type="submit" name="send_token" value="{translate id=send_confirm_email}" />
+        <input type="submit" name="edit_info" value="{translate id=editmyinfo_title}" />
     </p>
 </form>
+
 {else}
-<p>{translate id=email_verification_help2 email=$smarty.get.email|escape}</p>
+<p>{translate id=email_verification_help2 email=$smarty.get.id|escape}</p>
 
 <form method="post" class="evenform">
     <input type="hidden" name="formid" value="email_verification" />
-    <input type="hidden" name="email" value="{$smarty.get.email}" />
+    <input type="hidden" name="email" value="{$smarty.get.id}" />
 
     <div>
         <label for="verificationcode">{translate id='verificationcode'}</label>

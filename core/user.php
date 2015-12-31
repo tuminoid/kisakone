@@ -425,7 +425,7 @@ class User
     {
         $md5 = md5($this->email . $this->salt);
         $token = strtoupper(substr($md5, 0, 10));
-        //error_log("token: $token for user: " . $this->username);
+        // error_log("token: $token for user: " . $this->username);
         return $token;
     }
 
@@ -446,7 +446,7 @@ class User
     function SendEmailVerificationEmail()
     {
         $token = $this->GetEmailVerificationToken();
-        $url = serverURL() . url_smarty(array('page' => 'emailverification', 'email' => $this->email, 'token' => $token), $_GET);
+        $url = serverURL() . url_smarty(array('page' => 'emailverification', 'id' => $this->email, 'token' => $token), $_GET);
 
         SendEmail(EMAIL_VERIFY_EMAIL, $this->id, null, $url, $token);
     }

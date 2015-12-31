@@ -34,23 +34,27 @@ function processForm()
 {
     $user = @$_SESSION['user'];
     if (!$user)
-        error_log("no user");
+        redirect(url_smarty(array('page' => 'login'), $_GET));
 
     $email = @$_POST['email'];
-    $send_token = @$_POST['send_token'];
+    $send_token = @$_POST['send_token'] ? 1 : 0;
     $token = @$_POST['token'];
 
     // If token was requested
     if ($send_token) {
         $user->SendEmailVerificationEmail();
-        redirect(url_smarty(array('page' => 'emailverification', 'email' => $email), $_GET));
+        redirect(url_smarty(array('page' => 'emailverification', 'id' => $email), $_GET));
     }
+
+    $edit_info = @$_POST['edit_info'] ? 1 : 0;
+    if ($edit_info)
+        redirect(url_smarty(array('page' => 'editmyinfo'), $_GET));
 
     // If token was input
     if ($user->VerifyEmailToken($token)) {
         $user->SetEmailVerified(true);
-        redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'verified' => 1), $_GET));
+        redirect(url_smarty(array('page' => 'emailverification', 'id' => $email, 'verified' => 1), $_GET));
     }
 
-    redirect(url_smarty(array('page' => 'emailverification', 'email' => $email, 'failed' => 1), $_GET));
+    redirect(url_smarty(array('page' => 'emailverification', 'id' => $email, 'failed' => 1), $_GET));
 }
