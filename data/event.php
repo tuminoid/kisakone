@@ -418,7 +418,7 @@ function GetEventParticipantCounts($eventid)
 }
 
 
-function GetEventParticipants($eventid, $sortedBy, $search)
+function GetEventParticipants($eventid, $sortedBy = '', $search = '')
 {
     $eventid = esc_or_null($eventid, 'int');
 
