@@ -41,12 +41,11 @@ Built with
 ==========
 
 Kisakone is a legacy project, built originally with PHP 5.2, Smarty templating engine, jQuery and TinyMCE editor.
-Output is XHTML for non-IE browsers.
 
 A lot of effort has been put to clean up the code and modernize the codebase for maintainability, features
 and performance. Long-term plan is to continue codebase improvements, move to HTML5 with proper UTF-8 and Unicode support,
 and treat mobile clients as first-class citizens by recreating user interface with responsive design, while
-improving user experience by offering more logical user interface. Not a small task by any means :-)
+improving user experience by offering more logical user interface.
 
 Current list of requirements and frameworks in use:
  - [PHP 5.3](http://www.php.net/) (use [HHVM](http://hhvm.com/), it works 100%)
