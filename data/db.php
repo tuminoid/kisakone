@@ -116,9 +116,8 @@ function esc_or_null($param, $type = 'string')
 /**
  * Formats SQL query to match the database naming, ie. replaces : with db_prefix
  *
- * FIXME: Find a more reasonable way to sanitize prefix without touching content
+ * TODO: Find a more reasonable way to sanitize prefix without touching content
  * NOTE: Thanks to str_replace semantics, EventXXX must be before Event etc
- * TODO: MembershipPayment and LicensePayment tables are dropped in 2016.01.01.
  *
  * @param string $query actual SQL query to format
  * @return formatted SQL that is prefixed correctly
@@ -133,8 +132,7 @@ function format_query($query)
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
         ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
         ':TournamentStanding', ':Tournament', ':ClassInEvent',
-        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents',
-        ':MembershipPayment', ':LicensePayment'
+        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents'
     );
     $realtables = str_replace(":", $prefix, $tables);
 
