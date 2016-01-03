@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event main page -- this contains all the other user-visible pages
  *
@@ -146,7 +146,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $view = 'cancelsignup';
             $smarty->assign('signupOpen', $event->SignupPossible());
             $smarty->assign('paid', $event->eventFeePaid);
-            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            $smarty->assign('queued', $event->GetPlayerStatus(@$player->id) == 'queued');
             break;
 
         case 'signupinfo':
@@ -206,7 +206,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             $smarty->assign('signedup', $event->approved !== null);
             $smarty->assign('paid', $event->eventFeePaid);
             $smarty->assign('signupOpen', $event->SignupPossible());
-            $smarty->assign('queued', $event->GetPlayerStatus($user->player) == 'queued');
+            $smarty->assign('queued', $event->GetPlayerStatus(@$player->id) == 'queued');
             break;
 
         case 'newsarchive':
@@ -440,7 +440,7 @@ function pdr_GroupByClasses($data)
     $out = array();
     foreach ($data as $row) {
         // A little hack as we added PDGA participant lists as well
-        $class = isset($row['ClassName']) ? $row['ClassName'] : $row['className'];
+        $class = isset($row['ClassName']) ? $row['ClassName'] : @$row['className']; // FIXME: Neither is necessarily existing
         if (!isset($out[$class]))
             $out[$class] = array();
         $out[$class][] = $row;
