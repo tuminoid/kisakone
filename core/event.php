@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Event class, and other functionality for dealing
  * with events. Also see event_management.php.
@@ -90,6 +90,7 @@ class Event
     var $pdgaEventId;
 
     var $approved;
+    var $eventFeePaid;
 
     /** ************************************************************************
      * Class constructor
@@ -248,15 +249,15 @@ class Event
      * Returns 'paid' for paid, 'signed' for signed up, not paid, 'queued' for queue, 'notsigned' for not signed
      *   or null for empty playerid
      */
-    function GetPlayerStatus($playerId = null)
+    function GetPlayerStatus($playerid = null)
     {
-        if ($playerId == null)
-            return $playerId;
+        if ($playerid == null)
+            return $playerid;
 
         $parts = $this->GetParticipants();
         foreach ($parts as $part) {
             $player = $part['player'];
-            if ($player->id == $playerId) {
+            if ($player->id == $playerid) {
                 if ($part['participationId']) {
                     if ($part['eventFeePaid'])
                         return 'paid';
@@ -266,12 +267,8 @@ class Event
             }
         }
 
-        $queue = $this->GetQueue();
-        foreach ($queue as $part) {
-            $player = $part['player'];
-            if ($player->id == $playerId)
-                return 'queued';
-        }
+        if (PlayerQueueing($this->id, $playerid))
+            return 'queued';
 
         return 'notsigned';
     }
