@@ -163,3 +163,12 @@ function UserQueueing($eventid, $userid)
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
 }
+
+
+function PlayerQueueing($eventid, $playerid)
+{
+    $eventid = esc_or_null($eventid);
+    $playerid = esc_or_null($playerid);
+
+    return db_one("SELECT :EventQueue.id AS id FROM :EventQueue WHERE Player = $playerid AND :EventQueue.Event = $eventid");
+}
