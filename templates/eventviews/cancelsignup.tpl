@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Signup cancellation page
  *
@@ -26,10 +26,11 @@
     {$page->formattedText}
 </div>
 
-{if !$signupOpen}
+{if !$user}
+    <p class="error">{translate id=login_to_sign_up}</p>
+{elseif !$signupOpen}
     <p>{translate id=cant_cancel_signup_now}</p>
 {else}
-
 
     {if $queued}
     <p class="signup_status">{translate id=signed_up_in_queue}</p>
