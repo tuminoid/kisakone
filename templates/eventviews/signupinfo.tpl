@@ -93,9 +93,10 @@
             </div>
         {/foreach}
 
+        {if count($classes) == 0}{assign var=nosignup value=1}{/if}
+
         <div style="padding: 1em;">
         <input type="submit" {if $nosignup}disabled="disabled"{/if} value="{translate id="signup"}" />
-        <input type="submit" id="cancel" name="cancel" value="{translate id="cancel"}" />
         </div>
     {/if}
 </form>
