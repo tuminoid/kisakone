@@ -170,9 +170,10 @@ $(document).ready(function(){
         <select id="class" name="class">
             {html_options options=$classOptions}
         </select>
+        {assign var=classes_ok value=true}
         {else}
         <div id="class" class="error">{translate id=no_suitable_classes}</div>
-        {assign var=classes_ok value=0}
+        {assign var=classes_ok value=false}
         {/if}
 
         {formerror field='class'}
@@ -199,18 +200,21 @@ $(document).ready(function(){
                 {if $pdga_membership_status != "current"}
                     {translate id='license_fail_foreign'}
                 {else}
-                    This shouldn't happen...
+                    BUG: This shouldn't happen...
                 {/if}
             {else}
                 <p>
                     {translate id='licenses_fail'}
                 </p>
-                <p class="searcharea">
-                    {translate id="pdga_shouldnt_add_finnish"}
-                    <br />
-                    <label for="allow_foreigners">{translate id=pdga_allow_foreigner}</label>
-                    <input id="allow_foreigners" type="checkbox" onclick="$('input[type=submit]').removeAttr('disabled');">
-                </p>
+                {if $pdga_membership_status == 'current'}
+                <div class="searcharea">
+                    <p>{translate id="pdga_shouldnt_add_finnish"}</p>
+                    <p>
+                        <label for="allow_foreigners">{translate id=pdga_allow_foreigner}</label>
+                        <input id="allow_foreigners" type="checkbox" onclick="$('input[type=submit]').removeAttr('disabled');">
+                    </p>
+                </div>
+                {/if}
             {/if}
             </div>
         {/if}
