@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Course editor input handler
  *
@@ -23,27 +23,24 @@
  * */
 
 require_once 'data/course.php';
+require_once 'core/hole.php';
 require_once 'data/hole.php';
+
 
 function processForm()
 {
-    require_once 'core/hole.php';
-
     if (@$_POST['cancel']) {
-        if (@$_GET['event']) {
-            redirect("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
-        }
-        else {
-            redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
-        }
+        if (@$_GET['event'])
+            redirect(url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
+
+        redirect(url_smarty(array('page' => 'managecourses'), $_POST));
     }
 
-    $course['Name'] = @$_POST['name'];
-    if (!$course['Name']) {
+    $course['Name'] = $_POST['name'];
+    if (!$course['Name'])
         return translate("error_name_must_be_defined");
-    }
 
-    $course['Link'] = @$_POST['link'];
+    $course['Link'] = $_POST['link'];
     $course['Map'] = $_POST['map'];
     $course['Description'] = $_POST['description'];
 
@@ -55,6 +52,7 @@ function processForm()
             $oldcourse = GetCourseDetails($id);
             if (is_a($oldcourse, 'Error'))
                 return $oldcourse;
+
             if (!$oldcourse || !$oldcourse['Event'])
                 return Error::AccessDenied();
 
@@ -64,12 +62,11 @@ function processForm()
         }
 
         if (@$_POST['delete']) {
-            if (CourseUsed($course['id'])) {
+            if (CourseUsed($course['id']))
                 return translate("cant_delete_this_course");
-            }
             else {
                 DeleteCourse($course['id']);
-                redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
+                redirect(url_smarty(array('page' => 'managecourses'), $_GET));
             }
         }
         SaveCourse($course);
@@ -84,9 +81,8 @@ function processForm()
         if (@$_GET['event'])
             $course['Event'] = $_GET['event'];
 
-        if (@$_POST['delete']) {
-            redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_GET));
-        }
+        if (@$_POST['delete'])
+            redirect(url_smarty(array('page' => 'managecourses'), $_GET));
 
         $course['id'] = null;
         $id = SaveCourse($course);
@@ -100,7 +96,14 @@ function processForm()
             list($ignored, $number, $holeid, $alsoignored) = explode('_', $key);
 
             if (!$holeid) {
-                $hole = new Hole(array('Course' => $id, 'HoleNumber' => $number, 'id' => null, 'Par' => $value, 'Length' => $_POST['h_' . $number . '_' . $holeid . '_len'], 'HoleText' => $_POST['h_' . $number . '_' . $holeid . '_text']));
+                $hole = new Hole(array(
+                    'Course' => $id,
+                    'HoleNumber' => $number,
+                    'id' => null,
+                    'Par' => $value,
+                    'Length' => $_POST['h_' . $number . '_' . $holeid . '_len'],
+                    'HoleText' => $_POST['h_' . $number . '_' . $holeid . '_text']
+                ));
             }
             else {
                 $hole = GetHole($holeid);
@@ -110,7 +113,7 @@ function processForm()
                 if (!$hole)
                     return Error::NotFound('hole');
                 if ($hole->course != $id) {
-                    echo $hole->course, ' -- ', $id;
+                    error_log("child-container mismatch: " . $hole->course . ' -- ' . $id);
                     return Error::InternalError('Child-container mismatch');
                 }
 
@@ -125,10 +128,8 @@ function processForm()
         }
     }
 
-    if (@$_GET['event']) {
-        redirect("Location: " . url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
-    }
-    else {
-        redirect("Location: " . url_smarty(array('page' => 'managecourses'), $_POST));
-    }
+    if (@$_GET['event'])
+        redirect(url_smarty(array('page' => 'managecourses', 'id' => @$_GET['event']), $_POST));
+
+    redirect(url_smarty(array('page' => 'managecourses'), $_POST));
 }
