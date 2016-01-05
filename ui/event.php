@@ -296,13 +296,15 @@ function InitializeSmartyVariables(&$smarty, $error)
             break;
 
         default:
-            // If we have a numeric view we are to show a custo m content page
+            // If we have a numeric view we are to show a custom content page
             if (is_numeric(@$_GET['view'])) {
                 $evp = $event->GetTextContent(@$_GET['view']);
                 $view = 'custom';
             }
-            else
+            else {
+                error_log("missing view: " . @$_GET['view']);
                 $view = 'missing';
+            }
             break;
     }
 
