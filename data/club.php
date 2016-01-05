@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Club
  *
@@ -35,7 +35,9 @@ function GetClub($clubid)
 function GetUsersClub($userid)
 {
     $userid = esc_or_null($userid, 'int');
-    return db_one("SELECT Club FROM :User WHERE id = $userid");
+    $row = db_one("SELECT Club FROM :User WHERE id = $userid");
+
+    return @$row['Club'];
 }
 
 
