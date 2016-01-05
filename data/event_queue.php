@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Event queues
  *
@@ -157,11 +157,13 @@ function UserQueueing($eventid, $userid)
     $eventid = esc_or_null($eventid);
     $userid = esc_or_null($userid);
 
-    return db_one("SELECT :EventQueue.id AS id
+    $row = db_one("SELECT :EventQueue.id AS id
                             FROM :EventQueue
                             INNER JOIN :Player ON :EventQueue.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :EventQueue.Event = $eventid");
+
+    return count($row);
 }
 
 

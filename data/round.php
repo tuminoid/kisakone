@@ -456,12 +456,14 @@ function PlayerOnRound($roundid, $playerid)
     $roundid = esc_or_null($roundid, 'int');
     $playerid = esc_or_null($playerid, 'int');
 
-    return db_one("SELECT :Participation.Player
+    $row = db_one("SELECT :Participation.Player
                     FROM :Participation
                     INNER JOIN :SectionMembership ON :SectionMembership.Participation = :Participation.id
                     INNER JOIN :Section ON :Section.id = :SectionMembership.Section
                     WHERE :Participation.Player = $playerid AND :Section.Round = $roundid
                     LIMIT 1");
+
+    return count($row);
 }
 
 

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for User functions
  *
@@ -109,12 +109,14 @@ function AnyGroupsDefined($roundid)
 {
     $roundid = esc_or_null($roundid, 'int');
 
-    return db_one("SELECT 1
-                            FROM :StartingOrder
-                            INNER JOIN :Section ON :Section.id = :StartingOrder.Section
-                            INNER JOIN :Round ON :Round.id = :Section.Round
-                            WHERE :Round.id = $roundid
-                            LIMIT 1");
+    $row = db_one("SELECT 1
+                        FROM :StartingOrder
+                        INNER JOIN :Section ON :Section.id = :StartingOrder.Section
+                        INNER JOIN :Round ON :Round.id = :Section.Round
+                        WHERE :Round.id = $roundid
+                        LIMIT 1");
+
+    return count($row);
 }
 
 

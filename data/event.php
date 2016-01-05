@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Event
  *
@@ -693,11 +693,13 @@ function UserParticipating($eventid, $userid)
     $eventid = esc_or_null($eventid, 'int');
     $userid = esc_or_null($userid, 'int');
 
-    return db_one("SELECT :Participation.id
+    $row = db_one("SELECT :Participation.id
                             FROM :Participation
                             INNER JOIN :Player ON :Participation.Player = :Player.player_id
                             INNER JOIN :User ON :User.Player = :Player.player_id
                             WHERE :User.id = $userid AND :Participation.Event = $eventid");
+
+    return count($row);
 }
 
 

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Tournament
  *
@@ -119,7 +119,9 @@ function TournamentBeingUsed($id)
 {
     $id = esc_or_null($id, 'int');
 
-    return db_one("SELECT COUNT(*) AS n FROM :Event WHERE Tournament = $id");
+    $row = db_one("SELECT 1 FROM :Event WHERE Tournament = $id LIMIT 1");
+
+    return count($row);
 }
 
 

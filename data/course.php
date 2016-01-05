@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
 *
  * Data access module for Course
  *
@@ -50,7 +50,7 @@ function CourseUsed($courseid)
 {
     $courseid = esc_or_null($courseid, 'int');
 
-    return db_one("SELECT id FROM :Round WHERE :Round.Course = $courseid LIMIT 1");
+    return count(db_one("SELECT id FROM :Round WHERE :Round.Course = $courseid LIMIT 1"));
 }
 
 

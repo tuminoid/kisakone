@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for User
  *
@@ -306,7 +306,9 @@ function GetUserEmailVerification($id = null)
 
     $id = esc_or_null($id, 'int');
 
-    return db_one("SELECT EmailVerified FROM :User WHERE id = $id AND EmailVerified > (NOW() - INTERVAL 1 YEAR)");
+    $row = db_one("SELECT EmailVerified FROM :User WHERE id = $id AND EmailVerified > (NOW() - INTERVAL 1 YEAR)");
+
+    return count($row);
 }
 
 
