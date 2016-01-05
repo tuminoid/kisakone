@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Course editor UI
  *
@@ -81,16 +81,17 @@ tinyMCE.init({ldelim}
                 <td>{translate id=link}</td>
                 <td><input type="text" name="link" value="{$course.Link|escape}" /></td>
             </tr>
-            <tr>
-                <td colspan="2">
-                    <p>{translate id=description}</p>
-                    <textarea cols="80" rows="25" name="description">{$course.Description|escape}</textarea>
-                </td>
-            </tr>
+        </table>
 
+        <div>
+            <h2>{translate id=description}</h2>
+            <textarea cols="80" rows="25" name="description">{$course.Description|escape}</textarea>
+        </div>
+
+        <h2>{translate id=holes_list}</h2>
+        <table class="narrow">
             <tr>
-                 <td>{translate id=holes_list}   </td>
-                 <td>
+                <td>
                     <table class="narrow">
                         <tr>
                             <td>{translate id=hole_number}</td>
