@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Changes to come.
+
 2016.01.01:
 ===========
   * Use secure, httponly cookies.
