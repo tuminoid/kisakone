@@ -116,7 +116,7 @@ function processForm()
         if (@$_GET['id'])
             redirect(url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
         elseif ($email != $email_old && GetConfig(EMAIL_VERIFICATION))
-            redirect(url_smarty(array('page' => 'emailverification', 'email' => $email), $user));
+            redirect(url_smarty(array('page' => 'emailverification', 'id' => $email), $user));
         redirect(url_smarty(array('page' => 'myinfo'), $user));
     }
 

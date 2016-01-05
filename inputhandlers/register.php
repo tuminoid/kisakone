@@ -117,7 +117,7 @@ function processForm()
     $_SESSION['user'] = $newuser;
 
     if (GetConfig(EMAIL_VERIFICATION))
-        redirect("Location: " . url_smarty(array('page' => 'emailverification', 'email' => $email), $r));
+        redirect("Location: " . url_smarty(array('page' => 'emailverification', 'id' => $email), $r));
 
     redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
 }
