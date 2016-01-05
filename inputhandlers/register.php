@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Registration screen handler
  *
@@ -116,8 +116,10 @@ function processForm()
         session_start();
     $_SESSION['user'] = $newuser;
 
-    if (GetConfig(EMAIL_VERIFICATION))
+    if (GetConfig(EMAIL_VERIFICATION)) {
+        $newuser->SendEmailVerificationEmail();
         redirect("Location: " . url_smarty(array('page' => 'emailverification', 'id' => $email), $r));
+    }
 
     redirect("Location: " . url_smarty(array('page' => 'registrationdone'), $r));
 }

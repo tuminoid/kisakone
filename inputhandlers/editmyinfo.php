@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Edit my info ui backend
  *
@@ -115,8 +115,11 @@ function processForm()
 
         if (@$_GET['id'])
             redirect(url_smarty(array('page' => 'user', 'id' => $_GET['id']), $user));
-        elseif ($email != $email_old && GetConfig(EMAIL_VERIFICATION))
+        elseif ($email != $email_old && GetConfig(EMAIL_VERIFICATION)) {
+            $user->SetEmailVerified(false);
+            $user->SendEmailVerificationEmail();
             redirect(url_smarty(array('page' => 'emailverification', 'id' => $email), $user));
+        }
         redirect(url_smarty(array('page' => 'myinfo'), $user));
     }
 
