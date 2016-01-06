@@ -7,6 +7,9 @@ next:
 =====
   * Fix Course Map and Link functionality, along with their allowed max sizes.
 
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160201.md)
+for additional actions needed.
+
 2016.01.01:
 ===========
   * Use secure, httponly cookies.
