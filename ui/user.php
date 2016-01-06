@@ -78,7 +78,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (pdga_enabled()) {
         // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
         $force = false; // no forced reasons to go get it from pdga api
-        $pdga_data = pdga_getPlayer($player->pdga, $force);
+        $pdga_data = pdga_getPlayer(@$player->pdga, $force);
         if ($pdga_data)
             SmartifyPDGA($smarty, $pdga_data);
     }
