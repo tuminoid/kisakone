@@ -5,7 +5,7 @@ Kisakone versions are simply release date tags:
 
 next:
 =====
-  * Changes to come.
+  * Fix Course Map and Link functionality, along with their allowed max sizes.
 
 2016.01.01:
 ===========
