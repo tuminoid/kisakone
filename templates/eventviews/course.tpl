@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Course info page
  *
@@ -32,7 +32,7 @@
     {if $course.Link}
     <p><a href="{$course.Link}" target="_blank">{translate id=course_details}</a></p>
     {/if}
-    {if $course.Map}
+    {if $course.Map && $course.Map|truncate:4:"" == "http"}
         <img style="float: right" src="{$course.Map}" alt="{translate id=course_map}" />
     {/if}
 

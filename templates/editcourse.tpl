@@ -78,7 +78,7 @@ tinyMCE.init({ldelim}
                 <td><input type="text" name="map" value="{$course.Map|escape}" /></td>
             </tr>
             <tr>
-                <td>{translate id=link}</td>
+                <td>{translate id=map_link}</td>
                 <td><input type="text" name="link" value="{$course.Link|escape}" /></td>
             </tr>
         </table>

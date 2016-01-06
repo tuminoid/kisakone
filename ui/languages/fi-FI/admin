@@ -62,8 +62,8 @@ access_level_admin  Ylläpitäjä
 access_level_manager    TD tai toimitsija (tunnuksella ei voi osallistua kilpailuihin)
 copy                Kopioi
 num_holes           Väylien lukumäärä
-map_url             Osoite karttakuvaan
-link                Linkki radan tietoihin
+map_url             URL karttakuvaan (http:// ...)
+map_link            Linkki radan sivulle
 
 course_edit_warning Tämä rata on käytössä ainakin yhdessä kilpailussa. Muutokset vaikuttavat sekä uusiin että vanhoihin kilpailuihin -- kopioiden teko on suositeltavaa.
 
