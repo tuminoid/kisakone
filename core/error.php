@@ -163,4 +163,19 @@ class Error
 
         return $e;
     }
+
+    static function LogStacktrace()
+    {
+        if (extension_loaded('Xdebug')) {
+            $cnt = 1;
+            foreach (xdebug_get_function_stack() as $line) {
+                $out = sprintf("%2d: %s(%s) %s:%d", $cnt++,
+                    $line['function'], implode(", ", $line['params']),
+                    $line['file'], $line['line']
+                );
+                error_log($out);
+            }
+        }
+    }
+
 }
