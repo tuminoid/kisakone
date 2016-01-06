@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Backend for providing autocomplete functionality
  *
@@ -33,29 +34,18 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     if (!file_exists("ui/autocomplete/$id.php"))
         return new Error();
-
     include("ui/autocomplete/$id.php");
 
     $options = page_Autocomplete($_GET['query']);
-
-    $suggestions = $options['suggestions'];
-
     $smarty->assign('query', str_replace('"', '\"', $_GET['query']));
 
-    //$smarty->assign('suggestions', array_map('Page_JSDoubleQuotes', array_values($suggestions)));
+    $suggestions = $options['suggestions'];
     $smarty->assign('suggestions', $suggestions);
 
-    if ($options['useKeys']) {
+    if ($options['useKeys'])
         $smarty->assign('data', array_keys($suggestions));
-    }
-    else {
-        if (array_key_exists('data', $options)) {
-            $smarty->assign('data', $options['data']);
-        }
-        else {
-            $smarty->assign('data', false);
-        }
-    }
+    else
+        $smarty->assign('data', array_key_exists('data', $options) ? $options['data'] : false);
 
     SetContentType("text/plain");
 }
