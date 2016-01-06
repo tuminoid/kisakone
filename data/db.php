@@ -293,16 +293,8 @@ function debug_query_and_die($query)
     $db_error_log = @$settings['DB_ERROR_LOGGING'];
     if ($db_error_log) {
         error_log("query: $query");
-        error_log("mysql error: $error");
-
-        $cnt = 1;
-        foreach (xdebug_get_function_stack() as $line) {
-            $out = sprintf("%2d: %s(%s) %s:%d", $cnt++,
-                $line['function'], implode(", ", $line['params']),
-                $line['file'], $line['line']
-            );
-            error_log($out);
-        }
+        error_log("error: $error");
+        Error::LogStacktrace();
     }
 
     $db_error_die = @$settings['DB_ERROR_DIE'];
