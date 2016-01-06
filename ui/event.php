@@ -22,7 +22,6 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'config.php';
 require_once 'data/event_quota.php';
 require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
@@ -302,7 +301,8 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $view = 'custom';
             }
             else {
-                error_log("missing view: " . @$_GET['view']);
+                // FIXME: This is temporary
+                error_log("missing view: " . @$_GET['view'] . " at " . @$_SERVER['REQUEST_URI'] . ", user: " . @$user->id . ", ref: " . @$_SERVER['HTTP_REFERER']);
                 $view = 'missing';
             }
             break;
