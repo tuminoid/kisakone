@@ -150,7 +150,8 @@ class Ad
             return translate('too_much_ad_recursion');
 
         $ad_render_depth++;
-        $retVal = call_user_func(array(&$this, "Render" . $this->type));
+        if ($this->type != "disabled")
+            $retVal = call_user_func(array(&$this, "Render" . $this->type));
         $ad_render_depth--;
 
         return $retVal;
