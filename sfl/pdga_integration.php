@@ -58,11 +58,15 @@ function pdga_api_settings()
  *
  * Login to PDGA API and return session cookie.
  *
+ * @param bool $force forces reinitialization of session
  * @return session on success
  * @return null on failure
  */
-function pdga_api_getSession()
+function pdga_api_getSession($force = false)
 {
+    if ($force)
+        cache_del('pdga_session');
+
     $session = cache_get('pdga_session');
     if ($session)
         return $session;
@@ -95,7 +99,7 @@ function pdga_api_getSession()
     $session = $logged_user->session_name . '=' . $logged_user->sessid;
     curl_close($curl);
 
-    cache_set('pdga_session', $session, 15*60);
+    cache_set('pdga_session', $session, 60*60);
 
     return $session;
 }
@@ -107,15 +111,16 @@ function pdga_api_getSession()
  * Get full assoc array of player data from PDGA API.
  *
  * @param int $pdga_number Player's PDGA number
+ * @param bool $force force new session
  * @return null on failure
  * @return assoc array on success
  */
-function pdga_api_getPlayer($pdga_number = 0)
+function pdga_api_getPlayer($pdga_number = 0, $force = false)
 {
     if (!is_integer($pdga_number) || $pdga_number <= 0)
         return null;
 
-    if (!($session = pdga_api_getSession()))
+    if (!($session = pdga_api_getSession($force)))
         return null;
 
     $request_url = PDGA_API_SERVER . '/services/json/member/' . $pdga_number;
@@ -131,14 +136,19 @@ function pdga_api_getPlayer($pdga_number = 0)
         $decoded = json_decode($response, true);
 
         if (!$decoded || isset($decoded["status"])) {
-            error_log("Getting data for PDGA#$pdga_number failed, status= '" . @$decoded['status'] .
+            error_log("Getting data for #$pdga_number failed, status= '" . @$decoded['status'] .
                 "', message='" . @$decoded['message'] . "'");
             return null;
         }
     }
     else {
         $error = curl_error($curl);
-        error_log("Getting player data failed: code $http_code, " . $error);
+
+        // Redo with forced new session unless it is retry already
+        if ($http_code == 403 && !$force)
+            return pdga_api_getPlayer($pdga_number, true);
+
+        error_log("Getting player data for #$pdga_number failed: code $http_code, " . $error);
         return null;
     }
 
