@@ -70,13 +70,13 @@ function GetCourseDetails($id)
 
 function SaveCourse($course)
 {
-    $name = esc_or_null($course['Name']);
-    $description = esc_or_null($course['Description']);
-    $link = esc_or_null($course['Link']);
-    $map = esc_or_null($course['Map']);
+    $name = esc_or_null($course['Name'], 'string');
+    $description = esc_or_null($course['Description'], 'string');
+    $link = esc_or_null($course['Link'], 'string');
+    $map = esc_or_null($course['Map'], 'string');
 
     if ($course['id']) {
-        $id = esc_or_null($course['id']);
+        $id = esc_or_null($course['id'], 'int');
 
         return db_exec("UPDATE :Course
                                 SET Name = $name, Description = $description, Link = $link, Map = $map
