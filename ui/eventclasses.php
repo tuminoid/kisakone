@@ -23,7 +23,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 /* Initializes the variables and other data necessary for showing the matching template

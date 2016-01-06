@@ -25,7 +25,7 @@
 require_once 'core/user_operations.php';
 require_once 'core/login.php';
 require_once 'data/user.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 /**

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file includes the Email class and other support functionality
  * used for sending e-mail messages.
@@ -24,7 +24,7 @@
  * */
 
 require_once 'config.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 require_once 'core/textcontent.php';
 
 

@@ -27,7 +27,7 @@ require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'sfl/pdga_integration.php';
 require_once 'data/calendar.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 /**

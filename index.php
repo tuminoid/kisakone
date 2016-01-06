@@ -2,7 +2,7 @@
 /**
 * Suomen Frisbeegolfliitto Kisakone
 * Copyright 2009-2010 Kisakone projektiryhmä
-* Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+* Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
 *
 * This file serves as the one and only interface users have for the PHP code. In fact,
 * whenever mod_rewrite is enabled, access to other php files is explicitly made
@@ -28,7 +28,7 @@ setlocale(LC_ALL, array('fi_FI.UTF-8', 'fi_FI@euro', 'fi_FI', 'finnish'));
 
 // Our configs
 require_once 'config.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 // Some version of PHP 5 complain about lack of time zone data,
 // so if we can we'll set it now

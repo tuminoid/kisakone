@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto.
  * SFL API access functions for checking licenses and other player data
@@ -26,7 +26,7 @@
 require_once 'data/db.php';
 require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 /**

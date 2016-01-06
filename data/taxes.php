@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data module for Taxes module.
  *
@@ -22,7 +22,7 @@
  * */
 
 require_once 'data/db.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 function TaxesEnabled()

@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto for PDGA API.
  *
@@ -25,7 +25,7 @@ const PDGA_API_SERVER = "https://api.pdga.com";
 
 require_once 'data/db.php';
 require_once 'core/cache.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 
 
 /**

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event editor UI backend
  *
@@ -23,7 +23,7 @@
  * */
 
 require_once 'ui/support/eventform_init.php';
-require_once 'data/config.php';
+require_once 'data/configs.php';
 require_once 'sfl/sfl_licensetypes.php';
 
 
