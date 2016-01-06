@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User info editor
  *
@@ -60,8 +60,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $player = $user->GetPlayer();
     }
 
-    $smarty->assign('userdata', $user);
-    $smarty->assign('player', $player);
+    $smarty->assign('userdata', @$user);
+    $smarty->assign('player', @$player);
     if ($player)
         $smarty->assign('dob', $player->birthyear . '-1-1');
 }
