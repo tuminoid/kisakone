@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for TextContent
  *
@@ -36,7 +36,7 @@ function GetAllTextContent($eventid)
                         ORDER BY `Order`");
 
     if (db_is_error($result))
-        return $result;
+        return null;
 
     $retValue = array();
     foreach ($result as $row)
@@ -54,7 +54,7 @@ function GetTextContent($pageid)
                         WHERE id = $id");
 
     if (db_is_error($row) || !$row)
-        return $row;
+        return null;
 
     return new TextContent($row);
 }
@@ -70,7 +70,7 @@ function GetTextContentByEvent($eventid, $type)
                         WHERE event $eventCond AND type = $type");
 
     if (db_is_error($row) || !$row)
-        return $row;
+        return null;
 
     return new TextContent($row);
 }
@@ -86,7 +86,7 @@ function GetTextContentByTitle($eventid, $title)
                             WHERE event $eventCond AND Title = $title");
 
     if (db_is_error($row))
-        return $row;
+        return null;
 
     return new TextContent($row);
 }
