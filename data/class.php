@@ -170,7 +170,7 @@ function GetSignupsForClass($event, $class)
 }
 
 
-function SetParticipantClass($eventid, $playerid, $newClass)
+function SetParticipantClass($eventid, $playerid, $newclass)
 {
     $eventid = esc_or_null($eventid, 'int');
     $playerid = esc_or_null($playerid, 'int');
