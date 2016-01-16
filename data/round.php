@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Round
  *
@@ -402,8 +402,8 @@ function UpdateCumulativeScores($rrid)
 
 function GetRoundResult($roundid, $playerid)
 {
-    $roundid = (int) $roundid;
-    $playerid = (int) $playerid;
+    $roundid = esc_or_null($roundid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
 
     db_exec("LOCK TABLE :RoundResult WRITE");
 
@@ -424,7 +424,7 @@ function GetRoundResult($roundid, $playerid)
                      VALUES ($roundid, $playerid, 0, 0, 0, 0, NOW())");
     }
     else {
-        $row = $rows[0]['id'];
+        $id = $result[0]['id'];
     }
 
     db_exec("UNLOCK TABLES");
