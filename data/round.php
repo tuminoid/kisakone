@@ -305,9 +305,9 @@ function data_UpdateHoleResult($rrid, $playerid, $holeid, $holeresult)
 }
 
 
-function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null)
+function data_UpdateRoundResult($roundresultid, $modifyField = null, $modValue = null)
 {
-    $rrid = esc_or_null($rrid, 'int');
+    $rrid = esc_or_null($roundresultid, 'int');
 
     $details = db_one("SELECT Round, Penalty, SuddenDeath FROM :RoundResult WHERE id = $rrid");
 
@@ -356,12 +356,13 @@ function data_UpdateRoundResult($rrid, $modifyField = null, $modValue = null)
         $suddendeath = $modValue;
 
     $dnf = $dnf ? 1 : 0;
+    $penalty = $penalty ? $penalty : 0;
     db_exec("UPDATE :RoundResult
                 SET Result = $total, Penalty = $penalty, SuddenDeath = $suddendeath, Completed = $complete,
                     DidNotFinish = $dnf, PlusMinus = $plusminus, LastUpdated = NOW()
                 WHERE id = $rrid");
 
-    UpdateCumulativeScores($rrid);
+    UpdateCumulativeScores($roundresultid);
     UpdateEventResults($round->eventId);
 }
 
