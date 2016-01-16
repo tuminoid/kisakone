@@ -270,13 +270,13 @@ function SaveResult($roundid, $playerid, $holeid, $special, $holeresult)
 }
 
 
-function data_UpdateHoleResult($rrid, $playerid, $holeid, $holeresult)
+function data_UpdateHoleResult($roundresultid, $playerid, $holeid, $holeresult)
 {
     $result = db_exec("LOCK TABLE :HoleResult WRITE");
     if (db_is_error($result))
         error_log("Failed to LOCK :HoleResult, there is potential race condition (rrid=$rrid, player=$playerid, hole=$holeid)!");
 
-    $rrid = esc_or_null($rrid, 'int');
+    $rrid = esc_or_null($roundresultid, 'int');
     $playerid = esc_or_null($playerid, 'int');
     $holeid = esc_or_null($holeid, 'int');
     $holeresult = esc_or_null($holeresult, 'int');
@@ -301,7 +301,7 @@ function data_UpdateHoleResult($rrid, $playerid, $holeid, $holeresult)
 
     db_exec("UNLOCK TABLES");
 
-    return data_UpdateRoundResult($rrid);
+    return data_UpdateRoundResult($roundresultid);
 }
 
 
