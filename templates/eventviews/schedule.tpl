@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event schedule
  *
@@ -82,8 +82,13 @@
         <hr />
     {/foreach}
 {else}
-  {math assign=num equation="x-1" x=$smarty.get.round}
+  {if $smarty.get.round}
+    {math assign=num equation="x-1" x=$smarty.get.round}
+  {else}
+    {assign var=num value=0}
+  {/if}
   {assign var=round value=$rounds.$num}
+
   {if $round->groupsFinished !== null}
     <h3>{translate id=round_title number=$smarty.get.round}</h3>
     {if $allow_print}
