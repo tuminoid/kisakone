@@ -139,7 +139,11 @@ class Email
         $sender = GetConfig(EMAIL_SENDER);
         $from_header = "$sender <$from>";
 
-        return mail($recipientAddress, utf8_decode($this->title), utf8_decode($this->text),
+        $preferences = ['input-charset' => 'UTF-8', 'output-charset' => 'UTF-8'];
+        $encoded_subject = iconv_mime_encode('Subject', $this->title, $preferences);
+        $encoded_subject = substr($encoded_subject, strlen('Subject: '));
+
+        return mail($recipientAddress, $encoded_subject, $this->text,
             "From: " . $from_header . "\r\n" . "X-Mailer: Kisakone", "-f$from");
     }
 }
