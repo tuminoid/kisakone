@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file includes the Ad class, and other general support functionality for ads
  *
@@ -23,6 +23,7 @@
  * */
 
 require_once 'data/file.php';
+require_once 'core/files.php';
 
 
 // Space-separated list of ad types. Both event-specific and global ads are listed, in
@@ -130,16 +131,13 @@ class Ad
         $this->url = $url;
         $this->longData = null;
 
-        if ($imageRef && $imageUrl) {
+        if ($imageRef && $imageUrl)
             return new Error();
-        }
 
-        if ($imageRef) {
+        if ($imageRef)
             $this->imageReference = $imageRef;
-        }
-        else {
+        else
             $this->imageURL = $imageUrl;
-        }
     }
 
     function Render()
@@ -148,9 +146,9 @@ class Ad
         // referencing each other, we need to ensure this is taken care of
         // in a graceful fashion
         global $ad_render_depth;
-        if ($add_render_depth > MAX_AD_RENDER_DEPTH) {
+        if ($add_render_depth > MAX_AD_RENDER_DEPTH)
             return translate('too_much_ad_recursion');
-        }
+
         $ad_render_depth++;
         $retVal = call_user_func(array(&$this, "Render" . $this->type));
         $ad_render_depth--;
@@ -166,12 +164,11 @@ class Ad
         }
         else {
             $ad = GetAd($this->event, 'default');
-            if ($ad === null) {
+            if ($ad === null)
                 return '';
-            }
-            if (is_a($ad, 'Error')) {
+
+            if (is_a($ad, 'Error'))
                 return $ad;
-            }
 
             return $ad->Render();
         }
@@ -187,12 +184,11 @@ class Ad
         }
         else {
             $ad = GetAd($this->event, 'eventdefault');
-            if ($ad === null) {
+            if ($ad === null)
                 return $this->RenderDefault();
-            }
-            if (is_a($ad, 'Error')) {
+
+            if (is_a($ad, 'Error'))
                 return $ad;
-            }
 
             return $ad->Render();
         }
@@ -205,17 +201,16 @@ class Ad
 
     function RenderImageAndLink()
     {
-        $url = $this->url;
+        $url = sanitize_url($this->url);
+
         if ($this->imageReference) {
-            require_once 'core/files.php';
             $file = GetFile($this->imageReference);
             $image = baseurl() . "images/uploaded/" . $file->filename;
         }
-        else {
-            $image = $this->imageURL;
-        }
+        else
+            $image = sanitize_url($this->imageURL);
 
-        return sprintf('<a target="_blank" href="%s"><img src="%s" /></a>', htmlentities($url), htmlentities($image));
+        return sprintf('<a target="_blank" href="%s"><img src="%s" /></a>', $url, $image);
     }
 
     function RenderReference()
@@ -226,14 +221,12 @@ class Ad
             $ref = substr($ref, 2);
             $event = $this->event;
         }
-        else {
+        else
             $event = null;
-        }
 
         $ad = GetAd($event, $ref);
-        if ($ad) {
+        if ($ad)
             return $ad->Render();
-        }
 
         return '';
     }

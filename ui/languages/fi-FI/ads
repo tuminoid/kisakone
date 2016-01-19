@@ -72,7 +72,7 @@ ad_reference_description     Toisaalla valitun mainoksen sisältö näytetään 
 
 save            Tallenna
 
-ad_link         Osoite
+ad_link         Osoite (http:// ...)
 ad_image        Kuva
 ad_upload       Lähetä
 ad_select       Valitse

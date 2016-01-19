@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * AD editor input handler
  *
@@ -23,6 +23,9 @@
  * */
 
 require_once 'core/ads.php';
+require_once 'core/url.php';
+require_once 'core/files.php';
+
 
 /**
  * Processes the edit tournament form
@@ -38,9 +41,9 @@ function processForm()
 
     if (@$_POST['cancel']) {
         if ($id)
-            redirect("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
-        else
-            redirect("Location: " . url_smarty(array('page' => 'ads'), $_GET));
+            redirect(url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
+
+        redirect(url_smarty(array('page' => 'ads'), $_GET));
     }
 
     if (!$id) {
@@ -66,6 +69,10 @@ function processForm()
 
     if (is_a($ad, 'Error'))
         return $ad;
+
+    // Sanitize urls
+    $url = sanitize_url($_POST['url']);
+    $image_url = sanitize_url($_POST['image_url']);
 
     switch ($_POST['ad_type']) {
         case 'default':
@@ -96,21 +103,21 @@ function processForm()
         case 'imageandlink':
             switch (@$_POST['image_type']) {
                 case 'link':
-                    $ad->MakeImageAndLink($_POST['url'], null, $_POST['image_url']);
+                    $ad->MakeImageAndLink($url, null, $image_url);
                     break;
 
 
                 case 'upload':
-                    require_once 'core/files.php';
                     $fid = StoreUploadedImage('ad');
                     if (is_a($fid, 'Error'))
                         return $fid;
-                    $ad->MakeImageAndLink($_POST['url'], $fid, null);
+
+                    $ad->MakeImageAndLink($url, $fid, null);
                     break;
 
 
                 case 'internal':
-                    $ad->MakeImageAndLink($_POST['url'], $_POST['image_ref'], null);
+                    $ad->MakeImageAndLink($url, $_POST['image_ref'], null);
                     break;
 
 
@@ -132,9 +139,9 @@ function processForm()
             return $result;
 
         if ($id)
-            redirect("Location: " . url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
-        else
-            redirect("Location: " . url_smarty(array('page' => 'ads'), $_GET));
+            redirect(url_smarty(array('page' => 'eventads', 'id' => @$_GET['id']), $_GET));
+
+        redirect(url_smarty(array('page' => 'ads'), $_GET));
     }
     else
         return $ad;

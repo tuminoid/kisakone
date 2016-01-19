@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * URL manipulation functions
  *
@@ -35,6 +35,7 @@ function serverURL()
     return $url;
 }
 
+
 // figure out correct baseurl
 function baseURL()
 {
@@ -43,6 +44,7 @@ function baseURL()
         return $dir;
     return $dir . '/';
 }
+
 
 // redirects user using Location header
 function redirect($url)
@@ -54,8 +56,37 @@ function redirect($url)
     die();
 }
 
+
 // set cookies securely
 function set_secure_cookie($name, $value = '', $expires = 0)
 {
     setcookie($name, $value, $expires, baseurl(), null, isset($_SERVER['HTTPS']), true);
+}
+
+
+// sanitize url, ie. add missing schema etc
+function sanitize_url($url, $schema = "http")
+{
+    if (!$url || empty($url))
+        return $url;
+
+    // All relative links need to be prefixed with schema
+    if (substr($url, 0, 1) != "/") {
+        $prev_schema = strtolower(substr($url, 0, 4));
+        if ($prev_schema != "http")
+            $url = $schema . "://" . $url;
+    }
+
+    // In php 5.4, htmlentities return empty string if it encounters unknown characters
+    // For this, we need to check for empty url, and try recode it with explicit iso
+    $url_safe = htmlentities($url);
+    if (empty($url_safe))
+        $url_safe = htmlentities($url, ENT_COMPAT | ENT_HTML401, "ISO-8859-1");
+
+    if (empty($url_safe)) {
+        // error_log("url_safe is empty, returning un-safe url! url = $url");
+        return $url;
+    }
+
+    return $url_safe;
 }
