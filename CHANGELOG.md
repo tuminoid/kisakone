@@ -6,6 +6,8 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Fix Course Map and Link functionality, along with their allowed max sizes.
+  * Sanitize user entered urls so they have proper schema.
+  * Encode email per email rfc to avoid spam classification.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160201.md)
 for additional actions needed.
