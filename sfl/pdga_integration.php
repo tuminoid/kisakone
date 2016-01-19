@@ -283,7 +283,7 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
     if (!(is_numeric($pdga_number) && $pdga_number > 0))
         return null;
 
-    $cache_key = "data_" . $pdga_number;
+    $cache_key = 'pdga_' . $pdga_number;
     $data = cache_get($cache_key);
     if ($data)
         return $data;
@@ -305,7 +305,7 @@ function pdga_getPlayer($pdga_number = 0, $force = false)
  * @return data on success
  * @return null on failure or invalid field
  */
-function pdga_getPlayerData($pdga_number = 0, $field = "rating", $force = false)
+function pdga_getPlayerData($pdga_number = 0, $field = 'rating', $force = false)
 {
     $data = pdga_getPlayer($pdga_number, $force);
     if (!$data)
@@ -329,7 +329,7 @@ function pdga_getPlayerData($pdga_number = 0, $field = "rating", $force = false)
  */
 function pdga_getPlayerRating($pdga_number = 0, $force = false)
 {
-    return pdga_getPlayerData($pdga_number, "rating", $force);
+    return pdga_getPlayerData($pdga_number, 'rating', $force);
 }
 
 
