@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Error class, which is used by all modules
  * for reporting errors.
@@ -109,7 +109,8 @@ class Error
         $e->isMajor = true;
         $e->errorCode = 500;
         $e->title = 'error_internal_error';
-        $e->description = translate('error_internal_error') . "<br />.\n" . "$string <br />\n" . "<code>\n" . debug_backtrace() . "\n</code>\n";
+        $e->description = translate('error_internal_error') . "<br />.\n" . "$string <br />\n" . "<code>\n" .
+            print_r(debug_backtrace(), true) . "\n</code>\n";
         $e->errorPage = 'error';
 
         return $e;
