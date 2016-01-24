@@ -23,14 +23,13 @@ in the example that would be `http://example.com/kisakone/doc/install/install.ph
 server from writing to `config.php` again.
 
 7. The directory `images/uploaded` and `Smarty/templetes_c` needs to be
-writable by the web server.
-
-8. Copy `config_site.php.example` to `config_site.php` and modify the email
-address and other configuration information for the administration and Kisakone's name.
+writable by the web server. Depending on the environment, this is usually done
+with `chmod 777 <dir>`, or `chown www-data:www-data <dir>`.
 
 
-Setting up LAMP for Kisakone:
------------------------------
+
+Setting up LAMP for Kisakone (for Private Server installations:
+---------------------------------------------------------------
 
 In Ubuntu:
 Good generic guide for setting LAMP:
@@ -43,8 +42,9 @@ $ sudo a2enmod php5
 $ sudo a2enmod rewrite
 ```
 
-Edit `/etc/apache2/sites-enabled/000-default` to point to your local sources,
-then restart the server:
+Copy `/etc/apache2/sites-available/default` (or `/etc/apache2/sites-available/000-default.conf`)
+as `kisakone` (or `kisakone.conf` respectively) and edit that file to point to your local sources.
+Enable kisakone with `a2ensite kisakone`, then restart the server:
 
 ```
 $ sudo service apach2 restart
