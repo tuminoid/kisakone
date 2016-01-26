@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Tournament editing/creation
  *
@@ -20,27 +21,27 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+require_once 'core/scorecalculation.php';
+
+
 /**
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    require_once 'core/scorecalculation.php';
-
     if (!IsAdmin())
         return error::AccessDenied();
     $problems = array();
 
-    if (@$_POST['cancel']) {
-        redirect("Location: " . url_smarty(array('page' => 'managetournaments')));
-    }
+    if (@$_POST['cancel'])
+        redirect(url_smarty(array('page' => 'managetournaments'), $problems));
 
     if (@$_POST['delete']) {
         $outcome = DeleteTournament($_GET['id']);
         if (is_a($outcome, 'Error'))
             return $outcome;
-        redirect("Location: " . url_smarty(array('page' => 'managetournaments'), $outcome));
+        redirect(url_smarty(array('page' => 'managetournaments'), $outcome));
     }
 
     $name = $_POST['name'];
@@ -73,16 +74,14 @@ function processForm()
         return $error;
     }
 
-    if ($_GET['id'] != 'new') {
+    if ($_GET['id'] != 'new')
         $result = EditTournament($_GET['id'], $name, $method, $level, $available, (int) $year, $description);
-    }
-    else {
+    else
         $result = CreateTournament($name, $method, $level, $available, (int) $year, $description);
-    }
 
     if (is_a($result, 'Error'))
         return $result;
 
     $variableNeededAsItsReference = null;
-    redirect("Location: " . url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));
+    redirect(url_smarty(array('page' => 'managetournaments'), $variableNeededAsItsReference));
 }
