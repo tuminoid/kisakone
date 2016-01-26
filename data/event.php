@@ -898,7 +898,7 @@ function DeleteEvent($event)
             $queries[] = "DELETE FROM :StartingOrder WHERE Section = $sectionid";
         }
 
-        $roundid = esc_or_null($rid, 'int');
+        $roundid = esc_or_null($round->id, 'int');
         $queries[] = "DELETE FROM :Section WHERE Round = $roundid";
         $result = db_all("SELECT id FROM :RoundResult WHERE Round = $roundid");
 
