@@ -302,7 +302,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
             else {
                 // FIXME: This is temporary
-                error_log("missing view: " . @$_GET['view'] . " at " . @$_SERVER['REQUEST_URI'] . ", user: " . @$user->id . ", ref: " . @$_SERVER['HTTP_REFERER']);
+                // error_log("missing view: " . @$_GET['view'] . " at " . @$_SERVER['REQUEST_URI'] . ", user: " . @$user->id . ", ref: " . @$_SERVER['HTTP_REFERER']);
                 $view = 'missing';
             }
             break;
