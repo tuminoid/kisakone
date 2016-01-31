@@ -45,6 +45,9 @@ error_object_not_found_description   Valittua kohdetta ei löytynyt.
 error_level_not_found       Tasoa ei löytynyt
 error_level_not_found_description   Valittua tasoa ei löytynyt.
 
+error_page_not_found        Sivua ei löytynyt.
+error_page_not_found_description       Valittua sivua ei löytynyt.
+
 title_is_mandatory          Otsikko on pakollinen.
 admins_dont_participate     Ylläpitäjät eivät voi osallistua kilpailuihin.
 

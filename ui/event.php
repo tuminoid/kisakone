@@ -300,11 +300,8 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $evp = $event->GetTextContent(@$_GET['view']);
                 $view = 'custom';
             }
-            else {
-                // FIXME: This is temporary
-                // error_log("missing view: " . @$_GET['view'] . " at " . @$_SERVER['REQUEST_URI'] . ", user: " . @$user->id . ", ref: " . @$_SERVER['HTTP_REFERER']);
-                $view = 'missing';
-            }
+            else
+                return Error::NotFound('page');
             break;
     }
 
