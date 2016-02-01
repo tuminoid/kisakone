@@ -82,7 +82,7 @@
         <hr />
     {/foreach}
 {else}
-  {if $smarty.get.round}
+  {if $smarty.get.round && is_numeric($smarty.get.round)}
     {math assign=num equation="x-1" x=$smarty.get.round}
   {else}
     {assign var=num value=0}
