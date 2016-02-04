@@ -294,7 +294,7 @@ function debug_query_and_die($query)
     if ($db_error_log) {
         error_log("query: $query");
         error_log("error: $error");
-        Error::LogStacktrace();
+        # Error::LogStacktrace();
     }
 
     $db_error_die = @$settings['DB_ERROR_DIE'];
