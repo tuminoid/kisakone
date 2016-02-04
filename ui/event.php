@@ -39,12 +39,15 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     global $user;
 
+    if (!@$_GET['id'])
+        return Error::NotFound('event');
+
     $event = GetEventDetails($_GET['id']);
 
-    if (is_a($event, 'Error'))
-        return $event;
     if (!$event)
         return Error::NotFound('event');
+    if (is_a($event, 'Error'))
+        return $event;
 
     $smarty->assign('event', $event);
     $smarty->assign('eventid', $event->id);
