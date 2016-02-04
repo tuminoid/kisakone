@@ -301,8 +301,10 @@ function page_getSubMenu()
         $submenu['tournaments'] = array('title' => translate('tournaments'), 'link' => array('page' => 'tournaments'), 'children' => array());
         if (@$_GET['page'] == 'tournament' || @$_GET['page'][0] == 'tournament') {
             $t = GetTournamentDetails(@$_GET['id']);
-            $tname = $t->name; # FIXME: Not always valid object
-            $submenu['tournaments']['children'][] = array('title' => $tname, 'link' => array('page' => 'tournament', 'id' => @$_GET['id']), 'children' => array());
+            if ($t) {
+                $tname = $t->name;
+                $submenu['tournaments']['children'][] = array('title' => $tname, 'link' => array('page' => 'tournament', 'id' => @$_GET['id']), 'children' => array());
+            }
         }
 
         foreach (GetTournamentYears() as $year)
