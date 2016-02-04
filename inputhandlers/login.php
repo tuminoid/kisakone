@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Login form handler
  *
@@ -27,6 +27,7 @@
  */
 
 require_once 'data/login.php';
+
 
 function processForm()
 {
@@ -60,10 +61,10 @@ function processForm()
         return $user;
 
     // Make sure a session is used from now on
-    set_secure_cookie("kisakone_login", 1, 0);
     if (!(@$_COOKIE['kisakone_login']))
         session_start();
     $_SESSION['user'] = $user;
+    set_secure_cookie('kisakone_login', 1, 0);
 
     if (@$_POST['rememberMe']) {
         $expires = time() + 60 * 60 * 24 * 30 * 2;
