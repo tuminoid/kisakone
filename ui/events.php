@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event listing
  *
@@ -33,6 +33,7 @@ require_once 'core/textcontent.php';
 function InitializeSmartyVariables(&$smarty, $error)
 {
     $user = @$_SESSION['user'];
+    $events = array();
 
     global $event_sort_mode;
     $event_sort_mode = @$_GET['sort'];
@@ -43,10 +44,9 @@ function InitializeSmartyVariables(&$smarty, $error)
             if (!$user)
                 return Error::AccessDenied();
 
-            if (!$user->GetPlayer()) {
-                $events = array();
+            if (!$user->GetPlayer())
                 $smarty->assign('error', translate('admins_dont_participate'));
-            }
+
             $events = $user->GetMyEvents('participant');
             $title = 'myevents_title';
             break;
@@ -69,7 +69,6 @@ function InitializeSmartyVariables(&$smarty, $error)
         case '':
         case 'default':
             global $fullTemplateName;
-            $events = array();
             $fullTemplateName = "index.tpl";
             $current = GetRelevantEvents();
             $upcoming = GetUpcomingEvents(true);
@@ -124,13 +123,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
 
         default:
-            if (is_numeric($id)) {
-                $events = GetEventsByYear((int) $id);
-                $title = '!' . translate('events_by_year', array('year' => (int) $id));
-            }
-            else {
+            if (!is_numeric($id))
                 return Error::AccessDenied();
-            }
+
+            $events = GetEventsByYear((int) $id);
+            $title = '!' . translate('events_by_year', array('year' => (int) $id));
+            break;
         }
 
         if (is_a($events, 'Error')) {
