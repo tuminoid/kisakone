@@ -60,9 +60,11 @@ function InitializeSmartyVariables(&$smarty, $error)
             $player = $user->GetPlayer();
     }
 
+    // FIXME: Fix this properly. We have case of expired session / missing cookie
+    // which leaves user/player uninitialized, this should all be handled differently
     $smarty->assign('userdata', @$user);
     $smarty->assign('player', @$player);
-    if ($player)
+    if (@$player)
         $smarty->assign('dob', $player->birthyear . '-1-1');
 }
 
