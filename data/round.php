@@ -357,6 +357,7 @@ function data_UpdateRoundResult($roundresultid, $modifyField = null, $modValue =
 
     $dnf = $dnf ? 1 : 0;
     $penalty = $penalty ? $penalty : 0;
+    $suddendeath = $suddendeath ? $suddendeath : 0;
     db_exec("UPDATE :RoundResult
                 SET Result = $total, Penalty = $penalty, SuddenDeath = $suddendeath, Completed = $complete,
                     DidNotFinish = $dnf, PlusMinus = $plusminus, LastUpdated = NOW()
