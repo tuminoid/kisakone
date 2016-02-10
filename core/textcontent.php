@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the TextContent class. TextContent is used for nearly
  * all user-entered content.
@@ -25,6 +25,7 @@
 
 require_once 'data/textcontent.php';
 
+
 class TextContent
 {
     // Sometimes title is not used,
@@ -42,17 +43,17 @@ class TextContent
 
     function TextContent($row)
     {
-        foreach ($row as $key => $value) {
-            $varname = strtolower($key);
-            $this->$varname = $value;
+        if (is_array($row)) {
+            foreach ($row as $key => $value) {
+                $varname = strtolower($key);
+                $this->$varname = $value;
+            }
         }
 
-        if ($this->type == 'submenu' || $this->type == 'index') {
+        if ($this->type == 'submenu' || $this->type == 'index')
             $this->FormatText(false);
-        }
-        else {
+        else
             $this->FormatText();
-        }
     }
 
     function Delete()

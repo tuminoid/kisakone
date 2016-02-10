@@ -78,14 +78,14 @@ function GetTextContentByEvent($eventid, $type)
 
 function GetTextContentByTitle($eventid, $title)
 {
-    $title = esc_or_null($title);
+    $title = esc_or_null($title, 'string');
     $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : "IS NULL";
 
     $row = db_one("SELECT id, Event, Title, Content, Date, Type, `Order`
                             FROM :TextContent
                             WHERE event $eventCond AND Title = $title");
 
-    if (db_is_error($row))
+    if (db_is_error($row) || !$row)
         return null;
 
     return new TextContent($row);
