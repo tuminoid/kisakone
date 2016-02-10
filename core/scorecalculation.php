@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file provides means for accessing score calculation units.
  *
@@ -60,7 +61,8 @@ function GetScoreCalculationMethod($type, $name)
     if (file_exists($filename))
         require_once($filename);
     else {
-        error_log("scorecalculation type '$type', name '$name' as file '$filename' does not exist!");
+        if ($name != '')
+            error_log("scorecalculation type '$type', name '$name' as file '$filename' does not exist!");
         return Error::InternalError();
     }
 
