@@ -73,6 +73,15 @@ function InitializeSmartyVariables(&$smarty, $error)
         $licenses['membership'][$year] = @$data['membership'][$year];
         $licenses['license'][$year] = @$data['license'][$year];
         $smarty->assign('licenses', $licenses);
+
+        if (GetConfig(EMAIL_VERIFICATION)) {
+            // Only players with username's can be verified
+            $smarty->assign('emailverification_enabled', true && $user->username);
+            $smarty->assign('emailverified', $user->IsEmailVerified());
+            $smarty->assign('email', $user->email);
+            $smarty->assign('email_user', $user->username);
+            $smarty->assign('emailverification_token', $user->GetEmailVerificationToken());
+        }
     }
 
     if (pdga_enabled()) {

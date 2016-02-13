@@ -110,4 +110,22 @@
 {/if}
 {/if}
 
+{if $isadmin}
+<h2>{translate id=admin_user_options}</h2>
+
+
+
+{if $emailverification_enabled}
+<form method="post">
+    <input type="hidden" name="formid" value="email_verification" />
+    <input type="hidden" name="email" value="{$email}" />
+    <input type="hidden" name="token" value="{$emailverification_token}" />
+    <input type="hidden" name="email_user" value="{$email_user}" />
+
+    <input type="submit" value="{translate id=admin_verify_user_email}" {if $emailverified}disabled="disabled"{/if} />
+</form>
+{/if}
+
+{/if}
+
 {include file='include/footer.tpl'}

@@ -113,6 +113,9 @@ passwordtoken       Salasanatunnus
 error_invalid_token     Virheellinen salasanatunnus syötetty.
 recovering_password_for Käyttäjän {username} salasanan vaihto
 
+admin_user_options      Pääkäyttäjän toimintoja
+admin_verify_user_email Vahvista tämän käyttäjän sähköposti
+
 email_verification_help   Sähköpostiosoitettasi ei ole vielä vahvistettu.
 email_verification_help2  Vahvistussähköposti lähetetty osoitteeseen {email}. Viestin saapuminen voi kestää hetken. Muista tarkastaa myös roskapostikansiosi.
 email_verification_step1  Lähetä vahvistuskoodi sähköpostiosoitteeseen {email}:

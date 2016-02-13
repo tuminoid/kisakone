@@ -36,9 +36,18 @@ function processForm()
     if (!$user)
         redirect(url_smarty(array('page' => 'login'), $_GET));
 
+    $email_user = @$_POST['email_user'];
     $email = @$_POST['email'];
     $send_token = @$_POST['send_token'] ? 1 : 0;
     $token = @$_POST['token'];
+    $edit_info = @$_POST['edit_info'] ? 1 : 0;
+
+    // If admin is verifying you by hand, switch user
+    if ($email_user && $user->IsAdmin()) {
+        $user = GetUserDetails(GetUserId($email_user));
+        if (!$user)
+            return Error::NotFound('user_record');
+    }
 
     // If token was requested
     if ($send_token) {
@@ -46,7 +55,6 @@ function processForm()
         redirect(url_smarty(array('page' => 'emailverification', 'id' => $email), $_GET));
     }
 
-    $edit_info = @$_POST['edit_info'] ? 1 : 0;
     if ($edit_info)
         redirect(url_smarty(array('page' => 'editmyinfo'), $_GET));
 
