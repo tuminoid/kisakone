@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Level management listing
  *
@@ -29,22 +30,33 @@
         <th>{translate id=name}</th>
         <th>{translate id=scorecalculation}</th>
         <th>{translate id=available}</th>
-
+        {if $sfl_enabled}
+        <th>{translate id=licenserequired}</th>
+        {/if}
         <th>{translate id=edit}</th>
     </tr>
-{foreach from=$classes item=class}
+{foreach from=$levels item=level}
     <tr>
-        <td>{$class->name|escape}</td>
-        <td>{$class->getScoreCalculationName()}</td>
+        <td>{$level->name|escape}</td>
+        <td>{$level->getScoreCalculationName()}</td>
         <td>
-            {if $class->available}
+            {if $level->available}
                 {translate id=yes_}
             {else}
                 {translate id=no_}
             {/if}
         </td>
+        {if $sfl_enabled}
         <td>
-            <a href="{url page=editlevel id=$class->id}">{translate id=edit}</a>
+            {if $level->licenseRequired}
+                {translate id=yes_}
+            {else}
+                {translate id=no_}
+            {/if}
+        </td>
+        {/if}
+        <td>
+            <a href="{url page=editlevel id=$level->id}">{translate id=edit}</a>
         </td>
 
     </tr>

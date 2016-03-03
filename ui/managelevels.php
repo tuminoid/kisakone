@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Level management listing
  *
@@ -21,6 +22,8 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/configs.php';
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -31,7 +34,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!IsAdmin())
         return Error::AccessDenied();
 
-    $smarty->assign('classes', GetLevels());
+    $smarty->assign('levels', GetLevels());
+    $smarty->assign('sfl_enabled', sfl_enabled());
 }
 
 /**

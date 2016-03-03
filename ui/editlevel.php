@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Level editor UI backend
  *
@@ -21,6 +22,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/scorecalculation.php';
+require_once 'data/configs.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -30,8 +35,6 @@ function InitializeSmartyVariables(&$smarty, $error)
 {
     if (!IsAdmin())
         return Error::AccessDenied();
-
-    require_once 'core/scorecalculation.php';
 
     if ($error) {
         $smarty->assign('error', $error->data);
@@ -55,8 +58,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         $scoreoptions[$method->id] = $method->name;
 
     $smarty->assign('scoreOptions', $scoreoptions);
-
     $smarty->assign('deletable', !LevelBeingUsed($_GET['id']));
+    $smarty->assign('sfl_enabled', sfl_enabled());
 }
 
 /**

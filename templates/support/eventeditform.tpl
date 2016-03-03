@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event creation and editing form
  *
@@ -130,15 +130,15 @@
     <div>
         <label for="requireFees">{translate id=event_require_fees}</label>
         <select name="requireFees" id="requireFees">
-            {if !$sfl_enabled}
             <option value="0" {if $event.requireFees == 0}selected="selected"{/if}>{translate id=event_require_no_fees}</option>
-            {else}
+            {if $sfl_enabled}
             {* membership not allowed in sfl and useless in non-sfl
             <option value="{$sfl_membership}" {if $event.requireFees == $sfl_membership}selected="selected"{/if}>{translate id=event_require_member_fee}</option>
             *}
             <option value="{$sfl_license}" {if $event.requireFees == $sfl_license}selected="selected"{/if}>{translate id=event_require_license_fee}</option>
             {/if}
         </select>
+        {formerror field='requirefees'}
     </div>
 
 

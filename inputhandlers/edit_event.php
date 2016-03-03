@@ -143,6 +143,9 @@ function processForm()
     }
 
     $requireFees = @$_POST['requireFees'];
+    $levelob = GetLevelDetails($level);
+    if ($levelob && $levelob->licenseRequired && !$requireFees)
+        $problems['requirefees'] = translate('FormError_LicenseRequirements');
 
     $td = input_GetUser($_POST['td']);
     if ($td === null)

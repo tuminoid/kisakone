@@ -1,7 +1,8 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Level editing/creation
  *
@@ -20,30 +21,32 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'core/scorecalculation.php';
+require_once 'data/level.php';
+
+
 /**
  * Processes the form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    require_once 'core/scorecalculation.php';
+    $nothing = null;
 
     if (!IsAdmin())
         return error::AccessDenied();
+
     $problems = array();
-
-    $nothing = null;
-    if (@$_POST['cancel']) {
-
-        redirect("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
-    }
+    if (@$_POST['cancel'])
+        redirect(url_smarty(array('page' => 'managelevels'), $nothing));
 
     if (@$_POST['delete']) {
         $outcome = DeleteLevel($_GET['id']);
         if (is_a($outcome, 'Error'))
             return $outcome;
 
-        redirect("Location: " . url_smarty(array('page' => 'managelevels'), $nothing));
+        redirect(url_smarty(array('page' => 'managelevels'), $nothing));
     }
 
     $name = $_POST['name'];
@@ -55,6 +58,7 @@ function processForm()
         $problems['scoreCalculationMethod'] = translate('FormError_InternalError');
 
     $available = (bool) @$_POST['available'];
+    $licenserequired = (bool) @$_POST['licenserequired'];
 
     if (count($problems)) {
         $error = new Error();
@@ -66,12 +70,10 @@ function processForm()
         return $error;
     }
 
-    if ($_GET['id'] != 'new') {
-        $result = EditLevel($_GET['id'], $name, $method, $available);
-    }
-    else {
-        $result = CreateLevel($name, $method, $available);
-    }
+    if ($_GET['id'] != 'new')
+        $result = EditLevel($_GET['id'], $name, $method, $available, $licenserequired);
+    else
+        $result = CreateLevel($name, $method, $available, $licenserequired);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
@@ -79,6 +81,5 @@ function processForm()
         return $result;
     }
 
-    $variableNeededAsItsReference = null;
-    redirect("Location: " . url_smarty(array('page' => 'managelevels'), $variableNeededAsItsReference));
+    redirect(url_smarty(array('page' => 'managelevels'), $nothing));
 }

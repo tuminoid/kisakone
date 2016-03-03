@@ -1,6 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Level editor UI
  *
@@ -41,12 +42,19 @@
         </select>
     </div>
 
-
     <div>
         <input type="checkbox" id="available" name="available" {if $level.available || $smarty.get.id == 'new'} checked="checked" {/if}
         />
         <label class="checkboxlabel" for="available">{translate id=available}</label>
     </div>
+
+    {if $sfl_enabled}
+    <div>
+        <input type="checkbox" id="licenserequired" name="licenserequired" {if $level.licenseRequired} checked="checked" {/if}
+        />
+        <label class="checkboxlabel" for="licenserequired">{translate id=licenserequired}</label>
+    </div>
+    {/if}
 <hr />
 <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />

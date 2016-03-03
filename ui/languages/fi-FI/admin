@@ -10,6 +10,7 @@ short               Lyhenne
 minage              Minimi-ikä
 maxage              Maksimi-ikä
 available           Käytettävissä
+licenserequired     Lisenssipakko
 status              Pro/Am-luokitus
 priority            Esitysjärjestys
 ratinglimit         Ratingraja

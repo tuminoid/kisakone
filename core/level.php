@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Level class
  *
@@ -30,16 +31,18 @@ class Level
     var $name;
     var $scoreCalculationMethod;
     var $available;
+    var $licenseRequired;
 
     /** ************************************************************************
      * Class constructor
      */
-    function Level($id = null, $name = "", $scoreCalculationMethod = null, $available = false)
+    function Level($id = null, $name = "", $scoreCalculationMethod = null, $available = false, $license = 0)
     {
         $this->id = $id;
         $this->name = $name;
         $this->scoreCalculationMethod = $scoreCalculationMethod;
         $this->available = $available;
+        $this->licenseRequired = $license;
 
         return;
     }
@@ -63,6 +66,3 @@ class Level
     }
 }
 
-/* ****************************************************************************
- * End of file
- * */

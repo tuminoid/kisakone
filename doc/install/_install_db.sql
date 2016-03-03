@@ -94,6 +94,7 @@ CREATE TABLE :Level
     Name VARCHAR(40) NOT NULL,
     ScoreCalculationMethod VARCHAR(40) NOT NULL,
     Available TINYINT NOT NULL,
+    LicenseRequired TINYINT NOT NULL DEFAULT 0,
     PRIMARY KEY(id),
     INDEX(Available)
 ) ENGINE=InnoDB;

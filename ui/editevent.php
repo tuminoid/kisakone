@@ -141,6 +141,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     $smarty->assign('event', $e);
+    $smarty->assign('level', GetLevelDetails($event->levelId));
     page_InitializeEventFormData($smarty, false);
 }
 
