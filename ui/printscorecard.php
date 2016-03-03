@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Printable score card
  *
@@ -62,6 +62,17 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
     if (!$round->roundNumber)
         return Error::NotFound('round');
+
+    error_log("round->course: " . $round->course);
+    if (!$round->course) {
+        $error = new Error();
+        $error->isMajor = true;
+        $error->title = 'error_round_no_course';
+        $error->description = translate('error_round_no_course_description');
+        $error->source = 'PDR:Event:InitializeSmartyVariables';
+
+        return $error;
+    }
 
     $holes = $round->GetHoles();
     $smarty->assign('holes', $holes);

@@ -20,6 +20,9 @@ error_access_denied_description     Sivun käyttö edellyttää suurempia käytt
 error_event_not_active  Kilpailua ei voi tarkastella
 error_event_not_active_description  Kilpailua ei ole aktivoitu julkiseen tarkasteluun.
 
+error_round_no_course  Kierrokselle ei ole määritetty rataa.
+error_round_no_course_description  Kierrokselle ei ole määritetty pelattavaa rataa.
+
 error_db_connection Tietokantaan ei saatu yhteyttä
 error_db_connection_description Tietokantaan ei saatu yhteyttä tai tietokantapalvelin on ylikuormittunut käyttäjämäärien takia.
 error_db_query Tietokantakysely epäonnistui
