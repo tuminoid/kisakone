@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the UI for adding competitors to an event
  *
@@ -181,7 +181,12 @@ $(document).ready(function(){
 
     <h2>{translate id='license_status_header'}</h2>
     <div>
-        {if $licenses_ok}
+        {if !$licenses_required}
+            <div class="searcharea">
+                {translate id='license_ok_notrequired'}
+            </div>
+
+        {elseif $licenses_ok}
             <div class="searcharea">
             {if $sfl_license}
                 {translate id='license_ok'}
@@ -189,10 +194,12 @@ $(document).ready(function(){
                 {if $pdga && $pdga_country != "FI" && $pdga_membership_status == "current"}
                     {translate id='license_ok_foreign'}
                 {else}
-                    BUG: This shouldn't happen in 2016 (B-license was removed)
+                    BUG: This shouldn't happen in 2016 (B-license was removed). Please contact tekniikka@frisbeegolfliitto.fi
+                    and describe what you did to cause this. Thank you.
                 {/if}
             {/if}
             </div>
+
         {else}
             <div class="error">
             {assign var="licenses_ok" value=false}
@@ -200,7 +207,8 @@ $(document).ready(function(){
                 {if $pdga_membership_status != "current"}
                     {translate id='license_fail_foreign'}
                 {else}
-                    BUG: This shouldn't happen...
+                    BUG: This shouldn't happen in 2016. Please contact tekniikka@frisbeegolfliitto.fi
+                    and describe what you did to cause this. Thank you.
                 {/if}
             {else}
                 <p>

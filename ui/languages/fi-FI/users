@@ -62,6 +62,7 @@ license_status_header  Lisenssitilanne
 license_status         Onko pelaajalla kilpailuun vaaditut lisenssit
 license_ok             Kilpailulisenssi OK.
 license_ok_foreign     Ulkomaalaisen pelaajan PDGA-jäsenyys on kunnossa.
+license_ok_notrequired Lisenssiä ei vaadita tähän kilpailuun (PDGA-liigat ja WGE-kilpailut).
 licenses_fail          Lisenssit eivät ole kunnossa. Pelaajaa ei voi lisätä kilpailuun.\n\nTarkastakaa, että henkilön nimi, syntymävuosi ja PDGA-numero ovat oikein Kisakoneen tiedoissa ja täsmäävät Jäsenrekisterin tietoihin.
 license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pelaajaa ei voi ilmoittaa kilpailuun tällä hetkellä.
 
