@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Group editing
  *
@@ -24,10 +24,11 @@
 
 require_once 'data/round.php';
 
+
 function ProcessForm()
 {
     if (@$_POST['cancel'])
-        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
+        redirect(url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
 
     $event = GetEventDetails($_GET['id']);
 
@@ -48,39 +49,41 @@ function ProcessForm()
     ResetRound($round->id, 'groups');
     $groupTemplate = null;
 
-    foreach ($_POST['e'] as $action) {
-        switch ($action[0]) {
-            case 's':
-                $section = GetSectionDetails(substr($action, 3));
-                if ($section->round != $round->id)
+    if (@$_POST['e']) {
+        foreach ($_POST['e'] as $action) {
+            switch ($action[0]) {
+                case 's':
+                    $section = GetSectionDetails(substr($action, 3));
+                    if ($section->round != $round->id)
+                        fail();
+                    break;
+
+                case 'h':
+                    $startingHole = substr($action, 1);
+                    break;
+
+                case 'g':
+                    $groupTemplate = InitNewGroup($round, $section, $groupTemplate, $startingHole);
+                    break;
+
+                case 'p':
+                    $groupTemplate['Player'] = substr($action, 3);
+                    InsertGroupmember($groupTemplate);
+                    break;
+
+                case 'e':
+                    assert($action == "edit_groups");
+                    break;
+
+                default:
                     fail();
-                break;
-
-            case 'h':
-                $startingHole = substr($action, 1);
-                break;
-
-            case 'g':
-                $groupTemplate = InitNewGroup($round, $section, $groupTemplate, $startingHole);
-                break;
-
-            case 'p':
-                $groupTemplate['Player'] = substr($action, 3);
-                InsertGroupmember($groupTemplate);
-                break;
-
-            case 'e':
-                assert($action == "edit_groups");
-                break;
-
-            default:
-                fail();
+            }
         }
     }
 
     SetRoundGroupsDone($round->id, (bool) @$_POST['done']);
 
-    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
+    redirect(url_smarty(array('page' => 'manageevent', 'id' => @$_GET['id']), $_GET));
 }
 
 function InitNewGroup($round, $section, $template, $startingHole)
