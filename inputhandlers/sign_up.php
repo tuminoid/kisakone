@@ -35,7 +35,7 @@ function processForm()
 {
     $nothing = null;
     if (@$_POST['cancel'])
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
+        redirect(url_smarty(array('page' => 'event', 'id' => @$_GET['id']), $nothing));
 
     global $user;
     if (!$user)
@@ -48,7 +48,7 @@ function processForm()
         return Error::NotFound('event');
 
     if ($event->approved !== null)
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
+        redirect(url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment'), $nothing));
 
     if (!$event->signupPossible())
         return Error::AccessDenied();
@@ -56,12 +56,12 @@ function processForm()
     $player = $user->GetPlayer();
     $status = $event->GetPlayerStatus($player->id);
     if ($status != 'notsigned')
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
+        redirect(url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo'), $nothing));
 
     $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
 
     $class = GetClassDetails(@$_POST['class']);
-    if (!$player->IsSuitableClass($class, $pdga_data)) {
+    if (!@$_POST['class'] || !$player->IsSuitableClass($class, $pdga_data)) {
         $error = new Error();
         $error->title = 'invalid_class_selection';
         $error->function = 'InputProcessing:sign_up:processForm';
@@ -77,13 +77,12 @@ function processForm()
     $result = SignUpUser($event->id, $user->id, $class->id);
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';
-
         return $result;
     }
 
     $signup = $result ? 1 : 0;
     if ($result && payment_enabled())
-        redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $signup), $nothing));
+        redirect(url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'payment', 'signup' => $signup), $nothing));
 
-    redirect("Location: " . url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $signup), $nothing));
+    redirect(url_smarty(array('page' => 'event', 'id' => @$_GET['id'], 'view' => 'signupinfo', 'signup' => $signup), $nothing));
 }
