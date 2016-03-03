@@ -1,7 +1,8 @@
-Upgrading to version 2016.02.01:
+Upgrading to version 2016.03.03:
 ================================
 
 Fix `:Course` Link, Map, Name field lengths that were too short.
+Add `LicenseRequired` flag for `:Level`.
 
 --
 
