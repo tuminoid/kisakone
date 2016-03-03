@@ -3,14 +3,17 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2016.03.03:
+===========
   * Fix Course Map and Link functionality, along with their allowed max sizes.
   * Sanitize user entered urls so they have proper schema.
   * Encode email per email rfc to avoid spam classification.
   * Admin can verify user's email from UI.
+  * Support licenseless competitions by adding a LicenseRequired field to Levels. Allows
+      FDGA to enter L-tier leagues and WGE special competitions in Kisakone.
+  * Fix a huge load of error log spamming minor cases.
 
-Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160201.md)
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160303.md)
 for additional actions needed.
 
 2016.01.01:
