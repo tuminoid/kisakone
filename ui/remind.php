@@ -1,7 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhmõ
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event fee reminder
  *
@@ -21,6 +22,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/textcontent.php';
+require_once 'core/email.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -28,33 +33,27 @@
  */
 function InitializeSmartyVariables(&$smarty, $data)
 {
-    require_once 'core/textcontent.php';
-    require_once 'core/email.php';
-
     language_include('email');
     $event = GetEventDetails($_GET['id']);
 
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied();
 
-    if (is_a($data, 'TextContent')) {
+    if (is_a($data, 'TextContent'))
         $evp = $data;
-    }
-    else {
+    else
         $evp = GetGlobalTextContent('email_fee');
-    }
 
-    if (is_a($data, 'Error')) {
+    if (is_a($data, 'Error'))
         $smarty->assign('error', $data->title);
-    }
 
-    if (is_a($data, 'TextContent')) {
+    if (is_a($data, 'TextContent'))
         $ids = explode(',', $_POST['ids']);
-    }
-    else {
+    else
         $ids = $data->data;
-    }
-    $u1 = GetUserDetails($ids[0]);
+
+    // FIXME: Why sometimes ids[0] is not valid
+    $u1 = GetUserDetails(@$ids[0]);
     $p1 = $u1->GetPlayer();
 
     if (!$evp || is_a($evp, 'Error')) {
