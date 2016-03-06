@@ -181,7 +181,7 @@ $(document).ready(function(){
 
     <h2>{translate id='license_status_header'}</h2>
     <div>
-        {if !$licenses_required}
+        {if !$license_required}
             <div class="searcharea">
                 {translate id='license_ok_notrequired'}
             </div>
