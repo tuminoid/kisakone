@@ -63,7 +63,6 @@ function InitializeSmartyVariables(&$smarty, $error)
     if (!$round->roundNumber)
         return Error::NotFound('round');
 
-    error_log("round->course: " . $round->course);
     if (!$round->course) {
         $error = new Error();
         $error->isMajor = true;
