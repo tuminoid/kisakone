@@ -117,7 +117,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             // make sure we have lifted valid people off the list
             CheckQueueForPromotions($event->id);
 
-            $queue = $event->GetQueue(@$_GET['sort'], @$_GET['search']);
+            $queue = $event->GetQueue(); // @$_GET['sort'], @$_GET['search']);
             $smarty->assign('queue', $queue);
             break;
 

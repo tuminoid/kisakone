@@ -50,10 +50,14 @@ function GetEventQueueCounts($eventid)
 
 
 // FIXME: Redo to a simpler form sometime
-function GetEventQueue($eventid, $sortedby, $search)
+function GetEventQueue($eventid, $strategy = '', $search = '')
 {
     $eventid = esc_or_null($eventid, 'int');
     $where = data_ProduceSearchConditions($search, array('FirstName', 'LastName', 'pdga', 'Username', 'birthdate'));
+
+    $sortedby = 'SignupTimestamp ASC';
+    if ($strategy == 'rating')
+        $sortedby = 'Rating DESC, PDGANumber ASC';
 
     $result = db_all("SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
                         :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
@@ -68,7 +72,7 @@ function GetEventQueue($eventid, $sortedby, $search)
                     INNER JOIN :Classification ON :EventQueue.Classification = :Classification.id
                     LEFT JOIN :Club ON :User.Club = :Club.id
                     WHERE $where
-                    ORDER BY SignupTimestamp ASC, :EventQueue.id ASC");
+                    ORDER BY $sortedby, :EventQueue.id ASC");
 
     if (db_is_error($result))
         return $result;
@@ -97,27 +101,57 @@ function GetEventQueue($eventid, $sortedby, $search)
         $retValue[] = $pdata;
     }
 
+    if ($strategy == 'random')
+        shuffle($retValue);
+
     return $retValue;
+}
+
+
+// Get events queue promotion strategy
+function GetQueuePromotionStrategy($eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+    $row = db_one("SELECT QueueStrategy FROM :Event WHERE id = $eventid");
+
+    if (db_is_error($row))
+        return null;
+
+    return $row['QueueStrategy'];
 }
 
 
 // Check if we can raise players from queue after someone left
 function CheckQueueForPromotions($eventid)
 {
-    $queuers = GetEventQueue($eventid, '', '');
+    $strategy = GetQueuePromotionStrategy($eventid);
+    $queuers = GetEventQueue($eventid, $strategy);
 
     foreach ($queuers as $queuer) {
         $playerid = (int) $queuer['player']->id;
         $classid = (int) $queuer['classId'];
 
         $quota_ok = CheckSignupQuota($eventid, $playerid, $classid);
-        $rules_ok = (CheckEventRules($eventid, $classid, $playerid) === true ? true : false);
+        $rules_ok = CheckEventRules($eventid, $classid, $playerid) === true ? true : false;
 
         if ($quota_ok && $rules_ok)
             PromotePlayerFromQueue($eventid, $playerid);
     }
 
     return null;
+}
+
+
+// Check if this queuer can be promoted
+function PromotionToEventOK($eventid, $queuer)
+{
+    $playerid = (int) $queuer['player']->id;
+    $classid = (int) $queuer['classId'];
+
+    $quota_ok = CheckSignupQuota($eventid, $playerid, $classid);
+    $rules_ok = CheckEventRules($eventid, $classid, $playerid) === true ? true : false;
+
+    return ($quota_ok && $rules_ok);
 }
 
 

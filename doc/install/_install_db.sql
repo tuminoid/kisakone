@@ -148,6 +148,7 @@ CREATE TABLE :Event
     AdBanner INT NULL,
     PdgaEventId INT,
     PlayerLimit INT NOT NULL DEFAULT 0,
+    QueueStrategy ENUM('signup', 'rating', 'random') NOT NULL DEFAULT 'signup',
     PRIMARY KEY(id),
     FOREIGN KEY(Club) REFERENCES :Club(id),
     FOREIGN KEY(Venue) REFERENCES :Venue(id),
