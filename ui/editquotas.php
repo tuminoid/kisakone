@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Manage event quotas for event
  *
@@ -22,6 +22,10 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/event.php';
+require_once 'data/event_queue.php';
+
+
 /* Initializes the variables and other data necessary for showing the matching template
 * @param Smarty $smarty Reference to the smarty object being initialized
 * @param Error $error If input processor encountered a minor error, it will be present here
@@ -39,6 +43,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('quotas', GetEventQuotas($event->id));
     $smarty->assign('counts', GetEventParticipantCounts($event->id));
     $smarty->assign('queues', GetEventQueueCounts($event->id));
+    $smarty->assign('oldstrategy', GetQueuePromotionStrategy($event->id));
+    $smarty->assign('strategies', GetQueuePromotionStrategies());
 }
 
 /**

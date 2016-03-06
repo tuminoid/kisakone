@@ -227,6 +227,11 @@ event_playerlimit_text Kilpailuun otetaan maksimissaan pelaajia
 event_playerlimit_not_set Ei asetettu
 class_quota_invalid  HUOMIO! Minimikiintiöt ovat suuremmat kuin kisan maksimipelaajamäärä!
 
+event_queuestrategy   Jonosta noston valintaperuste
+promotionstrategy_signup   Ilmoittautumisajankohta
+promotionstrategy_rating   Ratingjärjestys
+promotionstrategy_random   Satunnainen
+
 button_ready        Valmis
 inline_search_help  Syötä haettavan henkilön nimi tai PDGA-numero
 button_goto         Siirry

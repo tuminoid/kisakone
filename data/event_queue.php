@@ -121,6 +121,25 @@ function GetQueuePromotionStrategy($eventid)
 }
 
 
+// Get events queue promotion strategy
+function SetQueuePromotionStrategy($eventid, $strategy)
+{
+    $eventid = esc_or_null($eventid, 'int');
+    $strategy = esc_or_null($strategy, 'string');
+    return db_exec("UPDATE :Event SET QueueStrategy = $strategy WHERE id = $eventid");
+}
+
+
+// Get valid queue promotion strategies
+function GetQueuePromotionStrategies()
+{
+    return array(
+        'signup',
+        'rating',
+        'random'
+    );
+}
+
 // Check if we can raise players from queue after someone left
 function CheckQueueForPromotions($eventid)
 {

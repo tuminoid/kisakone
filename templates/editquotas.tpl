@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Set and show quotas (player limits) for events
  *
@@ -31,14 +31,28 @@
 {assign var="que" value="0"}
 {assign var="fre" value="0"}
 
+<form method="post">
+<input type="hidden" name="formid" value="event_quotas" />
+
 <h2>{translate id=event_playerlimit}</h2>
 
-  <p style="clear: both;">{translate id=event_playerlimit_text}: {$playerlimit}</p>
+  <p style="clear: both;">
+    {translate id=event_playerlimit_text}: {$playerlimit}
+  </p>
+
+<h2>{translate id=event_queuestrategy}</h2>
+
+  <p style="clear: both;">
+    <label for="strategy">{translate id=event_queuestrategy}:</label>
+    <select name="strategy" id="strategy">
+    {foreach from=$strategies item=strategy}
+      <option value="{$strategy}" {if $oldstrategy == $strategy}selected="selected"{/if}>{translate id="promotionstrategy_$strategy"}</option>
+    {/foreach}
+    </select>
+  </p>
 
 <h2>{translate id=class_list}</h2>
 
-<form method="post">
-  <input type="hidden" name="formid" value="event_quotas" />
   <table id="classLimitTable">
     <tr>
       <th>{translate id=class}</th>
@@ -99,7 +113,6 @@
 
   <p style="clear: both;">
     <input type="submit" value="{translate id=form_save}" />
-    <input name="cancel" type="submit" value="{translate id=form_cancel}" />
   </p>
 </form>
 

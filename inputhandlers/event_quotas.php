@@ -1,7 +1,7 @@
 <?php
 /*
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event class quotas.
  *
@@ -20,6 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
+require_once 'data/event_queue.php';
+
+
 /**
  * Processes the login form
  * @return Nothing or Error object on error
@@ -34,10 +38,11 @@ function processForm()
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventquotas');
 
-    if (@$_POST['cancel']) {
-        redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $_GET));
-    }
-    $failures = false;
+    $strategy = @$_POST['strategy'];
+    $valid_strategies = GetQueuePromotionStrategies();
+    if (!in_array($strategy, $valid_strategies))
+        $strategy = 'signup';
+    SetQueuePromotionStrategy($_GET['id'], $strategy);
 
     foreach ($_POST as $key => $value) {
         // Process minimum quota
@@ -56,5 +61,5 @@ function processForm()
     CheckQueueForPromotions($event->id);
 
     $dummy = null;
-    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
+    redirect(url_smarty(array('page' => 'manageevent', 'id' => $event->id), $dummy));
 }
