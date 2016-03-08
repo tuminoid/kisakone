@@ -45,7 +45,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
     if ($sort_mode !== null)
         $sort = "$sort_mode";
     elseif (!$event_sort_mode)
-        $sort = "`Date`";
+        $sort = "`Date`, Duration ASC, :Event.id ASC";
     else
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
 
@@ -848,16 +848,16 @@ function GetRegisteringEvents()
 {
     $now = time();
 
-    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)", "SignupEnd");
+    return data_GetEvents("SignupStart < FROM_UNIXTIME($now) AND SignupEnd > FROM_UNIXTIME($now)", "SignupEnd, :Event.id ASC");
 }
 
 
 function GetRegisteringSoonEvents()
 {
     $now = time();
-    $twoweeks = time() + 21 * 24 * 60 * 60;
+    $threeweeks = time() + 21 * 24 * 60 * 60;
 
-    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($twoweeks)", "SignupStart");
+    return data_GetEvents("SignupStart > FROM_UNIXTIME($now) AND SignupStart < FROM_UNIXTIME($threeweeks)", "SignupStart, :Event.id ASC");
 }
 
 
@@ -873,7 +873,7 @@ function GetPastEvents($onlySome, $onlyYear = null)
     $thisYear = $onlyYear ? "AND YEAR(Date) = $onlyYear" : "";
     $limit = $onlySome ? 5 : null;
 
-    return data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL", '`Date` DESC', $limit);
+    return data_GetEvents("Date < FROM_UNIXTIME(" . time() . ") $thisYear AND ResultsLocked IS NOT NULL", '`Date` DESC, Duration ASC, :Event.id ASC', $limit);
 }
 
 
