@@ -663,6 +663,7 @@ function GetAllRoundResults($eventid)
 function GetAllParticipations($eventid)
 {
     $eventid = esc_or_null($eventid, 'int');
+    $paymentEnabled = esc_or_null(payment_enabled(), 'int');
 
     return db_all("SELECT Classification, :Classification.Name,
                                 :Participation.Player, :Participation.id,
@@ -670,7 +671,7 @@ function GetAllParticipations($eventid)
                                 :Participation.TournamentPoints, :Participation.OverallResult
                             FROM :Participation
                             INNER JOIN :Classification ON :Classification.id = :Participation.Classification
-                            WHERE Event = $eventid AND EventFeePaid IS NOT NULL");
+                            WHERE Event = $eventid AND (EventFeePaid IS NOT NULL OR $paymentEnabled = 0)");
 }
 
 
