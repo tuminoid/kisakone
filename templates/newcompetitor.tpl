@@ -1,6 +1,6 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the UI for adding competitors to an event
  *
@@ -36,7 +36,13 @@
 <p class="error">{translate id=$sfl_error}</p>
 {/if}
 
-{if !$id_entered || $sfl_error}
+{if $club_use}
+    {assign var=disabled value=""}
+{else}
+    {assign var=disabled value="disabled=disabled"}
+{/if}
+
+{if !$club_use && (!$id_entered || $sfl_error)}
 <form method="post" class="evenform" id="regform">
     <input type="hidden" name="formid" value="new_competitor" />
 
@@ -69,44 +75,48 @@
     <h2>{translate id='reg_contact_info'}</h2>
     <div>
         <label for="firstname">{translate id='first_name'}</label>
-        <input type="text" id="firstname" name="firstname" value="{$firstname|escape}" disabled="disabled" />
-        <input type="hidden" name="firstname" value="{$firstname|escape}" />
+        <input type="text" id="firstname" name="firstname" value="{$firstname|escape}" {$disabled} />
+        {if !$club_use}<input type="hidden" name="firstname" value="{$firstname|escape}" />{/if}
         {formerror field='firstname'}
     </div>
     <div>
         <label for="lastname">{translate id='last_name'}</label>
-        <input id="lastname" type="text" name="lastname" value="{$lastname|escape}" disabled="disabled" />
-        <input type="hidden" name="lastname" value="{$lastname|escape}" />
+        <input id="lastname" type="text" name="lastname" value="{$lastname|escape}" {$disabled} />
+        {if !$club_use}<input type="hidden" name="lastname" value="{$lastname|escape}" />{/if}
         {formerror field='lastname'}
     </div>
     <div>
         <label for="email">{translate id='reg_email'}</label>
-        <input id="email" type="text" name="email" value="{$email|escape}" {if !$edit_email}disabled="disabled"{/if} />
-        {if !$edit_email}<input type="hidden" name="email" value="{$email|escape}" />{/if}
+        <input id="email" type="text" name="email" value="{$email|escape}" {if !$edit_email}{$disabled}{/if} />
+        {if !$club_use}{if !$edit_email}<input type="hidden" name="email" value="{$email|escape}" />{/if}{/if}
         {formerror field='email'}
     </div>
 
     <h2>{translate id='reg_player_info'}</h2>
     <div>
         <label for="pdga">{translate id='pdga_number'}</label>
-        <input id="pdga" type="text" name="pdga" value="{$pdga|escape}" disabled="disabled" />
-        <input type="hidden" name="pdga" value="{$pdga|escape}" />
+        <input id="pdga" type="text" name="pdga" value="{$pdga|escape}" {$disabled} />
+        {if !$club_use}<input type="hidden" name="pdga" value="{$pdga|escape}" />{/if}
         {formerror field='pdga'}
     </div>
 
     <div>
         <label for="gender">{translate id='gender'}</label>
-        <input id="gender_m" type="radio" disabled="disabled" {if $gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
-        <input id="gender_f" type="radio" disabled="disabled" {if $gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
-        <input type="hidden" name="gender" value="{if $gender == 'M'}male{/if}{if $gender == 'F'}female{/if}" />
+        <input id="gender_m" type="radio" {$disabled} {if $gender == 'M'}checked="checked"{/if} name="gender" value="male" /> {translate id="male"} &nbsp;&nbsp;
+        <input id="gender_f" type="radio" {$disabled} {if $gender == 'F'}checked="checked"{/if} name="gender" value="female" /> {translate id="female"}
+        {if !$club_use}<input type="hidden" name="gender" value="{if $gender == 'M'}male{/if}{if $gender == 'F'}female{/if}" />{/if}
     </div>
 
     <div style="margin-top: 8px">
         <label>{translate id='dob'}</label>
+        {assign var=dob value="$birthyear-01-01"}
         {translate id='year_default' assign='year_default'}
-        <input type="text" name="dob_Year" value="{$birthyear|escape}" disabled="disabled" />
-        <input type="hidden" name="dob_Year" value="{$birthyear|escape}" />
+        {html_select_date time=$dob field_order=DMY month_format=%m
+            prefix='dob_' display_months=false display_days=false start_year='1900'
+            year_empty=$year_default month_empty=$month_default day_empty=$day_default field_separator=" "
+            all_extra='style="min-width: 0"' reverse_years='true' year_extra="$disabled"}
         {formerror field='dob'}
+        {if !$club_use}<input type="hidden" name="dob_Year" value="{$birthyear|escape}" />{/if}
     </div>
 
     <h2>{translate id='reg_finalize_create'}</h2>

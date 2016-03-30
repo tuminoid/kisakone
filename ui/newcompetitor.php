@@ -46,13 +46,12 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('id_entered', $pdga || $sflid);
     $smarty->assign('fail', @$_GET['fail']);
+    $smarty->assign('club_use', !(pdga_enabled() || sfl_enabled()));
 
     if ($pdga && pdga_enabled())
         return pdga_competitor($smarty, $pdga);
     if ($sflid && sfl_enabled())
         return sfl_competitor($smarty, $sflid);
-
-    // show empty form
 }
 
 

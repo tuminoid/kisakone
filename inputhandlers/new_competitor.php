@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the handler for "new competitor" form
  *
@@ -43,19 +43,19 @@ function processForm()
         return Error::AccessDenied();
 
     if (@$_POST['cancel'])
-        redirect("Location: " . url_smarty(array('page' => 'newcompetitor', 'id' => $eventid), $_GET));
+        redirect(url_smarty(array('page' => 'newcompetitor', 'id' => $eventid), $_GET));
 
     // we have a pdga number
     $pdga_post = @$_POST['pdga_preview'];
     $pdga_preview = (is_numeric($pdga_post) && $pdga_post > 0) ? $pdga_post : null;
     if ($pdga_preview)
-        redirect("Location: " . url_smarty(array('page' => 'newcompetitor', 'id' => $eventid, 'pdga' => $pdga_preview), $_GET));
+        redirect(url_smarty(array('page' => 'newcompetitor', 'id' => $eventid, 'pdga' => $pdga_preview), $_GET));
 
     // we have a sflid number
     $sflid_post = @$_POST['sflid_preview'];
     $sflid_preview = (is_numeric($sflid_post) && $sflid_post > 0) ? $sflid_post : null;
     if ($sflid_preview)
-        redirect("Location: " . url_smarty(array('page' => 'newcompetitor', 'id' => $eventid, 'sflid' => $sflid_preview), $_GET));
+        redirect(url_smarty(array('page' => 'newcompetitor', 'id' => $eventid, 'sflid' => $sflid_preview), $_GET));
 
     // Here we have the form to be checked
     $lastname = $_POST['lastname'];
@@ -103,5 +103,5 @@ function processForm()
     if (is_a($u, 'Error'))
         return $u;
 
-    redirect("Location: " . url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => 1), $_GET));
+    redirect(url_smarty(array('page' => 'addcompetitor', 'id' => $eventid, 'signup' => 1), $_GET));
 }
