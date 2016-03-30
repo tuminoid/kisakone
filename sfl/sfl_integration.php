@@ -214,5 +214,7 @@ function SFL_getPlayer($userid)
  */
 function sfl_enabled()
 {
-    return GetConfig(LICENSE_ENABLED) == 'sfl';
+    if (GetConfig(LICENSE_ENABLED) == 'sfl')
+        return 1;
+    return 0;
 }
