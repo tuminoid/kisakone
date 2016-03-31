@@ -60,9 +60,11 @@ function InitializeSmartyVariables(&$smarty, $error)
         $player = GetUserPlayer($user);
 
         $year = date('Y');
-        $data = SFL_getPlayer($user);
-        $smarty->assign('sfl_membership', @$data['membership'][$year]);
-        $smarty->assign('sfl_license', @$data['license'][$year]);
+        if (sfl_enabled()) {
+            $data = SFL_getPlayer($user);
+            $smarty->assign('sfl_membership', @$data['membership'][$year]);
+            $smarty->assign('sfl_license', @$data['license'][$year]);
+        }
 
         $smarty->assign('license_required', $event->LicensesRequired());
         $smarty->assign('licenses_ok', $userdata->LicensesPaidForYear($year, $event->LicensesRequired()));
