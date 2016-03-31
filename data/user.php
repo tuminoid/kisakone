@@ -233,6 +233,17 @@ function SetUserDetails($user)
     $u_lastname = esc_or_null(data_fixNameCase($user->lastname), 'string');
     $player = esc_or_null($user->player, 'int');
 
+    // TODO: These sections are ugly
+    // Generate a fake username for TD created players
+    if ($user->username === null)
+        $u_username_quoted = esc_or_null('u' . time(), 'string');
+
+    // Create a fake password too
+    if ($user->password === null) {
+        $u_password = esc_or_null('asdf', 'string');
+        $u_hash = esc_or_null('fake', 'string');
+    }
+
     if (!GetUserId($user->username)) {
         $u_id = db_exec("INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
                              VALUES ($u_username_quoted, $u_email, $u_password, $u_role, $u_firstname,
