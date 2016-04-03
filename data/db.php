@@ -36,7 +36,7 @@ require_once __DIR__ . '/../core/error.php';
 function db_connect()
 {
     global $settings;
-    static $con;
+    static $con = null;
 
     if (!$con) {
         $con = @mysqli_connect($settings['DB_ADDRESS'], $settings['DB_USERNAME'], $settings['DB_PASSWORD'], $settings['DB_DB']);
