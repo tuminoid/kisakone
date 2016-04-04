@@ -3,6 +3,17 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2016.04.04:
+===========
+  * Fix license help text in addcompetitor. GH #264.
+  * Fix same-day event sorting. GH #268.
+  * In club use, allow player creation for TDs. GH #274.
+  * Player creation from "new competitor" TD menu works again, and creates fake user again.
+  * Restricted race condition when signing up causing one player to be signed up multiple times.
+
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160404.md)
+for additional actions needed.
+
 2016.03.03:
 ===========
   * Fix Course Map and Link functionality, along with their allowed max sizes.
