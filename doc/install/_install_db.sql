@@ -306,7 +306,8 @@ CREATE TABLE :Participation
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
     FOREIGN KEY(Classification) REFERENCES :Classification(id),
-    FOREIGN KEY(Club) REFERENCES :Club(id)
+    FOREIGN KEY(Club) REFERENCES :Club(id),
+    UNIQUE KEY(Player, Event)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
@@ -421,7 +422,8 @@ CREATE TABLE :EventQueue
     PRIMARY KEY(id),
     FOREIGN KEY(Event) REFERENCES :Event(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
-    FOREIGN KEY(Classification) REFERENCES :Classification(id)
+    FOREIGN KEY(Classification) REFERENCES :Classification(id),
+    UNIQUE KEY(Player, Event)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
