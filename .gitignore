@@ -11,3 +11,5 @@ temp*.txt
 *.tumi
 stellar.yaml
 /config_site.php
+*.project
+*.buildpath
