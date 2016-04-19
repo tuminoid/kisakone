@@ -68,6 +68,14 @@ function find_pdga_numbers($playerid)
 }
 
 
+function find_usernames($playerid)
+{
+    $row = db_one("SELECT username FROM :User WHERE Player = $playerid");
+    if (count($row) == 0)
+        return null;
+    return $row['username'];
+}
+
 
 $dupes = find_sflid_dupes();
 $players = array();
@@ -82,7 +90,8 @@ foreach ($dupes as $sflid => $items) {
             "name"      => $data['UserFirstName'] . " " . $data['UserLastName'],
             "comps"     => find_competitions($pid),
             "signups"   => find_latest_competition($pid),
-            "pdga"      => find_pdga_numbers($pid)
+            "pdga"      => find_pdga_numbers($pid),
+            "username"  => find_usernames($pid)
         );
     }
 }
@@ -93,7 +102,7 @@ foreach ($dupes as $sflid => $items) {
 $cases = array();
 foreach ($players as $sflid => $data) {
     $last_player = $last_login = $likely = $selection = 0;
-    $playerids = $emails = $names = $pdgas = $comps = $logins = $signups = array();
+    $playerids = $emails = $names = $pdgas = $comps = $logins = $signups = $usernames = array();
     $ids_with_comps = $most_comps = $most_comps_id = 0;
 
     foreach ($data as $item) {
@@ -115,6 +124,7 @@ foreach ($players as $sflid => $data) {
         $logins[] = $item['lastlogin'];
         $signups[] = $item['signups'] ? strftime("%Y-%m-%d %H:%M:%S", $item['signups']) : '';
         $emails[] = $item['email'];
+        $usernames[] = $item['username'];
 
         if (!in_array($item['name'], $names))
             $names[] = $item['name'];
@@ -183,6 +193,7 @@ foreach ($players as $sflid => $data) {
     $o = implode(array_diff($playerids, array($last_player)), ",");
     $i = implode($playerids, ", ");
     $n = implode($names, ", ");
+    $u = implode($usernames, ", ");
     $e = implode($emails, ", ");
     $p = implode($pdgas, ", ");
     $c = implode($comps, ", ");
@@ -196,6 +207,7 @@ foreach ($players as $sflid => $data) {
 # confid: $likely ($l)
 #  names: $n
 # emails: $e
+#  users: $u
 #  pdgas: $p
 # plrids: $i
 #  comps: $c

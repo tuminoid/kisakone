@@ -36,7 +36,7 @@ PREFIX=$(php -r "require_once './config.php'; global \$settings; print_r( \$sett
 DBHOST=$(php -r "require_once './config.php'; global \$settings; print_r( \$settings[\$argv[1]]);" -- DB_ADDRESS)
 
 MYSQL_CMD="mysql -u$USER -p$PASS -h$DBHOST $DB"
-UPDATE_TABLES="EventQueue TournamentStanding StartingOrder HoleResult RoundResult Participation"
+UPDATE_TABLES="EventQueue TournamentStanding StartingOrder HoleResult RoundResult Participation EventTaxes"
 
 echo "Testing connection ..."
 echo "describe ${PREFIX}Player;" | $MYSQL_CMD >/dev/null
