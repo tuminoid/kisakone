@@ -332,8 +332,8 @@ day_index           Päivä {index}
 
 event_require_fees          Lisenssivaatimus
 event_require_no_fees       Ei lisenssivaatimuksia
-event_require_member_fee    SFL-jäsenmaksu
-event_require_license_fee   Kilpailulisenssi
+event_require_member_fee    SFL jäsenmaksu
+event_require_license_fee   SFL kilpailulisenssi
 event_add_all_classes   Lisää kaikki
 
 event_state     Kilpailun tila
