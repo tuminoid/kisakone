@@ -25,6 +25,7 @@
 require_once 'ui/support/eventform_init.php';
 require_once 'data/configs.php';
 require_once 'sfl/sfl_licensetypes.php';
+require_once 'data/event_queue.php';
 
 
 /**
@@ -99,6 +100,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $e['signup_start'] = $event->signupStart == null ? '' : date('Y-m-d H:i', $event->signupStart);
         $e['signup_end'] = $event->signupEnd == null ? '' : date('Y-m-d H:i', $event->signupEnd);
+        $e['queue_strategy'] = $event->getQueueStrategy();
 
         if ($event->resultsLocked)
             $e['event_state'] = 'done';
@@ -142,6 +144,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('event', $e);
     $smarty->assign('level', GetLevelDetails($event->levelId));
+    $smarty->assign('queue_strategies', GetQueuePromotionStrategies());
+
     page_InitializeEventFormData($smarty, false);
 }
 

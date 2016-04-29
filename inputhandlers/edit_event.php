@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event edit handler
  *
@@ -27,6 +27,7 @@ require_once 'data/round.php';
 require_once 'core/tournament.php';
 require_once 'core/email.php';
 require_once 'sfl/sfl_integration.php';
+require_once 'data/event_queue.php';
 
 
 /**
@@ -97,6 +98,17 @@ function processForm()
     $signup_end = input_ParseDate($signup_end_raw);
     if ($signup_end == 0)
         $signup_end = null;
+
+    $queue_strategy = $_POST['queue_strategy'];
+    $strategies = GetQueuePromotionStrategies();
+    if (!in_array($queue_strategy, $strategies))
+        $problems['queue_strategy'] = translate('FormError_InvalidQueueStrategy');
+
+    /*
+    $old_queue_strategy = $_POST['old_queue_strategy'];
+    if (!IsAdmin() && $queue_strategy != $old_queue_strategy)
+        $problems['queue_strategy'] = translate('FormError_OnlyAdminCanEdit');
+    */
 
     $state = $_POST['event_state'];
     $contact = $_POST['contact'];
@@ -231,6 +243,10 @@ function processForm()
     if (is_a($result, 'Error'))
         return $result;
 
+    $result = SetQueuePromotionStrategy($eventid, $queue_strategy);
+    if (is_a($result, 'Error'))
+        return $result;
+
     UpdateEventResults($eventid);
 
     UpdateTournamentPoints($tournament);
@@ -241,5 +257,5 @@ function processForm()
     CheckQueueForPromotions($eventid);
 
     $dummy = null;
-    redirect("Location: " . url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
+    redirect(url_smarty(array('page' => 'manageevent', 'id' => $eventid), $dummy));
 }

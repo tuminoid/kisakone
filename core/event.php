@@ -384,6 +384,11 @@ class Event
     {
         return GetEventClub($this->id);
     }
+
+    function getQueueStrategy()
+    {
+        return GetQueuePromotionStrategy($this->id);
+    }
 }
 
 /* *****************************************************************************

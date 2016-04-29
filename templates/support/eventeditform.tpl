@@ -122,6 +122,17 @@
     </div>
 
     <div>
+        <input type="hidden" name="old_queue_strategy" value="{$event.queue_strategy}" />
+        <label for="queue_strategy">{translate id=event_queue_strategy}</label>
+        <select id="queue_strategy" name="queue_strategy">
+        {foreach from=$queue_strategies item=strategy}
+            <option value="{$strategy}"{if $event.queue_strategy == $strategy} selected="selected"{/if}>{translate id=event_queue_$strategy}</option>
+        {/foreach}
+        </select>
+        {formerror field='queue_strategy'}
+    </div>
+
+    <div>
         <label for="contact">{translate id=event_contact}</label>
         <input id="contact" type="text" name="contact" value="{$event.contact|escape}" />
         {formerror field='contact'}

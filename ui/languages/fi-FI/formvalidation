@@ -27,3 +27,5 @@ FormError_InvalidUser   Virheellinen käyttäjänimi
 FormError_TournamentLevelMismatch   Sarjan ja kilpailun tasojen tulee olla samat.
 FormError_LicenseRequirements       Tämän tason kilpailussa täytyy olla kilpailulisenssi.
 FormError_MustHaveClub  Kilpailulla täytyy olla vastuullinen seura
+FormError_InvalidQueueStrategy  Tuntematon jonojärjestys
+FormError_OnlyAdminCanEdit  Vain pääkäyttäjä voi muuttaa kenttää

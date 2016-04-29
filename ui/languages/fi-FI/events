@@ -27,6 +27,12 @@ event_signup_end  Ilmoittautuminen\nloppuu
 event_activate  Aktivoi käyttäjille
 event_taxes     Verotus
 
+event_queue_strategy Jonosta nouseminen
+event_queue_signup  Ilmoittautumisjärjestys
+event_queue_rating  Ratingjärjestys
+event_queue_random  Satunnainen järjestys
+
+
 event_classes   Luokat
 event_add_class Lisää luokka
 no_suitable_classes Ei pelaajalle sallittuja luokkia.

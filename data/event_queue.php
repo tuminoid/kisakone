@@ -126,6 +126,7 @@ function SetQueuePromotionStrategy($eventid, $strategy)
 {
     $eventid = esc_or_null($eventid, 'int');
     $strategy = esc_or_null($strategy, 'string');
+
     return db_exec("UPDATE :Event SET QueueStrategy = $strategy WHERE id = $eventid");
 }
 
@@ -207,8 +208,8 @@ function PromotePlayerFromQueue($eventid, $playerid)
 
 function UserQueueing($eventid, $userid)
 {
-    $eventid = esc_or_null($eventid);
-    $userid = esc_or_null($userid);
+    $eventid = esc_or_null($eventid, 'int');
+    $userid = esc_or_null($userid, 'int');
 
     $row = db_one("SELECT :EventQueue.id AS id
                             FROM :EventQueue
@@ -222,8 +223,8 @@ function UserQueueing($eventid, $userid)
 
 function PlayerQueueing($eventid, $playerid)
 {
-    $eventid = esc_or_null($eventid);
-    $playerid = esc_or_null($playerid);
+    $eventid = esc_or_null($eventid, 'int');
+    $playerid = esc_or_null($playerid, 'int');
 
     return db_one("SELECT :EventQueue.id AS id FROM :EventQueue WHERE Player = $playerid AND :EventQueue.Event = $eventid");
 }
