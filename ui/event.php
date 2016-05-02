@@ -51,6 +51,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('event', $event);
     $smarty->assign('eventid', $event->id);
+    $smarty->assign('strategy', GetQueuePromotionStrategy($event->id));
 
     $player = $user ? $user->GetPlayer() : null;
     $smarty->assign('user', $user);
@@ -58,8 +59,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('pdga_enabled', pdga_enabled());
     $smarty->assign('sfl_enabled', sfl_enabled());
-    $smarty->assign('pdgaUrl', $event->getPDGAUrl());
     $smarty->assign('payment_enabled', payment_enabled());
+    $smarty->assign('pdgaUrl', $event->getPDGAUrl());
 
     $textType = '';
     $evp = null;
@@ -105,8 +106,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
             // make sure we have lifted valid people
             CheckQueueForPromotions($event->id);
-
-            $participants = $event->GetParticipants(@$_GET['sort'], @$_GET['search']);
+            $sorted_by = @$_GET['sort'];
+            if (GetQueuePromotionStrategy($event->id) == 'rating')
+                $sorted_by = 'rating';
+            $participants = $event->GetParticipants($sorted_by, @$_GET['search']);
             $smarty->assign('participants', $participants);
             break;
 
@@ -117,7 +120,10 @@ function InitializeSmartyVariables(&$smarty, $error)
             // make sure we have lifted valid people off the list
             CheckQueueForPromotions($event->id);
 
-            $queue = $event->GetQueue(); // @$_GET['sort'], @$_GET['search']);
+            $sorted_by = @$_GET['sort'];
+            if (GetQueuePromotionStrategy($event->id) == 'rating')
+                $sorted_by = 'rating';
+            $queue = $event->GetQueue($sorted_by);
             $smarty->assign('queue', $queue);
             break;
 

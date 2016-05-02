@@ -422,9 +422,12 @@ function GetEventParticipants($eventid, $sortedBy = '', $search = '')
 {
     $eventid = esc_or_null($eventid, 'int');
 
-    $sortOrder = data_CreateSortOrder($sortedBy,
-        array('name' => array('LastName', 'FirstName'), 'class' => 'ClassName',
-            'LastName' => true, 'FirstName' => true, 'birthyear' => 'YEAR(birthdate)', 'pdga', 'gender' => 'sex', 'Username'));
+    if ($sortedBy == 'rating')
+        $sortOrder = ":Participation.Rating DESC, PDGANumber ASC";
+    else
+        $sortOrder = data_CreateSortOrder($sortedBy,
+            array('name' => array('LastName', 'FirstName'), 'class' => 'ClassName',
+                'LastName' => true, 'FirstName' => true, 'birthyear' => 'YEAR(birthdate)', 'pdga', 'gender' => 'sex', 'Username'));
 
     if (is_a($sortOrder, 'Error'))
         return $sortOrder;

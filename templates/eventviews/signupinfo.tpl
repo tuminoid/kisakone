@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Sign up page
  *
@@ -77,6 +77,8 @@
             </table>
         </div>
 
+        <p>{translate id=event_queue_lift}: <strong>{translate id=event_queue_$strategy}</strong></p>
+
         <p class="signup_status">{translate id=not_signed_up}</p>
 
         {assign var=player value=$user->getPlayer()}
@@ -129,6 +131,8 @@
     {if $signupStart}
         <p>{translate id=signup_closed_dates from=$signupStart to=$signupEnd}</p>
     {/if}
+
+    <p>{translate id=event_queue_lift}: <strong>{translate id=event_queue_$strategy}</strong></p>
 
 {/if}
 

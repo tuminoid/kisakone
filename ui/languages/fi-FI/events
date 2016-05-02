@@ -28,6 +28,7 @@ event_activate  Aktivoi käyttäjille
 event_taxes     Verotus
 
 event_queue_strategy Jonosta nouseminen
+event_queue_lift Jonosta nousu (mahdollisten kiintiöiden puitteissa)
 event_queue_signup  Ilmoittautumisjärjestys
 event_queue_rating  Ratingjärjestys
 event_queue_random  Satunnainen järjestys
@@ -232,11 +233,6 @@ class_quota_free     Vapaita kiintiöpaikkoja
 event_playerlimit_text Kilpailuun otetaan maksimissaan pelaajia
 event_playerlimit_not_set Ei asetettu
 class_quota_invalid  HUOMIO! Minimikiintiöt ovat suuremmat kuin kisan maksimipelaajamäärä!
-
-event_queuestrategy   Jonosta noston valintaperuste
-promotionstrategy_signup   Ilmoittautumisajankohta
-promotionstrategy_rating   Ratingjärjestys
-promotionstrategy_random   Satunnainen
 
 button_ready        Valmis
 inline_search_help  Syötä haettavan henkilön nimi tai PDGA-numero

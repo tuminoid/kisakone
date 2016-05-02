@@ -37,19 +37,12 @@
 <h2>{translate id=event_playerlimit}</h2>
 
   <p style="clear: both;">
-    {translate id=event_playerlimit_text}: {$playerlimit}
+    <strong>{translate id=event_playerlimit_text}:</strong> {$playerlimit}
   </p>
-
-<h2>{translate id=event_queuestrategy}</h2>
-
   <p style="clear: both;">
-    <label for="strategy">{translate id=event_queuestrategy}:</label>
-    <select name="strategy" id="strategy">
-    {foreach from=$strategies item=strategy}
-      <option value="{$strategy}" {if $oldstrategy == $strategy}selected="selected"{/if}>{translate id="promotionstrategy_$strategy"}</option>
-    {/foreach}
-    </select>
+    <strong>{translate id=event_queue_strategy}:</strong> {translate id=event_queue_$strategy}
   </p>
+
 
 <h2>{translate id=class_list}</h2>
 

@@ -33,6 +33,11 @@
     </div>
 </form>
 <hr style="clear: both;" />
+
+<p>
+    <strong>{translate id=event_queue_lift}:</strong> {translate id=event_queue_$strategy}
+</p>
+
 <div class="SearchStatus" />
 <table class="narrow" style="min-width: 400px">
    <tr>

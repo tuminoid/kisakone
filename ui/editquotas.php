@@ -43,7 +43,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('quotas', GetEventQuotas($event->id));
     $smarty->assign('counts', GetEventParticipantCounts($event->id));
     $smarty->assign('queues', GetEventQueueCounts($event->id));
-    $smarty->assign('oldstrategy', GetQueuePromotionStrategy($event->id));
+    $smarty->assign('strategy', GetQueuePromotionStrategy($event->id));
     $smarty->assign('strategies', GetQueuePromotionStrategies());
 }
 

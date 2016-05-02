@@ -38,12 +38,6 @@ function processForm()
     if (!IsAdmin() && $event->management != 'td')
         return Error::AccessDenied('eventquotas');
 
-    $strategy = @$_POST['strategy'];
-    $valid_strategies = GetQueuePromotionStrategies();
-    if (!in_array($strategy, $valid_strategies))
-        $strategy = 'signup';
-    SetQueuePromotionStrategy($_GET['id'], $strategy);
-
     foreach ($_POST as $key => $value) {
         // Process minimum quota
         if (substr($key, 0, 9) == "minquota_") {
