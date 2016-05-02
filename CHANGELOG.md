@@ -8,6 +8,9 @@ Kisakone versions are simply release date tags:
   * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265.
   * If payments are disabled, ignore payment status for scores. Thanks Mikko Poikolainen.
 
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160502.md)
+for additional actions needed.
+
 2016.04.04:
 ===========
   * Fix license help text in addcompetitor. GH #264.
