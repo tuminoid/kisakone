@@ -1,4 +1,4 @@
-Upgrading to version 2016.04.01:
+Upgrading to version 2016.05.02:
 ================================
 
 `:Event` gained `QueueStrategy` option.
