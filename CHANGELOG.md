@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2016.05.02:
+===========
   * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265.
   * If payments are disabled, ignore payment status for scores. Thanks Mikko Poikolainen.
 
