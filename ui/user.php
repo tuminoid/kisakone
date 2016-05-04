@@ -24,7 +24,6 @@
 
 require_once 'data/configs.php';
 require_once 'sfl/sfl_integration.php';
-require_once 'sfl/pdga_integration.php';
 
 
 function InitializeSmartyVariables(&$smarty, $error)
@@ -85,6 +84,8 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     if (pdga_enabled()) {
+        require_once 'sfl/pdga_integration.php';
+
         // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
         $force = false; // no forced reasons to go get it from pdga api
         $pdga_data = pdga_getPlayer(@$player->pdga, $force);

@@ -22,7 +22,6 @@
  * */
 
 require_once 'data/configs.php';
-require_once 'sfl/pdga_integration.php';
 
 
 /**
@@ -61,12 +60,19 @@ function processForm()
     $pdga_enabled = $_POST[PDGA_ENABLED] ? 1 : 0;
     $pdga_user = $_POST[PDGA_USERNAME];
     $pdga_pass = $_POST[PDGA_PASSWORD];
-    if ($pdga_enabled && !$pdga_user)
-        $problems[PDGA_USERNAME] = translate('FormError_NotEmptyIfEnabled');
-    if ($pdga_enabled && !$pdga_pass)
-        $problems[PDGA_PASSWORD] = translate('FormError_NotEmptyIfEnabled');
-    if ($pdga_enabled && !pdga_testCredentials($pdga_user, $pdga_pass))
-        $problems[PDGA_ENABLED] = translate('FormError_APIFailed');
+    if ($pdga_enabled) {
+        if (!@include_once('sfl/pdga_integration.php')) {
+            $problems[PDGA_ENABLED] = translate('FormError_NoAPIImplementation');
+        }
+        else {
+            if (!$pdga_user)
+                $problems[PDGA_USERNAME] = translate('FormError_NotEmptyIfEnabled');
+            if (!$pdga_pass)
+                $problems[PDGA_PASSWORD] = translate('FormError_NotEmptyIfEnabled');
+            if (!pdga_testCredentials($pdga_user, $pdga_pass))
+                $problems[PDGA_ENABLED] = translate('FormError_APIFailed');
+        }
+    }
 
     $cache_enabled = $_POST[CACHE_ENABLED] ? 1 : 0;
     $cache_name = $_POST[CACHE_NAME];

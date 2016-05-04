@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the User class.
  *
@@ -25,7 +25,6 @@
 require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
 require_once 'sfl/sfl_integration.php';
-require_once 'sfl/pdga_integration.php';
 require_once 'core/email.php';
 require_once 'data/login.php';
 require_once 'core/player.php';
@@ -387,6 +386,8 @@ class User
         $pdga = $player && $player->pdga ? $player->pdga : null;
 
         if (pdga_enabled() && $pdga > 0) {
+            require_once 'sfl/pdga_integration.php';
+
             $pdga_data = pdga_getPlayer($pdga);
             $country = strtoupper(@$pdga_data['country']);
             $valid_pdga = @$pdga_data['membership_status'] == 'current';

@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Core module for Registration Rules
  *
@@ -23,7 +23,7 @@
 
 require_once 'data/rules.php';
 require_once 'data/player.php';
-require_once 'sfl/pdga_integration.php';
+require_once 'data/configs.php';
 
 
 function RuleCheck($op, $a, $b)
@@ -50,6 +50,11 @@ function RuleCheck($op, $a, $b)
 
 function CheckEventRules($eventid, $classid, $playerid)
 {
+    // If PDGA API not enabled, we don't have any data for rule checking
+    if (!pdga_enabled())
+        return true;
+    require_once 'sfl/pdga_integration.php';
+
     $eventid = (int) $eventid;
     $classid = (int) $classid;
     $playerid = (int) $playerid;

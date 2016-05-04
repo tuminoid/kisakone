@@ -24,7 +24,6 @@
 
 require_once 'data/event.php';
 require_once 'sfl/sfl_integration.php';
-require_once 'sfl/pdga_integration.php';
 
 
 /**
@@ -69,9 +68,12 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('license_required', $event->LicensesRequired());
         $smarty->assign('licenses_ok', $userdata->LicensesPaidForYear($year, $event->LicensesRequired()));
 
-        global $settings;
-        $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
-        SmartifyPDGA($smarty, $pdga_data);
+        $pdga_data = null;
+        if (pdga_enabled() && isset($player) && $player->pdga) {
+            require_once 'sfl/pdga_integration.php';
+            $pdga_data = pdga_getPlayer($player->pdga);
+            SmartifyPDGA($smarty, $pdga_data);
+        }
 
         foreach ($classOptions as $cid => $cname) {
             $class = GetClassDetails($cid);

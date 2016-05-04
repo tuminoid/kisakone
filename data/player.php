@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Player
  *
@@ -24,8 +24,8 @@
 
 require_once 'data/db.php';
 require_once 'data/club.php';
-require_once 'sfl/pdga_integration.php';
 require_once 'core/player.php';
+require_once 'data/configs.php';
 
 
 function GetPlayerDetails($playerid)
@@ -84,7 +84,12 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     CancelSignup($eventid, $playerid, false);
 
     $pdga = $playerob->pdga;
-    $rating = pdga_getPlayerRating($pdga);
+    $rating = null;
+    if (pdga_enabled()) {
+        require_once 'sfl/pdga_integration.php';
+        $rating = pdga_getPlayerRating($pdga);
+    }
+
     $clubid = esc_or_null(GetUsersClub($userid), 'int');
     $rating = esc_or_null($rating, 'int');
 

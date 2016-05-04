@@ -23,7 +23,6 @@
 
 require_once 'data/configs.php';
 require_once 'sfl/sfl_integration.php';
-require_once 'sfl/pdga_integration.php';
 require_once 'data/event.php';
 
 
@@ -57,6 +56,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
 function pdga_competitor(&$smarty, $pdga)
 {
+    require_once 'sfl/pdga_integration.php';
+
     $smarty->assign('pdga', $pdga);
     $smarty->assign('edit_email', 1);
     $pdga_data = pdga_getPlayer($pdga);
