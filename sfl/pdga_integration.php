@@ -360,15 +360,3 @@ function SmartifyPDGA(&$smarty, $pdga_data)
     $smarty->assign('pdga_state', @$pdga_data['state']);
     $smarty->assign('pdga_country', strtoupper(@$pdga_data['country']));
 }
-
-
-
-/**
- * Is PDGA enabled
- *
- * @return  true if PDGA API is enabled
- */
-function pdga_enabled()
-{
-    return GetConfig(PDGA_ENABLED);
-}

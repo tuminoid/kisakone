@@ -26,11 +26,6 @@ require_once 'data/db.php';
 require_once 'data/configs.php';
 
 
-function payment_enabled() {
-    return GetConfig(PAYMENT_ENABLED);
-}
-
-
 /**
  * Stores or removes the event fee payment of a single player
  */

@@ -133,3 +133,41 @@ function SetConfig($key, $value, $value_type = null)
 
     return db_exec("UPDATE :Config SET $key = $value");
 }
+
+
+/**
+ * Is PDGA enabled
+ *
+ * @return  true if PDGA API is enabled
+ */
+function pdga_enabled()
+{
+    if (GetConfig(PDGA_ENABLED))
+        return true;
+    return false;
+}
+
+
+/**
+ * SFL enabled
+ *
+ * @return  true if SFL connection is enabled
+ */
+function sfl_enabled()
+{
+    if (GetConfig(LICENSE_ENABLED) == 'sfl')
+        return true;
+    return false;
+}
+
+
+/**
+ * SFL enabled
+ *
+ * @return  true if payments are enabled
+ */
+function payment_enabled() {
+    if (GetConfig(PAYMENT_ENABLED))
+        return true;
+    return false;
+}

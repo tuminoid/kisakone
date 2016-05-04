@@ -205,16 +205,3 @@ function SFL_getPlayer($userid)
 
     return null;
 }
-
-
-/**
- * SFL enabled
- *
- * @return  true if SFL connection is enabled
- */
-function sfl_enabled()
-{
-    if (GetConfig(LICENSE_ENABLED) == 'sfl')
-        return 1;
-    return 0;
-}
