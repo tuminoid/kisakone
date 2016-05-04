@@ -56,7 +56,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
 function pdga_competitor(&$smarty, $pdga)
 {
-    require_once 'sfl/pdga_integration.php';
+    require_once 'pdga/pdga_integration.php';
 
     $smarty->assign('pdga', $pdga);
     $smarty->assign('edit_email', 1);

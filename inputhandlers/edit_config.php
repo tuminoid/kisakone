@@ -61,7 +61,7 @@ function processForm()
     $pdga_user = $_POST[PDGA_USERNAME];
     $pdga_pass = $_POST[PDGA_PASSWORD];
     if ($pdga_enabled) {
-        if (!@include_once('sfl/pdga_integration.php')) {
+        if (!@include_once('pdga/pdga_integration.php')) {
             $problems[PDGA_ENABLED] = translate('FormError_NoAPIImplementation');
         }
         else {

@@ -84,7 +84,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     if (pdga_enabled()) {
-        require_once 'sfl/pdga_integration.php';
+        require_once 'pdga/pdga_integration.php';
 
         // $force = ($itsme || @$_SESSION['user']->role == "admin") ? true : false;
         $force = false; // no forced reasons to go get it from pdga api

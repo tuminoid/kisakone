@@ -86,7 +86,7 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     $pdga = $playerob->pdga;
     $rating = null;
     if (pdga_enabled()) {
-        require_once 'sfl/pdga_integration.php';
+        require_once 'pdga/pdga_integration.php';
         $rating = pdga_getPlayerRating($pdga);
     }
 

@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Removed PDGA API implementation.
+
 2016.05.02:
 ===========
   * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265.

@@ -386,7 +386,7 @@ class User
         $pdga = $player && $player->pdga ? $player->pdga : null;
 
         if (pdga_enabled() && $pdga > 0) {
-            require_once 'sfl/pdga_integration.php';
+            require_once 'pdga/pdga_integration.php';
 
             $pdga_data = pdga_getPlayer($pdga);
             $country = strtoupper(@$pdga_data['country']);

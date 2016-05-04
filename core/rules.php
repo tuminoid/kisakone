@@ -53,7 +53,7 @@ function CheckEventRules($eventid, $classid, $playerid)
     // If PDGA API not enabled, we don't have any data for rule checking
     if (!pdga_enabled())
         return true;
-    require_once 'sfl/pdga_integration.php';
+    require_once 'pdga/pdga_integration.php';
 
     $eventid = (int) $eventid;
     $classid = (int) $classid;

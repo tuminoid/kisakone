@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file is the UI backend for adding competitors to an event
  *
@@ -70,7 +70,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $pdga_data = null;
         if (pdga_enabled() && isset($player) && $player->pdga) {
-            require_once 'sfl/pdga_integration.php';
+            require_once 'pdga/pdga_integration.php';
             $pdga_data = pdga_getPlayer($player->pdga);
             SmartifyPDGA($smarty, $pdga_data);
         }
