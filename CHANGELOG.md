@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * Removed PDGA API implementation.
+  * Add submenu with events by levels.
 
 2016.05.02:
 ===========
