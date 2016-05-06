@@ -9,7 +9,7 @@ next:
 
 2016.05.02:
 ===========
-  * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265.
+  * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265, GH #270.
   * If payments are disabled, ignore payment status for scores. Thanks Mikko Poikolainen.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160502.md)
@@ -20,7 +20,7 @@ for additional actions needed.
   * Fix license help text in addcompetitor. GH #264.
   * Fix same-day event sorting. GH #268.
   * In club use, allow player creation for TDs. GH #274.
-  * Player creation from "new competitor" TD menu works again, and creates fake user again.
+  * Player creation from "new competitor" TD menu works again, and creates fake user again. GH #221.
   * Restricted race condition when signing up causing one player to be signed up multiple times.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160404.md)
