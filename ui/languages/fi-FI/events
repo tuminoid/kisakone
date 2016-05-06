@@ -5,27 +5,26 @@ event_location    Paikka
 event_date        Aika
 event_signup      Ilmoittaudu
 event_edit        Muokkaa
-newevent      Luo uusi kilpailu
-contents_thisyear      Kuluvan vuoden kilpailut
-events_past   {year} kilpailut
-
+newevent          Luo uusi kilpailu
+contents_thisyear Kuluvan vuoden kilpailut
+events_past       {year} kilpailut
 new_event_details Uuden kilpailun tiedot
 events_by_level   {level} kilpailut
 
-event_venue     Paikka
-event_level     Taso
-event_tournament    Sarja
+event_venue       Paikka
+event_level       Taso
+event_tournament  Sarja
 
-event_start     Kilpailun alku
-event_duration  Kilpailun kesto
+event_start       Kilpailun alku
+event_duration    Kilpailun kesto
 event_duration_days     päivä(ä)
-event_playerlimit  Pelaajamäärä
+event_playerlimit Pelaajamäärä
 event_playerlimit_max pelaajaa enintään
 event_registration_rules Ilmoittautumisrajat -ja ehdot
 event_signup_start  Ilmoittautuminen\nalkaa
 event_signup_end  Ilmoittautuminen\nloppuu
-event_activate  Aktivoi käyttäjille
-event_taxes     Verotus
+event_activate    Aktivoi käyttäjille
+event_taxes       Verotus
 
 event_queue_strategy Jonosta nouseminen
 event_queue_lift Jonosta nousu (mahdollisten kiintiöiden puitteissa)
