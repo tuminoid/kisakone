@@ -12,6 +12,7 @@ submenu_events_competitor   Kilpailijana
 submenu_events_manage       Hallinnoijana
 submenu_upcoming_events     Tulevat
 submenu_season_past_events  Päättyneet
+submenu_all_events_by_level Kilpailut tasoittain
 
 submenu_all_users           Kaikki käyttäjät
 submenu_my_info             Omat tiedot

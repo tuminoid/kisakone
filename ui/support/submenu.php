@@ -30,6 +30,7 @@ require_once 'data/user.php';
 require_once 'data/textcontent.php';
 require_once 'data/tournament.php';
 require_once 'data/taxes.php';
+require_once 'data/level.php';
 
 
 /**
@@ -106,6 +107,20 @@ function page_getSubMenu()
     // The list of events one can manage is only shown if there is anything that can be managed
     $eventManagementAccess = $user && ($user->IsAdmin() || UserIsManagerAnywhere($user->id));
 
+
+    // Cumulate events by level
+    $events_by_level = array();
+    $levels = GetLevels(true);
+    foreach ($levels as $level) {
+        $events_by_level[] = array(
+            'title' => $level->name,
+            'link'  => array('page' => 'events', 'id' => 'level', 'level' => $level->id),
+            'access' => null,
+            'children' => array()
+        );
+    }
+
+
     // Defining the main submenu; note: items utilize access rights combined from it and all its parent items, so
     // as long as there is one item that requires correct rights in the chain, the actual access rights can be left
     // out (and won't have to be checked every single time)
@@ -119,6 +134,8 @@ function page_getSubMenu()
                 array('title' => translate('submenu_current_year_events'), 'link' => array('page' => 'events', 'id' => 'currentYear'), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_event_archive'), 'link' => array('page' => 'eventarchive'), 'access' => null, 'children' => $archivedEvents),
             )),
+            array('open' => 'auto', 'title' => translate('submenu_all_events_by_level'), 'link' => array('page' => 'events', 'id' => 'currentYear'), 'access' => null, 'children' => $events_by_level
+            ),
             array('open' => 'auto', 'title' => translate('submenu_my_events'), 'link' => array('page' => 'events', 'id' => 'mine'), 'access' => 'login', 'children' => array(
                 array('title' => translate('submenu_events_competitor'), 'link' => array('page' => 'events', 'id' => 'mine'), 'access' => null, 'children' => array()),
                 array('title' => translate('submenu_events_manage'), 'link' => array('page' => 'events', 'id' => 'manage'), 'access' => $eventManagementAccess, 'children' => array()),

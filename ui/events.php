@@ -102,6 +102,13 @@ function InitializeSmartyVariables(&$smarty, $error)
             $title = 'current_year_events_title';
             break;
 
+        case 'level':
+            $levelid = @$_GET['level'];
+            $year = date('Y');
+            $level = GetLevelDetails($levelid);
+            $events = GetEventsByLevel($levelid, $year);
+            $title = "!" . $level->name;
+            break;
 
         case 'byUser':
             global $user;
