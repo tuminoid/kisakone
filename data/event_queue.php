@@ -57,7 +57,7 @@ function GetEventQueue($eventid, $strategy = '', $search = '')
 
     $sortedby = 'SignupTimestamp ASC';
     if ($strategy == 'rating')
-        $sortedby = 'Rating DESC, PDGANumber ASC';
+        $sortedby = 'Rating DESC, :EventQueue.id ASC, PDGANumber ASC';
 
     $result = db_all("SELECT :User.id AS UserId, Username, Role, UserFirstName, UserLastName, UserEmail,
                         :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :Player.player_id AS PlayerId,
