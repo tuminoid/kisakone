@@ -2,6 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file provides general functionality needed in the core module
  *
@@ -91,8 +92,9 @@ function data_sort_leaderboard($a, $b)
         }
     }
 
-    $as = $ar[$keys[0]]['StartId'];
-    $bs = $br[$keys[0]]['StartId'];
+    # FIXME: Sometimes $bs is invalid
+    $as = @$ar[$keys[0]]['StartId'];
+    $bs = @$br[$keys[0]]['StartId'];
     if ($as < $bs)
         return - 1;
     return 1;
