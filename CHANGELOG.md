@@ -7,10 +7,11 @@ next:
 =====
   * Removed PDGA API implementation.
   * Add submenu with events by levels.
+  * Remove log spamming notices: GH #293.
 
 2016.05.02:
 ===========
-  * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH# 265, GH #270.
+  * Option to lift players from queue in multiple ways: signup time, rating, random: GH #139, GH #265, GH #270.
   * If payments are disabled, ignore payment status for scores. Thanks Mikko Poikolainen.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20160502.md)
