@@ -47,7 +47,7 @@ $event_management_td = 'td';
 $event_management_admin = 'admin';
 
 // Days before and after current date within to include events as relevant
-$relevant_events_days_before = 60 * 60 * 24 * 7;
+$relevant_events_days_before = 60 * 60 * 24 * 6;
 $relevant_events_days_after = 60 * 60 * 24 * 4;
 
 /* *****************************************************************************
