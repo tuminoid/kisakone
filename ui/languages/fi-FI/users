@@ -66,7 +66,7 @@ license_ok_notrequired Lisenssiä ei vaadita tähän kilpailuun (PDGA-liigat ja 
 licenses_fail          Lisenssit eivät ole kunnossa. Pelaajaa ei voi lisätä kilpailuun.\n\nTarkastakaa, että henkilön nimi, syntymävuosi ja PDGA-numero ovat oikein Kisakoneen tiedoissa ja täsmäävät Jäsenrekisterin tietoihin.
 license_fail_foreign   Ulkomaisen pelaajan PDGA-jäsenyys ei ole voimassa.\n Pelaajaa ei voi ilmoittaa kilpailuun tällä hetkellä.
 
-sfl_server_error       Pelaajaa ei löydy tietokannasta.
+sfl_server_error       Pelaajaa ei löydy tietokannasta, tai pelaajalla on PDGA-numero, jolloin haku suoritetaan PDGA-numerolla.
 
 pdga_rating            Rating
 pdga_status            Luokitus
@@ -77,7 +77,6 @@ pdga_data_mismatch     Tieto on eri kuin PDGA:lla
 pdga_membership_current PDGA jäsenyys on voimassa
 pdga_membership_expired PDGA jäsenyys ei ole voimassa
 pdga_server_error      Yhteys PDGA:n tietokantaan epäonnistui tai pelaaja ei löydy tietokannasta. Yritä hetken päästä uudelleen.
-pdga_cannot_add_finnish Suomalaista pelaajaa ei voi lisätä PDGA-numeron perusteella. Käytä SFL-jäsennumeroa.
 pdga_shouldnt_add_finnish Pelaajan osoite on Suomessa. Jos henkilö kuitenkin on ulkomaalainen, voit lisätä kilpailijan. Suomalaisen pelaajan ollessa kyseessä, peruuta edelliselle sivulle ja käytä SFL-jäsennumeroa.
 pdga_allow_foreigner   Pelaaja on ulkomaalainen, salli lisäys kilpailuun.
 pdga_membership        PDGA jäsenyys

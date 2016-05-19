@@ -57,6 +57,10 @@ function processForm()
     if ($sflid_preview)
         redirect(url_smarty(array('page' => 'newcompetitor', 'id' => $eventid, 'sflid' => $sflid_preview), $_GET));
 
+    // If its not a preview page, nor lastname is submitted from the main form, throw it back
+    if (!$sflid_preview && !$pdga_preview && !@$_POST['lastname'])
+        redirect(url_smarty(array('page' => 'newcompetitor', 'id' => $eventid), $_GET));
+
     // Here we have the form to be checked
     $lastname = $_POST['lastname'];
     if ($lastname == '')

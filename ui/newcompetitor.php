@@ -67,9 +67,6 @@ function pdga_competitor(&$smarty, $pdga)
         $smarty->assign('pdga_error', 'pdga_server_error');
     }
     else {
-        if (strtoupper($pdga_data['country']) == 'FI') {
-            $smarty->assign('pdga_error', 'pdga_shouldnt_add_finnish');
-        }
         $smarty->assign('firstname', $pdga_data['first_name']);
         $smarty->assign('lastname', $pdga_data['last_name']);
         $smarty->assign('birthyear', $pdga_data['birth_year']);
