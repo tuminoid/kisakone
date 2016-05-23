@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Finnish Championship style tournament score calculation
  *
@@ -39,13 +39,13 @@ class scorecalc_level_sm
         // TODO: All of this should be configurable in the UI
         //   ie. the class names we match against are NOT constant
         //   they just happen to be named like this in SFL Kisakone instance
-        $lowPoints = array("MPM", "MPG", "MPS", "MPL", "MPE", "FPO", "FPM", "FPG", "FPS", "FPE");
+        $lowPoints = array("MPM", "MPG", "MPS", "MPL", "MPE", "MPR", "FPO", "FPM", "FPG", "FPS", "FPL");
 
         if (!count($participants))
             return;
 
         // By default, class is top 30 points
-        $className = $participants[0]['Name'];
+        $className = $participants[0]['Short'];
         $scores = array(100, 93, 87, 82, 78, 75, 72, 69, 66, 63, 60, 57, 54, 51, 48, 45, 42, 39, 36, 33, 30, 27, 24, 21, 18, 15, 12, 9, 6, 3);
 
         // If class matches one on the array above, it is top 10 points

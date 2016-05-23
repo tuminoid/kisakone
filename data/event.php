@@ -668,7 +668,7 @@ function GetAllParticipations($eventid)
     $eventid = esc_or_null($eventid, 'int');
     $paymentEnabled = esc_or_null(payment_enabled(), 'int');
 
-    return db_all("SELECT Classification, :Classification.Name,
+    return db_all("SELECT Classification, :Classification.Name, :Classification.Short,
                                 :Participation.Player, :Participation.id,
                                 :Participation.Standing, :Participation.DidNotFinish,
                                 :Participation.TournamentPoints, :Participation.OverallResult
