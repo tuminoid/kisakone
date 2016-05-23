@@ -8,6 +8,7 @@ next:
   * Removed PDGA API implementation.
   * Add submenu with events by levels.
   * Remove log spamming notices: GH #293.
+  * Fix lowpoint class detection in tour points.
 
 2016.05.02:
 ===========
