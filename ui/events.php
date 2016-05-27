@@ -38,6 +38,10 @@ function InitializeSmartyVariables(&$smarty, $error)
     global $event_sort_mode;
     $event_sort_mode = @$_GET['sort'];
 
+    $tc = GetGlobalTextContent('index');
+    if ($tc)
+        $smarty->assign('content', $tc->formattedText);
+
     $id = @$_GET['id'];
     switch ($id) {
         case 'mine':
@@ -78,10 +82,6 @@ function InitializeSmartyVariables(&$smarty, $error)
 
             $smarty->assign('lists', array($current, $registering, $registeringsoon, $upcoming, $past));
             $title = 'index_title';
-
-            $tc = GetGlobalTextContent('index');
-            if ($tc)
-                $smarty->assign('content', $tc->formattedText);
             break;
 
 
