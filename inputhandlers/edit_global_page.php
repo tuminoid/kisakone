@@ -1,8 +1,8 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2009-2010 Kisakone projektiryhm�
- * Copyright 2014 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2009-2010 Kisakone projektiryhmä
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Global text page edit handler
  *
@@ -22,54 +22,48 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'core/textcontent.php';
+
+
 /**
  * Processes the edit tournament form
  * @return Nothing or Error object on error
  */
 function processForm()
 {
-    require_once 'core/textcontent.php';
     if (!IsAdmin())
         return error::AccessDenied();
-    $problems = array();
 
+    $problems = array();
     $custom = @$_GET['mode'] == 'custom';
     $email = @$_REQUEST['mode'] == 'email';
 
     if (@$_POST['cancel']) {
-
-        if (!$email) {
-            redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-        }
-        else {
-            redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
-        }
-        die();
+        if (!$email)
+            redirect(url_smarty(array('page' => 'sitecontent_main'), $custom));
+        redirect(url_smarty(array('page' => 'manage_email'), $custom));
     }
 
     $evp = GetGlobalTextContent(@$_GET['id']);
 
     if (@$_POST['delete']) {
-
         if ($evp && $evp->id) {
             $outcome = $evp->Delete();
             if (is_a($outcome, 'Error'))
                 return $outcome;
         }
 
-        redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
+        redirect(url_smarty(array('page' => 'sitecontent_main'), $custom));
     }
 
     $title = @$_POST['title'];
     $content = @$_POST['textcontent'];
 
-    if ($custom && !$title) {
+    if ($custom && !$title)
         fail();
-    }
-    elseif ($custom) {
+    elseif ($custom)
         if ($title == 'index' || $title == 'submenu' || $title == 'fees' || $title == 'terms')
             return Error::AccessDenied();
-    }
 
     if (count($problems)) {
         $error = new Error();
@@ -84,13 +78,7 @@ function processForm()
     if (!$evp) {
         $evp = new TextContent(array());
         $evp->event = null;
-
-        if (is_numeric(@$_GET['id']) || @$_GET['id'] == '*') {
-            $evp->type = 'custom';
-        }
-        else {
-            $evp->type = @$_GET['id'];
-        }
+        $evp->type = (is_numeric(@$_GET['id']) || @$_GET['id'] == '*') ? 'custom' : @$_GET['id'];
     }
 
     $evp->title = $title;
@@ -99,31 +87,23 @@ function processForm()
     if ($custom) {
         $type = @$_POST['type'];
 
-        if ($type == 'custom' || $type == 'custom_man' || $type == 'custom_adm') {
+        if ($type == 'custom' || $type == 'custom_man' || $type == 'custom_adm')
             $evp->type = $type;
-        }
-        else {
+        else
             return Error::AccessDenied();
-        }
     }
 
-    if (!@$_POST['preview']) {
+    if (!@$_POST['preview'])
         $result = $evp->save();
-    }
     else {
         $evp->FormatText();
-
         return $evp;
     }
 
     if (is_a($result, 'Error'))
         return $result;
 
-    if (!$email) {
-        redirect("Location: " . url_smarty(array('page' => 'sitecontent_main'), $custom));
-    }
-    else {
-        redirect("Location: " . url_smarty(array('page' => 'manage_email'), $custom));
-    }
-    die();
+    if (!$email)
+        redirect(url_smarty(array('page' => 'sitecontent_main'), $custom));
+    redirect(url_smarty(array('page' => 'manage_email'), $custom));
 }
