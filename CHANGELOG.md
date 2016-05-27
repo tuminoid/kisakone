@@ -9,6 +9,8 @@ next:
   * Add submenu with events by levels.
   * Remove log spamming notices: GH #293.
   * Fix lowpoint class detection in tour points.
+  * Fix global page creation.
+  * Display global index page on all event index pages too.
 
 2016.05.02:
 ===========
