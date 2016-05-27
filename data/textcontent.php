@@ -62,7 +62,7 @@ function GetTextContent($pageid)
 
 function GetTextContentByEvent($eventid, $type)
 {
-    $type = esc_or_null($type);
+    $type = esc_or_null($type, 'string');
     $eventCond = $eventid ? " = " . esc_or_null($eventid, 'int') : "IS NULL";
 
     $row = db_one("SELECT id, Event, Title, Content, Date, Type, `Order`
@@ -97,10 +97,10 @@ function SaveTextContent($page)
     if (!is_a($page, 'TextContent'))
         return Error::NotFound('textcontent');
 
-    $title = esc_or_null($page->title);
-    $content = esc_or_null($page->content);
+    $title = esc_or_null($page->title, 'string');
+    $content = esc_or_null($page->content, 'string');
     $time = time();
-    $type = esc_or_null($page->type);
+    $type = esc_or_null($page->type, 'string');
 
     if (!$page->id) {
         $event = esc_or_null($page->event, 'int');

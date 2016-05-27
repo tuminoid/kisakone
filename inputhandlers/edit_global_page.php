@@ -59,13 +59,7 @@ function processForm()
     $title = @$_POST['title'];
     $content = @$_POST['textcontent'];
 
-    if ($custom && !$title)
-        fail();
-    elseif ($custom)
-        if ($title == 'index' || $title == 'submenu' || $title == 'fees' || $title == 'terms')
-            return Error::AccessDenied();
-
-    if (count($problems)) {
+    if ($custom && !$title) {
         $error = new Error();
         $error->title = translate('title_is_mandatory');
         $error->function = 'InputProcessing:edit_event_page:processForm';
@@ -74,6 +68,8 @@ function processForm()
 
         return $error;
     }
+    elseif ($custom && ($title == 'index' || $title == 'submenu' || $title == 'fees' || $title == 'terms'))
+        return Error::AccessDenied();
 
     if (!$evp) {
         $evp = new TextContent(array());
@@ -81,7 +77,7 @@ function processForm()
         $evp->type = (is_numeric(@$_GET['id']) || @$_GET['id'] == '*') ? 'custom' : @$_GET['id'];
     }
 
-    $evp->title = $title;
+    $evp->title = $title ? $title : $evp->type;
     $evp->content = $content;
 
     if ($custom) {
@@ -94,7 +90,7 @@ function processForm()
     }
 
     if (!@$_POST['preview'])
-        $result = $evp->save();
+        $result = $evp->Save();
     else {
         $evp->FormatText();
         return $evp;
