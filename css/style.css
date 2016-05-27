@@ -432,3 +432,16 @@ a img {
     word-wrap: break-word;
     max-width: 20em;
 }
+
+#index-partners {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+#index-partners img {
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 290px !important;
+    height: 145px !important;
+}
