@@ -11,6 +11,7 @@ next:
   * Fix lowpoint class detection in tour points.
   * Fix global page creation.
   * Display global index page on all event index pages too.
+  * Display holetext instead of holenumber in event index, event schedule pages. GH #291.
 
 2016.05.02:
 ===========
