@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event main page
  *
@@ -94,7 +94,7 @@
     {/if}
     </tr>
     {foreach from=$rounds item=round key=index}
-
+        {assign var=holes value=$round->GetHoles()}
     <tr>
         {math assign=number equation="x+1" x=$index}
         <td>{translate id=round_number number=$number}</td>
@@ -105,9 +105,16 @@
         <td>
         {if $round->groupsFinished !== null}
             {if $round->starttype=='sequential'}
-        {capture assign=groupstart}{$group.StartingTime|date_format:"%H:%M"}{/capture}
-        {translate id=your_group_starting start=$groupstart}
-        {else}{translate id=your_group_starting_hole hole=$group.StartingHole}{/if}
+                {capture assign=groupstart}{$group.StartingTime|date_format:"%H:%M"}{/capture}
+                {translate id=your_group_starting start=$groupstart}
+            {else}
+                {assign var=start_hole value=$group.StartingHole}
+                {math assign=idx equation="x - 1" x=$group.StartingHole}
+                {if $holes[$idx]->holeText}
+                    {assign var=start_hole value=$holes[$idx]->holeText}
+                {/if}
+                {translate id=your_group_starting_hole hole=$start_hole}
+            {/if}
         {/if}
    </td>
         {/if}

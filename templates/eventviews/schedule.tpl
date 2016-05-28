@@ -33,6 +33,7 @@
 
 {if !$smarty.get.round}
     {foreach from=$rounds key=index item=round}
+        {assign var=holes value=$round->GetHoles()}
         {math assign=num equation="x+1" x=$index}
         <h3>{translate id=round_title number=$num}</h3>
 
@@ -51,7 +52,7 @@
                 <p>{translate id=your_group}</p>
                 <p style="float: left; margin: 8px;">
                 {if $round->starttype == 'simultaneous'}
-                    {math assign="holeIndex" equation="x-y" x=$group.0.StartingHole y=1}
+                    {math assign="holeIndex" equation="x-1" x=$group.0.StartingHole}
                     {if $holes[$holeIndex]->holeText}
                         {translate id=your_group_starting_hole hole=$holes[$holeIndex]->holeText}
                     {else}
