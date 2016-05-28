@@ -25,7 +25,6 @@
 require_once 'data/event_quota.php';
 require_once 'data/event_queue.php';
 require_once 'sfl/sfl_integration.php';
-require_once 'sfl/pdga_integration.php';
 require_once 'data/calendar.php';
 require_once 'data/configs.php';
 
@@ -167,8 +166,11 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
 
             if ($status == 'notsigned') {
-                $pdga_data = (pdga_enabled() && isset($player) && $player->pdga) ? pdga_getPlayer($player->pdga) : null;
-                SmartifyPDGA($smarty, $pdga_data);
+                if (pdga_enabled() && isset($player) && $player->pdga) {
+                    require_once 'pdga/pdga_integration.php';
+                    $pdga_data = pdga_getPlayer($player->pdga);
+                    SmartifyPDGA($smarty, $pdga_data);
+                }
 
                 $year = date('Y');
                 $data = SFL_getPlayer(@$user->id);
