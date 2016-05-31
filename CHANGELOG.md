@@ -3,9 +3,9 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
-  * Removed PDGA API implementation.
+2016.05.31:
+===========
+  * Removed PDGA API implementation (moved to private repo).
   * Add submenu with events by levels.
   * Remove log spamming notices: GH #293.
   * Fix lowpoint class detection in tour points.
