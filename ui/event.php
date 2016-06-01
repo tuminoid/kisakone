@@ -166,6 +166,7 @@ function InitializeSmartyVariables(&$smarty, $error)
             }
 
             if ($status == 'notsigned') {
+                $pdga_data = null;
                 if (pdga_enabled() && isset($player) && $player->pdga) {
                     require_once 'pdga/pdga_integration.php';
                     $pdga_data = pdga_getPlayer($player->pdga);
