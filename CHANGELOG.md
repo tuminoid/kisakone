@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * In mobile devices, index-partners css shrinks images a little to fit phone screen better.
+
 2016.05.31:
 ===========
   * Removed PDGA API implementation (moved to private repo).
