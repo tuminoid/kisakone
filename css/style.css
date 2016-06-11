@@ -445,3 +445,12 @@ a img {
     width: 290px !important;
     height: 145px !important;
 }
+
+@media all and (max-device-width: 720px) {
+    #index-partners img {
+        margin-left: 1px;
+        margin-right: 1px;
+        width: 245px !important;
+        height: 125px !important;
+    }
+}
