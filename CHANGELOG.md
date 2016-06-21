@@ -6,6 +6,7 @@ Kisakone versions are simply release date tags:
 next:
 =====
   * In mobile devices, index-partners css shrinks images a little to fit phone screen better.
+  * Remove half-baked live/ dir, to be developed independently.
 
 2016.05.31:
 ===========
