@@ -4,7 +4,7 @@ temp*.txt
 /php5-cgi
 /php5-fcgi
 /images/uploaded/*
-/api
+/live
 /js/analytics.js
 /favicon.ico
 /*.sublime-*
