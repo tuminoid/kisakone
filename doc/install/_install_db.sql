@@ -349,6 +349,7 @@ CREATE TABLE :HoleResult
     FOREIGN KEY(Hole) REFERENCES :Hole(id),
     FOREIGN KEY(RoundResult) REFERENCES :RoundResult(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
+    UNIQUE KEY (Hole, Roundresult, Player),
     INDEX(RoundResult, LastUpdated),
     INDEX(Player,RoundResult)
 ) ENGINE=InnoDB;
