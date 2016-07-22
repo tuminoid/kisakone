@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file includes the Classification class, which represents a single
  * classification in the system.
@@ -83,7 +83,7 @@ class Classification
         return $this->name;
     }
 
-    function getPlayers($event = null)
+    function getPlayers($event)
     {
         static $data;
         if ($data)
