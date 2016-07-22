@@ -76,8 +76,8 @@ function InitializeSmartyVariables(&$smarty, $error)
             $fullTemplateName = "index.tpl";
             $current = GetRelevantEvents();
             $upcoming = GetUpcomingEvents(true);
-            $registering = GetRegisteringEvents(true);
-            $registeringsoon = GetRegisteringSoonEvents(true);
+            $registering = GetRegisteringEvents();
+            $registeringsoon = GetRegisteringSoonEvents();
             $past = GetPastEvents(true);
             $smarty->assign('lists', array($current, $registering, $registeringsoon, $upcoming, $past));
 
