@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Index page
  * Note: This page uses "events" as the backend, instead of index
@@ -84,7 +84,23 @@
             <td>{$event->levelName|escape}</td>
             <td class="classes_max_width">
             {foreach from=$event->GetClasses() item=class}
-                {if $class->short}{$class->short|escape}{else}{$class->name|substr:0:3|escape}{/if}
+                {if $player}
+                    {assign var=style value="font-weight: bold;"}
+                    {if $listtype == 1}
+                        {assign var=q value=$event->getQueueCounts()}
+                        {assign var=c value=$class->id}
+                        {if $q[$c]}
+                            {assign var=style value="color: Red; font-style: italic;"}
+                        {/if}
+                    {/if}
+                    {assign var=suitable value=$player->IsSuitableClass($class, $pdga_data)}
+
+                    {if !$suitable}
+                        {assign var=style value="color: #ddd;"}
+                    {/if}
+                {/if}
+
+                <span style="{$style}">{if $class->short}{$class->short|escape}{else}{$class->name|substr:0:3|escape}{/if}</span>
             {foreachelse}
                 -
             {/foreach}

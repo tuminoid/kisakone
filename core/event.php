@@ -227,6 +227,16 @@ class Event
     }
 
     /** ************************************************************************
+     * Method for getting queue counts.
+     *
+     * Returns an array of [ classid, queuers ]
+     */
+    function GetQueueCounts()
+    {
+        return GetEventQueueCounts($this->id);
+    }
+
+    /** ************************************************************************
      * Method for getting event organizing club
      *
      * Returns club name. If $short is true, then in short form-
