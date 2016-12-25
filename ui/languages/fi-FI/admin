@@ -14,6 +14,7 @@ licenserequired     Lisenssipakko
 status              Pro/Am-luokitus
 priority            Esitysjärjestys
 ratinglimit         Ratingraja
+prosplayingamlimit  Pros-Playing-Am raja
 
 class_notdefined    Ei määritelty
 class_am            Amatööri

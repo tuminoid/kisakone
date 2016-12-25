@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * New event creation handler
  *
@@ -94,6 +94,8 @@ function processForm()
     if ($signup_end == 0)
         $signup_end = null;
 
+    $prosplayingam = (bool) @$_POST['prosplayingam'];
+
     $contact = $_POST['contact'];
 
     $classes = array();
@@ -172,7 +174,7 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid);
+    $result = NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid, $prosplayingam);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';

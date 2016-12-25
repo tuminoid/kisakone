@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Class
  *
@@ -97,7 +97,7 @@ function SetEventClasses($eventid, $classes)
 }
 
 
-function EditClass($id, $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)
+function EditClass($id, $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit, $prosplayingamlimit)
 {
     $id = esc_or_null($id, 'int');
     $name = esc_or_null($name);
@@ -109,16 +109,17 @@ function EditClass($id, $name, $short, $minage, $maxage, $gender, $available, $s
     $status = esc_or_null(strtolower($status) == 'a' ? 'A' : 'P');
     $priority = esc_or_null($priority, 'int');
     $ratinglimit = esc_or_null($ratinglimit, 'int');
+    $prosplayingamlimit = esc_or_null($prosplayingamlimit, 'int');
 
     return db_exec("UPDATE :Classification
                 SET Name = $name, Short = $short, MinimumAge = $minage, MaximumAge = $maxage,
                 GenderRequirement = $gender, Available = $available, Status = $status,
-                Priority = $priority, RatingLimit = $ratinglimit
+                Priority = $priority, RatingLimit = $ratinglimit, ProsPlayingAmLimit = $prosplayingamlimit
                 WHERE id = $id");
 }
 
 
-function CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)
+function CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit, $prosplayingamlimit)
 {
     $name = esc_or_null($name);
     $short = esc_or_null($short);
@@ -129,9 +130,12 @@ function CreateClass($name, $short, $minage, $maxage, $gender, $available, $stat
     $status = esc_or_null(strtolower($status) == 'a' ? 'A' : 'P');
     $priority = esc_or_null($priority, 'int');
     $ratinglimit = esc_or_null($ratinglimit, 'int');
+    $prosplayingamlimit = esc_or_null($prosplayingamlimit, 'int');
 
-    return db_exec("INSERT INTO :Classification (Name, Short, MinimumAge, MaximumAge, GenderRequirement, Available, Status, Priority, RatingLimit)
-                  VALUES ($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit)");
+    return db_exec("INSERT INTO :Classification (Name, Short, MinimumAge, MaximumAge,
+                    GenderRequirement, Available, Status, Priority, RatingLimit, ProsPlayingAmLimit)
+                  VALUES ($name, $short, $minage, $maxage, $gender, $available, $status,
+                    $priority, $ratinglimit, $prosplayingamlimit)");
 }
 
 

@@ -93,7 +93,7 @@
                             {assign var=style value="color: Red; font-style: italic;"}
                         {/if}
                     {/if}
-                    {assign var=suitable value=$player->IsSuitableClass($class, $pdga_data)}
+                    {assign var=suitable value=$player->IsSuitableClass($class, $pdga_data, $event->GetProsPlayingAm())}
 
                     {if !$suitable}
                         {assign var=style value="color: #ddd;"}

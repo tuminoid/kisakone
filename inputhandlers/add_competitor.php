@@ -74,7 +74,7 @@ function processForm()
             $pdga_data = pdga_getPlayer($player->pdga);
         }
 
-        if (!$player->IsSuitableClass($class, $pdga_data))
+        if (!$player->IsSuitableClass($class, $pdga_data, $event->prosPlayingAm))
             return translate("error_invalid_class");
 
         $retVal = SignUpUser($_GET['id'], $userid, $_POST['class'], @$_POST['accept_queue'] ? false : $godmode);

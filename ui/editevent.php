@@ -79,6 +79,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $e['pdgaeventid'] = @$_POST['pdgaeventid'];
         $e['oldpdgaeventid'] = @$_POST['oldpdgaeventid'];
+        $e['prosplayingam'] = @$_POST['oldprosplayingam'];
     }
     else {
         $event = GetEventDetails($_GET['id']);
@@ -134,6 +135,8 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         $e['pdgaeventid'] = $event->pdgaEventId;
         $e['oldpdgaeventid'] = $event->pdgaEventId;
+
+        $e['prosplayingam'] = $event->prosPlayingAm;
     }
 
     global $user;

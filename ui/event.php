@@ -181,7 +181,7 @@ function InitializeSmartyVariables(&$smarty, $error)
                 $classes = $event->GetClasses();
                 $unsuited_classes = array();
                 foreach ($classes as $key => $class) {
-                    if ($player && !$player->IsSuitableClass($class, $pdga_data)) {
+                    if ($player && !$player->IsSuitableClass($class, $pdga_data, $event->prosPlayingAm)) {
                         $unsuited_classes[] = $class;
                         unset($classes[$key]);
                     }

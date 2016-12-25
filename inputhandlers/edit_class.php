@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class editor input handler
  *
@@ -74,6 +74,10 @@ function processForm()
     if ($ratinglimit != '' && !is_numeric($ratinglimit))
         $problems['RatingLimit'] = translate('FormError_NotPositiveInteger');
 
+    $prosplayingamlimit = $_POST['ProsPlayingAmLimit'];
+    if ($prosplayingamlimit != '' && !is_numeric($prosplayingamlimit))
+        $problems['ProsPlayingAmLimit'] = translate('FormError_NotPositiveInteger');
+
     if (count($problems)) {
         $error = new Error();
         $error->title = 'Class Editor form error';
@@ -90,12 +94,14 @@ function processForm()
         $maxage = null;
     if (!$ratinglimit)
         $ratinglimit = null;
+    if (!$prosplayingamlimit)
+        $prosplayingamlimit = null;
 
     if ($_GET['id'] != 'new') {
-        $result = EditClass($_GET['id'], $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit);
+        $result = EditClass($_GET['id'], $name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit, $prosplayingamlimit);
     }
     else {
-        $result = CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit);
+        $result = CreateClass($name, $short, $minage, $maxage, $gender, $available, $status, $priority, $ratinglimit, $prosplayingamlimit);
     }
 
     if (is_a($result, 'Error')) {

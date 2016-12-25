@@ -77,7 +77,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
         foreach ($classOptions as $cid => $cname) {
             $class = GetClassDetails($cid);
-            if ($player && !$player->IsSuitableClass($class, $pdga_data))
+            if ($player && !$player->IsSuitableClass($class, $pdga_data, $event->prosPlayingAm))
                 unset($classOptions[$cid]);
         }
 

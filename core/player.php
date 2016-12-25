@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Player class.
  *
@@ -171,7 +171,7 @@ class Player
      *
      * Returns true if class is fine, false otherwise
      */
-    function IsSuitableClass($class, $pdga_data = null)
+    function IsSuitableClass($class, $pdga_data = null, $prosplayingam = 0)
     {
         if (!$class)
             return false;
@@ -186,8 +186,11 @@ class Player
             $problems++;
 
         if ($pdga_data) {
-            if (@$pdga_data['classification'] == 'P' && $class->status != 'P')
-                $problems++;
+            if (@$pdga_data['classification'] == 'P' && $class->status != 'P') {
+                if (!($prosplayingam && $class->prosplayingamlimit > 0 && @$pdga_data['rating'] < $class->prosplayingamlimit)) {
+                    $problems++;
+                }
+            }
 
             if ($class->ratinglimit > 0 && @$pdga_data['rating'] >= $class->ratinglimit)
                 $problems++;

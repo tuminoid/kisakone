@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class management listing
  *
@@ -35,6 +35,7 @@
         <th>{translate id=status}</th>
         <th>{translate id=priority}</th>
         <th>{translate id=ratinglimit}</th>
+        <th>{translate id=prosplayingamlimit}</th>
         <th>{translate id=available}</th>
         <th>{translate id=edit}</th>
     </tr>
@@ -67,6 +68,10 @@
         </td>
         <td>{$class->priority}</td>
         <td>{if $class->ratinglimit}{$class->ratinglimit}{else}-{/if}</td>
+        <td>
+            {$class->prosplayingamlimit}
+            {if !$class->prosplayingamlimit}-{/if}
+        </td>
         <td>
             {if $class->available}
             {translate id=yes!}

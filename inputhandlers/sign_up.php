@@ -64,7 +64,7 @@ function processForm()
     }
 
     $class = GetClassDetails(@$_POST['class']);
-    if (!@$_POST['class'] || !$player->IsSuitableClass($class, $pdga_data)) {
+    if (!@$_POST['class'] || !$player->IsSuitableClass($class, $pdga_data, $event->prosPlayingAm)) {
         $error = new Error();
         $error->title = 'invalid_class_selection';
         $error->function = 'InputProcessing:sign_up:processForm';

@@ -152,6 +152,11 @@
         {formerror field='requirefees'}
     </div>
 
+    <div>
+        <label for="prosplayingam">{translate id=event_prosplayingam}</label>
+        <input type="checkbox" id="prosplayingam" name="prosplayingam" {if $event.prosplayingam} checked="checked" {/if}/>
+    </div>
+
 
     <h2>{translate id='event_classes'}</h2>
     <div>

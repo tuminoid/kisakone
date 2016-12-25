@@ -25,6 +25,7 @@ event_signup_start  Ilmoittautuminen\nalkaa
 event_signup_end  Ilmoittautuminen\nloppuu
 event_activate    Aktivoi käyttäjille
 event_taxes       Verotus
+event_prosplayingam Pros-Playing-Am
 
 event_queue_strategy Jonosta nouseminen
 event_queue_lift Jonosta nousu (mahdollisten kiintiöiden puitteissa)

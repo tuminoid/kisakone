@@ -37,12 +37,13 @@ class Classification
     var $status;
     var $priority;
     var $ratinglimit;
+    var $prosplayingamlimit;
 
     /** ************************************************************************
      * Class constructor
      */
     function Classification($id = null, $name = null, $short = null, $minAge = 0, $maxAge = 0,
-        $gender = null, $available = 0, $status = 'P', $priority = 0, $ratinglimit = null)
+        $gender = null, $available = 0, $status = 'P', $priority = 0, $ratinglimit = null, $prosplayingamlimit = null)
     {
         if (is_array($id)) {
             $this->initializeFromArray($id);
@@ -58,6 +59,7 @@ class Classification
             $this->status = $status;
             $this->priority = $priority;
             $this->ratinglimit = $ratinglimit;
+            $this->prosplayingamlimit = $prosplayingamlimit;
         }
     }
 
@@ -73,6 +75,7 @@ class Classification
         $this->status = $array['Status'];
         $this->priority = $array['Priority'];
         $this->ratinglimit = $array['RatingLimit'];
+        $this->prosplayingamlimit = $array['ProsPlayingAmLimit'];
     }
 
     function getName()

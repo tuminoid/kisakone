@@ -110,6 +110,8 @@ function processForm()
         $problems['queue_strategy'] = translate('FormError_OnlyAdminCanEdit');
     */
 
+    $prosplayingam = (bool) @$_POST['prosplayingam'];
+
     $state = $_POST['event_state'];
     $contact = $_POST['contact'];
 
@@ -218,7 +220,8 @@ function processForm()
         return $error;
     }
 
-    $result = EditEvent($eventid, $name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId);
+    $result = EditEvent($eventid, $name, $club, $venue, $duration, $playerlimit, $contact, $tournament,
+        $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId, $prosplayingam);
     if (is_a($result, 'Error'))
         return $result;
 

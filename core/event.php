@@ -88,6 +88,7 @@ class Event
     var $tdId;
 
     var $pdgaEventId;
+    var $prosPlayingAm;
 
     var $approved;
     var $eventFeePaid;
@@ -128,6 +129,7 @@ class Event
         $this->tdId = null;
         $this->playerLimit = 0;
         $this->pdgaEventId = null;
+        $this->prosPlayingAm = 0;
 
         if ($duration > 1) {
             $enddate = $startdate + ($duration - 1) * 60 * 60 * 24;
@@ -251,6 +253,18 @@ class Event
             return $club['ShortName'];
 
         return $club['Name'];
+    }
+
+    /** ************************************************************************
+     * Is pros-playing-am allowed in this event
+     *
+     * Returns true or false
+     */
+    function GetProsPlayingAm()
+    {
+        if ($this->prosPlayingAm === null)
+            $this->prosPlayingAm = GetEventProsPlayingAm($this->id);
+        return $this->prosPlayingAm;
     }
 
     /** ************************************************************************
@@ -437,7 +451,7 @@ function GetRelevantEvents()
  * @param array    $officialIds  - array of official user ids
  * @param array    $rounds       - array of rounds (date, time, holes, datestring, roundid)
  */
-function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId)
+function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId, $prosplayingam)
 {
     $retvalue = null;
 
@@ -483,7 +497,7 @@ function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tour
     }
 
     if (!isset($retValue)) {
-        $eventId = CreateEvent($name, $club, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId);
+        $eventId = CreateEvent($name, $club, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId, $prosplayingam);
         $retValue = $eventId;
         if (!is_a($eventId, 'Error')) {
             $err = SetRounds($eventId, $rounds);

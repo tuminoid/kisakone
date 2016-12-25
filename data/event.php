@@ -115,7 +115,7 @@ function GetEventDetails($eventid)
         $row = db_one("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit, :Event.Club AS Club,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
-                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId,
+                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId, ProsPlayingAm,
                                     :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid,
                                     :Participation.Standing, :Level.id AS LevelId,
                                     :Level.Name AS Level, :Tournament.id AS TournamentId, :Tournament.Name AS Tournament,
@@ -133,7 +133,8 @@ function GetEventDetails($eventid)
                                     UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit, Club,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,
-                                    ResultsLocked, PdgaEventId, :Level.id AS LevelId, :Level.Name AS Level,
+                                    ResultsLocked, PdgaEventId, ProsPlayingAm,
+                                    :Level.id AS LevelId, :Level.Name AS Level,
                                     :Tournament.id AS TournamentId, :Tournament.Name AS Tournament
                                 FROM :Event
                                 LEFT JOIN :Level ON :Level.id = :Event.Level
@@ -156,7 +157,7 @@ function GetEventDetails($eventid)
  * an Error in case there was an error in creating a new event.
  */
 function CreateEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start,
-    $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid)
+    $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid, $prosplayingam)
 {
     $venue = esc_or_null($venue, 'int');
     $tournament = esc_or_null($tournament ? $tournament : null, 'int');
@@ -171,11 +172,13 @@ function CreateEvent($name, $club, $venue, $duration, $playerlimit, $contact, $t
     $requireFees = esc_or_null($requireFees, 'int');
     $pdgaid = esc_or_null($pdgaid, 'int');
     $club = esc_or_null($club, 'int');
+    $prosplayingam = esc_or_null($prosplayingam, 'int');
 
     $eventid = db_exec("INSERT INTO :Event (Club, Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
-                                SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId)
+                                SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId, ProsPlayingAm)
                             VALUES ($club, $venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
-                                FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees, $pdgaid)");
+                                FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees,
+                                $pdgaid, $prosplayingam)");
 
     if (db_is_error($eventid))
         return $eventid;
@@ -209,7 +212,7 @@ function GetEventClasses($event)
     $event = esc_or_null($event, 'int');
 
     $result = db_all("SELECT :Classification.id, Name, Short, MinimumAge, MaximumAge,
-                                GenderRequirement, Available, Status, Priority, RatingLimit
+                                GenderRequirement, Available, Status, Priority, RatingLimit, ProsPlayingAmLimit
                             FROM :Classification
                             INNER JOIN :ClassInEvent ON :ClassInEvent.Classification = :Classification.id
                             WHERE :ClassInEvent.Event = $event
@@ -283,7 +286,7 @@ function GetEventOfficials($event)
 
 // Edit event information
 function EditEvent($eventid, $name, $club, $venuename, $duration, $playerlimit, $contact, $tournament,
-    $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaid)
+    $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaid, $prosplayingam)
 {
     $venueid = GetVenueId($venuename);
     $activation = ($state == 'active' || $state == 'done') ? time() : 'NULL';
@@ -301,13 +304,15 @@ function EditEvent($eventid, $name, $club, $venuename, $duration, $playerlimit, 
     $eventid = esc_or_null($eventid, 'int');
     $pdgaid = esc_or_null($pdgaid, 'int');
     $club = esc_or_null($club, 'int');
+    $prosplayingam = esc_or_null($prosplayingam, 'int');
 
     return db_exec("UPDATE :Event
                             SET Venue = $venueid, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
                                 Duration = $duration, PlayerLimit = $playerlimit, Club = $club,
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
-                                ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid
+                                ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid,
+                                ProsPlayingAm = $prosplayingam
                             WHERE id = $eventid");
 }
 
@@ -724,6 +729,15 @@ function GetAllToRemind($eventid)
     foreach ($result as $row)
         $retValue[] = $row['id'];
     return $retValue;
+}
+
+
+function GetEventProsPlayingAm($eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+
+    $row = db_one("SELECT ProsPlayingAm FROM :Event WHERE id = $eventid");
+    return $row['ProsPlayingAm'];
 }
 
 

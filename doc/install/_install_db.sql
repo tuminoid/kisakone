@@ -149,6 +149,7 @@ CREATE TABLE :Event
     PdgaEventId INT,
     PlayerLimit INT NOT NULL DEFAULT 0,
     QueueStrategy ENUM('signup', 'rating', 'random') NOT NULL DEFAULT 'signup',
+    ProsPlayingAm INT NOT NULL DEFAULT 0,
     PRIMARY KEY(id),
     FOREIGN KEY(Club) REFERENCES :Club(id),
     FOREIGN KEY(Venue) REFERENCES :Venue(id),
@@ -218,6 +219,7 @@ CREATE TABLE :Classification
     Status ENUM('P', 'A') NOT NULL,
     Priority INT DEFAULT 1000,
     RatingLimit INT,
+    ProsPlayingAmLimit INT DEFAULT NULL,
     PRIMARY KEY(id),
     INDEX(Available)
 ) ENGINE=InnoDB;

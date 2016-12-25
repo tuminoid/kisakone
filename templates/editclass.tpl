@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Class editor UI
  *
@@ -77,6 +77,12 @@
         <label for="RatingLimit">{translate id=ratinglimit}</label>
         <input type="text" id="RatingLimit" name="RatingLimit" value="{$class->ratinglimit|escape}" />
         {formerror field='RatingLimit'}
+    </div>
+
+    <div>
+        <label for="ProsPlayingAmLimit">{translate id=prosplayingamlimit}</label>
+        <input type="text" id="ProsPlayingAmLimit" name="ProsPlayingAmLimit" value="{$class->prosplayingamlimit|escape}" />
+        {formerror field='ProsPlayingAmLimit'}
     </div>
 
     <div>
