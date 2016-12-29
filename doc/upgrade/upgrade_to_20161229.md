@@ -1,4 +1,4 @@
-Upgrading to version 2016.xx.yy:
+Upgrading to version 2016.12.29:
 ================================
 
 `:HoleResult` gained unique key on hole/round/player combo. Only one hole score can be per player per round.

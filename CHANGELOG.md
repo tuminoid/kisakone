@@ -3,8 +3,8 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2016.12.29:
+===========
   * In mobile devices, index-partners css shrinks images a little to fit phone screen better.
   * Remove half-baked live/ dir, to be developed independently.
   * Color code events index to show full events, events that suit you etc.
