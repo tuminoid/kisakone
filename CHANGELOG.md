@@ -8,7 +8,7 @@ Kisakone versions are simply release date tags:
   * In mobile devices, index-partners css shrinks images a little to fit phone screen better.
   * Remove half-baked live/ dir, to be developed independently.
   * Color code events index to show full events, events that suit you etc.
-  * Implement Pros-Playing-Am support.
+  * Implement Pros-Playing-Am support. GH #299.
 
 Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20161229.md)
 for additional actions needed.
