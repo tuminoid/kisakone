@@ -31,6 +31,7 @@ require_once 'data/round.php';
 require_once 'data/rules.php';
 require_once 'core/textcontent.php';
 require_once 'core/scorecalculation.php';
+require_once 'data/configs.php';
 
 
 // Valid Event->signupState attribute values
@@ -262,8 +263,12 @@ class Event
      */
     function GetProsPlayingAm()
     {
+        if (ppa_enabled() !== null)
+            return ppa_enabled();
+
         if ($this->prosPlayingAm === null)
             $this->prosPlayingAm = GetEventProsPlayingAm($this->id);
+
         return $this->prosPlayingAm;
     }
 

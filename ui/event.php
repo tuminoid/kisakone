@@ -60,6 +60,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('sfl_enabled', sfl_enabled());
     $smarty->assign('payment_enabled', payment_enabled());
     $smarty->assign('pdgaUrl', $event->getPDGAUrl());
+    $smarty->assign('ppa_enabled', $event->GetProsPlayingAm());
 
     $textType = '';
     $evp = null;

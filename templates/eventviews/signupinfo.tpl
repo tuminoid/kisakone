@@ -78,6 +78,9 @@
         </div>
 
         <p>{translate id=event_queue_lift}: <strong>{translate id=event_queue_$strategy}</strong></p>
+        {if $ppa_enabled}
+        <p>{translate id=event_ppa_enabled}</p>
+        {/if}
 
         <p class="signup_status">{translate id=not_signed_up}</p>
 
