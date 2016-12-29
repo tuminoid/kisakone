@@ -44,6 +44,7 @@ const SFL_PASSWORD = 'SflPassword';
 const PDGA_ENABLED = 'PdgaEnabled';
 const PDGA_USERNAME = 'PdgaUsername';
 const PDGA_PASSWORD = 'PdgaPassword';
+const PDGA_PPA = 'PdgaProsPlayingAm';
 
 const CACHE_ENABLED = 'CacheEnabled';
 const CACHE_NAME = 'CacheName';
@@ -65,7 +66,7 @@ function GetConfigs()
 {
     return array(
         'config_admin' => array(
-            array(ADMIN_EMAIL,          'string',   GetConfig(ADMIN_EMAIL)),
+            array(ADMIN_EMAIL,          'string',   GetConfig(ADMIN_EMAIL))
         ),
 
         'config_email' => array(
@@ -84,7 +85,8 @@ function GetConfigs()
         'config_pdga' => array(
             array(PDGA_ENABLED,         'bool',     GetConfig(PDGA_ENABLED)),
             array(PDGA_USERNAME,        'string',   GetConfig(PDGA_USERNAME)),
-            array(PDGA_PASSWORD,        'string',   GetConfig(PDGA_PASSWORD))
+            array(PDGA_PASSWORD,        'string',   GetConfig(PDGA_PASSWORD)),
+            array(PDGA_PPA,             'enum',     GetConfig(PDGA_PPA),                array('disabled', 'optional', 'enabled'))
         ),
 
         'config_cache' => array(
@@ -170,4 +172,21 @@ function payment_enabled() {
     if (GetConfig(PAYMENT_ENABLED))
         return true;
     return false;
+}
+
+
+/**
+ * ProsPlayingAm enabled
+ *
+ * @return  true if forced on
+ * @return  false if disabled
+ * @return  null if allowed
+ */
+function ppa_enabled() {
+    $ppa = GetConfig(PDGA_PPA);
+    if ($ppa == 'enabled')
+        return true;
+    if ($ppa == 'disabled')
+        return false;
+    return null;
 }

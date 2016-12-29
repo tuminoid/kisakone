@@ -96,6 +96,10 @@ TaxesEnabled        Verotus
 PdgaEnabled         PDGA API
 PdgaUsername        PDGA käyttäjätunnus
 PdgaPassword        PDGA salasana
+PdgaProsPlayingAm   Pros-Playing-Am
+PdgaProsPlayingAm_enabled   Aina sallittu
+PdgaProsPlayingAm_disabled  Ei sallittu
+PdgaProsPlayingAm_optional  TD:n valinta
 CacheEnabled        Välimuisti
 CacheName           Välimuistin nimi
 CacheHost           Välimuistin osoite

@@ -73,6 +73,12 @@ function processForm()
                 $problems[PDGA_ENABLED] = translate('FormError_APIFailed');
         }
     }
+    $ok_ppa = array('enabled', 'disabled', 'optional');
+    $pdga_ppa = $_POST[PDGA_PPA];
+    if (!in_array($pdga_ppa, $ok_ppa))
+        $problems[PDGA_PPA] = translate('FormError_Default');
+    if (in_array($pdga_ppa, array('enabled', 'optional')) && (!$pdga_enabled || isset($problems[PDGA_ENABLED])))
+        $problems[PDGA_PPA] = translate('FormError_PdgaApiNotENabled');
 
     $cache_enabled = $_POST[CACHE_ENABLED] ? 1 : 0;
     $cache_name = $_POST[CACHE_NAME];
@@ -118,6 +124,7 @@ function processForm()
     SetConfig(PDGA_ENABLED,  $pdga_enabled, 'int');
     SetConfig(PDGA_USERNAME, $pdga_user, 'string');
     SetConfig(PDGA_PASSWORD, $pdga_pass, 'string');
+    SetConfig(PDGA_PPA, $pdga_ppa, 'string');
 
     SetConfig(CACHE_ENABLED, $cache_enabled, 'int');
     SetConfig(CACHE_NAME,    $cache_name, 'string');

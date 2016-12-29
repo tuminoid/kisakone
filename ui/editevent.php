@@ -47,6 +47,8 @@ function InitializeSmartyVariables(&$smarty, $error)
         $smarty->assign('sfl_license', LICENSE_COMPETITION);
     }
 
+    $smarty->assign('ppa_enabled', ppa_enabled());
+
     if ($error) {
         if (!is_array($error->data)) {
             print_r($error);

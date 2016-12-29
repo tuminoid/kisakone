@@ -4,6 +4,7 @@ Upgrading to version 2016.xx.yy:
 `:HoleResult` gained unique key on hole/round/player combo. Only one hole score can be per player per round.
 `:Event` gained option for `ProsPlayingAm`.
 `:Classification` gained `ProsPlayingAmLimit` rating limit.
+`:Config` gained `PdgaProsPlayingAm` setting field.
 
 --
 

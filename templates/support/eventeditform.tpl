@@ -152,11 +152,16 @@
         {formerror field='requirefees'}
     </div>
 
+    {if $ppa_enabled !== false}
     <div>
         <label for="prosplayingam">{translate id=event_prosplayingam}</label>
-        <input type="checkbox" id="prosplayingam" name="prosplayingam" {if $event.prosplayingam} checked="checked" {/if}/>
+        <input type="checkbox" id="prosplayingam" name="prosplayingam"
+            {if $ppa_enabled === true} checked="checked" disabled="disabled"
+            {elseif $event.prosplayingam} checked="checked"
+            {/if}
+        />
     </div>
-
+    {/if}
 
     <h2>{translate id='event_classes'}</h2>
     <div>

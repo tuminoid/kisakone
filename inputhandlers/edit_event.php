@@ -28,6 +28,7 @@ require_once 'core/tournament.php';
 require_once 'core/email.php';
 require_once 'sfl/sfl_integration.php';
 require_once 'data/event_queue.php';
+require_once 'data/configs.php';
 
 
 /**
@@ -110,7 +111,12 @@ function processForm()
         $problems['queue_strategy'] = translate('FormError_OnlyAdminCanEdit');
     */
 
-    $prosplayingam = (bool) @$_POST['prosplayingam'];
+    if (ppa_enabled() === true)
+        $prosplayingam = 1;
+    elseif (ppa_enabled() === false)
+        $prosplayingam = 0;
+    else
+        $prosplayingam = (bool) @$_POST['prosplayingam'];
 
     $state = $_POST['event_state'];
     $contact = $_POST['contact'];

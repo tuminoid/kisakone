@@ -4,7 +4,7 @@
 
 -- Holeresult can be recoded only once per player per hole per round
 ALTER TABLE :HoleResult ADD CONSTRAINT UNIQUE KEY (Hole,Roundresult,Player);
-
+ALTER TABLE :Config ADD PdgaProsPlayingAm ENUM('disabled', 'optional', 'enabled') NOT NULL DEFAULT 'disabled' AFTER PdgaPassword;
 ALTER TABLE :Event ADD ProsPlayingAm INT NOT NULL DEFAULT 0 AFTER QueueStrategy;
 ALTER TABLE :Classification ADD ProsPlayingAmLimit INT DEFAULT NULL AFTER RatingLimit;
 

@@ -19,7 +19,7 @@ FormError_NotEmptyIfEnabled  Pakollinen kenttä, jos asetus on päällä
 FormError_APIFailed     Väärä tunnus/salasana tai muu virhe yhdistettäessä API:in
 FormError_EmailOff      Sähköpostien lähetys on pois päältä, eikä vahvistussähköpostiakaan voida lähettää.
 FormError_NoAPIImplementation  PDGA API-totetutus puuttuu
-
+FormError_PdgaApiNotENabled    PDGA:n API täytyy olla käytössä
 class_already_in_use    Luokka on jo otettu mukaan kilpailuun.
 confirm_class_removal   Haluatko varmasti poistaa valitun luokan?
 remove_class_text       Poista

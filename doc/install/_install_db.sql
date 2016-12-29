@@ -14,6 +14,7 @@ CREATE TABLE :Config
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
     PdgaPassword VARCHAR(100) DEFAULT '',
+    PdgaProsPlayingAm ENUM('disabled', 'optional', 'enabled') NOT NULL DEFAULT 'disabled',
 
     CacheEnabled BOOL NOT NULL DEFAULT 0,
     CacheName VARCHAR(100) DEFAULT 'kisakone',
