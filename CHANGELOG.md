@@ -10,6 +10,9 @@ Kisakone versions are simply release date tags:
   * Color code events index to show full events, events that suit you etc.
   * Implement Pros-Playing-Am support.
 
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20161229.md)
+for additional actions needed.
+
 2016.05.31:
 ===========
   * Removed PDGA API implementation (moved to private repo).
