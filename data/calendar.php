@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for creating AddThisEvent calendar widgets
  *
@@ -23,11 +23,14 @@
 
 require_once 'data/db.php';
 require_once 'core/url.php';
+require_once 'data/configs.php';
 
 
 function SmartifyCalendar($smarty, $eventid)
 {
     if (!$smarty)
+        return null;
+    if (!GetConfig(ADDTHISEVENT_ENABLED))
         return null;
 
     $eventid = esc_or_null($eventid, 'int');

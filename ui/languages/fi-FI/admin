@@ -80,7 +80,7 @@ config_email        Sähköpostiasetukset
 config_payments     Maksu- ja raha-asetukset
 config_pdga         PDGA API asetukset
 config_cache        Välimuistiasetukset
-config_trackjs      TrackJS asetukset
+config_integration  Integraatioasetukset
 config_devel        Kehitysasetukset
 
 AdminEmail          Ylläpidon sähköposti
@@ -106,5 +106,6 @@ CacheHost           Välimuistin osoite
 CachePort           Välimuistin portti
 TrackjsEnabled      TrackJS virheenseuranta
 TrackjsToken        TrackJS API avain
+AddThisEventEnabled AddThisEvent kalenterit
 Devel_DbLogging     Kirjaa tietokantavirheet logiin
 Devel_DbDieOnError  Kaadu tietokantavirheeseen

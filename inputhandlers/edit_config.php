@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Config edidor input handler
  *
@@ -96,6 +96,8 @@ function processForm()
     if ($trackjs_enabled && !$trackjs_token)
         $problems[TRACKJS_TOKEN] = translate('FormError_NotEmptyIfEnabled');
 
+    $addthisevent_enabled = $_POST[ADDTHISEVENT_ENABLED] ? 1 : 0;
+
 
     // Don't save if there is errors
     if (count($problems)) {
@@ -133,6 +135,7 @@ function processForm()
 
     SetConfig(TRACKJS_ENABLED, $trackjs_enabled, 'int');
     SetConfig(TRACKJS_TOKEN,   $trackjs_token, 'string');
+    SetConfig(ADDTHISEVENT_ENABLED, $addthisevent_enabled, 'int');
 
 
     // Go to main admin page after success

@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Configuration class. Every other configuration is held here,
  * except database related as they're required to connect to db.
@@ -53,6 +53,7 @@ const CACHE_PORT = 'CachePort';
 
 const TRACKJS_ENABLED = 'TrackjsEnabled';
 const TRACKJS_TOKEN = 'TrackjsToken';
+const ADDTHISEVENT_ENABLED = 'AddThisEventEnabled';
 
 
 
@@ -96,9 +97,10 @@ function GetConfigs()
             array(CACHE_PORT,           'int',      GetConfig(CACHE_PORT))
         ),
 
-        'config_trackjs' => array(
+        'config_integration' => array(
             array(TRACKJS_ENABLED,      'bool',     GetConfig(TRACKJS_ENABLED)),
-            array(TRACKJS_TOKEN,        'string',   GetConfig(TRACKJS_TOKEN))
+            array(TRACKJS_TOKEN,        'string',   GetConfig(TRACKJS_TOKEN)),
+            array(ADDTHISEVENT_ENABLED, 'bool',     GetConfig(ADDTHISEVENT_ENABLED))
         )
     );
 }

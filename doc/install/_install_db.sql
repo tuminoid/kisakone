@@ -22,7 +22,8 @@ CREATE TABLE :Config
     CachePort INT(10) DEFAULT '11211',
 
     TrackjsEnabled BOOL NOT NULL DEFAULT 0,
-    TrackjsToken VARCHAR(100) DEFAULT ''
+    TrackjsToken VARCHAR(100) DEFAULT '',
+    AddThisEventEnabled BOOL NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 INSERT INTO :Config VALUES();
