@@ -1,4 +1,4 @@
-Upgrading to version 2017.xx.xx:
+Upgrading to version 2017.01.25:
 ================================
 
 `:Config` gained `AddThisEventEnabled` setting field for enabling/disabling AddThisEvent.com support,

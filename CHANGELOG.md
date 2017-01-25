@@ -3,11 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2017.01.25:
+===========
   * Make AddThisEvent.com calendar integration optional. AddThisEvent is paid service these days. GH #300.
 
-Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_next.md)
+Read [Upgrade notes](https://github.com/tuminoid/kisakone/blob/master/doc/upgrade/upgrade_to_20170125.md)
 for additional actions needed.
 
 2016.12.29:
