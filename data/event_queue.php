@@ -195,8 +195,6 @@ function PromotePlayerFromQueue($eventid, $playerid)
     $user = GetPlayerUser($player);
     $userid = $user ? $user->id : null;
 
-    // cancel player from both queue/competition and set it again
-    CancelSignup($eventid, $playerid, false);
     SetPlayerParticipation($player, $event, $class, true);
 
     if ($user !== null)

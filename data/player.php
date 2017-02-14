@@ -81,8 +81,6 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     $userob = GetPlayerUser($playerid);
     $userid = $userob ? $userob->id : null;
 
-    CancelSignup($eventid, $playerid, false);
-
     $pdga = $playerob->pdga;
     $rating = null;
     if (pdga_enabled()) {
@@ -90,12 +88,14 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
         $rating = pdga_getPlayerRating($pdga);
     }
 
+    CancelSignup($eventid, $playerid, false);
+
     $clubid = esc_or_null(GetUsersClub($userid), 'int');
     $rating = esc_or_null($rating, 'int');
-
     $playerid = esc_or_null($playerid, 'int');
     $eventid = esc_or_null($eventid, 'int');
     $classid = esc_or_null($classid, 'int');
+
     return db_exec("INSERT INTO $table (Player, Event, Classification, Club, Rating)
                             VALUES ($playerid, $eventid, $classid, $clubid, $rating)");
 }
