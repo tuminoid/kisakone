@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event listing
  *
@@ -42,6 +42,17 @@ function InitializeSmartyVariables(&$smarty, $error)
     if ($tc)
         $smarty->assign('content', $tc->formattedText);
 
+    if ($user) {
+        $plr = $user->GetPlayer();
+
+        if (pdga_enabled() && $plr && $plr->pdga > 0) {
+            require_once 'pdga/pdga_integration.php';
+            $smarty->assign('pdga_data', pdga_getPlayer($plr->pdga));
+            $smarty->assign('player', $plr);
+        }
+    }
+
+
     $id = @$_GET['id'];
     switch ($id) {
         case 'mine':
@@ -80,17 +91,6 @@ function InitializeSmartyVariables(&$smarty, $error)
             $registeringsoon = GetRegisteringSoonEvents();
             $past = GetPastEvents(true);
             $smarty->assign('lists', array($current, $registering, $registeringsoon, $upcoming, $past));
-
-            if ($user) {
-                $plr = $user->GetPlayer();
-
-                if (pdga_enabled() && $plr && $plr->pdga > 0) {
-                    require_once 'pdga/pdga_integration.php';
-                    $smarty->assign('pdga_data', pdga_getPlayer($plr->pdga));
-                    $smarty->assign('player', $plr);
-                }
-            }
-
             $title = 'index_title';
             break;
 

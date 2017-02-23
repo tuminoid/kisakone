@@ -143,7 +143,8 @@ fee     Maksettu
 users_eventfees Kilpailumaksu
 eventfee_remind     Muistutus
 remind      Muistuta maksusta
-
+other       muuta
+classes     luokkaa
 
 title       Otsikko
 default_title_for_page  Jos otsikkoa ei syötetä, käytetään oletusotsikkoa {title}.

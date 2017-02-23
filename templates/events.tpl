@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event listing
  *
@@ -50,11 +50,43 @@
             <td>{$event->venue|escape}</td>
             <td>{$event->levelName|escape}</td>
             <td class="classes_max_width">
+            {counter assign=nonsuitable start=0}
+            {assign var=onesuitable value=""}
+            {assign var=term value="classes"}
+
             {foreach from=$event->GetClasses() item=class}
+                {if $player}
+                    {assign var=style value="font-weight: bold;"}
+                    {if $listtype == 1}
+                        {assign var=q value=$event->getQueueCounts()}
+                        {assign var=c value=$class->id}
+                        {if $q[$c]}
+                            {assign var=style value="color: Red; font-style: italic;"}
+                        {/if}
+                    {/if}
+                    {assign var=suitable value=$player->IsSuitableClass($class, $pdga_data, $event->GetProsPlayingAm())}
+
+                    {if !$suitable}
+                        {assign var=style value="color: #ddd; display: none;"}
+                        {counter}
+                    {else}
+                        {assign var=onesuitable value="+"}
+                        {assign var=term value=other}
+                    {/if}
+                {/if}
+
+                <span style="{$style}" class="event{$event->id}classes">
                 {if $class->short}{$class->short|escape}{else}{$class->name|substr:0:3|escape}{/if}
+                </span>
             {foreachelse}
                 -
             {/foreach}
+            {if $nonsuitable > 0}
+                <span style="color: #ddd" class="event{$event->id}hidden"
+                    onclick="$('.event{$event->id}classes').show(); $('.event{$event->id}hidden').hide();">
+                    {$onesuitable} {$nonsuitable} {translate id=$term}
+                </span>
+            {/if}
             </td>
             <td><input type="hidden" value="{$event->date}" />{$event->fulldate}</td>
 
