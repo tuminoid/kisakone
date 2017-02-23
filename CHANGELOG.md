@@ -3,6 +3,11 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Apply visual cues about suitable classes to all event views.
+  * Hide non-valid classes as ("+X others"), viewable by clicking, to lessen clutter.
+
 2017.01.25:
 ===========
   * Make AddThisEvent.com calendar integration optional. AddThisEvent is paid service these days. GH #300.
