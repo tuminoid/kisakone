@@ -15,6 +15,7 @@ CREATE TABLE :Config
     PdgaUsername VARCHAR(30) DEFAULT '',
     PdgaPassword VARCHAR(100) DEFAULT '',
     PdgaProsPlayingAm ENUM('disabled', 'optional', 'enabled') NOT NULL DEFAULT 'disabled',
+    LiveScoringEnabled BOOL NOT NULL DEFAULT 0,
 
     CacheEnabled BOOL NOT NULL DEFAULT 0,
     CacheName VARCHAR(100) DEFAULT 'kisakone',
@@ -152,6 +153,7 @@ CREATE TABLE :Event
     PlayerLimit INT NOT NULL DEFAULT 0,
     QueueStrategy ENUM('signup', 'rating', 'random') NOT NULL DEFAULT 'signup',
     ProsPlayingAm INT NOT NULL DEFAULT 0,
+    LiveScoring ENUM('all', 'group', 'off') NOT NULL DEFAULT 'off',
     PRIMARY KEY(id),
     FOREIGN KEY(Club) REFERENCES :Club(id),
     FOREIGN KEY(Venue) REFERENCES :Venue(id),

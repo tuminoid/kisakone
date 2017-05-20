@@ -741,6 +741,15 @@ function GetEventProsPlayingAm($eventid)
 }
 
 
+function GetEventLiveScoring($eventid)
+{
+    $eventid = esc_or_null($eventid, 'int');
+
+    $row = db_one("SELECT LiveScoring FROM :Event WHERE id = $eventid");
+    return $row['LiveScoring'];
+}
+
+
 function data_CreateSortOrder($desiredOrder, $fields)
 {
     if (trim($desiredOrder) == "")

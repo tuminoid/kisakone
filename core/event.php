@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Event class, and other functionality for dealing
  * with events. Also see event_management.php.
@@ -32,6 +32,7 @@ require_once 'data/rules.php';
 require_once 'core/textcontent.php';
 require_once 'core/scorecalculation.php';
 require_once 'data/configs.php';
+require_once 'data/group.php';
 
 
 // Valid Event->signupState attribute values
@@ -418,7 +419,60 @@ class Event
     {
         return GetQueuePromotionStrategy($this->id);
     }
+
+    function canEnterScores($user = null, $roundid = null, $playerid = null)
+    {
+        // Test for regular admin/td/official things
+        if (IsAdmin()) {
+            error_log("admin, true");
+            return true;
+        }
+        if ($event->management == '') { # TODO: what is this actually checking?
+            error_log("management empty, false");
+            return false;
+        }
+
+        // If not admin or td, check for live scoring settings
+        $live_enabled = GetConfig(LIVE_ENABLED);
+        if (!$live_enabled) {
+            error_log("global live not enabled: false");
+            return false;
+        }
+
+        // Global live is on, so check for event live scoring
+        $event_live = GetEventLiveScoring($this->id);
+        switch ($event_live) {
+            case 'all':
+                if ($user && $user->id) {
+                    error_log("allowed for all logged in users, id: " . $user->id);
+                    return true;
+                }
+                else {
+                    error_log("user wasnt valid: " . print_r($user, true));
+                    return false;
+                }
+                break;
+
+            case 'group':
+                $group = GetSingleGroup($roundid, $playerid);
+                foreach ($group as $player) {
+                    if ($player['UserId'] == $user->id) {
+                        error_log("user: " . $user->id . " is in group, allowed");
+                        return true;
+                    }
+                }
+                error_log("didn't find id: " . $user->id . " in group: " . print_r($group, true));
+                return false;
+                break;
+
+            case 'off':
+            default:
+                return false;
+                break;
+        }
+    }
 }
+
 
 /* *****************************************************************************
  * Function for getting the relevant events for the main page

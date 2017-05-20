@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Stores an entered result
  *
@@ -23,6 +23,7 @@
  * */
 
 require_once 'data/round.php';
+require_once 'core/event.php';
 
 function ProcessAction()
 {
@@ -32,8 +33,6 @@ function ProcessAction()
     if (!$event)
         return Error::NotFound('event');
     if ($event->resultsLocked)
-        return Error::AccessDenied();
-    if (!IsAdmin() && $event->management == '')
         return Error::AccessDenied();
 
     $value = @$_GET['value'];
@@ -56,6 +55,9 @@ function ProcessAction()
         $holeid = $bits[1];
     else
         error_log("unknown bit: " . print_r($bits, true) . (0 / 0));
+
+    if (!$event->canEnterScores($user, $round->id, $playerid))
+        return Error::AccessDenied();
 
     $result = SaveResult($round->id, $playerid, $holeid, $specialid, $value);
     if (is_a($result, 'Error'))
