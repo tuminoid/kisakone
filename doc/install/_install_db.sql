@@ -504,7 +504,9 @@ CREATE TABLE :PDGAPlayers
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
-
+-- to be changed:
+-- state_prov doesn't exist
+-- bracket --> division_code, division_name
 CREATE TABLE :PDGAStats
 (
     first_name VARCHAR(255) NOT NULL,
@@ -529,7 +531,18 @@ CREATE TABLE :PDGAStats
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
 
-
+-- to be added:
+--    'latitude',
+--    'longitude',
+--    'tournament_director',
+--    'tournament_director_pdga_number',
+--    'asst_tournament_director',
+--    'asst_tournament_director_pdga_number',
+--    'event_email',
+--    'event_phone',
+--    'event_url',
+--    'website_url',
+--    'registration_url'
 CREATE TABLE :PDGAEvents
 (
     tournament_id INT NOT NULL,
