@@ -7,6 +7,7 @@ next:
 =====
   * Apply visual cues about suitable classes to all event views.
   * Hide non-valid classes as ("+X others"), viewable by clicking, to lessen clutter.
+  * Delete groups and sections before removing round itself.
 
 2017.01.25:
 ===========
