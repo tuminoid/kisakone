@@ -58,6 +58,7 @@ function SetRounds($eventid, $rounds, $deleteRounds = array())
     $eventid = esc_or_null($eventid, 'int');
 
     foreach ($deleteRounds as $toDelete) {
+        ResetRound($toDelete);
         $toDelete = esc_or_null($toDelete, 'int');
         db_exec("DELETE FROM :Round WHERE Event = $eventid AND id = $toDelete");
     }
