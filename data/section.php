@@ -178,7 +178,10 @@ function RemoveEmptySections($round)
         $players = $section->GetPlayers();
         $id = esc_or_null($section->id, 'int');
 
-        if (!count($players))
+        if (!count($players)) {
+            db_exec("DELETE FROM :StartingOrder WHERE Section = $id");
+            db_exec("DELETE FROM :SectionMembership WHERE Section = $id");
             db_exec("DELETE FROM :Section WHERE id = $id");
+        }
     }
 }
