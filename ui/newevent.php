@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * "Create new event" page
  *
@@ -66,6 +66,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     }
 
     $smarty->assign('event', $e);
+    $smarty->assign('queue_strategies', GetQueuePromotionStrategies());
 
     page_InitializeEventFormData($smarty, true);
 }
