@@ -334,6 +334,11 @@ event_require_member_fee    SFL jäsenmaksu
 event_require_license_fee   SFL kilpailulisenssi
 event_add_all_classes   Lisää kaikki
 
+event_livescoring           Live Scoring
+event_livescoring_all       Sallittu kaikille Kisakoneen käyttäjille
+event_livescoring_group     Sallittu omalle ryhmälle
+event_livescoring_off       Ei sallittu
+
 event_state     Kilpailun tila
 event_state_preliminary     Alustava
 event_state_active          Aktiivinen, kilpailun tiedot selattavissa

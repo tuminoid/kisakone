@@ -91,6 +91,7 @@ class Event
 
     var $pdgaEventId;
     var $prosPlayingAm;
+    var $liveScoring;
 
     var $approved;
     var $eventFeePaid;
@@ -132,6 +133,7 @@ class Event
         $this->playerLimit = 0;
         $this->pdgaEventId = null;
         $this->prosPlayingAm = 0;
+        $this->liveScoring = 'off';
 
         if ($duration > 1) {
             $enddate = $startdate + ($duration - 1) * 60 * 60 * 24;
@@ -397,12 +399,22 @@ class Event
     }
 
     /**
+     * Returns a value of 'all', 'group' or 'off' based on settings
+    */
+    function getLiveScoring()
+    {
+        error_log("live called?");
+        return GetEventLiveScoring($this->id);
+    }
+
+    /**
      * Returns URL to PDGA if EventId is set, null otherwise
     */
     function getPDGAUrl()
     {
         if ($this->pdgaEventId)
             return "http://www.pdga.com/tour/event/" . $this->pdgaEventId;
+        return null;
     }
 
     function getRules($class = -1)
@@ -440,7 +452,7 @@ class Event
         }
 
         // Global live is on, so check for event live scoring
-        $event_live = GetEventLiveScoring($this->id);
+        $event_live = $this->getLiveScoring();
         switch ($event_live) {
             case 'all':
                 if ($user && $user->id) {
@@ -510,7 +522,7 @@ function GetRelevantEvents()
  * @param array    $officialIds  - array of official user ids
  * @param array    $rounds       - array of rounds (date, time, holes, datestring, roundid)
  */
-function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId, $prosplayingam)
+function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requiredLicenses, $pdgaId, $prosplayingam, $livescoring)
 {
     $retvalue = null;
 
@@ -556,7 +568,7 @@ function NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tour
     }
 
     if (!isset($retValue)) {
-        $eventId = CreateEvent($name, $club, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId, $prosplayingam);
+        $eventId = CreateEvent($name, $club, $venueid, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $requiredLicenses, $pdgaId, $prosplayingam, $livescoring);
         $retValue = $eventId;
         if (!is_a($eventId, 'Error')) {
             $err = SetRounds($eventId, $rounds);

@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event creation and editing form
  *
@@ -152,8 +152,23 @@
         {formerror field='requirefees'}
     </div>
 
+    {if $livescoring_enabled !== false}
+    <div>
+        <input type="hidden" name="oldlivescoring" value="{$event.livescoring}" />
+        <label for="livescoring">{translate id=event_livescoring}</label>
+        <select name="livescoring" id="livescoring">
+            {* TODO: Autogenerate these *}
+            <option value="all" {if $event.livescoring == 'all'}selected="selected"{/if}>{translate id=event_livescoring_all}</option>
+            <option value="group" {if $event.livescoring == 'group'}selected="selected"{/if}>{translate id=event_livescoring_group}</option>
+            <option value="off" {if $event.livescoring == 'off'}selected="selected"{/if}>{translate id=event_livescoring_off}</option>
+        </select>
+        {formerror field='livescoring'}
+    </div>
+    {/if}
+
     {if $ppa_enabled !== false}
     <div>
+        <input type="hidden" name="oldprosplayingam" value="{$event.prosplayingam}" />
         <label for="prosplayingam">{translate id=event_prosplayingam}</label>
         <input type="checkbox" id="prosplayingam" name="prosplayingam"
             {if $ppa_enabled === true} checked="checked" disabled="disabled"

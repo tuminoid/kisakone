@@ -194,3 +194,16 @@ function ppa_enabled() {
         return false;
     return null;
 }
+
+
+/**
+ * LiveScoring enabled
+ *
+ * @return  true if global livescoring enabled
+ * @return  false if global livescoring disabled
+ */
+function livescoring_enabled() {
+    if (GetConfig(LIVE_ENABLED))
+        return true;
+    return false;
+}

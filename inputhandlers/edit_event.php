@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event edit handler
  *
@@ -105,11 +105,11 @@ function processForm()
     if (!in_array($queue_strategy, $strategies))
         $problems['queue_strategy'] = translate('FormError_InvalidQueueStrategy');
 
-    /*
-    $old_queue_strategy = $_POST['old_queue_strategy'];
-    if (!IsAdmin() && $queue_strategy != $old_queue_strategy)
-        $problems['queue_strategy'] = translate('FormError_OnlyAdminCanEdit');
-    */
+    $livescoring = $_POST['livescoring'];
+    $allowed_livescoring = GetLiveScoringOptions();
+    if (!in_array($livescoring, $allowed_livescoring))
+        $problems['livescoring'] = translate('FormError_InvalidLiveScoring');
+    error_log("live: $livescoring");
 
     if (ppa_enabled() === true)
         $prosplayingam = 1;
@@ -227,7 +227,7 @@ function processForm()
     }
 
     $result = EditEvent($eventid, $name, $club, $venue, $duration, $playerlimit, $contact, $tournament,
-        $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId, $prosplayingam);
+        $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaId, $prosplayingam, $livescoring);
     if (is_a($result, 'Error'))
         return $result;
 

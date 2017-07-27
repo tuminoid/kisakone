@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event editor UI backend
  *
@@ -82,6 +82,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $e['pdgaeventid'] = @$_POST['pdgaeventid'];
         $e['oldpdgaeventid'] = @$_POST['oldpdgaeventid'];
         $e['prosplayingam'] = @$_POST['oldprosplayingam'];
+        $e['livescoring'] = @$_POST['oldlivescoring'];
     }
     else {
         $event = GetEventDetails($_GET['id']);
@@ -139,6 +140,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $e['oldpdgaeventid'] = $event->pdgaEventId;
 
         $e['prosplayingam'] = $event->prosPlayingAm;
+        $e['livescoring'] = $event->liveScoring;
     }
 
     global $user;
@@ -150,6 +152,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('event', $e);
     $smarty->assign('level', GetLevelDetails($event->levelId));
     $smarty->assign('queue_strategies', GetQueuePromotionStrategies());
+    $smarty->assign('livescoring_enabled', livescoring_enabled());
 
     page_InitializeEventFormData($smarty, false);
 }

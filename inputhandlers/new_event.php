@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * New event creation handler
  *
@@ -96,6 +96,11 @@ function processForm()
 
     $prosplayingam = (bool) @$_POST['prosplayingam'];
 
+    $livescoring = $_POST['livescoring'];
+    $allowed_livescoring = GetLiveScoringOptions();
+    if (!in_array($livescoring, $allowed_livescoring))
+        $problems['livescoring'] = translate('FormError_InvalidLiveScoring');
+
     $contact = $_POST['contact'];
 
     $classes = array();
@@ -174,7 +179,7 @@ function processForm()
         return $error;
     }
 
-    $result = NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid, $prosplayingam);
+    $result = NewEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start, $signup_start, $signup_end, $classes, $td, $officialIds, $rounds, $requireFees, $pdgaid, $prosplayingam, $livescoring);
 
     if (is_a($result, 'Error')) {
         $result->errorPage = 'error';

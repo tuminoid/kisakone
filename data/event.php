@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Event
  *
@@ -115,7 +115,7 @@ function GetEventDetails($eventid)
         $row = db_one("SELECT DISTINCT :Event.id AS id, :Venue.Name AS Venue, :Venue.id AS VenueID, Tournament,
                                     :Event.Name, ContactInfo, UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit, :Event.Club AS Club,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, UNIX_TIMESTAMP(SignupStart) AS SignupStart,
-                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId, ProsPlayingAm,
+                                    UNIX_TIMESTAMP(SignupEnd) AS SignupEnd, ResultsLocked, PdgaEventId, ProsPlayingAm, LiveScoring,
                                     :EventManagement.Role AS Management, :Participation.Approved, :Participation.EventFeePaid,
                                     :Participation.Standing, :Level.id AS LevelId,
                                     :Level.Name AS Level, :Tournament.id AS TournamentId, :Tournament.Name AS Tournament,
@@ -133,7 +133,7 @@ function GetEventDetails($eventid)
                                     UNIX_TIMESTAMP(Date) AS Date, Duration, PlayerLimit, Club,
                                     UNIX_TIMESTAMP(ActivationDate) AS ActivationDate, ContactInfo,
                                     UNIX_TIMESTAMP(SignupStart) AS SignupStart, UNIX_TIMESTAMP(SignupEnd) AS SignupEnd,
-                                    ResultsLocked, PdgaEventId, ProsPlayingAm,
+                                    ResultsLocked, PdgaEventId, ProsPlayingAm, LiveScoring,
                                     :Level.id AS LevelId, :Level.Name AS Level,
                                     :Tournament.id AS TournamentId, :Tournament.Name AS Tournament
                                 FROM :Event
@@ -157,7 +157,7 @@ function GetEventDetails($eventid)
  * an Error in case there was an error in creating a new event.
  */
 function CreateEvent($name, $club, $venue, $duration, $playerlimit, $contact, $tournament, $level, $start,
-    $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid, $prosplayingam)
+    $signup_start, $signup_end, $classes, $td, $officials, $requireFees, $pdgaid, $prosplayingam, $livescoring)
 {
     $venue = esc_or_null($venue, 'int');
     $tournament = esc_or_null($tournament ? $tournament : null, 'int');
@@ -173,12 +173,13 @@ function CreateEvent($name, $club, $venue, $duration, $playerlimit, $contact, $t
     $pdgaid = esc_or_null($pdgaid, 'int');
     $club = esc_or_null($club, 'int');
     $prosplayingam = esc_or_null($prosplayingam, 'int');
+    $livescoring = esc_or_null($livescoring, 'string');
 
     $eventid = db_exec("INSERT INTO :Event (Club, Venue, Tournament, Level, Name, Date, Duration, PlayerLimit,
-                                SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId, ProsPlayingAm)
+                                SignupStart, SignupEnd, ContactInfo, LicensesRequired, PdgaEventId, ProsPlayingAm, LiveScoring)
                             VALUES ($club, $venue, $tournament, $level, $name, FROM_UNIXTIME($start), $duration, $playerlimit,
                                 FROM_UNIXTIME($signup_start), FROM_UNIXTIME($signup_end), $contact, $requireFees,
-                                $pdgaid, $prosplayingam)");
+                                $pdgaid, $prosplayingam, $livescoring)");
 
     if (db_is_error($eventid))
         return $eventid;
@@ -286,7 +287,7 @@ function GetEventOfficials($event)
 
 // Edit event information
 function EditEvent($eventid, $name, $club, $venuename, $duration, $playerlimit, $contact, $tournament,
-    $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaid, $prosplayingam)
+    $level, $start, $signup_start, $signup_end, $state, $requireFees, $pdgaid, $prosplayingam, $livescoring)
 {
     $venueid = GetVenueId($venuename);
     $activation = ($state == 'active' || $state == 'done') ? time() : 'NULL';
@@ -305,6 +306,7 @@ function EditEvent($eventid, $name, $club, $venuename, $duration, $playerlimit, 
     $pdgaid = esc_or_null($pdgaid, 'int');
     $club = esc_or_null($club, 'int');
     $prosplayingam = esc_or_null($prosplayingam, 'int');
+    $livescoring = esc_or_null($livescoring, 'string');
 
     return db_exec("UPDATE :Event
                             SET Venue = $venueid, Tournament = $tournament, Level = $level, Name = $name, Date = FROM_UNIXTIME($start),
@@ -312,7 +314,7 @@ function EditEvent($eventid, $name, $club, $venuename, $duration, $playerlimit, 
                                 SignupStart = FROM_UNIXTIME($signup_start), SignupEnd = FROM_UNIXTIME($signup_end),
                                 ActivationDate = FROM_UNIXTIME($activation), ResultsLocked = FROM_UNIXTIME($locking),
                                 ContactInfo = $contact, LicensesRequired = $requireFees, PdgaEventId = $pdgaid,
-                                ProsPlayingAm = $prosplayingam
+                                ProsPlayingAm = $prosplayingam, LiveScoring = $livescoring
                             WHERE id = $eventid");
 }
 
@@ -746,6 +748,7 @@ function GetEventLiveScoring($eventid)
     $eventid = esc_or_null($eventid, 'int');
 
     $row = db_one("SELECT LiveScoring FROM :Event WHERE id = $eventid");
+    error_log('db live: ' . $row['LiveScoring']);
     return $row['LiveScoring'];
 }
 
@@ -953,4 +956,15 @@ function DeleteEvent($event)
 
     foreach ($queries as $query)
         db_exec($query);
+}
+
+
+// Get valid queue promotion strategies
+function GetLiveScoringOptions()
+{
+    return array(
+        'all',
+        'group',
+        'off'
+    );
 }
