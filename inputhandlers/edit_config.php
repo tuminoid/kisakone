@@ -36,8 +36,10 @@ function processForm()
         return Error::AccessDenied();
 
     // Check for errors
+    // Admin stuff
     $admin_email = $_POST[ADMIN_EMAIL];
 
+    // Email stuff
     $email_enabled = $_POST[EMAIL_ENABLED] ? 1 : 0;
     $email_sender = $_POST[EMAIL_SENDER];
     $email_address = $_POST[EMAIL_ADDRESS];
@@ -49,6 +51,7 @@ function processForm()
     if ($email_verification && !$email_enabled)
         $problems[EMAIL_VERIFICATION] = translate('FormError_EmailOff');
 
+    // Payment and license stuff
     $ok_licenses = array('no', 'sfl');
     $license_check = $_POST[LICENSE_ENABLED];
     if (!in_array($license_check, $ok_licenses))
@@ -57,6 +60,7 @@ function processForm()
     $payment_enabled = $_POST[PAYMENT_ENABLED] ? 1 : 0;
     $taxes_enabled = $_POST[TAXES_ENABLED] ? 1 : 0;
 
+    // PDGA stuff
     $pdga_enabled = $_POST[PDGA_ENABLED] ? 1 : 0;
     $pdga_user = $_POST[PDGA_USERNAME];
     $pdga_pass = $_POST[PDGA_PASSWORD];
@@ -80,6 +84,7 @@ function processForm()
     if (in_array($pdga_ppa, array('enabled', 'optional')) && (!$pdga_enabled || isset($problems[PDGA_ENABLED])))
         $problems[PDGA_PPA] = translate('FormError_PdgaApiNotENabled');
 
+    // Cache stuff
     $cache_enabled = $_POST[CACHE_ENABLED] ? 1 : 0;
     $cache_name = $_POST[CACHE_NAME];
     $cache_host = $_POST[CACHE_HOST];
@@ -91,6 +96,8 @@ function processForm()
     if ($cache_enabled && (!$cache_port || !is_numeric($cache_port)))
         $problems[CACHE_PORT] = translate('FormError_NotPositiveInteger');
 
+    // Integration stuff
+    $livescoring_enabled = $_POST[LIVE_ENABLED] ? 1 : 0;
     $trackjs_enabled = $_POST[TRACKJS_ENABLED] ? 1 : 0;
     $trackjs_token = $_POST[TRACKJS_TOKEN];
     if ($trackjs_enabled && !$trackjs_token)
@@ -133,6 +140,7 @@ function processForm()
     SetConfig(CACHE_HOST,    $cache_host, 'string');
     SetConfig(CACHE_PORT,    $cache_port, 'int');
 
+    SetConfig(LIVE_ENABLED, $livescoring_enabled, 'int');
     SetConfig(TRACKJS_ENABLED, $trackjs_enabled, 'int');
     SetConfig(TRACKJS_TOKEN,   $trackjs_token, 'string');
     SetConfig(ADDTHISEVENT_ENABLED, $addthisevent_enabled, 'int');

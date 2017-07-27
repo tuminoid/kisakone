@@ -93,6 +93,7 @@ LicenseEnabled_no   Ei tarkasteta
 LicenseEnabled_sfl  SFL:n lisenssitarkastus
 PaymentEnabled      Maksujen tarkastus
 TaxesEnabled        Verotus
+LiveScoringEnabled  Live Scoring sallittu TD:lle
 PdgaEnabled         PDGA API
 PdgaUsername        PDGA käyttäjätunnus
 PdgaPassword        PDGA salasana
