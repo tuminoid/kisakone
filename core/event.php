@@ -630,6 +630,8 @@ function UpdateEventResults($eventid)
         }
 
         // Now that we have final standings, we can calculate the tournament scores
+        if (!method_exists($scorecalc, 'CalculateScores'))
+            error_log("Event $eventid, scorecalc (" . print_r($scorecalc, true) . ") has no calculatescores");
         $scorecalc->CalculateScores($partsByPlayer, $totalHoles, $event, $activePlayers);
 
         // Lastly save any changes that have been made
