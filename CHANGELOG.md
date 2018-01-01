@@ -3,6 +3,15 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2018.01.01:
+===========
+During migration to new registry, new competition system etc, following changes
+are made to license checks:
+  * 2017 SFL licenses are extended until 2018.03.31, allowing completion of tour
+    series begun in 2017
+  * Alternatively, valid 2018 PDGA membership is enough to participate, if player did
+    not have SFL license in 2017
+
 2017.01.25:
 ===========
   * Make AddThisEvent.com calendar integration optional. AddThisEvent is paid service these days. GH #300.
