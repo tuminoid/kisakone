@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto.
  * SFL API access functions for checking licenses and other player data
@@ -66,6 +66,8 @@ function sfl_api_run_query($where)
                 case 'license':
                     // Bonus year means if month is december, next year's license is valid already
                     $bonus_year = date('m') == 12 ? $year - 1 : $year;
+                    // first three months of 2018 are free due sfl system migrations
+                    $bonus_year = in_array(date('m'), array(1, 2, 3)) ? $year + 1 : $year;
 
                     if ($row['license'] == LICENSE_MEMBERSHIP)
                         $result['membership'][$year] = $result['membership'][$bonus_year] = true;

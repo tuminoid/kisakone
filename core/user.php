@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the User class.
  *
@@ -393,6 +393,10 @@ class User
             $valid_pdga = @$pdga_data['membership_status'] == 'current';
 
             if ($country != 'FI' && $valid_pdga)
+                return true;
+
+            // allow participating with just pdga license in 2018 jan-mar
+            if (in_array(date('m'), array(1, 2, 3)) && $year == 2018 && $valid_pdga)
                 return true;
         }
 
