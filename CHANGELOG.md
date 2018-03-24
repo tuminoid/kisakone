@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+next:
+=====
+  * Check PDGA number validity upon entering it.
+
 2018.01.01:
 ===========
 During migration to new registry, new competition system etc, following changes
