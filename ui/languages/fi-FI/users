@@ -76,6 +76,7 @@ pdga_data_match        Tieto on sama kuin PDGA:lla
 pdga_data_mismatch     Tieto on eri kuin PDGA:lla
 pdga_membership_current PDGA jäsenyys on voimassa
 pdga_membership_expired PDGA jäsenyys ei ole voimassa
+pdga_incorrect_number  PDGA-numerolla ei löydy pelaajaa. Jätä kenttä tyhjäksi mikäli sinulla ei ole omaa PDGA-numeroa.
 pdga_server_error      Yhteys PDGA:n tietokantaan epäonnistui tai pelaaja ei löydy tietokannasta. Yritä hetken päästä uudelleen.
 pdga_shouldnt_add_finnish Pelaajan osoite on Suomessa. Jos henkilö kuitenkin on ulkomaalainen, voit lisätä kilpailijan. Suomalaisen pelaajan ollessa kyseessä, peruuta edelliselle sivulle ja käytä SFL-jäsennumeroa.
 pdga_allow_foreigner   Pelaaja on ulkomaalainen, salli lisäys kilpailuun.

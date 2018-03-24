@@ -24,6 +24,7 @@
 
 require_once 'data/configs.php';
 require_once 'core/url.php';
+require_once 'pdga/pdga_integration.php';
 
 
 /**
@@ -75,6 +76,8 @@ function processForm()
             $pdga = (int) $pdga;
             if (!$pdga)
                 $problems['pdga'] = translate('FormError_NotPositiveInteger');
+            if (pdga_enabled() && !pdga_api_getPlayer($pdga))
+                $problems['pdga'] = translate('pdga_incorrect_number');
         }
 
         $gender = @$_POST['gender'];
