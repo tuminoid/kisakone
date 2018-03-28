@@ -75,12 +75,13 @@ class User
     var $passwordchanged;
     var $sflid;
     var $club;
+    var $sportid;
 
 
     /** ************************************************************************
      * Class constructor
      */
-    function User($id = null, $uname = "", $role = null, $fname = "", $lname = "", $email = "", $player = "none")
+    function User($id = null, $uname = "", $role = null, $fname = "", $lname = "", $email = "", $player = "none", $sportid = null)
     {
         if ($email && $player === 'none')
             die('Invalid user initialization' . print_r(debug_backtrace(), true));
@@ -96,6 +97,7 @@ class User
             $this->SetRole($role);
             $this->SetNames($fname, $lname);
             $this->email = $email;
+            $this->sportid = $sportid;
         }
 
         $this->player = $player;
@@ -123,6 +125,7 @@ class User
         $this->SetRole($data[2]);
         $this->SetNames($data[3], $data[4]);
         $this->email = $data[5];
+        $this->sportid = @$data[7];
     }
 
     /** ************************************************************************
@@ -394,13 +397,26 @@ class User
 
             if ($country != 'FI' && $valid_pdga)
                 return true;
-
-            // allow participating with just pdga license in 2018 jan-mar
-            if (in_array(date('m'), array(1, 2, 3)) && $year == 2018 && $valid_pdga)
-                return true;
         }
 
-        if (sfl_enabled()) {
+        if (suomisport_enabled()) {
+            require_once 'suomisport/suomisport_integration.php';
+
+            # depending how you log in, your user info might be limited, refetch the user
+            $user = GetUserDetails($this->id);
+            $player = $this->GetPlayer();
+            $data = suomisport_getLicense($user->sportid, $player->pdga, $player->birthyear);
+
+            if ($data['licence_valid']) {
+                $valid_until = date_create($data['licence_valid_until']);
+                $now = date_create();
+                $ok = ($valid_until > $now ? true : false);
+                # error_log("until: " . date_format($valid_until, "d-m-Y") . " now: " . date_format($now, "d-m-Y") . " -> valid? " . $ok);
+                return $ok;
+            }
+            return false;
+        }
+        elseif (sfl_enabled()) {
             $data = SFL_getPlayer($this->id);
             if ($data) {
                 $year = date('Y');

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module. Init database connections and provide
  * data related utilities.
@@ -132,7 +132,8 @@ function format_query($query)
         ':Classification', ':Course', ':RoundResult', ':Round', ':Participation',
         ':HoleResult', ':Hole', ':StartingOrder', ':SectionMembership', ':Section',
         ':TournamentStanding', ':Tournament', ':ClassInEvent',
-        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents'
+        ':RegistrationRules', ':PDGAPlayers', ':PDGAStats', ':PDGAEvents',
+        ':SuomisportLicenses'
     );
     $realtables = str_replace(":", $prefix, $tables);
 

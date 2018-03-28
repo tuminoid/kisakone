@@ -49,9 +49,9 @@
         {if $config[1] == "bool"}
             {html_options name="$config[0]" options=$bool_options selected="$config[2]"}
         {elseif $config[1] == "string"}
-            <input type="text" name="{$config[0]}" value="{$config[2]}" />
+            <input type="text" name="{$config[0]}" value="{$config[2]}" size="40" />
         {elseif $config[1] == "int"}
-            <input type="numeric" name="{$config[0]}" value="{$config[2]}" />
+            <input type="numeric" name="{$config[0]}" value="{$config[2]}" size="10" />
         {elseif $config[1] == "enum"}
             <select name="{$config[0]}">
             {foreach from=$config[3] item=enum}

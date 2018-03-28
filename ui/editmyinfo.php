@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User info editor
  *
@@ -22,6 +22,9 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/configs.php';
+
+
 /**
  * Initializes the variables and other data necessary for showing the matching template
  * @param Smarty $smarty Reference to the smarty object being initialized
@@ -39,6 +42,7 @@ function InitializeSmartyVariables(&$smarty, $error)
         $player->pdga = $_POST['pdga'];
         $user->email = $_POST['email'];
         $player->gender = $_POST['gender'];
+        $player->sportid = $_POST['sportid'];
     }
     else {
         if (@$_GET['id']) {
@@ -58,6 +62,9 @@ function InitializeSmartyVariables(&$smarty, $error)
         }
         if ($user)
             $player = $user->GetPlayer();
+
+        # FIXME: refetch user for sportid
+        $user = GetUserDetails($user->id);
     }
 
     // FIXME: Fix this properly. We have case of expired session / missing cookie
@@ -66,6 +73,7 @@ function InitializeSmartyVariables(&$smarty, $error)
     $smarty->assign('player', @$player);
     if (@$player)
         $smarty->assign('dob', $player->birthyear . '-1-1');
+    $smarty->assign('suomisport_enabled', suomisport_enabled());
 }
 
 /**

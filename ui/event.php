@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Event main page -- this contains all the other user-visible pages
  *
@@ -58,6 +58,7 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('pdga_enabled', pdga_enabled());
     $smarty->assign('sfl_enabled', sfl_enabled());
+    $smarty->assign('suomisport_enabled', suomisport_enabled());
     $smarty->assign('payment_enabled', payment_enabled());
     $smarty->assign('pdgaUrl', $event->getPDGAUrl());
     $smarty->assign('ppa_enabled', $event->GetProsPlayingAm());
@@ -172,6 +173,14 @@ function InitializeSmartyVariables(&$smarty, $error)
                     require_once 'pdga/pdga_integration.php';
                     $pdga_data = pdga_getPlayer($player->pdga);
                     SmartifyPDGA($smarty, $pdga_data);
+                }
+
+                if (suomisport_enabled() && isset($player)) {
+                    require_once 'suomisport/suomisport_integration.php';
+                    $userdata = GetUserDetails($user->id);
+                    # error_log("id: " . $userdata->sportid . " pdga: " . $player->pdga . " dob: " . $player->birthyear);
+                    $data = suomisport_getLicense($userdata->sportid, $player->pdga, $player->birthyear);
+                    SmartifySuomisport($smarty, $data);
                 }
 
                 $year = date('Y');

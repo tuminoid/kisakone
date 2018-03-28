@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2014-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2014-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * This file contains the Player class.
  *
@@ -158,7 +158,8 @@ class Player
                     $err->internalDescription = "Invalid Player->birthyear attribute.";
                     $err->function = "Player->ValidatePlayer()";
                     $err->IsMajor = true;
-                    $err->data = "player id:" . $this->id . "; user:" . $this->user . "; pdga:" . $this->pdga . "; gender:" . $this->gender . "; birthyear:" . $this->birthyear;
+                    $err->data = "player id:" . $this->id . "; user:" . $this->user . "; pdga:" . $this->pdga . "; gender:" .
+                        $this->gender . "; birthyear:" . $this->birthyear;
                 }
             }
         }

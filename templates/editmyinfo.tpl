@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013, 2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013, 2015, 2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User info editor
  *
@@ -48,20 +48,28 @@
 
     {if $player}
     <h2>{translate id='reg_player_info'}</h2>
-     <div>
+    <div>
         <label for="pdga">{translate id='pdga_number'}</label>
         <input id="pdga" type="text" name="pdga"  value="{$player->pdga|escape}" />
-        {formerror field='pdga'}
+        <p>{formerror field='pdga'}</p>
     </div>
 
-     <div>
+    {if $suomisport_enabled}
+    <div>
+        <label for="sportid">{translate id='sportid_number'}</label>
+        <input id="sportid" type="text" name="sportid"  value="{$userdata->sportid|escape}" />
+        <p>{formerror field='sportid'}</p>
+    </div>
+    {/if}
+
+    <div>
         <label for="gender">{translate id='gender'}</label>
         <input id="gender" type="radio" name="gender" value="M" {if $player->gender == 'M'}checked="checked"{/if} /> {translate id="male"} &nbsp;&nbsp;
         <input type="radio" name="gender" value="F" {if $player->gender == 'F'}checked="checked"{/if} /> {translate id="female"}
         {formerror field='gender'}
     </div>
 
-     <div>
+    <div>
         <label>{translate id='dob'}</label>
         {translate id='year_default' assign='year_default'}
         {html_select_date time=$dob field_order=DMY month_format=%m
@@ -69,7 +77,7 @@
         all_extra='style="min-width: 0"' }
         {formerror field='dob'}
     </div>
-     {/if}
+    {/if}
     <hr />
     <div>
         <input type="submit" value="{translate id='form_save'}" name="save" />
@@ -84,6 +92,7 @@ $(document).ready(function(){
     CheckedFormField('regform', 'firstname', NonEmptyField, null);
     CheckedFormField('regform', 'email', EmailField, null);
 //    CheckedFormField('regform', 'pdga', PositiveIntegerField, null);
+//    CheckedFormField('regform', 'sportid', PositiveIntegerField, null);
     CheckedFormField('regform', 'gender', RadioFieldSet, null);
     CheckedFormField('regform', 'dob_Year', NonEmptyField, null);
     $("#cancelButton").click(CancelSubmit);

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Edit my info ui backend
  *
@@ -24,7 +24,6 @@
 
 require_once 'data/configs.php';
 require_once 'core/url.php';
-require_once 'pdga/pdga_integration.php';
 
 
 /**
@@ -74,10 +73,14 @@ function processForm()
         }
         else {
             $pdga = (int) $pdga;
-            if (!$pdga)
+            if (!$pdga) {
                 $problems['pdga'] = translate('FormError_NotPositiveInteger');
-            if (pdga_enabled() && !pdga_api_getPlayer($pdga))
-                $problems['pdga'] = translate('pdga_incorrect_number');
+            }
+            elseif (pdga_enabled()) {
+                require_once 'pdga/pdga_integration.php';
+                if (!pdga_api_getPlayer($pdga))
+                    $problems['pdga'] = translate('pdga_incorrect_number');
+            }
         }
 
         $gender = @$_POST['gender'];
@@ -87,11 +90,30 @@ function processForm()
         $dobYear = $_POST['dob_Year'];
         if ($dobYear != (int) $dobYear)
             $problems['dob'] = translate('FormError_NotEmpty');
+
+        if (suomisport_enabled()) {
+            $sportid = $_POST['sportid'];
+            if ($sportid == '') {
+                $sportid = null;
+            }
+            elseif (!is_numeric($sportid)) {
+                $problems['sportid'] = translate('suomisport_incorrect_number');
+            }
+            else {
+                require_once 'suomisport/suomisport_integration.php';
+                if (!suomisport_importLicense($sportid, $pdga, $dobYear))
+                    $problems['sportid'] = translate('suomisport_license_not_found');
+            }
+        }
+        else {
+            $sportid = null;
+        }
     }
     else {
         $pdga = null;
         $gender = null;
         $dobYear = null;
+        $sportid = null;
     }
 
     if (count($problems)) {
@@ -105,7 +127,7 @@ function processForm()
         return $error;
     }
 
-    $result = EditUserInfo($uid, $email, $firstname, $lastname, $gender, $pdga, $dobYear);
+    $result = EditUserInfo($uid, $email, $firstname, $lastname, $gender, $pdga, $dobYear, $sportid);
     if (!is_a($result, 'Error')) {
         if (!$username) {
             $user->birthyear = $dobYear;
@@ -114,6 +136,7 @@ function processForm()
             $user->firstname = $firstname;
             $user->fullname = $firstname . ' ' . $lastname;
             $user->email = $email;
+            $user->sportid = $sportid;
         }
 
         if (@$_GET['id'])

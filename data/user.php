@@ -62,7 +62,7 @@ function GetUsers($searchQuery = '', $sortOrder = '')
         array('UserFirstname', 'UserLastname', 'Username', ':Player.lastname', ':Player.firstname'));
 
     $result = db_all("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, :User.Player,
-                                :Player.lastname AS pLN, :Player.firstname AS pFN, :Player.email AS pEM
+                                :Player.lastname AS pLN, :Player.firstname AS pFN, :Player.email AS pEM, Sportid
                             FROM :User
                             LEFT JOIN :Player ON :User.Player = :Player.player_id
                             WHERE $where
@@ -77,7 +77,7 @@ function GetUsers($searchQuery = '', $sortOrder = '')
             data_GetOne($row['UserFirstname'], $row['pFN']),
             data_GetOne($row['UserLastname'], $row['pLN']),
             data_GetOne($row['UserEmail'], $row['pEM']),
-            $row['Player']);
+            $row['Player'], $row['Sportid']);
     }
 
     return $retValue;
@@ -100,7 +100,7 @@ function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
         $sort = data_CreateSortOrder($sortOrder,
             array('name' => array('UserLastname', 'UserFirstname'), 'UserFirstname', 'UserLastname', 'pdga', 'Username'));
 
-    $result = db_all("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player
+    $result = db_all("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname, Player, Sportid
                         FROM :User
                         INNER JOIN :Player ON :Player.player_id = :User.Player
                         WHERE :User.Player IS NOT NULL AND $searchConditions
@@ -112,7 +112,7 @@ function GetPlayerUsers($query = '', $sortOrder = '', $with_pdga_number = true)
     $retValue = array();
     foreach ($result as $row) {
         $retValue[] = new User($row['id'], $row['Username'], $row['Role'],
-            $row['UserFirstname'], $row['UserLastname'], $row['UserEmail'], $row['Player']);
+            $row['UserFirstname'], $row['UserLastname'], $row['UserEmail'], $row['Player'], $row['Sportid']);
     }
 
     return $retValue;
@@ -126,7 +126,8 @@ function GetUserDetails($userid)
     $id = esc_or_null($userid, 'int');
 
     $row = db_one("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                            :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM, :User.Player
+                            :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM,
+                            :User.Player, Sportid
                         FROM :User
                         LEFT JOIN :Player on :Player.player_id = :User.Player
                         WHERE id = $id");
@@ -141,7 +142,7 @@ function GetUserDetails($userid)
             data_GetOne($row['UserFirstname'], $row['pFN']),
             data_GetOne($row['UserLastname'], $row['pLN']),
             data_GetOne($row['UserEmail'], $row['pEM']),
-            $row['Player']);
+            $row['Player'], $row['Sportid']);
 }
 
 
@@ -180,15 +181,17 @@ function GetUserPlayer($userid)
 
 
 // Edits users user and player information
-function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $dobyear)
+function EditUserInfo($userid, $email, $firstname, $lastname, $gender, $pdga, $dobyear, $sportid)
 {
     $uid = esc_or_null($userid, 'int');
     $email = esc_or_null($email, 'string');
     $firstname = esc_or_null(data_fixNameCase($firstname));
     $lastname = esc_or_null(data_fixNameCase($lastname));
+    $sportid = esc_or_null($sportid, 'int');
 
     $result = db_exec("UPDATE :User
-                        SET UserEmail = $email, UserFirstName = $firstname, UserLastName = $lastname
+                        SET UserEmail = $email, UserFirstName = $firstname, UserLastName = $lastname,
+                            Sportid = $sportid
                         WHERE id = $uid");
 
     if (db_is_error($result))
@@ -232,6 +235,7 @@ function SetUserDetails($user)
     $u_firstname = esc_or_null(data_fixNameCase($user->firstname), 'string');
     $u_lastname = esc_or_null(data_fixNameCase($user->lastname), 'string');
     $player = esc_or_null($user->player, 'int');
+    $sportid = esc_or_null($user->sportid, 'int');
 
     // TODO: These sections are ugly
     // Generate a fake username for TD created players
@@ -245,9 +249,9 @@ function SetUserDetails($user)
     }
 
     if (!GetUserId($user->username)) {
-        $u_id = db_exec("INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt)
+        $u_id = db_exec("INSERT INTO :User (Username, UserEmail, Password, Role, UserFirstName, UserLastName, Player, Hash, Salt, Sportid)
                              VALUES ($u_username_quoted, $u_email, $u_password, $u_role, $u_firstname,
-                                $u_lastname, $player, $u_hash, $u_salt)");
+                                $u_lastname, $player, $u_hash, $u_salt, $sportid)");
 
         if (db_is_error($u_id))
             return $u_id;

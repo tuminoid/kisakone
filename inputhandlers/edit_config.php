@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Config edidor input handler
  *
@@ -56,6 +56,26 @@ function processForm()
 
     $payment_enabled = $_POST[PAYMENT_ENABLED] ? 1 : 0;
     $taxes_enabled = $_POST[TAXES_ENABLED] ? 1 : 0;
+
+    $suomisport_enabled = $_POST[SUOMISPORT_ENABLED] ? 1 : 0;
+    $suomisport_user = $_POST[SUOMISPORT_USERNAME];
+    $suomisport_pass = $_POST[SUOMISPORT_PASSWORD];
+    $suomisport_api = $_POST[SUOMISPORT_API];
+    if ($suomisport_enabled) {
+        if (!@include_once('suomisport/suomisport_integration.php')) {
+            $problems[SUOMISPORT_ENABLED] = translate('FormError_NoAPIImplementation');
+        }
+        else {
+            if (!$suomisport_user)
+                $problems[SUOMISPORT_USERNAME] = translate('FormError_NotEmptyIfEnabled');
+            if (!$suomisport_pass)
+                $problems[SUOMISPORT_PASSWORD] = translate('FormError_NotEmptyIfEnabled');
+            if (!$suomisport_api)
+                $problems[SUOMISPORT_API] = translate('FormError_NotEmptyIfEnabled');
+            if (!suomisport_testCredentials($suomisport_user, $suomisport_pass, $suomisport_api))
+                $problems[SUOMISPORT_ENABLED] = translate('FormError_APIFailed');
+        }
+    }
 
     $pdga_enabled = $_POST[PDGA_ENABLED] ? 1 : 0;
     $pdga_user = $_POST[PDGA_USERNAME];
@@ -122,6 +142,11 @@ function processForm()
     SetConfig(LICENSE_ENABLED, $license_check, 'string');
     SetConfig(PAYMENT_ENABLED, $payment_enabled, 'bool');
     SetConfig(TAXES_ENABLED, $taxes_enabled, 'bool');
+
+    SetConfig(SUOMISPORT_ENABLED,  $suomisport_enabled, 'int');
+    SetConfig(SUOMISPORT_USERNAME, $suomisport_user, 'string');
+    SetConfig(SUOMISPORT_PASSWORD, $suomisport_pass, 'string');
+    SetConfig(SUOMISPORT_API, $suomisport_api, 'string');
 
     SetConfig(PDGA_ENABLED,  $pdga_enabled, 'int');
     SetConfig(PDGA_USERNAME, $pdga_user, 'string');

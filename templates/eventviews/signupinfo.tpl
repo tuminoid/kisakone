@@ -1,7 +1,7 @@
 {**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Sign up page
  *
@@ -59,23 +59,43 @@
 <form method="post" class="">
     <input type="hidden" name="formid" value="sign_up" />
     {if $user}
-        <div id="playerinfo" style="float: right; width: 200px" class="searcharea">
-            <table>
+        {if !$admin}
+        <table style="width: 1000px;">
             <tr>
-                <td><label for="sfl_license">{translate id=license_status_header}</label></td>
-                <td><span id="sfl_license">
-                    {if $sfl_license}
-                        {translate id=license_paid}
-                    {elseif $sfl_membership}
-                        {translate id=membership_paid}
-                    {else}
-                        {translate id=none_paid}
-                    {/if}
-                </span></td>
+                {if $suomisport_enabled}
+                <td>
+                    <div id="playerinfo2" class="searcharea">
+                        <table>
+                        {include file='include/suomisportinfotable.tpl'}
+                        </table>
+                    </div>
+                </td>
+                {/if}
+
+                <td>
+                    <div id="playerinfo" class="searcharea">
+                        <table>
+                            {if !$suomisport_enabled}
+                                <tr>
+                                    <td><label for="sfl_license">{translate id=license_status_header}</label></td>
+                                    <td><span id="sfl_license">
+                                        {if $sfl_license}
+                                            {translate id=license_paid}
+                                        {elseif $sfl_membership}
+                                            {translate id=membership_paid}
+                                        {else}
+                                            {translate id=none_paid}
+                                        {/if}
+                                    </span></td>
+                                </tr>
+                            {/if}
+                            {include file='include/pdgainfotable.tpl'}
+                        </table>
+                    </div>
+                </td>
             </tr>
-            {include file='include/pdgainfotable.tpl'}
-            </table>
-        </div>
+        </table>
+        {/if}
 
         <p>{translate id=event_queue_lift}: <strong>{translate id=event_queue_$strategy}</strong></p>
         {if $ppa_enabled}
@@ -87,7 +107,7 @@
         {assign var=player value=$user->getPlayer()}
         {foreach from=$classes item=class}
             <div>
-                <input type="radio" name="class" id="class" value="{$class->id}" />
+                <input type="radio" name="class" id="class{$class->id}" value="{$class->id}" />
                 <label for="class">{$class->getName()|escape}</label>
             </div>
         {/foreach}

@@ -2,7 +2,7 @@
 /**
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Data access module for Player
  *
@@ -51,7 +51,8 @@ function GetPlayerUser($playerid = null)
     $playerid = esc_or_null($playerid, 'int');
 
     $row = db_one("SELECT :User.id, Username, UserEmail, Role, UserFirstname, UserLastname,
-                                :Player.firstname AS pFN, :Player.lastname AS pLN, :Player.email AS pEM
+                                :Player.firstname AS pFN, :Player.lastname AS pLN,
+                                :Player.email AS pEM, Sportid
                             FROM :User
                             INNER JOIN :Player ON :Player.player_id = :User.Player
                             WHERE :Player.player_id = $playerid");
@@ -63,7 +64,7 @@ function GetPlayerUser($playerid = null)
             data_GetOne($row['UserFirstname'], $row['pFN']),
             data_GetOne($row['UserLastname'], $row['pLN']),
             data_GetOne($row['UserEmail'], $row['pEM']),
-            $playerid);
+            $playerid, $row['Sportid']);
 }
 
 

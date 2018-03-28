@@ -1,7 +1,7 @@
 {*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2015 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User details page
  *
@@ -40,6 +40,7 @@
       {if $pdga_country and $pdga_country != 'FI'}
          <td>{translate id=user_country}:</td>
          <td>{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</td>
+      {elseif $suomisport_enabled}
       {elseif $sfl_enabled}
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
@@ -56,58 +57,65 @@
    {/if}
 </table>
 
-{if $sfl_enabled}
 {if ($itsme || $isadmin) && $player}
-   <h2>{translate id=user_licenses_title}</h2>
+   {if $suomisport_enabled}
+      <h2>{translate id=user_licenses_title}</h2>
 
-   {if $sfl_enabled and !$data}
-      {if !$pdga_enabled or $pdga_country == 'FI'}
-      <p class="error">{translate id=check_registry_data}</p>
+      <table style="width:500px">
+      {include file='include/suomisportinfotable.tpl'}
+      </table>
+
+   {elseif $sfl_enabled}
+      <h2>{translate id=user_licenses_title}</h2>
+
+      {if $sfl_enabled and !$data}
+         {if !$pdga_enabled or $pdga_country == 'FI'}
+         <p class="error">{translate id=check_registry_data}</p>
+         {/if}
       {/if}
-   {/if}
 
-   <table style="width:500px">
-   {if $licenses}
-      <tr>
-         <td style="width: 200px">{translate id=user_membershipfee}: </td>
-         <td>
-            {foreach from=$licenses.membership key=year item=paid}
-               {if $paid}
-                  {$year} {translate id=user_ispaid}
-               {else}
-                  {$year} {translate id=user_notpaid}
-               {/if}
-               <br />
-            {/foreach}
-         </td>
-      </tr>
-      <tr>
-         <td >{translate id=user_licensefee}: </td>
-         <td>
-            {foreach from=$licenses.license key=year item=paid}
-               {if $paid}
-                  {assign var=license_paid value=true}
-                  {$year} {translate id=user_ispaid}
-               {else}
-                  {$year} {translate id=user_notpaid}
-               {/if}
-               <br />
-            {/foreach}
-         </td>
-      </tr>
+      <table style="width:500px">
+      {if $licenses}
+         <tr>
+            <td style="width: 200px">{translate id=user_membershipfee}: </td>
+            <td>
+               {foreach from=$licenses.membership key=year item=paid}
+                  {if $paid}
+                     {$year} {translate id=user_ispaid}
+                  {else}
+                     {$year} {translate id=user_notpaid}
+                  {/if}
+                  <br />
+               {/foreach}
+            </td>
+         </tr>
+         <tr>
+            <td >{translate id=user_licensefee}: </td>
+            <td>
+               {foreach from=$licenses.license key=year item=paid}
+                  {if $paid}
+                     {assign var=license_paid value=true}
+                     {$year} {translate id=user_ispaid}
+                  {else}
+                     {$year} {translate id=user_notpaid}
+                  {/if}
+                  <br />
+               {/foreach}
+            </td>
+         </tr>
+      {/if}
+      </table>
    {/if}
-   </table>
-{/if}
 {/if}
 
 {if $pdga_enabled}
-{if $player && $player->pdga}
-<h2>{translate id=user_pdga_title}</h2>
+   {if $player && $player->pdga}
+      <h2>{translate id=user_pdga_title}</h2>
 
-<table style="width:335px">
-{include file='include/pdgainfotable.tpl'}
-</table>
-{/if}
+      <table style="width:335px">
+      {include file='include/pdgainfotable.tpl'}
+      </table>
+   {/if}
 {/if}
 
 {if $isadmin}

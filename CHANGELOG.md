@@ -3,9 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
-next:
-=====
+2018.03.25:
+===========
   * Check PDGA number validity upon entering it.
+  * Implement Suomisport integration to display license statuses correctly.
 
 2018.01.01:
 ===========

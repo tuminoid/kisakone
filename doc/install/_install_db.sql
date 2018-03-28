@@ -10,6 +10,7 @@ CREATE TABLE :Config
     LicenseEnabled ENUM('no', 'sfl') NOT NULL DEFAULT 'no',
     PaymentEnabled BOOL NOT NULL DEFAULT 1,
     TaxesEnabled BOOL NOT NULL DEFAULT 0,
+    SuomisportEnabled BOOL NOT NULL DEFAULT 0,
 
     PdgaEnabled BOOL NOT NULL DEFAULT 0,
     PdgaUsername VARCHAR(30) DEFAULT '',
@@ -71,6 +72,7 @@ CREATE TABLE :User
     EmailVerified DATETIME,
     SflId INT,
     Club INT,
+    Sportid INT,
     PRIMARY KEY(id),
     FOREIGN KEY(Player) REFERENCES :Player(player_id),
     FOREIGN KEY(Club) REFERENCES :Club(id),
@@ -546,5 +548,28 @@ CREATE TABLE :PDGAEvents
     last_updated DATETIME,
     PRIMARY KEY (tournament_id),
     INDEX(country)
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+
+
+CREATE TABLE :SuomisportLicenses
+(
+    player_sportid INT(12) NOT NULL,
+    player_birthyear INT(4) NOT NULL,
+    player_pdga INT NOT NULL,
+    player_firstname VARCHAR(255) NOT NULL,
+    player_lastname VARCHAR(255) NOT NULL,
+    player_fullname VARCHAR(255) NOT NULL,
+    player_nationality VARCHAR(2),
+    player_gender ENUM('MALE', 'FEMALE') NOT NULL,
+    licence_valid BOOL NOT NULL,
+    licence_valid_until DATE NOT NULL,
+    club_sportid INT(12) NOT NULL,
+    club_name VARCHAR(255) NOT NULL,
+    club_shortname VARCHAR(20) NOT NULL,
+    last_updated DATETIME,
+    PRIMARY KEY(player_sportid),
+    UNIQUE(player_sportid, player_pdga, player_birthyear),
+    INDEX(player_sportid, player_pdga, player_birthyear)
 ) ENGINE=InnoDB;
 SHOW WARNINGS;

@@ -1,7 +1,7 @@
 <?php
 /**
  * Suomen Frisbeegolfliitto Kisakone
- * Copyright 2015-2017 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2015-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Configuration class. Every other configuration is held here,
  * except database related as they're required to connect to db.
@@ -36,6 +36,11 @@ const EMAIL_VERIFICATION = 'EmailVerification';
 const LICENSE_ENABLED = 'LicenseEnabled';
 const PAYMENT_ENABLED = 'PaymentEnabled';
 const TAXES_ENABLED = 'TaxesEnabled';
+
+const SUOMISPORT_ENABLED = 'SuomisportEnabled';
+const SUOMISPORT_USERNAME = 'SuomisportUsername';
+const SUOMISPORT_PASSWORD = 'SuomisportPassword';
+const SUOMISPORT_API = 'SuomisportAPI';
 
 const SFL_ENABLED = 'SflEnabled';
 const SFL_USERNAME = 'SflUsername';
@@ -81,6 +86,13 @@ function GetConfigs()
             array(LICENSE_ENABLED,      'enum',     GetConfig(LICENSE_ENABLED),         array('no', 'sfl')),
             array(PAYMENT_ENABLED,      'bool',     GetConfig(PAYMENT_ENABLED)),
             array(TAXES_ENABLED,        'bool',     GetConfig(TAXES_ENABLED))
+        ),
+
+        'config_suomisport' => array(
+            array(SUOMISPORT_ENABLED,   'bool',     GetConfig(SUOMISPORT_ENABLED)),
+            array(SUOMISPORT_USERNAME,  'string',   GetConfig(SUOMISPORT_USERNAME)),
+            array(SUOMISPORT_PASSWORD,  'string',   GetConfig(SUOMISPORT_PASSWORD)),
+            array(SUOMISPORT_API,       'string',   GetConfig(SUOMISPORT_API))
         ),
 
         'config_pdga' => array(
@@ -191,4 +203,16 @@ function ppa_enabled() {
     if ($ppa == 'disabled')
         return false;
     return null;
+}
+
+
+/**
+ * Suomisport enabled
+ *
+ * @return  true if suomisport is enabled
+ */
+function suomisport_enabled() {
+    if (GetConfig(SUOMISPORT_ENABLED))
+        return true;
+    return false;
 }

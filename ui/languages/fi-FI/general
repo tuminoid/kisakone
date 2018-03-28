@@ -157,6 +157,7 @@ name            Nimi
 edit            Muokkaa
 
 pdga_number     PDGA-numero
+sportid_number  Sportti ID
 sfl_number      SFL-numero
 gender          Sukupuoli
 male            Mies

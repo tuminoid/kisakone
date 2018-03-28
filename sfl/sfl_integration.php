@@ -66,8 +66,6 @@ function sfl_api_run_query($where)
                 case 'license':
                     // Bonus year means if month is december, next year's license is valid already
                     $bonus_year = date('m') == 12 ? $year - 1 : $year;
-                    // first three months of 2018 are free due sfl system migrations
-                    $bonus_year = in_array(date('m'), array(1, 2, 3, 4)) ? $year + 1 : $year;
 
                     if ($row['license'] == LICENSE_MEMBERSHIP)
                         $result['membership'][$year] = $result['membership'][$bonus_year] = true;

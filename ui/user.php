@@ -2,7 +2,7 @@
 /*
  * Suomen Frisbeegolfliitto Kisakone
  * Copyright 2009-2010 Kisakone projektiryhmä
- * Copyright 2013-2016 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2013-2018 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * User details page
  *
@@ -23,7 +23,6 @@
  * */
 
 require_once 'data/configs.php';
-require_once 'sfl/sfl_integration.php';
 
 
 function InitializeSmartyVariables(&$smarty, $error)
@@ -61,8 +60,18 @@ function InitializeSmartyVariables(&$smarty, $error)
 
     $smarty->assign('sfl_enabled', sfl_enabled());
     $smarty->assign('pdga_enabled', pdga_enabled());
+    $smarty->assign('suomisport_enabled', suomisport_enabled());
 
-    if (sfl_enabled()) {
+    if (suomisport_enabled()) {
+        require_once 'suomisport/suomisport_integration.php';
+
+        $data = suomisport_getLicense($user->sportid, $player->pdga, $player->birthyear);
+        if ($data)
+            SmartifySuomisport($smarty, $data);
+    }
+    elseif (sfl_enabled()) {
+        require_once 'sfl/sfl_integration.php';
+
         $fees = array('membership' => array(), 'aLicense' => array(), 'bLicense' => array());
 
         $data = SFL_getPlayer($userid);
