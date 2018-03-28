@@ -387,6 +387,7 @@ class User
 
         $player = GetUserPlayer($this->id);
         $pdga = $player && $player->pdga ? $player->pdga : null;
+        $year = date('Y');
 
         if (pdga_enabled() && $pdga > 0) {
             require_once 'pdga/pdga_integration.php';
@@ -396,6 +397,10 @@ class User
             $valid_pdga = @$pdga_data['membership_status'] == 'current';
 
             if ($country != 'FI' && $valid_pdga)
+                return true;
+
+            // allow participating with just pdga license in 2018 jan-apr
+            if (in_array(date('m'), array(1, 2, 3, 4)) && $year == 2018 && $valid_pdga)
                 return true;
         }
 
@@ -419,7 +424,6 @@ class User
         elseif (sfl_enabled()) {
             $data = SFL_getPlayer($this->id);
             if ($data) {
-                $year = date('Y');
                 $membership = @$data['membership'][$year];
                 $license = @$data['license'][$year];
 
