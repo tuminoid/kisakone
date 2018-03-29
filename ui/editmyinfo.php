@@ -59,12 +59,13 @@ function InitializeSmartyVariables(&$smarty, $error)
         }
         else {
             $user = @$_SESSION['user'];
-        }
-        if ($user)
-            $player = $user->GetPlayer();
 
-        # FIXME: refetch user for sportid
-        $user = GetUserDetails($user->id);
+        }
+        if ($user) {
+            $player = $user->GetPlayer();
+            # refetch complete user data in case of minimal user
+            $user = GetUserDetails($user->id);
+        }
     }
 
     // FIXME: Fix this properly. We have case of expired session / missing cookie
