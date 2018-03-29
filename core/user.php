@@ -22,6 +22,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+require_once 'data/configs.php';
 require_once 'data/user.php';
 require_once 'sfl/sfl_licensetypes.php';
 require_once 'sfl/sfl_integration.php';
@@ -387,7 +388,6 @@ class User
 
         $player = GetUserPlayer($this->id);
         $pdga = $player && $player->pdga ? $player->pdga : null;
-        $year = date('Y');
 
         if (pdga_enabled() && $pdga > 0) {
             require_once 'pdga/pdga_integration.php';
@@ -408,9 +408,9 @@ class User
             require_once 'suomisport/suomisport_integration.php';
 
             # depending how you log in, your user info might be limited, refetch the user
-            $user = GetUserDetails($this->id);
-            $player = $this->GetPlayer();
-            $data = suomisport_getLicense($user->sportid, $player->pdga, $player->birthyear);
+            $userdata = GetUserDetails($this->id);
+            $player = $userdata->GetPlayer();
+            $data = suomisport_getLicense($userdata->sportid, $player->pdga, $player->birthyear);
 
             if ($data['licence_valid']) {
                 $valid_until = date_create($data['licence_valid_until']);
@@ -424,6 +424,7 @@ class User
         elseif (sfl_enabled()) {
             $data = SFL_getPlayer($this->id);
             if ($data) {
+                $year = date('Y');
                 $membership = @$data['membership'][$year];
                 $license = @$data['license'][$year];
 

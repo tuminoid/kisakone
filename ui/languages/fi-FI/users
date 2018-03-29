@@ -93,8 +93,9 @@ pdga_gender_F          Nainen
 
 nationality            Kansallisuus
 suomisport_license_valid Lisenssi voimassa {until} saakka.
-suomisport_license_not_valid Lisenssi ei ole voimassa.
-suomisport_incorrect_number  Virheellinen Sportti ID. Jätä kenttä tyhjäksi mikäli sinulla ei ole Suomisportista Sportti ID:tä.
+suomisport_license_not_valid Kilpailulisenssi ei ole voimassa.
+suomisport_sportid_not_entered Sportti ID:tä ei ole syötetty.
+suomisport_incorrect_number  Virheellinen Sportti ID. Jätä kenttä tyhjäksi mikäli sinulla ei ole Suomisportin Sportti ID:tä.
 suomisport_license_not_found  Suomisportista ei löytynyt SFL:n kilpailulisenssiä. Tarkasta Kisakoneessa, että Sportti ID, PDGA-numero sekä syntymävuotesi ovat oikein, sekä myös Suomisportissa PDGA-numerosi on syötetty lisätietoihisi. Huomioi, että Suomisportiin syötetty PDGA-numero näkyy SFL:lle viiveellä, seuraavana päivänä.
 
 user_ban    Estä käyttö

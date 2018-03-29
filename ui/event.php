@@ -199,10 +199,10 @@ function InitializeSmartyVariables(&$smarty, $error)
 
                 $smarty->assign('classes', $classes);
                 $smarty->assign('unsuited', $unsuited_classes);
-
                 if ($user) {
-                    if (!$user->LicensesPaidForYear(date('Y', $event->startdate), $event->LicensesRequired()))
+                    if (!$user->LicensesPaidForYear(date('Y', $event->startdate), $event->LicensesRequired())) {
                         $smarty->assign('feesMissing', $event->LicensesRequired());
+                    }
                 }
             }
 
