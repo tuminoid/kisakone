@@ -3,6 +3,12 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2018.06.02:
+===========
+  * Automatically refresh Suomisport license if it has elapsed, when entering profile page
+  * Display player's club to other players
+  * Display elapsed license in detail for user herself
+
 2018.03.28:
 ===========
   * Check PDGA number validity upon entering it.
