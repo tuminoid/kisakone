@@ -26,6 +26,7 @@ require_once 'data/db.php';
 require_once 'data/club.php';
 require_once 'core/player.php';
 require_once 'data/configs.php';
+require_once 'data/user.php';
 
 
 function GetPlayerDetails($playerid)
@@ -87,6 +88,14 @@ function SetPlayerParticipation($playerid, $eventid, $classid, $signup_directly 
     if (pdga_enabled()) {
         require_once 'pdga/pdga_integration.php';
         $rating = pdga_getPlayerRating($pdga);
+    }
+    if (suomisport_enabled()) {
+        require_once 'suomisport/suomisport_integration.php';
+        $data = suomisport_getLicense($userob->sportid, $playerob->pdga, $playerob->birthyear);
+        if ($data && @$data['club_sportid']) {
+            SaveClub($data['club_sportid'], $data['club_name'], $data['club_shortname']);
+            SaveUserClub($userid, $data['club_sportid']);
+        }
     }
 
     CancelSignup($eventid, $playerid, false);
