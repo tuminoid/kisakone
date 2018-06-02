@@ -21,7 +21,7 @@
  * along with Kisakone.  If not, see <http://www.gnu.org/licenses/>.
  * *}
 
-{if $suomisport_licence_valid}
+{if $suomisport_licence_valid_until}
     <tr>
         <td style="width: 200px"><label for="player_name">{translate id=name}:</label></td>
         <td><span id="player_name">{$suomisport_player_fullname}</span></td>
@@ -52,10 +52,14 @@
     </tr>
     <tr>
         <td><label for="licence_valid">{translate id='license'}:</label></td>
-        <td><span id="licence_valid">{translate id='suomisport_license_valid' until=$suomisport_licence_valid_until}</span></td>
+        <td><span id="licence_valid">
+        {if $suomisport_licence_valid}
+            {translate id='suomisport_licence_valid_until' until=$suomisport_licence_valid_until}
+        {else}
+            {translate id='suomisport_licence_notvalid'}
+        {/if}
+        </span></td>
     </tr>
-{elseif $suomisport_player_sportid}
-    <p>{translate id=suomisport_license_not_valid}</p>
 {else}
     <p>{translate id=suomisport_sportid_not_entered}</p>
 {/if}
