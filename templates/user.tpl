@@ -41,6 +41,8 @@
          <td>{translate id=user_country}:</td>
          <td>{if $pdga_state}{$pdga_state}, {/if}{$pdga_country}</td>
       {elseif $suomisport_enabled}
+         <td>{translate id=user_club}:</td>
+         <td>{$suomisport_club_name} ({$suomisport_club_shortname})</td>
       {elseif $sfl_enabled}
          <td>{translate id=user_club}:</td>
          <td>{$data.club_name|escape} {if $data.club_short} ({$data.club_short}) {else} {translate id=user_no_club} {/if}</td>
