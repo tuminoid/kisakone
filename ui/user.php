@@ -66,8 +66,15 @@ function InitializeSmartyVariables(&$smarty, $error)
         require_once 'suomisport/suomisport_integration.php';
 
         $data = suomisport_getLicense($user->sportid, $player->pdga, $player->birthyear);
-        if ($data)
+        if ($data) {
+            # check if licence needs to be refreshed automatically
+            $date_valid_until = strtotime($data['licence_valid_until']);
+            $date_now = time();
+            if ($date_valid_until < $date_now) {
+                $data = suomisport_getLicense($user->sportid, $player->pdga, $player->birthyear, true);
+            }
             SmartifySuomisport($smarty, $data);
+        }
     }
     elseif (sfl_enabled()) {
         require_once 'sfl/sfl_integration.php';

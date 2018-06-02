@@ -116,10 +116,14 @@ function suomisport_db_importLicense($sportid, $pdga_number, $birthyear)
  * @param int $sportid Sport id number
  * @param int $pdga_number PDGA number
  * @param int $birthyear
+ * @param bool $force Force refetch from API
  * @return null on failure, array on success
  */
-function suomisport_db_getLicense($sportid, $pdga_number, $birthyear)
+function suomisport_db_getLicense($sportid, $pdga_number, $birthyear, $force=false)
 {
+    if ($force === true)
+        suomisport_db_importLicense($sportid, $pdga_number, $birthyear);
+
     return db_one("
         SELECT * FROM :SuomisportLicenses
         WHERE player_sportid = $sportid AND player_pdga = $pdga_number AND player_birthyear = $birthyear
@@ -176,10 +180,11 @@ function suomisport_testCredentials($username = null, $password = null, $api = n
  * @param int $sportid Suomisport sport id
  * @param int $pdga_number PDGA number
  * @param int $birthyear Year of birth
+ * @param bool $force Force refetch from API
  * @return data on success
  * @return null on failure
  */
-function suomisport_getLicense($sportid = 0, $pdga_number = 0, $birthyear = 0)
+function suomisport_getLicense($sportid = 0, $pdga_number = 0, $birthyear = 0, $force = false)
 {
     if (!(is_numeric($sportid) && $sportid > 0))
         return null;
@@ -190,7 +195,7 @@ function suomisport_getLicense($sportid = 0, $pdga_number = 0, $birthyear = 0)
     if (!(is_numeric($birthyear) && $birthyear > 0))
         return null;
 
-    return suomisport_db_getLicense($sportid, $pdga_number, $birthyear);
+    return suomisport_db_getLicense($sportid, $pdga_number, $birthyear, $force);
 }
 
 
