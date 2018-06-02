@@ -8,6 +8,7 @@ Kisakone versions are simply release date tags:
   * Automatically refresh Suomisport license if it has elapsed, when entering profile page
   * Display player's club to other players
   * Display elapsed license in detail for user herself
+  * Correct club is displayed in registration when using Suomisport integration
 
 2018.03.28:
 ===========
