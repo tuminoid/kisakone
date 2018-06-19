@@ -42,12 +42,22 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
 {
     global $event_sort_mode;
 
-    if ($sort_mode !== null)
-        $sort = "$sort_mode";
-    elseif (!$event_sort_mode)
-        $sort = "`Date`, Duration ASC, :Event.id ASC";
-    else
+    if ($sort_mode !== null) {
+        $sort = "ORDER BY $sort_mode";
+    }
+    elseif (!$event_sort_mode) {
+        $sort = "ORDER BY `Date`, Duration ASC, :Event.id ASC";
+    }
+    else {
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
+        if (is_a($sort, 'Error')) {
+            error_log("debug: got bad sortorder: " . print_r($event_sort_mode, 1));
+            $sort = "";
+        }
+        else {
+            $sort = "ORDER BY $sort";
+        }
+    }
 
     $limit_limit = ($limit ? "LIMIT " . (int) $limit : "");
 
@@ -73,7 +83,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                 LEFT JOIN :Level ON :Event.Level = :Level.id
                                 INNER Join :Venue ON :Venue.id = :Event.Venue
                                 WHERE $conditions
-                                ORDER BY $sort
+                                $sort
                                 $limit_limit");
     }
     else {
@@ -85,7 +95,7 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
                                 INNER Join :Venue ON :Venue.id = :Event.Venue
                                 LEFT JOIN :Level ON :Event.Level = :Level.id
                                 WHERE $conditions
-                                ORDER BY $sort
+                                $sort
                                 $limit_limit");
     }
 
