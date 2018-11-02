@@ -51,7 +51,6 @@ function data_GetEvents($conditions, $sort_mode = null, $limit = null)
     else {
         $sort = data_CreateSortOrder($event_sort_mode, array('Name', 'VenueName' => 'Venue', 'Date', 'LevelName'));
         if (is_a($sort, 'Error')) {
-            error_log("debug: got bad sortorder: " . print_r($event_sort_mode, 1));
             $sort = "";
         }
         else {
