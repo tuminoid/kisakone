@@ -14,4 +14,4 @@ stellar.yaml
 *.project
 *.buildpath
 /pdga/*
-
+.DS_Store
