@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright 2018 Tuomo Tanskanen <tuomo@tanskanen.org>
+ * Copyright 2018-2019 Tuomo Tanskanen <tuomo@tanskanen.org>
  *
  * Functionality used exclusively for Suomen Frisbeegolfliitto for Suomisport API.
  *
@@ -81,10 +81,16 @@ function suomisport_db_importLicense($sportid, $pdga_number, $birthyear)
             "licence_valid", "licence_valid_until"
         );
 
+        $grey_data = array(
+            "status", "reason"
+        );
+
         $extra = "";
         foreach ($data as $key => $value) {
             if (!in_array($key, $white_data)) {
-                error_log("Not whitelisted: pdga: $pdga_number key: $key value: $value");
+                if (!in_array($key, $grey_data)) {
+                    error_log("Not whitelisted: pdga: $pdga_number key: $key value: $value");
+                }
                 unset($data[$key]);
                 continue;
             }
@@ -96,11 +102,9 @@ function suomisport_db_importLicense($sportid, $pdga_number, $birthyear)
         $vals = "'" . implode("', '", array_values($data)) . "'";
         db_exec("INSERT INTO :SuomisportLicenses (last_updated, $keys) VALUES(NOW(), $vals)
                     ON DUPLICATE KEY UPDATE last_updated=NOW() $extra");
-        return true;
-    }
-    elseif ($http_code == 404) {
-        // license not found
-        return false;
+
+        $licence_valid = $data['licence_valid'] ? true : false;
+        return $licence_valid;
     }
     else {
         // some other error
