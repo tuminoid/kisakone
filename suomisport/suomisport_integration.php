@@ -108,7 +108,7 @@ function suomisport_db_importLicense($sportid, $pdga_number, $birthyear)
     }
     else {
         // some other error
-        error_log("unexpected Suomisport error: " . $http_message . ". User data: " . print_r($user_data));
+        error_log("unexpected Suomisport error: " . $http_message . ". User data: " . print_r($user_data, 1));
         return false;
     }
 }
