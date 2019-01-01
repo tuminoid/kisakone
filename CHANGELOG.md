@@ -3,6 +3,10 @@ Changelog
 
 Kisakone versions are simply release date tags:
 
+2019.01.01:
+===========
+  * Update Suomisport licence handling to match API responses for 2019.
+
 2018.06.02:
 ===========
   * Automatically refresh Suomisport license if it has elapsed, when entering profile page
